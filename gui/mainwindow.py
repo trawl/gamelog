@@ -16,6 +16,7 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.initUI()
+        self.openedGames = []
 
     def initUI(self):
 
@@ -47,6 +48,13 @@ class MainWindow(QtGui.QMainWindow):
         self.newGameTab = NewGameWidget(self)
         self.tabWidget.addTab(self.newGameTab, "Nueva Partida")
         self.tabWidget.setCurrentIndex(1)
+        
+#        game = "Phase10"
+#        players = ["Xavi","Rosa"]
+#        
+#        self.matchTab = Phase10Widget(game, players,self)
+#        self.tabWidget.addTab(self.matchTab, game)
+
 
         #And finally, show it!
         self.show()
@@ -58,7 +66,13 @@ class MainWindow(QtGui.QMainWindow):
             QtGui.QMessageBox.No, QtGui.QMessageBox.No)
 
         if reply == QtGui.QMessageBox.Yes:
+            for game in self.openedGames:
+                game.closeMatch()
             event.accept()
-            self.newGameTab.closeMatches()
         else:
             event.ignore()    
+            
+    def newTab(self,matchTab,title):
+        self.openedGames.append(matchTab)
+        idx = self.tabWidget.addTab(matchTab, title)
+        self.tabWidget.setCurrentIndex(idx)
