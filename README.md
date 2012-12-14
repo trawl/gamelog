@@ -1,4 +1,5 @@
 gamelog
 =======
 
-Simple application to keep record of board game results
+Simple application to keep record of board game results.
+
