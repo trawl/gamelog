@@ -1,8 +1,14 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-from PyQt4 import QtCore, QtGui
+try:
+    from PySide import QtCore,QtGui
+    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
+except ImportError as error:
+    from PyQt4 import QtCore,QtGui
+    QtCore.Signal = QtCore.pyqtSignal
+    QtCore.Slot = QtCore.pyqtSlot
+    
 
 from controllers.db import *
 from gui.message import *
@@ -21,7 +27,10 @@ class PlayerListModel(QtGui.QStandardItemModel):
 
             # Assuming that we get at least one item, and that it defines
             # text that we can display.
-            text = data_items[0][QtCore.Qt.DisplayRole].toString()
+            try:
+                text = data_items[0][QtCore.Qt.DisplayRole].toString()
+            except AttributeError:
+                text = str(data_items[0][QtCore.Qt.DisplayRole])
 
             self.appendRow(QtGui.QStandardItem(text))
 
@@ -39,8 +48,11 @@ class PlayerListModel(QtGui.QStandardItemModel):
             map_items = ds.readInt32()
             for i in range(map_items):
                 key = ds.readInt32()
-                value = QtCore.QVariant()
-                ds >> value
+                try:
+                    value = QtCore.QVariant()
+                    ds >> value
+                except AttributeError:
+                    value = ds.readQVariant()
                 item[QtCore.Qt.ItemDataRole(key)] = value
             data.append(item)
         return data

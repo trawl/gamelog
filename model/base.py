@@ -1,7 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 import datetime
 from controllers.db import *
 
