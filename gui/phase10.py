@@ -1,10 +1,17 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
 import random
-from PyQt4 import QtCore, QtGui
 
+try:
+    from PySide import QtCore,QtGui
+    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
+except ImportError as error:
+    from PyQt4 import QtCore,QtGui
+    QtCore.Signal = QtCore.pyqtSignal
+    QtCore.Slot = QtCore.pyqtSlot
+    
 from controllers.db import *
 from controllers.phase10engine import *
 from model.phase10 import *
@@ -241,7 +248,7 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.widgetLayout = QtGui.QHBoxLayout(self)
         self.leftLayout = QtGui.QHBoxLayout()
         self.middleLayout = QtGui.QGridLayout()
-        self.middleLayout.setMargin(5)
+#        self.middleLayout.setMargin(5)
         self.middleLayout.setSpacing(5)
 #        self.rightLayout = QtGui.QVBoxLayout()
         self.rightLayout = QtGui.QGridLayout()

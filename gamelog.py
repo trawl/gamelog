@@ -1,9 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Python generic imports
 import sys
-import datetime
 import argparse
 
 # Program imports
@@ -100,6 +99,7 @@ def cli():
 def gui():
     app = QtGui.QApplication(sys.argv)
     mw = MainWindow()
+    mw.show()
     sys.exit(app.exec_())
 
 if __name__ == "__main__":

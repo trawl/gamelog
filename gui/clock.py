@@ -1,8 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
-from PyQt4 import QtCore, QtGui
+try:
+    from PySide import QtCore,QtGui
+    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
+except ImportError as error:
+    from PyQt4 import QtCore,QtGui
+    QtCore.Signal = QtCore.pyqtSignal
+    QtCore.Slot = QtCore.pyqtSlot
 
 class GameClock(QtGui.QLCDNumber):
     
