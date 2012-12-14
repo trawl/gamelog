@@ -80,7 +80,7 @@ class Phase10Widget(QtGui.QWidget):
         for phase in range(1,len(self.phases["key"])):
             text = self.phases["key"][phase] + ": " + self.phases["desc"][phase] +"\n"
             label = QtGui.QLabel(text,self)
-            label.setStyleSheet("QLabel { font-size: 15px; font-weight: bold; }")
+            label.setStyleSheet("QLabel { font-weight: bold; }")
             self.extraGroupLayout.addWidget(label)
    
         self.buttonGroup=QtGui.QGroupBox(self)

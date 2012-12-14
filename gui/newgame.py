@@ -22,8 +22,8 @@ class PlayerListModel(QtGui.QStandardItemModel):
     def dropMimeData(self, data, action, row, column, parent):
 
         if data.hasFormat('application/x-qabstractitemmodeldatalist'):
-            bytearray = data.data('application/x-qabstractitemmodeldatalist')
-            data_items = self.decode_data(bytearray)
+            barray = data.data('application/x-qabstractitemmodeldatalist')
+            data_items = self.decode_data(barray)
 
             # Assuming that we get at least one item, and that it defines
             # text that we can display.
@@ -38,10 +38,10 @@ class PlayerListModel(QtGui.QStandardItemModel):
         else:
             return QtGui.QStandardItemModel.dropMimeData(self, data, action, row, column, parent)
 
-    def decode_data(self, bytearray):
+    def decode_data(self, barray):
         data = []
         item = {}
-        ds = QtCore.QDataStream(bytearray)
+        ds = QtCore.QDataStream(barray)
         while not ds.atEnd():
             row = ds.readInt32()
             column = ds.readInt32()
@@ -84,8 +84,8 @@ class NewGameWidget(QtGui.QWidget):
     #TODO: If more than one game, signals & slots to change desc and rules if game is changed.
     def __init__(self, parent=None):
         super(NewGameWidget, self).__init__(parent)
-        self.openedGames = list()
         self.initUI()
+        self.parent = parent
 
     def initUI(self):
 
@@ -183,13 +183,7 @@ class NewGameWidget(QtGui.QWidget):
             ErrorMessage("El máximo número de jugadores para {} es {}".format(game, maxPlayers),"Nueva Partida").exec_()
 
         else:
-            parent = self.nativeParentWidget()
-            matchTab = Phase10Widget(game, players,parent)
-            self.openedGames.append(matchTab)
-            idx = parent.tabWidget.addTab(matchTab, game)
-            parent.tabWidget.setCurrentIndex(idx)
-            
-    def closeMatches(self):
-        for game in self.openedGames:
-            game.closeMatch()
+            matchTab = Phase10Widget(game, players,self.parent)
+            self.parent.newTab(matchTab,game)
+
 
