@@ -4,12 +4,18 @@
 # Python generic imports
 import sys
 import argparse
-
+try:
+    from PySide import QtGui
+except ImportError as error:
+    from PyQt4 import QtGui
+    
 # Program imports
 from controllers.db import GameLogDB
-from model.base import *
-from model.phase10 import *
-from gui.mainwindow import *
+from controllers.phase10engine import Phase10Engine
+
+#from model.base import *
+from model.phase10 import Phase10Round
+from gui.mainwindow import MainWindow
 
 def cli():
     playersOrder=[]

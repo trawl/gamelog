@@ -9,7 +9,7 @@ except ImportError as error:
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
 
-from gui.newgame import *
+from gui.newgame import NewGameWidget
 
 class MainWindow(QtGui.QMainWindow):
 

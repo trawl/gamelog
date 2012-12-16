@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 import random
 
 try:
@@ -12,11 +11,11 @@ except ImportError as error:
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
     
-from controllers.db import *
-from controllers.phase10engine import *
-from model.phase10 import *
-from gui.message import *
-from gui.clock import *
+from controllers.db import db
+from controllers.phase10engine import Phase10Engine
+from model.phase10 import Phase10Round
+from gui.message import ErrorMessage
+from gui.clock import GameClock
 
 class Phase10Widget(QtGui.QWidget):
 

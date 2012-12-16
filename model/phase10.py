@@ -3,7 +3,9 @@
 
 import sys
 import datetime
-from model.base import *
+from controllers.db import db
+
+from model.base import Match,Round
 
 class Phase10Match(Match):
     def __init__(self,players=dict()):
