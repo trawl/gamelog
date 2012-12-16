@@ -13,6 +13,7 @@ except ImportError as error:
 from controllers.db import db
 from gui.message import ErrorMessage
 from gui.phase10 import Phase10Widget
+from gui.newplayer import NewPlayerDialog
 
 class PlayerListModel(QtGui.QStandardItemModel):
 
@@ -160,6 +161,7 @@ class NewGameWidget(QtGui.QWidget):
 
         self.newPlayerButton = QtGui.QPushButton(self.playersGroupBox)
         self.newPlayerButton.setText("Nuevo Jugador")
+        self.newPlayerButton.clicked.connect(self.createNewPlayer)
         self.playersButtonsLayout.addWidget( self.newPlayerButton)
 
 
@@ -186,4 +188,6 @@ class NewGameWidget(QtGui.QWidget):
             matchTab = Phase10Widget(game, players,self.parent)
             self.parent.newTab(matchTab,game)
 
-
+    def createNewPlayer(self):
+        NewPlayerDialog(self)
+        
