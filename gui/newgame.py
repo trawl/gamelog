@@ -10,9 +10,9 @@ except ImportError as error:
     QtCore.Slot = QtCore.pyqtSlot
     
 
-from controllers.db import *
-from gui.message import *
-from gui.phase10 import *
+from controllers.db import db
+from gui.message import ErrorMessage
+from gui.phase10 import Phase10Widget
 
 class PlayerListModel(QtGui.QStandardItemModel):
 
@@ -43,10 +43,10 @@ class PlayerListModel(QtGui.QStandardItemModel):
         item = {}
         ds = QtCore.QDataStream(barray)
         while not ds.atEnd():
-            row = ds.readInt32()
-            column = ds.readInt32()
+            ds.readInt32() #Row 
+            ds.readInt32() #Column
             map_items = ds.readInt32()
-            for i in range(map_items):
+            for _ in range(map_items):
                 key = ds.readInt32()
                 try:
                     value = QtCore.QVariant()

@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from model.phase10 import *
-from controllers.db import *
+from model.base import Player
+from model.phase10 import Phase10Match,Phase10MasterMatch
+from controllers.db import db
+
 
 class Phase10Engine:
     def __init__(self):
