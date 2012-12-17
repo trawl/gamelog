@@ -4,6 +4,7 @@
 import sys
 import os.path
 import sqlite3 as lite
+import datetime
 
 class GameLogDB:
     __shared_state = {}
@@ -22,7 +23,7 @@ class GameLogDB:
                 sys.exit(1)
         try:    
             self.con = lite.connect(dbname)
-            self.checkDB()
+            self._checkDB()
         except Exception as e:
             print >> sys.stderr, "Error creating DB: {}".format(e.args[0])
 
@@ -41,7 +42,7 @@ class GameLogDB:
             print >> sys.stderr, "Error running query {}\n {}".format(query,e.args[0])
             sys.exit(1)
             
-    def executeScript(self,script):
+    def _executeScript(self,script):
         try:
             with self.con:
                 cur = self.con.cursor()
@@ -51,10 +52,30 @@ class GameLogDB:
             print >> sys.stderr, "Error running script: {}".format(e.args[0])
             sys.exit(1)
             
-    def checkDB(self):
+    def _checkDB(self):
         cur = self.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Game'")
         if not cur.fetchone():
-            self.executeScript(_emptydb)
+            self._executeScript(_emptydb)
+            
+    def getAvailableGames(self):
+        cur = db.execute("Select name,maxPlayers,description,rules from Game")
+        games=dict()
+        for row in cur:
+            games[row['name']]=dict()
+            games[row['name']]['maxPlayers']=row['maxPlayers']
+            games[row['name']]['description']=row['description']
+            games[row['name']]['rules']=row['rules']
+        return games
+    
+    
+    def getPlayerNicks(self):
+        cur = db.execute("Select nick from Player order by nick")
+        return [ row['nick'] for row in cur ]
+    
+    def addPlayer(self,nick,fullname):
+        db.execute("INSERT INTO Player(nick,fullName,dateCreation) VALUES('{}','{}','{}')".format(nick,fullname,datetime.datetime.now()))
+        print("after inserting user to db")
+        
         
 db = GameLogDB()
 
