@@ -11,6 +11,7 @@ except ImportError as error:
     
 
 from controllers.db import db
+from communicator import Communicator
 from gui.message import ErrorMessage
 from gui.phase10 import Phase10Widget
 from gui.newplayer import NewPlayerDialog
@@ -85,8 +86,9 @@ class NewGameWidget(QtGui.QWidget):
     #TODO: If more than one game, signals & slots to change desc and rules if game is changed.
     def __init__(self, parent=None):
         super(NewGameWidget, self).__init__(parent)
-        self.initUI()
         self.parent = parent
+        self.com = Communicator()
+        self.initUI()   
 
     def initUI(self):
 
@@ -111,6 +113,7 @@ class NewGameWidget(QtGui.QWidget):
         #Players GroupBox
         self.playersGroupBox = QtGui.QGroupBox(self)
         self.rightColumnLayout.addWidget(self.playersGroupBox)
+        self.com.addedNewPlayer.connect(self.addPlayer)
         self.populatePlayersGroupBox()
 
 
@@ -124,14 +127,9 @@ class NewGameWidget(QtGui.QWidget):
         self.gameGroupBoxLayout.addWidget(self.gameDescriptionLabel)
         self.gameGroupBoxLayout.addWidget(self.gameRulesBrowser)
 
-        cur = db.execute("Select name,maxPlayers,description,rules from Game")
-        self.games=dict()
-        for row in cur:
-            self.games[row['name']]=dict()
-            self.games[row['name']]['maxPlayers']=row['maxPlayers']
-            self.games[row['name']]['description']=row['description']
-            self.games[row['name']]['rules']=row['rules']
-            self.gameComboBox.addItem(row['name'])
+        self.games = db.getAvailableGames()
+        for game in sorted(self.games.keys()):
+            self.gameComboBox.addItem(game)
         self.updateGameInfo()
 
         QtCore.QObject.connect(self.gameComboBox, QtCore.SIGNAL('currentIndexChanged(int)'), self.updateGameInfo )
@@ -152,9 +150,8 @@ class NewGameWidget(QtGui.QWidget):
         self.playersAvailableList = PlayerList(self.playersGroupBox)
         self.playersGroupBoxLayout.addWidget(self.playersAvailableList)
 
-        cur = db.execute("Select nick from Player")
-        for row in cur:
-            self.playersAvailableList.model().appendRow(QtGui.QStandardItem(row['nick']))
+        for nick in db.getPlayerNicks():
+            self.playersAvailableList.model().appendRow(QtGui.QStandardItem(nick))
 
         self.playersButtonsLayout = QtGui.QHBoxLayout()
         self.playersGroupBoxLayout.addLayout(self.playersButtonsLayout)
@@ -190,4 +187,9 @@ class NewGameWidget(QtGui.QWidget):
 
     def createNewPlayer(self):
         NewPlayerDialog(self)
+    
+    def addPlayer(self,player):
+        print "Updating player box"
+        self.playersAvailableList.model().appendRow(QtGui.QStandardItem(player))
+    
         
