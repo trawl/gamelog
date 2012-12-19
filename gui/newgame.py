@@ -186,10 +186,10 @@ class NewGameWidget(QtGui.QWidget):
             self.parent.newTab(matchTab,game)
 
     def createNewPlayer(self):
-        NewPlayerDialog(self)
+        NewPlayerDialog(self.com,self)
     
     def addPlayer(self,player):
         print "Updating player box"
+        player = str(player)
         self.playersAvailableList.model().appendRow(QtGui.QStandardItem(player))
-    
         
