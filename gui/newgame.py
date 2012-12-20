@@ -11,7 +11,7 @@ except ImportError as error:
     
 
 from controllers.db import db
-from communicator import Communicator
+#from communicator import Communicator
 from gui.message import ErrorMessage
 from gui.phase10 import Phase10Widget
 from gui.newplayer import NewPlayerDialog
@@ -87,7 +87,7 @@ class NewGameWidget(QtGui.QWidget):
     def __init__(self, parent=None):
         super(NewGameWidget, self).__init__(parent)
         self.parent = parent
-        self.com = Communicator()
+#        self.com = Communicator()
         self.initUI()   
 
     def initUI(self):
@@ -113,7 +113,6 @@ class NewGameWidget(QtGui.QWidget):
         #Players GroupBox
         self.playersGroupBox = QtGui.QGroupBox(self)
         self.rightColumnLayout.addWidget(self.playersGroupBox)
-        self.com.addedNewPlayer.connect(self.addPlayer)
         self.populatePlayersGroupBox()
 
 
@@ -186,7 +185,8 @@ class NewGameWidget(QtGui.QWidget):
             self.parent.newTab(matchTab,game)
 
     def createNewPlayer(self):
-        NewPlayerDialog(self.com,self)
+        npd = NewPlayerDialog(self)
+        npd.addedNewPlayer.connect(self.addPlayer)
     
     def addPlayer(self,player):
         print "Updating player box"
