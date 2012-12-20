@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from controllers.db import db
+#from controllers.db import db
 #import datetime
 
 class StatsEngine:
