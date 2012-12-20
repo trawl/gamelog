@@ -63,12 +63,10 @@ class NewPlayerDialog(QtGui.QDialog):
             self.createbutton.setEnabled(len(self.namelineedit.text())>0)
     
     def createAction(self):
-        print('In createAction')
         nick = str(self.nicklineedit.text())
         db.addPlayer(nick,str(self.namelineedit.text()))
         self.existingplayers.append(nick)
         self.addedNewPlayer.emit(nick)
-        print "Trying to quit the dialog"
         self.accept()
                                     
         

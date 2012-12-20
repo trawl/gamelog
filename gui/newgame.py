@@ -11,7 +11,6 @@ except ImportError as error:
     
 
 from controllers.db import db
-#from communicator import Communicator
 from gui.message import ErrorMessage
 from gui.phase10 import Phase10Widget
 from gui.newplayer import NewPlayerDialog
@@ -189,7 +188,6 @@ class NewGameWidget(QtGui.QWidget):
         npd.addedNewPlayer.connect(self.addPlayer)
     
     def addPlayer(self,player):
-        print "Updating player box"
         player = str(player)
         self.playersAvailableList.model().appendRow(QtGui.QStandardItem(player))
         
