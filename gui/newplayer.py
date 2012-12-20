@@ -12,10 +12,13 @@ except ImportError as error:
 from controllers.db import db
 
 class NewPlayerDialog(QtGui.QDialog):
-    def __init__(self,com=None,parent=None):
+    
+    addedNewPlayer = QtCore.Signal(str)
+    
+    def __init__(self,parent=None):
         super(NewPlayerDialog,self).__init__(parent)
         self.initUI()
-        self.com = com
+#        self.com = com
         self.setWindowTitle("New player")
         self.existingplayers = [ str(nick).lower() for nick in db.getPlayerNicks() ] 
 
@@ -64,7 +67,7 @@ class NewPlayerDialog(QtGui.QDialog):
         nick = str(self.nicklineedit.text())
         db.addPlayer(nick,str(self.namelineedit.text()))
         self.existingplayers.append(nick)
-        self.com.addedNewPlayer.emit(nick)
+        self.addedNewPlayer.emit(nick)
         print "Trying to quit the dialog"
         self.accept()
                                     
