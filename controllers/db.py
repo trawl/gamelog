@@ -42,6 +42,15 @@ class GameLogDB:
             print >> sys.stderr, "Error running query {}\n {}".format(query,e.args[0])
             sys.exit(1)
             
+    def queryDict(self,query):
+        result=[]
+        for row in self.execute(query):
+            entry = {}
+            for key in row.keys():
+                entry[key]=row[key]
+            result.append(entry)
+        return result
+            
     def _executeScript(self,script):
         try:
             with self.con:

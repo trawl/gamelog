@@ -11,6 +11,7 @@ except ImportError as error:
     
 
 from controllers.db import db
+from controllers.statsengine import StatsEngine
 from gui.message import ErrorMessage
 from gui.phase10 import Phase10Widget
 from gui.newplayer import NewPlayerDialog
@@ -79,6 +80,69 @@ class PlayerList(QtGui.QListView):
         else:
             e.setDropAction(QtCore.Qt.MoveAction)
             QtGui.QListView.dropEvent(self,e)
+            
+            
+class QuickStatsBox(QtGui.QGroupBox):
+    def __init__(self,parent):
+        super(QuickStatsBox, self).__init__(parent)
+        self.stats = StatsEngine()
+        self.game = None
+        self.initUI()
+        self.gameStatsText = u"Último Ganador: {} ({})"
+        self.matchStatsLine = u"{0[0]} Jugadores:\n    Duracion: {0[1]} / {0[2]} / {0[3]}\n    Puntuaciones: {0[4]} / {0[5]} / {0[6]}"
+        self.playerStatsLine = u"{0[0]}: {0[1]}/{0[2]} victorias ({0[3]}%).  Puntos: {0[4]} / {0[5]} / {0[6]} / {0[7]}"
+        
+    def initUI(self):
+        self.setTitle(u"Estadísticas")
+        self.widgetLayout = QtGui.QVBoxLayout(self)
+        self.gameStatsLabel = QtGui.QLabel(self)
+        self.widgetLayout.addWidget(self.gameStatsLabel)
+        self.matchStatsTitleLabel = QtGui.QLabel(self)
+        self.widgetLayout.addWidget(self.matchStatsTitleLabel)
+        self.matchStatsTitleLabel.setText("Partidas")   
+        self.matchStatsLabel = QtGui.QLabel(self)
+        self.widgetLayout.addWidget(self.matchStatsLabel)
+        self.playerStatsTitleLabel = QtGui.QLabel(self)
+        self.widgetLayout.addWidget(self.playerStatsTitleLabel)
+        self.playerStatsTitleLabel.setText("Jugadores")  
+        self.playerStatsLabel = QtGui.QLabel(self)
+        self.widgetLayout.addWidget(self.playerStatsLabel)
+        
+        
+    def update(self,game=None):
+        if game is not None: self.game = game
+        self.stats.update()
+        gamestats = self.stats.getGameStats(self.game)
+        matchstats = self.stats.getMatchGameStats(self.game)
+        playerstats = self.stats.getPlayerGameStats(self.game)
+        
+        self.gameStatsLabel.setText(self.gameStatsText.format(gamestats['lastwinner'],gamestats['lastwinnerdate']))
+        text = ""
+        for row in matchstats:
+            mslist = []
+            mslist.append(row['nplayers'])
+            mslist.append(row['maxduration'])
+            mslist.append(row['minduration'])
+            mslist.append(row['avgduration'])
+            mslist.append(row['maxscore'])
+            mslist.append(row['minscore'])
+            mslist.append(row['avgscore'])
+            text += self.matchStatsLine.format(mslist) + "\n"
+        self.matchStatsLabel.setText(text)
+        
+        text = ""
+        for row in playerstats:
+            pslist = []
+            pslist.append(row['nick'])
+            pslist.append(row['victories'])
+            pslist.append(row['played'])
+            pslist.append(row['victoryp'])
+            pslist.append(row['maxscore'])
+            pslist.append(row['minscore'])
+            pslist.append(row['avgscore'])
+            pslist.append(row['sumscore'])
+            text += self.playerStatsLine.format(pslist) + "\n"
+        self.playerStatsLabel.setText(text)        
 
 
 class NewGameWidget(QtGui.QWidget):
@@ -121,9 +185,12 @@ class NewGameWidget(QtGui.QWidget):
         self.gameComboBox = QtGui.QComboBox(self.gameGroupBox)
         self.gameGroupBoxLayout.addWidget(self.gameComboBox)
         self.gameDescriptionLabel = QtGui.QLabel(self.gameGroupBox)
-        self.gameRulesBrowser = QtGui.QTextBrowser(self.gameGroupBox)
+#        self.gameRulesBrowser = QtGui.QTextBrowser(self.gameGroupBox)
         self.gameGroupBoxLayout.addWidget(self.gameDescriptionLabel)
-        self.gameGroupBoxLayout.addWidget(self.gameRulesBrowser)
+#        self.gameGroupBoxLayout.addWidget(self.gameRulesBrowser)
+        self.gameStatsBox = QuickStatsBox(self)
+        self.gameGroupBoxLayout.addWidget(self.gameStatsBox)
+        self.gameGroupBoxLayout.addStretch()
 
         self.games = db.getAvailableGames()
         for game in sorted(self.games.keys()):
@@ -136,7 +203,8 @@ class NewGameWidget(QtGui.QWidget):
         game = str(self.gameComboBox.currentText())
         description = "De 2 a {} jugadores\n\n{}".format(self.games[game]['maxPlayers'],self.games[game]['description'])
         self.gameDescriptionLabel.setText(description)
-        self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
+#        self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
+        self.gameStatsBox.update(game)
 
     def populatePlayersGroupBox(self):
         self.playersGroupBox.setTitle("Jugadores")
