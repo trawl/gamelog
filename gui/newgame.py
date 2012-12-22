@@ -89,8 +89,6 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.game = None
         self.initUI()
         self.gameStatsText = u"Último Ganador: {} ({})"
-        self.matchStatsLine = u"{0[0]} Jugadores:\n    Duracion: {0[1]} / {0[2]} / {0[3]}\n    Puntuaciones: {0[4]} / {0[5]} / {0[6]}"
-        self.playerStatsLine = u"{0[0]}: {0[1]}/{0[2]} victorias ({0[3]}%).  Puntos: {0[4]} / {0[5]} / {0[6]} / {0[7]}"
         
     def initUI(self):
         self.setTitle(u"Estadísticas")
@@ -100,13 +98,14 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.matchStatsTitleLabel = QtGui.QLabel(self)
         self.widgetLayout.addWidget(self.matchStatsTitleLabel)
         self.matchStatsTitleLabel.setText("Partidas")   
-        self.matchStatsLabel = QtGui.QLabel(self)
-        self.widgetLayout.addWidget(self.matchStatsLabel)
+        self.matchStatsTable = QtGui.QTableWidget(self)
+        self.matchStatsTable.setMinimumSize(0, 10)
+        self.widgetLayout.addWidget(self.matchStatsTable)
         self.playerStatsTitleLabel = QtGui.QLabel(self)
         self.widgetLayout.addWidget(self.playerStatsTitleLabel)
         self.playerStatsTitleLabel.setText("Jugadores")  
-        self.playerStatsLabel = QtGui.QLabel(self)
-        self.widgetLayout.addWidget(self.playerStatsLabel)
+        self.playerStatsTable = QtGui.QTableWidget(self)
+        self.widgetLayout.addWidget(self.playerStatsTable)
         
         
     def update(self,game=None):
@@ -115,35 +114,42 @@ class QuickStatsBox(QtGui.QGroupBox):
         gamestats = self.stats.getGameStats(self.game)
         matchstats = self.stats.getMatchGameStats(self.game)
         playerstats = self.stats.getPlayerGameStats(self.game)
-        
+         
         self.gameStatsLabel.setText(self.gameStatsText.format(gamestats['lastwinner'],gamestats['lastwinnerdate']))
-        text = ""
-        for row in matchstats:
-            mslist = []
-            mslist.append(row['nplayers'])
-            mslist.append(row['maxduration'])
-            mslist.append(row['minduration'])
-            mslist.append(row['avgduration'])
-            mslist.append(row['maxscore'])
-            mslist.append(row['minscore'])
-            mslist.append(row['avgscore'])
-            text += self.matchStatsLine.format(mslist) + "\n"
-        self.matchStatsLabel.setText(text)
-        
-        text = ""
-        for row in playerstats:
-            pslist = []
-            pslist.append(row['nick'])
-            pslist.append(row['victories'])
-            pslist.append(row['played'])
-            pslist.append(row['victoryp'])
-            pslist.append(row['maxscore'])
-            pslist.append(row['minscore'])
-            pslist.append(row['avgscore'])
-            pslist.append(row['sumscore'])
-            text += self.playerStatsLine.format(pslist) + "\n"
-        self.playerStatsLabel.setText(text)        
+         
+        keys = ['maxduration','minduration','avgduration','maxscore','minscore','avgscore']
+        headers = ['Mas Larga','Mas corta','Media','Peor','Mejor','Media']
+        self.updateTable(self.matchStatsTable, matchstats, keys, 'nplayers', headers)
+            
+        keys = ['played','victories','victoryp','maxscore','minscore','avgscore','sumscore']
+        headers = ['Jugadas','Victorias','Ratio (%)','Peor','Mejor','Media','Total']
+        self.updateTable(self.playerStatsTable, playerstats, keys, 'nick', headers)
+                            
 
+    def updateTable(self,table,contents,keyorder,rowheaderkey,cheaders):
+        table.clear()
+        if len(contents) and len(contents[0])>1:
+            displayed = contents[:4]
+            table.setRowCount(len(displayed))
+            table.setColumnCount(len(displayed[0])-2)
+            table.setHorizontalHeaderLabels(cheaders)
+            table.setVerticalHeaderLabels([ str(row[rowheaderkey]) for row in displayed])
+            
+
+            for row, i in zip(displayed,range(len(displayed))):
+                keys = keyorder
+                for key,j in zip(keys,range(len(keys))):
+                    item = QtGui.QTableWidgetItem(str(row[key]))
+                    item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignHCenter)
+                    item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
+                    table.setItem(i,j,item)
+                    
+            table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+            table.resizeRowsToContents()
+            table.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
+            size = table.rowHeight(0)*(len(displayed)+1)+len(displayed)
+            table.setFixedHeight(size)          
+        
 
 class NewGameWidget(QtGui.QWidget):
     #TODO: If more than one game, signals & slots to change desc and rules if game is changed.
@@ -185,9 +191,9 @@ class NewGameWidget(QtGui.QWidget):
         self.gameComboBox = QtGui.QComboBox(self.gameGroupBox)
         self.gameGroupBoxLayout.addWidget(self.gameComboBox)
         self.gameDescriptionLabel = QtGui.QLabel(self.gameGroupBox)
-#        self.gameRulesBrowser = QtGui.QTextBrowser(self.gameGroupBox)
+        self.gameRulesBrowser = QtGui.QTextBrowser(self.gameGroupBox)
         self.gameGroupBoxLayout.addWidget(self.gameDescriptionLabel)
-#        self.gameGroupBoxLayout.addWidget(self.gameRulesBrowser)
+        self.gameGroupBoxLayout.addWidget(self.gameRulesBrowser)
         self.gameStatsBox = QuickStatsBox(self)
         self.gameGroupBoxLayout.addWidget(self.gameStatsBox)
         self.gameGroupBoxLayout.addStretch()
@@ -203,7 +209,7 @@ class NewGameWidget(QtGui.QWidget):
         game = str(self.gameComboBox.currentText())
         description = "De 2 a {} jugadores\n\n{}".format(self.games[game]['maxPlayers'],self.games[game]['description'])
         self.gameDescriptionLabel.setText(description)
-#        self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
+        self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
         self.gameStatsBox.update(game)
 
     def populatePlayersGroupBox(self):
