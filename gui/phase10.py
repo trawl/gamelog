@@ -79,7 +79,7 @@ class Phase10Widget(QtGui.QWidget):
         for phase in range(1,len(self.phases["key"])):
             text = self.phases["key"][phase] + ": " + self.phases["desc"][phase] +"\n"
             label = QtGui.QLabel(text,self)
-            label.setStyleSheet("QLabel { font-weight: bold; }")
+            label.setStyleSheet("QLabel {font-size: 14px; font-weight: bold; }")
             self.extraGroupLayout.addWidget(label)
    
         self.buttonGroup=QtGui.QGroupBox(self)
@@ -94,6 +94,7 @@ class Phase10Widget(QtGui.QWidget):
         self.cancelMatchButton.clicked.connect(self.cancelMatch)
 
         self.detailMatchButton = QtGui.QPushButton("&Detalles...", self.buttonGroup)
+        self.detailMatchButton.setDisabled(True)
         self.buttonGroupLayout.addWidget(self.detailMatchButton)
         self.detailMatchButton.clicked.connect(self.showDetails)
 
@@ -180,6 +181,7 @@ class Phase10Widget(QtGui.QWidget):
         
         self.engine.addRound(rnd)
         self.engine.printStats()
+        
         self.updatePanel()
         winner = self.engine.getWinner()
         if winner:
@@ -197,10 +199,15 @@ class Phase10Widget(QtGui.QWidget):
         else:
             self.shuffler = (self.shuffler + 1)%len(self.players)            
             self.playerGroupBox[self.players[self.shuffler]].setShuffler() 
+            
+
 
     def updatePanel(self):
         
-        self.buttonGroup.setTitle("Ronda {}".format(str(self.engine.getNumRound())))
+        self.detailMatchButton.setEnabled(True)
+        if not self.engine.getWinner():
+            self.buttonGroup.setTitle("Ronda {}".format(str(self.engine.getNumRound())))
+            
         self.nobodyWinnerRadioButton.setChecked(True)
         for player in self.players:
             score = self.engine.getScoreFromPlayer(player)
@@ -286,8 +293,7 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         
         
         self.roundScore=QtGui.QLineEdit(self)
-        self.roundScore.setMinimumWidth(30)
-        self.roundScore.setMaximumWidth(750)
+        self.roundScore.setFixedWidth(30)
         self.roundScore.setValidator(QtGui.QIntValidator(5,200,None))
         self.rightLayout.addWidget(self.roundScore,0,1)
 
@@ -444,7 +450,7 @@ class Phase10RoundsDetail(QtGui.QDialog):
 
     def initUI(self):
         self.setWindowTitle('Detalles')
-        self.setGeometry(300,200,600,400)
+#        self.setGeometry(300,200,600,400)
         self.widgetLayout = QtGui.QVBoxLayout(self)
         self.table = QtGui.QTableWidget(self.engine.getNumRound()-1,len(self.engine.getPlayers()))
         #self.table.setMinimumWidth(len(self.engine.getPlayers())*30)
@@ -462,12 +468,17 @@ class Phase10RoundsDetail(QtGui.QDialog):
             j=0
             for player in players:
                 item = QtGui.QTableWidgetItem(str(r.score[player]))
-                item.setFlags(QtCore.Qt.ItemIsEnabled)
+                item.setFlags(item.flags()^QtCore.Qt.ItemIsEnabled)
                 self.table.setItem(i,j,item)
                 j+=1
             i+=1
-
-        self.ok = QtGui.QPushButton(self)
-        self.ok.setText("Cerrar")
-        self.widgetLayout.addWidget(self.ok)
-        self.ok.clicked.connect(self.close)
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+#        self.table.resizeColumnsToContents()
+        self.table.resizeRowsToContents()
+        self.table.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
+        size = self.table.rowHeight(0)*(len(roundlist)+1)+len(roundlist)
+        self.table.setFixedHeight(size)
+#        self.ok = QtGui.QPushButton(self)
+#        self.ok.setText("Cerrar")
+#        self.widgetLayout.addWidget(self.ok)
+#        self.ok.clicked.connect(self.close)
