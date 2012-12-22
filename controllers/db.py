@@ -146,7 +146,7 @@ DROP TABLE IF EXISTS "MatchPlayer";
 CREATE TABLE `MatchPlayer` (
   `idMatch` INTEGER  NOT NULL ,
   `nick` VARCHAR(45) NOT NULL ,
-  `totalScore` VARCHAR(45) NOT NULL DEFAULT 0 ,
+  `totalScore` INTEGER NOT NULL DEFAULT 0 ,
   `winner` TINYINT(1)  NOT NULL DEFAULT 0 ,
   PRIMARY KEY (`idMatch`, `nick`) ,
   CONSTRAINT `fk_Match_has_Player_Match1`
