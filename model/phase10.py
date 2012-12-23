@@ -34,6 +34,7 @@ class Phase10Match(Match):
                 self.phasesCleared[p].append(r.completedPhase[p])
             db.execute("INSERT INTO Round (idMatch,nick,idRound,winner,score) VALUES ("+str(self.idMatch)+",'"+str(p)+"',"+str(len(self.rounds))+","+str(winner)+","+str(r.score[p])+")")
             db.execute("UPDATE MatchPlayer SET totalScore="+str(self.totalScores[p]) + " WHERE idMatch="+str(self.idMatch)+" AND nick='"+p+"'")
+            db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ("+str(self.idMatch)+",'"+str(p)+"',"+str(len(self.rounds))+",'PhaseAimed','"+str(r.aimedPhase[p])+"')")
             db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ("+str(self.idMatch)+",'"+str(p)+"',"+str(len(self.rounds))+",'PhaseCompleted','"+str(r.completedPhase[p])+"')")
 
         self.updateWinner()
@@ -86,11 +87,17 @@ class Phase10Round(Round):
         self.score = dict() # nick -> points
         self.winner = None
         self.completedPhase = dict() # nick -> Phase idx or 0
+        self.aimedPhase = dict()
 
-    def addRoundInfo(self,player,score,completedPhase,winner):
+    def addRoundInfo(self,player,score,aimedPhase,iscompleted):
         self.score[player]=score
-        if (winner): self.winner = player
-        self.completedPhase[player] = completedPhase
+        if (score == 0): self.winner = player
+        self.aimedPhase[player] = aimedPhase
+        if iscompleted:
+            self.completedPhase[player] = aimedPhase
+        else:
+            self.completedPhase[player] = 0
+ 
         
         
 class Phase10MasterMatch(Phase10Match):
