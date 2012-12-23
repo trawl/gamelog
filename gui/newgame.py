@@ -173,12 +173,6 @@ class NewGameWidget(QtGui.QWidget):
         self.leftColumnLayout.addWidget(self.gameGroupBox)
         self.populateGamesGroupBox()
 
-        #Start button
-        self.startGameButton = QtGui.QPushButton(self)
-        self.startGameButton.setText("A Jugar!")
-        self.startGameButton.clicked.connect(self.createNewGame)
-        self.leftColumnLayout.addWidget(self.startGameButton)
-
         #Players GroupBox
         self.playersGroupBox = QtGui.QGroupBox(self)
         self.rightColumnLayout.addWidget(self.playersGroupBox)
@@ -239,6 +233,12 @@ class NewGameWidget(QtGui.QWidget):
         self.playersGroupBoxLayout.addWidget(self.inGameLabel)
         self.playersInGameList = PlayerList(self.playersGroupBox)
         self.playersGroupBoxLayout.addWidget(self.playersInGameList)
+        
+        #Start button
+        self.startGameButton = QtGui.QPushButton(self)
+        self.startGameButton.setText("A Jugar!")
+        self.startGameButton.clicked.connect(self.createNewGame)
+        self.playersGroupBoxLayout.addWidget(self.startGameButton)
 
     def createNewGame(self):
         game = str(self.gameComboBox.currentText())
@@ -264,4 +264,9 @@ class NewGameWidget(QtGui.QWidget):
     def addPlayer(self,player):
         player = str(player)
         self.playersAvailableList.model().appendRow(QtGui.QStandardItem(player))
+        
+    def showEvent(self, event):
+        if hasattr(self, 'gameStatsBox') and hasattr(self,'gameComboBox') and self.gameComboBox.currentText(): 
+            self.gameStatsBox.update(self.gameComboBox.currentText())
+        return QtGui.QWidget.showEvent(self, event)
         

@@ -4,7 +4,7 @@
 import datetime
 from model.base import Player
 from model.phase10 import Phase10Match,Phase10MasterMatch
-from controllers.db import db
+from controllers.db import GameLogDB,db
 
 
 class Phase10Engine:
@@ -108,3 +108,9 @@ class Phase10Engine:
             print "!!!!!!!!!!!!!!!!!!!!!!!!!"
             print " Winner:", self.getWinner()
             print "!!!!!!!!!!!!!!!!!!!!!!!!!"
+
+if __name__ == "__main__":
+    db = GameLogDB()
+    db.connectDB("../db/gamelog.db")      
+    pe = Phase10Engine()
+
