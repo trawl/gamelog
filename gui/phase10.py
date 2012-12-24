@@ -204,6 +204,7 @@ class Phase10Widget(QtGui.QWidget):
     def updatePanel(self):
         
         self.detailMatchButton.setEnabled(True)
+        self.phasesInOrderCheckBox.setDisabled(True)
         if not self.engine.getWinner():
             self.buttonGroup.setTitle("Ronda {}".format(str(self.engine.getNumRound())))
             
@@ -299,23 +300,9 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.roundPhaseClearedCheckbox = QtGui.QCheckBox("Expuesta",self)
         self.rightLayout.addWidget(self.roundPhaseClearedCheckbox,1,0)
 
-        self.roundPhaseCleared = QtGui.QComboBox(self)
-        self.roundPhaseCleared.setMaxVisibleItems(len(self.phases["key"]))
-        for phase in self.phases["key"]:
-            if phase != "":
-                self.roundPhaseCleared.addItem(phase)
-        self.roundPhaseCleared.setCurrentIndex(0)
-        
-        QtCore.QObject.connect(self.roundPhaseCleared, QtCore.SIGNAL('currentIndexChanged(int)'), self.updatePhaseSelected)
-        self.rightLayout.addWidget(self.roundPhaseCleared,1,1)
-        
-        if self.phases_in_order:
-            self.roundPhaseCleared.hide()
-
         QtCore.QObject.connect(self.roundWinnerRadioButton, QtCore.SIGNAL('toggled(bool)'), self.roundScore, QtCore.SLOT('setDisabled(bool)') )
         QtCore.QObject.connect(self.roundWinnerRadioButton, QtCore.SIGNAL('toggled(bool)'), self.roundPhaseClearedCheckbox,QtCore.SLOT('setDisabled(bool)'))
         QtCore.QObject.connect(self.roundWinnerRadioButton, QtCore.SIGNAL('toggled(bool)'), self.roundPhaseClearedCheckbox, QtCore.SLOT('setChecked(bool)') )
-        QtCore.QObject.connect(self.roundPhaseClearedCheckbox, QtCore.SIGNAL('toggled(bool)'), self.roundPhaseCleared.setDisabled)
         QtCore.QObject.connect(self.roundScore, QtCore.SIGNAL('textChanged(QString)'), self.updateRoundPhaseCleared)
             
     def updateDisplay(self,points,completed_phases,remaining_phases):
@@ -327,20 +314,12 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.roundWinnerRadioButton.setDown(True)
         self.scoreLCD.display(points)
         self.roundScore.clear()
-        
         self.roundPhaseClearedCheckbox.setChecked(False)
-        
-        self.roundPhaseCleared.clear()
-    
-        for phase in remaining_phases:
-            self.roundPhaseCleared.addItem(self.phases["key"][phase])             
-        self.roundPhaseCleared.setCurrentIndex(0)  
         
         phase = 1
         for label in self.phaseLabels:
             if phase == self.current_phase:
                 if not label.isCurrent():label.setCurrent()
-#                self.roundPhaseCleared.setCurrentIndex(phase-1)
             elif phase in completed_phases:
                 if not label.isPassed(): label.setPassed()
             else:
@@ -362,24 +341,14 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
     
     def switchPhasesInOrder(self,in_order):
         self.phases_in_order = (in_order==QtCore.Qt.Checked)
-#        label = self.phaseLabels[self.current_phase-1]
-             
-        if self.phases_in_order:
-            self.roundPhaseCleared.hide()
-#            self.roundPhaseClearedCheckbox.show()
-#            if not label.isCurrent():label.setCurrent()               
-        else:
-#            self.roundPhaseClearedCheckbox.hide()
-            self.roundPhaseCleared.show()
-#            if not label.isRemaining():label.setRemaining()
-            
-    def updatePhaseSelected(self,index):
-        phase =  self.phases['key'].index(self.roundPhaseCleared.itemText(index))
-        self.current_phase = phase
-        for label in self.phaseLabels:
-            if label.isCurrent(): label.setRemaining()
-        self.phaseLabels[phase-1].setCurrent()
         
+    def updatePhaseSelected(self,phaselabel):
+        if phaselabel.isRemaining():
+            self.current_phase = phaselabel.getNumber()
+            for label in self.phaseLabels:
+                if label.isCurrent(): label.setRemaining()
+            phaselabel.setCurrent()
+                              
     def updateRoundPhaseCleared(self,value):
         try:
             score = int(value)
@@ -409,6 +378,8 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
     def mousePressEvent(self, event):
         child = self.childAt(event.pos())
         if child is None: self.roundScore.setFocus()
+        elif type(child) == Phase10Label and not self.phases_in_order:
+            self.updatePhaseSelected(child)
         return QtGui.QGroupBox.mousePressEvent(self, event)
         
         
@@ -426,6 +397,7 @@ class Phase10Label(QtGui.QLabel):
         self.setAlignment(QtCore.Qt.AlignCenter)
         self.setWordWrap(False)
         self.setFixedSize(QtCore.QSize(25,25))
+        self.number = number
 
     def isPassed(self):
         return self.state==1
@@ -442,7 +414,8 @@ class Phase10Label(QtGui.QLabel):
     def setRemaining(self):
         self.state = 0
         self.setStyleSheet("QLabel { background-color: red; font-weight: bold; color:white }")          
-    
+    def getNumber(self):
+        return self.number
     
 class Phase10RoundsDetail(QtGui.QDialog):
     def __init__(self, engine, parent=None):
