@@ -122,7 +122,7 @@ class Phase10Widget(QtGui.QWidget):
         np = 0
         for player in self.players:
             self.playerGroupBox[player] = Phase10PlayerWidget(player, self.phases,self.winnerButtonGroup,self)
-            QtCore.QObject.connect(self.phasesInOrderCheckBox, QtCore.SIGNAL('stateChanged(int)'), self.playerGroupBox[player].switchPhasesInOrder)
+            self.phasesInOrderCheckBox.stateChanged.connect(self.playerGroupBox[player].switchPhasesInOrder)
             if players_grid: 
                 self.playerGroupsLayout.addWidget(self.playerGroupBox[player],np/2,np%2)
             else: self.playerGroupsLayout.addWidget(self.playerGroupBox[player])    
@@ -132,7 +132,6 @@ class Phase10Widget(QtGui.QWidget):
         
         self.shuffler = random.choice(range(0,len(self.players)))
         self.playerGroupBox[self.players[self.shuffler]].setShuffler()
-        
 
                 
     def commitRound(self):
@@ -299,11 +298,11 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
 
         self.roundPhaseClearedCheckbox = QtGui.QCheckBox("Expuesta",self)
         self.rightLayout.addWidget(self.roundPhaseClearedCheckbox,1,0)
-
-        QtCore.QObject.connect(self.roundWinnerRadioButton, QtCore.SIGNAL('toggled(bool)'), self.roundScore, QtCore.SLOT('setDisabled(bool)') )
-        QtCore.QObject.connect(self.roundWinnerRadioButton, QtCore.SIGNAL('toggled(bool)'), self.roundPhaseClearedCheckbox,QtCore.SLOT('setDisabled(bool)'))
-        QtCore.QObject.connect(self.roundWinnerRadioButton, QtCore.SIGNAL('toggled(bool)'), self.roundPhaseClearedCheckbox, QtCore.SLOT('setChecked(bool)') )
-        QtCore.QObject.connect(self.roundScore, QtCore.SIGNAL('textChanged(QString)'), self.updateRoundPhaseCleared)
+        
+        self.roundWinnerRadioButton.toggled.connect(self.roundScore.setDisabled)
+        self.roundWinnerRadioButton.toggled.connect(self.roundPhaseClearedCheckbox.setDisabled)
+        self.roundWinnerRadioButton.toggled.connect(self.roundPhaseClearedCheckbox.setChecked)
+        self.roundScore.textChanged.connect(self.updateRoundPhaseCleared)
             
     def updateDisplay(self,points,completed_phases,remaining_phases):
         
@@ -341,6 +340,15 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
     
     def switchPhasesInOrder(self,in_order):
         self.phases_in_order = (in_order==QtCore.Qt.Checked)
+        if not self.phases_in_order: return
+        first = True
+        for label in self.phaseLabels:
+            if label.isRemaining() and first:
+                label.setCurrent()
+                self.current_phase = label.getNumber()
+                first = False
+            elif label.isCurrent(): 
+                label.setRemaining()
         
     def updatePhaseSelected(self,phaselabel):
         if phaselabel.isRemaining():

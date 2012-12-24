@@ -19,7 +19,7 @@ class NewPlayerDialog(QtGui.QDialog):
         super(NewPlayerDialog,self).__init__(parent)
         self.initUI()
 #        self.com = com
-        self.setWindowTitle("New player")
+        self.setWindowTitle("Nuevo Jugador")
         self.existingplayers = [ str(nick).lower() for nick in db.getPlayerNicks() ] 
 
         
@@ -34,7 +34,7 @@ class NewPlayerDialog(QtGui.QDialog):
         self.nicklineedit.textChanged.connect(self.checkExisting)
         self.layout.addWidget(self.nicklineedit, 0,1)
         self.namelabel = QtGui.QLabel(self)
-        self.namelabel.setText("Name")
+        self.namelabel.setText("Nombre")
         self.layout.addWidget(self.namelabel,1,0)
         self.namelineedit = QtGui.QLineEdit(self)
         self.namelineedit.textChanged.connect(self.checkExisting)
