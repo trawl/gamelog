@@ -196,8 +196,8 @@ class NewGameWidget(QtGui.QWidget):
         for game in sorted(self.games.keys()):
             self.gameComboBox.addItem(game)
         self.updateGameInfo()
-
-        QtCore.QObject.connect(self.gameComboBox, QtCore.SIGNAL('currentIndexChanged(int)'), self.updateGameInfo )
+        
+        self.gameComboBox.currentIndexChanged.connect(self.updateGameInfo)
 
     def updateGameInfo(self,foo=0):
         game = str(self.gameComboBox.currentText())
