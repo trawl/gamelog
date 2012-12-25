@@ -341,14 +341,12 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
     def switchPhasesInOrder(self,in_order):
         self.phases_in_order = (in_order==QtCore.Qt.Checked)
         if not self.phases_in_order: return
-        first = True
+        self.phaseLabels[self.current_phase-1].setRemaining()
         for label in self.phaseLabels:
-            if label.isRemaining() and first:
+            if label.isRemaining():
                 label.setCurrent()
                 self.current_phase = label.getNumber()
-                first = False
-            elif label.isCurrent(): 
-                label.setRemaining()
+                break
         
     def updatePhaseSelected(self,phaselabel):
         if phaselabel.isRemaining():
