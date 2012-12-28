@@ -2,45 +2,28 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import datetime
 
 from controllers.db import db
-from model.base import Match,Round
+from model.base import AbstractRoundMatch,AbstractRound
 
-class Phase10Match(Match):
+class Phase10Match(AbstractRoundMatch):
     def __init__(self,players=dict()):
-        Match.__init__(self,players=dict())
-        self.rounds = list()
-        self.totalScores = dict()
+        AbstractRoundMatch.__init__(self,players)
+        self.game = "Phase10"
         self.phasesCleared = dict() # player -> list of phases cleared
-        cur = db.execute("INSERT INTO Match (Game_name,started) VALUES ('Phase10','"+str(self.start)+"')")
-        self.idMatch = cur.lastrowid
+        
+        
+    def playerStart(self,player):
+        self.phasesCleared[player] = list()
+        
+    def playerAddRound(self,player,rnd):
+        if (rnd.completedPhase[player]):
+            self.phasesCleared[player].append(rnd.completedPhase[player])
+        db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'PhaseAimed','{}');".format(self.idMatch,player,len(self.rounds),rnd.aimedPhase[player]))
+        db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'PhaseCompleted','{}');".format(self.idMatch,player,len(self.rounds),rnd.completedPhase[player]))            
 
-        for p in players:
-            self.totalScores[p] = 0
-            self.phasesCleared[p] = list()
-            db.execute("INSERT INTO MatchPlayer (idMatch,nick) VALUES ("+str(self.idMatch)+",'"+str(p)+"')")
-
-    def addRound(self,r):
-
-        self.rounds.append(r)
-        for p in r.score:
-            if (r.winner==p):
-                winner = 1
-            else:
-                winner=0
-            self.totalScores[p]+=r.score[p]
-            if (r.completedPhase[p]):
-                self.phasesCleared[p].append(r.completedPhase[p])
-            db.execute("INSERT INTO Round (idMatch,nick,idRound,winner,score) VALUES ("+str(self.idMatch)+",'"+str(p)+"',"+str(len(self.rounds))+","+str(winner)+","+str(r.score[p])+")")
-            db.execute("UPDATE MatchPlayer SET totalScore="+str(self.totalScores[p]) + " WHERE idMatch="+str(self.idMatch)+" AND nick='"+p+"'")
-            db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ("+str(self.idMatch)+",'"+str(p)+"',"+str(len(self.rounds))+",'PhaseAimed','"+str(r.aimedPhase[p])+"')")
-            db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ("+str(self.idMatch)+",'"+str(p)+"',"+str(len(self.rounds))+",'PhaseCompleted','"+str(r.completedPhase[p])+"')")
-
-        self.updateWinner()
-
-
-    def updateWinner(self):
+    def computeWinner(self):
+        
         playersIn10 = list();
         for p,pc in self.phasesCleared.iteritems():
             if (len(pc)==10):
@@ -63,29 +46,11 @@ class Phase10Match(Match):
                 if self.rounds[-1].score[n]<minScore:
                     self.winner = n
                     minScore = self.rounds[-1].score[n]
-
-        if self.winner:
-            self.finish = datetime.datetime.now()
-            db.execute("UPDATE Match SET finished='"+str(self.finish)+"',state=1 WHERE idMatch="+str(self.idMatch))
-            db.execute("UPDATE MatchPlayer SET winner=1 WHERE idMatch="+str(self.idMatch) +" and nick='"+self.winner+"'")
-
-
-    def getWinner(self):
-        return self.winner
-
-    def getRounds(self):
-        return self.rounds
-    
-    def cancel(self):
-        if not self.winner:
-            self.finish = datetime.datetime.now()
-            db.execute("UPDATE Match SET finished='"+str(self.finish)+"',state=2 WHERE idMatch="+str(self.idMatch))
         
             
-class Phase10Round(Round):
+class Phase10Round(AbstractRound):
     def __init__( self):
-        self.score = dict() # nick -> points
-        self.winner = None
+        AbstractRound.__init__(self)
         self.completedPhase = dict() # nick -> Phase idx or 0
         self.aimedPhase = dict()
 
@@ -103,15 +68,6 @@ class Phase10Round(Round):
 class Phase10MasterMatch(Phase10Match):
 
     def __init__(self,players=dict()):
-        Match.__init__(self,players=dict())
-        self.rounds = list()
-        self.totalScores = dict()
-        self.phasesCleared = dict() # player -> list of phases cleared
-        cur = db.execute("INSERT INTO Match (Game_name,started) VALUES ('Phase10Master','"+str(self.start)+"')")
-        self.idMatch = cur.lastrowid
-
-        for p in players:
-            self.totalScores[p] = 0
-            self.phasesCleared[p] = list()
-            db.execute("INSERT INTO MatchPlayer (idMatch,nick) VALUES ("+str(self.idMatch)+",'"+str(p)+"')")
+        Phase10Match.__init__(self,players)
+        self.game = 'Phase10Master'
 

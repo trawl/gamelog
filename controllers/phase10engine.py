@@ -1,58 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import datetime
-from model.base import Player
-from model.phase10 import Phase10Match,Phase10MasterMatch
-from controllers.db import GameLogDB,db
+from controllers.baseengine import RoundGameEngine
 
-
-class Phase10Engine:
+class Phase10Engine(RoundGameEngine):
     def __init__(self):
-        self.match = None
-        self.players = dict()
-        self.porder = list()
-
-    def addPlayer(self,nick,fullName=""):
-        if (fullName == ""):
-            fullName = nick
-        self.porder.append(nick)
-        self.players[nick] = Player()
-        self.players[nick].nick = nick
-        cur = db.execute("Select * from Player where nick='"+nick+"'")
-        ## Exists in db?
-        user = cur.fetchone()
-
-        #user=1
-
-        if (user):
-            print "USER:",user,
-            self.players[nick].fullName = user['fullName']
-        else:
-            self.players[nick].fullName = fullName
-            self.players[nick].dateCreation = datetime.datetime.now()
-            db.execute("INSERT INTO Player (nick, fullName, dateCreation) values ('"+nick+"','"+fullName+"','"+str(self.players[nick].dateCreation)+"');")
-
-    def begin(self,gname="Phase10"):
-        if(gname == "Phase10"):
-            self.match = Phase10Match(self.players)
-        if(gname == "Phase10Master"):
-            self.match = Phase10MasterMatch(self.players)
-
-    def addRound(self,r):
-        self.match.addRound(r)
-
-    def getRounds(self):
-        return self.match.getRounds()
-
-    def getWinner(self):
-        return self.match.getWinner()
-
-    def getPlayers(self):
-        return self.players
-    
-    def getListPlayers(self):
-        return self.porder
+        RoundGameEngine.__init__(self)
+        self.game = "Phase10"
 
     def getRemainingPhasesFromPlayer(self, player):
         remaining = range (1,11)
@@ -60,7 +14,6 @@ class Phase10Engine:
             for phase in self.match.phasesCleared[player]:
                 remaining.remove(phase)
         return remaining
-
 
     def getCompletedPhasesFromPlayer(self,player):
         if (player in self.match.phasesCleared):
@@ -72,23 +25,11 @@ class Phase10Engine:
             return True
         else:
             return False
-
-    def getScoreFromPlayer(self,player):
-        if (player in self.match.totalScores):
-            return self.match.totalScores[player]
+    def hasPhaseRemaining(self,player,phase):
+        if phase in self.getRemainingPhasesFromPlayer(player):
+            return True
         else:
-            return 0
-
-    def getNumRound(self):
-        return len(self.match.rounds)+1
-
-    def getGameMaxPlayers(self):
-        cur = db.execute("Select maxPlayers from Game where name='Phase10'")
-        r = cur.fetchone()
-        return int(r['maxPlayers'])
-    
-    def cancelMatch(self):
-        self.match.cancel()
+            return False
 
     def printStats(self):
         print ""
@@ -109,8 +50,122 @@ class Phase10Engine:
             print " Winner:", self.getWinner()
             print "!!!!!!!!!!!!!!!!!!!!!!!!!"
 
+class Phase10MasterEngine(Phase10Engine):
+    def __init__(self):
+        Phase10Engine.__init__(self)
+        self.game = "Phase10Master"
+        
+        
 if __name__ == "__main__":
+    from model.phase10 import Phase10Round
+    from controllers.db import GameLogDB,db
+    playersOrder=[]
+    print "Welcome to Phase10 Engine Stub"
+    
     db = GameLogDB()
-    db.connectDB("../db/gamelog.db")      
-    pe = Phase10Engine()
+    db.connectDB("../db/gamelog.db")
+    
+    validInput = False;
+    while not validInput:
+        game = raw_input("Game to play (Phase10/Phase10Master): ")
+        if game in ['Phase10','Phase10Master']:
+            validInput = True
+        else:
+            print "Sorry, game not valid."
 
+    if game == 'Phase10': pe = Phase10Engine()
+    else: pe = Phase10MasterEngine()
+        
+    nplayers = None
+    validPlayers = db.getPlayerNicks()
+
+    while (not isinstance(nplayers,int) or (isinstance(nplayers,int) and (nplayers < 2 or nplayers > pe.getGameMaxPlayers()))):
+        try:
+            if nplayers is None:
+                pass
+            elif not isinstance(nplayers,int):
+                print "Sorry, number not valid."
+            elif (nplayers < 2 or nplayers > pe.getGameMaxPlayers()):
+                print "Sorry, number of players must be between 2 and",str(pe.getGameMaxPlayers())+"."
+
+            nplayers = int(raw_input("Number of players: "))
+        except ValueError:
+            nplayers="ValueError"
+            pass
+
+    for i in range (1,nplayers+1):
+        print "Player",i,"Info:"
+        validInput = False;
+        while not validInput:
+            nick = raw_input("Nick: ")
+            if(nick in validPlayers):
+                validInput = True
+            else:
+                print "Sorry, player not found in DB"
+        pe.addPlayer(nick)
+        playersOrder.append(nick)
+
+    pe.begin()
+    pe.printStats()
+    nround=1;
+    while not pe.getWinner():
+        rnd = Phase10Round()
+        rnd_winner  = raw_input("Round " + str(nround) +" Winner: ")
+        while rnd_winner not in playersOrder:
+            print"Sorry, player not found in current match."
+            rnd_winner  = raw_input("Round " + str(nround) +" Winner: ")
+
+        for n in playersOrder:
+            p = pe.getPlayers()[n]
+            iaw = (rnd_winner == n)
+            score = 0
+            c_phase = -1
+            a_phase = -1
+            cleared = 1
+            validInput = False;
+            while not validInput:
+                try:
+                    a_phase = int(raw_input(n + " aimed phase number: "))
+                except ValueError:
+                    print "Sorry, invalid phase number."
+                    continue
+                if (a_phase > 0 and pe.hasPhaseRemaining(n,a_phase)):
+                    validInput=True;
+                else:
+                    print "Sorry, phase not valid or already completed."
+            
+            if not iaw:
+                validInput = False;
+                while not validInput:
+                    try:
+                        cleared = int(raw_input(n + " completed phase "+ str(a_phase) +"?{1/0]: "))
+                    except ValueError:
+                        print "Sorry, invalid answer"
+                        continue
+                    if (cleared in [1,0]):
+                        validInput=True;
+                    else:
+                        print "Sorry, invalid answer."
+                
+                validInput = False;
+                while not validInput:
+                    try:
+                        score = int(raw_input(n + " round score: "))
+                    except ValueError:
+                        print "Sorry, invalid phase number."
+                    if(score>0 and score%5==0):
+                        validInput = True
+                    else:
+                        print "Sorry, invalid score number."
+
+
+            if cleared: c_phase = a_phase
+            else: c_phase = 0
+            print("Adding round info {} {} {} {}".format(n,score,a_phase,c_phase))
+            rnd.addRoundInfo(n,score,a_phase,c_phase)
+            
+        pe.addRound(rnd)
+        pe.printStats()
+        nround+=1
+    
+    
