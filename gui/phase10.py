@@ -12,7 +12,7 @@ except ImportError as error:
     QtCore.Slot = QtCore.pyqtSlot
     
 from controllers.db import db
-from controllers.phase10engine import Phase10Engine
+from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
 from model.phase10 import Phase10Round
 from gui.message import ErrorMessage
 from gui.clock import GameClock
@@ -29,10 +29,17 @@ class Phase10Widget(QtGui.QWidget):
         self.phases["desc"] = list()
         self.phases["key"].append("") # Empty phase (0)
         self.phases["desc"].append("") # Empty phase (0)
-        self.engine = Phase10Engine()
+        if game == 'Phase10Master':
+            self.engine = Phase10MasterEngine()
+        elif game == 'Phase10':
+            self.engine = Phase10Engine()
+        else:
+            raise Exception("No engine for game {}".format(game))
+            return
+        
         for nick in players:
             self.engine.addPlayer(nick)
-        self.engine.begin(self.game)
+        self.engine.begin()
         self.engine.printStats()
 
         cur = db.execute("Select key,value from GameExtras where Game_name='"+self.game+"' and key like'Phase %'")

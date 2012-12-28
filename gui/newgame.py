@@ -114,7 +114,11 @@ class QuickStatsBox(QtGui.QGroupBox):
         gamestats = self.stats.getGameStats(self.game)
         matchstats = self.stats.getMatchGameStats(self.game)
         playerstats = self.stats.getPlayerGameStats(self.game)
-         
+        
+        if not gamestats:
+            self.gameStatsLabel.setText("No hay estadisticas")
+            return
+        
         self.gameStatsLabel.setText(self.gameStatsText.format(gamestats['lastwinner'],gamestats['lastwinnerdate']))
          
         keys = ['maxduration','minduration','avgduration','maxscore','minscore','avgscore']
@@ -152,7 +156,6 @@ class QuickStatsBox(QtGui.QGroupBox):
         
 
 class NewGameWidget(QtGui.QWidget):
-    #TODO: If more than one game, signals & slots to change desc and rules if game is changed.
     def __init__(self, parent=None):
         super(NewGameWidget, self).__init__(parent)
         self.parent = parent

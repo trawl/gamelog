@@ -4,6 +4,7 @@
 import datetime
 
 # Model
+from controllers.db import db
 
 class Player:
     def __init__(self):
@@ -11,13 +12,72 @@ class Player:
         self.fullName = ""
         self.dateCreation = None
 
-class Match:
+class AbstractMatch:
     def __init__(self,players=dict()):
         self.game = None
         self.players = players
         self.winner = None
         self.start = datetime.datetime.now()
         self.finish = None
+        self.totalScores = dict()
+        
+    def startMatch(self):
+        cur = db.execute("INSERT INTO Match (Game_name,started) VALUES ('{}','{}');".format(self.game,str(self.start)))
+        self.idMatch = cur.lastrowid
+        for p in self.players:
+            print("Starting match for {}".format(p))
+            self.totalScores[p] = 0
+            db.execute("INSERT INTO MatchPlayer (idMatch,nick) VALUES ({},'{}');".format(str(self.idMatch),str(p)))
+            self.playerStart(p)
+            
+    def updateWinner(self):
+        self.computeWinner()
+        if self.winner:
+            self.finish = datetime.datetime.now()
+            db.execute("UPDATE Match SET finished='{}',state=1 WHERE idMatch={};".format(str(self.finish),str(self.idMatch)))
+            db.execute("UPDATE MatchPlayer SET winner=1 WHERE idMatch={}  and nick='{}';".format(str(self.idMatch),self.winner))
 
-class Round:
-    pass
+    def getWinner(self):
+        return self.winner
+    
+    def cancel(self):
+        if not self.winner:
+            self.finish = datetime.datetime.now()
+            db.execute("UPDATE Match SET finished='{}',state=2 WHERE idMatch={};".format(str(self.finish),str(self.idMatch)))
+
+    # To be implemented in subclasses
+    def playerStart(self,player): pass
+    def computeWinner(self): pass
+        
+class AbstractRoundMatch(AbstractMatch):
+    def __init__(self,players=dict()):
+        AbstractMatch.__init__(self,players)
+        self.rounds = list()
+    
+    def addRound(self,r):
+
+        self.rounds.append(r)
+        for p in r.score:
+            if (r.winner==p):
+                winner = 1
+            else:
+                winner=0
+            self.totalScores[p]+=r.score[p]
+
+            db.execute("INSERT INTO Round (idMatch,nick,idRound,winner,score) VALUES ("+str(self.idMatch)+",'"+str(p)+"',"+str(len(self.rounds))+","+str(winner)+","+str(r.score[p])+")")
+            db.execute("UPDATE MatchPlayer SET totalScore="+str(self.totalScores[p]) + " WHERE idMatch="+str(self.idMatch)+" AND nick='"+p+"'")
+            self.playerAddRound(p,r)
+        self.updateWinner()
+        
+    def getRounds(self):
+        return self.rounds
+
+
+    # To be implemented in subclasses
+    def playerAddRound(self,player,rnd): pass
+
+
+class AbstractRound:
+    def __init__(self):
+        self.score = dict() # nick -> points
+        self.winner = None

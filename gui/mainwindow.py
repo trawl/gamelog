@@ -9,14 +9,17 @@ except ImportError as error:
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
 
+from controllers.db import db
 from gui.newgame import NewGameWidget
 
 class MainWindow(QtGui.QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+        db.connectDB()
         self.initUI()
         self.openedGames = []
+
 
     def initUI(self):
 
@@ -31,7 +34,7 @@ class MainWindow(QtGui.QMainWindow):
         exitAction = QtGui.QAction(QtGui.QIcon('exit.png'), '&Salir', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Salir de GameLog')
-        exitAction.triggered.connect(QtGui.qApp.quit)
+        exitAction.triggered.connect(self.closeAction)
         fileMenu.addAction(exitAction)
 
         #Central stuff!!
@@ -60,7 +63,10 @@ class MainWindow(QtGui.QMainWindow):
         self.show()
         
     def closeEvent(self, event):
-        
+        if self.closeActions(): event.accept()
+        else: event.ignore()
+            
+    def closeAction(self):
         reply = QtGui.QMessageBox.question(self, 'Salir',
             u"Estás seguro que quieres salir de GameLog?", QtGui.QMessageBox.Yes | 
             QtGui.QMessageBox.No, QtGui.QMessageBox.No)
@@ -68,9 +74,10 @@ class MainWindow(QtGui.QMainWindow):
         if reply == QtGui.QMessageBox.Yes:
             for game in self.openedGames:
                 game.closeMatch()
-            event.accept()
-        else:
-            event.ignore()    
+            if db: db.disconnectDB()
+            return True
+        
+        return False
             
     def newTab(self,matchTab,title):
         self.openedGames.append(matchTab)
