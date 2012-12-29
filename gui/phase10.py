@@ -13,36 +13,24 @@ except ImportError as error:
 
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
 from gui.message import ErrorMessage
+from gui.game import GameWidget
 from gui.clock import GameClock
 
-class Phase10Widget(QtGui.QWidget):
+class Phase10Widget(GameWidget):
 
     def __init__(self, game, players, parent=None):
-        super(Phase10Widget, self).__init__(parent)
-
-        self.game = game
-        self.players=players
-        self.phases = dict()
-        self.phases["key"] = list()
-        self.phases["desc"] = list()
-        self.phases["key"].append("") # Empty phase (0)
-        self.phases["desc"].append("") # Empty phase (0)
-        if game == 'Phase10Master':
-            self.engine = Phase10MasterEngine()
-        elif game == 'Phase10':
-            self.engine = Phase10Engine()
-        else:
-            raise Exception("No engine for game {}".format(game))
-            return
-        
-        for nick in players:
-            self.engine.addPlayer(nick)
-        self.engine.begin()
-        self.engine.printStats()
-
+        super(Phase10Widget, self).__init__(game,players,parent)
         self.phases = self.engine.getPhases()
         self.initUI()
 
+    def createEngine(self):
+        if self.game == 'Phase10Master':
+            self.engine = Phase10MasterEngine()
+        elif self.game == 'Phase10':
+            self.engine = Phase10Engine()
+        else:
+            raise Exception("No engine for game {}".format(self.game))
+            return
 
     def initUI(self):
         #Setup Layouts
@@ -207,22 +195,6 @@ class Phase10Widget(QtGui.QWidget):
             completed = self.engine.getCompletedPhasesFromPlayer(player)
             remaining = self.engine.getRemainingPhasesFromPlayer(player)
             self.playerGroupBox[player].updateDisplay(score,completed,remaining)
-
-
-    def cancelMatch(self):
-        ret = QtGui.QMessageBox.question(self, 'Finalizar partida',
-        u"Estás seguro que quieres finalizar la partida?", QtGui.QMessageBox.Yes | 
-        QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-        
-        if ret == QtGui.QMessageBox.No: return
-        self.closeMatch()
-
-
-    def closeMatch(self):
-        self.engine.cancelMatch()
-        parent = self.nativeParentWidget()
-        parent.tabWidget.removeTab(parent.tabWidget.indexOf(self))  
-
 
     def showDetails(self):
         Phase10RoundsDetail(self.engine).exec_()

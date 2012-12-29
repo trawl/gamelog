@@ -14,6 +14,7 @@ from controllers.db import db
 from controllers.statsengine import StatsEngine
 from gui.message import ErrorMessage
 from gui.phase10 import Phase10Widget
+from gui.remigio import RemigioWidget
 from gui.newplayer import NewPlayerDialog
 
 class PlayerListModel(QtGui.QStandardItemModel):
@@ -252,8 +253,16 @@ class NewGameWidget(QtGui.QWidget):
         elif len(players)>maxPlayers:
             ErrorMessage("El máximo número de jugadores para {} es {}".format(game, maxPlayers),"Nueva Partida").exec_()
         else:
-            matchTab = Phase10Widget(game, players,self.parent)
+            if game in ('Phase10','Phase10Master'):
+                matchTab = Phase10Widget(game, players,self.parent)
+            elif game == 'Remigio':
+                matchTab = RemigioWidget(game,players,self.parent)
+            else:
+                ErrorMessage("Widget de {} no implementado".format(game),"Nueva Partida").exec_()
+                return
+            matchTab.closeRequested.connect(self.parent.removeTab)
             self.parent.newTab(matchTab,game)
+            
 
     def createNewPlayer(self):
         npd = NewPlayerDialog(self)
@@ -267,4 +276,3 @@ class NewGameWidget(QtGui.QWidget):
         if hasattr(self, 'gameStatsBox') and hasattr(self,'gameComboBox') and self.gameComboBox.currentText(): 
             self.gameStatsBox.update(self.gameComboBox.currentText())
         return QtGui.QWidget.showEvent(self, event)
-        

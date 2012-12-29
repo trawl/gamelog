@@ -83,3 +83,6 @@ class MainWindow(QtGui.QMainWindow):
         self.openedGames.append(matchTab)
         idx = self.tabWidget.addTab(matchTab, title)
         self.tabWidget.setCurrentIndex(idx)
+
+    def removeTab(self,tab):
+        self.tabWidget.removeTab(self.tabWidget.indexOf(tab))
