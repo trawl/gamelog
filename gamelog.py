@@ -12,10 +12,7 @@ except ImportError as error:
 # Program imports
 from gui.mainwindow import MainWindow
 
-
 if __name__ == "__main__":
-    
-#    db.connectDB()
     
     app = QtGui.QApplication(sys.argv)
     mw = MainWindow()

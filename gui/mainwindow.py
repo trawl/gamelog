@@ -63,7 +63,7 @@ class MainWindow(QtGui.QMainWindow):
         self.show()
         
     def closeEvent(self, event):
-        if self.closeActions(): event.accept()
+        if self.closeAction(): event.accept()
         else: event.ignore()
             
     def closeAction(self):

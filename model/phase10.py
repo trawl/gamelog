@@ -4,14 +4,13 @@
 import sys
 
 from controllers.db import db
-from model.base import AbstractRoundMatch,AbstractRound
+from model.base import GenericRoundMatch,GenericRound
 
-class Phase10Match(AbstractRoundMatch):
+class Phase10Match(GenericRoundMatch):
     def __init__(self,players=dict()):
-        AbstractRoundMatch.__init__(self,players)
+        GenericRoundMatch.__init__(self,players)
         self.game = "Phase10"
         self.phasesCleared = dict() # player -> list of phases cleared
-        
         
     def playerStart(self,player):
         self.phasesCleared[player] = list()
@@ -48,20 +47,21 @@ class Phase10Match(AbstractRoundMatch):
                     minScore = self.rounds[-1].score[n]
         
             
-class Phase10Round(AbstractRound):
+class Phase10Round(GenericRound):
     def __init__( self):
-        AbstractRound.__init__(self)
+        GenericRound.__init__(self)
         self.completedPhase = dict() # nick -> Phase idx or 0
         self.aimedPhase = dict()
 
-    def addRoundInfo(self,player,score,aimedPhase,iscompleted):
-        self.score[player]=score
-        if (score == 0): self.winner = player
-        self.aimedPhase[player] = aimedPhase
-        if iscompleted:
-            self.completedPhase[player] = aimedPhase
-        else:
-            self.completedPhase[player] = 0
+    def addExtraInfo(self,player,extras):
+        if (self.score[player] == 0): self.winner = player
+        try:
+            self.aimedPhase[player] = extras['aimedPhase']
+            if extras['isCompleted']:
+                self.completedPhase[player] = extras['aimedPhase']
+            else:
+                self.completedPhase[player] = 0
+        except KeyError: pass
  
         
         

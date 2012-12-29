@@ -10,10 +10,8 @@ except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
-    
-from controllers.db import db
+
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
-from model.phase10 import Phase10Round
 from gui.message import ErrorMessage
 from gui.clock import GameClock
 
@@ -42,10 +40,7 @@ class Phase10Widget(QtGui.QWidget):
         self.engine.begin()
         self.engine.printStats()
 
-        cur = db.execute("Select key,value from GameExtras where Game_name='"+self.game+"' and key like'Phase %'")
-        for row in cur:
-            self.phases["key"].append(row['key'])
-            self.phases["desc"].append(row['value'])
+        self.phases = self.engine.getPhases()
         self.initUI()
 
 
@@ -142,9 +137,7 @@ class Phase10Widget(QtGui.QWidget):
 
                 
     def commitRound(self):
-
-        #Check Round parameters
-        rnd = Phase10Round()
+        self.engine.openRound()
         winner=None
         for player in self.players:
             pw = self.playerGroupBox[player]
@@ -166,7 +159,7 @@ class Phase10Widget(QtGui.QWidget):
                 if score%5!=0 or (score<50 and not cleared):
                     ErrorMessage(u"La puntuación {} de {} no es válida".format(str(score), player)).exec_()
                     return
-            rnd.addRoundInfo(player,score,a_phase,cleared)
+            self.engine.addRoundInfo(player,score, {'aimedPhase':a_phase, 'isCompleted':cleared})
         if not winner:
             ErrorMessage("Debe haber un ganador").exec_()
             return
@@ -176,15 +169,11 @@ class Phase10Widget(QtGui.QWidget):
         u"Estás seguro que quieres cerrar la ronda actual?", QtGui.QMessageBox.Yes | 
         QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
         
-        if ret == QtGui.QMessageBox.No:
-            print "Commit Cancelled"
-            return
+        if ret == QtGui.QMessageBox.No: return
 
         # Once here, we can commit round...
-                    
         self.playerGroupBox[self.players[self.shuffler]].unsetShuffler() 
-        
-        self.engine.addRound(rnd)
+        self.engine.commitRound()
         self.engine.printStats()
         
         self.updatePanel()
@@ -204,11 +193,9 @@ class Phase10Widget(QtGui.QWidget):
         else:
             self.shuffler = (self.shuffler + 1)%len(self.players)            
             self.playerGroupBox[self.players[self.shuffler]].setShuffler() 
-            
 
 
-    def updatePanel(self):
-        
+    def updatePanel(self):        
         self.detailMatchButton.setEnabled(True)
         self.phasesInOrderCheckBox.setDisabled(True)
         if not self.engine.getWinner():
@@ -223,21 +210,19 @@ class Phase10Widget(QtGui.QWidget):
 
 
     def cancelMatch(self):
-        
         ret = QtGui.QMessageBox.question(self, 'Finalizar partida',
         u"Estás seguro que quieres finalizar la partida?", QtGui.QMessageBox.Yes | 
         QtGui.QMessageBox.No, QtGui.QMessageBox.No)
         
-        if ret == QtGui.QMessageBox.No:
-            print "Cancel aborted"
-            return
+        if ret == QtGui.QMessageBox.No: return
         self.closeMatch()
+
 
     def closeMatch(self):
         self.engine.cancelMatch()
         parent = self.nativeParentWidget()
-        parent.tabWidget.removeTab(parent.tabWidget.indexOf(self))
-        
+        parent.tabWidget.removeTab(parent.tabWidget.indexOf(self))  
+
 
     def showDetails(self):
         Phase10RoundsDetail(self.engine).exec_()

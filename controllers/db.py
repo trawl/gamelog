@@ -19,13 +19,13 @@ class GameLogDB:
             try: 
                 os.makedirs(dbdir)
             except os.error as e:
-                print >> sys.stderr, "Error creating DB: {}".format(e.args[0])
+                self._printError("Error creating DB: {}".format(e.args[0]))
                 sys.exit(1)
         try:    
             self.con = lite.connect(dbname)
             self._checkDB()
         except Exception as e:
-            print >> sys.stderr, "Error creating DB: {}".format(e.args[0])
+            self._printError("Error creating DB: {}".format(e.args[0]))
 
 
     def disconnectDB(self):
@@ -39,7 +39,7 @@ class GameLogDB:
                 cur.execute(query)
                 return cur
         except lite.Error as e:
-            print >> sys.stderr, "Error running query {}\n {}".format(query,e.args[0])
+            self._printError("Error running query {}\n {}".format(query,e.args[0]))
             sys.exit(1)
             
     def queryDict(self,query):
@@ -58,7 +58,7 @@ class GameLogDB:
                 cur.executescript(script)
                 return cur
         except lite.Error as e:
-            print >> sys.stderr, "Error running script: {}".format(e.args[0])
+            self._printError("Error running script: {}".format(e.args[0]))
             sys.exit(1)
             
     def _checkDB(self):
@@ -83,9 +83,14 @@ class GameLogDB:
     
     def addPlayer(self,nick,fullname):
         db.execute("INSERT INTO Player(nick,fullName,dateCreation) VALUES('{}','{}','{}')".format(nick,fullname,datetime.datetime.now()))
-        print("after inserting user to db")
-        
-        
+         
+    def _printError(self,message):
+        # Python 2 syntax
+        print >> sys.stderr, message
+        # Python 3 syntax
+#        print(message,file=sys.stderr)
+           
+           
 db = GameLogDB()
 
 

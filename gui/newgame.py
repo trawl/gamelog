@@ -247,15 +247,10 @@ class NewGameWidget(QtGui.QWidget):
         game = str(self.gameComboBox.currentText())
         maxPlayers = self.games[game]['maxPlayers']
         players = self.playersInGameList.model().retrievePlayers()
-        print "Now I would create a new {} game".format(game)
-        print "Players in game (max {}):".format(maxPlayers)
-        print players
         if len(players)<2:
             ErrorMessage("Se necesitan al menos 2 jugadores para jugar a {}".format(game),"Nueva Partida").exec_()
-            #print "At least 2 players needed!"
         elif len(players)>maxPlayers:
             ErrorMessage("El máximo número de jugadores para {} es {}".format(game, maxPlayers),"Nueva Partida").exec_()
-
         else:
             matchTab = Phase10Widget(game, players,self.parent)
             self.parent.newTab(matchTab,game)

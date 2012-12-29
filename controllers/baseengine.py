@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from model.base import Player
+from model.base import Player,GenericRound
 from model.gamefactory import GameFactory
 from controllers.db import db
-
 
 class RoundGameEngine:
     def __init__(self):
@@ -13,6 +12,7 @@ class RoundGameEngine:
         self.players = dict()
         self.porder = list()
         self.game = None
+        self.round = None
         
     def addPlayer(self,nick,fullName=""):
         if (fullName == ""):
@@ -23,11 +23,7 @@ class RoundGameEngine:
         cur = db.execute("Select * from Player where nick='{}';".format(nick))
         ## Exists in db?
         user = cur.fetchone()
-
-        #user=1
-
         if (user):
-#            print "USER:",user,
             self.players[nick].fullName = user['fullName']
         else:
             self.players[nick].fullName = fullName
@@ -37,9 +33,15 @@ class RoundGameEngine:
     def begin(self):
         self.match = GameFactory.createMatch(self.game, self.players)    
         self.match.startMatch()
+        
+    def openRound(self):
+        self.round = GenericRound()
+        
+    def addRoundInfo(self,player,score, extras=None):
+        self.round.addInfo(player,score,extras)
 
-    def addRound(self,r):
-        self.match.addRound(r)
+    def commitRound(self):
+        self.match.addRound(self.round)
 
     def getRounds(self):
         return self.match.getRounds()
@@ -63,7 +65,7 @@ class RoundGameEngine:
         return len(self.match.rounds)+1
 
     def getGameMaxPlayers(self):
-        cur = db.execute("Select maxPlayers from Game where name='Phase10'")
+        cur = db.execute("Select maxPlayers from Game where name='{}'".format(self.game))
         r = cur.fetchone()
         return int(r['maxPlayers'])
     
@@ -71,21 +73,36 @@ class RoundGameEngine:
         self.match.cancel()
 
     def printStats(self):
-        print ""
-        print "==========================="
-        print "| Current Score (round {}) |".format(self.getNumRound())
-        print "==========================="
-        for n in self.porder:
-            p = self.players[n]
-            print ""
-            print p.nick
-            print "Current score: ",self.getScoreFromPlayer(p.nick)
-            print "*************************"
-
-        if self.getWinner():
-            print ""
-            print "!!!!!!!!!!!!!!!!!!!!!!!!!"
-            print " Winner:", self.getWinner()
-            print "!!!!!!!!!!!!!!!!!!!!!!!!!"
-
+        lastround = self.getNumRound()-1
+        if lastround == 0:
+            print("===========================")
+            print("|{0:^25}|".format(self.game))
+            print("===========================")
+            print("")
+            print("Players: {}".format(self.porder))
+            self.printExtraStats()
+            print("***************************")
+        else:
+            print("")
+            print("===========================")
+            print("|        Round {0:<3}        |".format(lastround))
+            print("===========================")
+            print("")
+            self.printExtraStats()
+            print("***************************")
+            for n in self.porder:
+                print("")
+                print(n)
+                print("Current score: {}".format(self.getScoreFromPlayer(n)))
+                self.printExtraPlayerStats(n)
+                print("***************************")
+                
+            if self.getWinner():
+                print("")
+                print("!!!!!!!!! Winner: !!!!!!!!!")
+                print("{0:^27}".format(self.getWinner()))
+                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    
+    def printExtraStats(self): pass        
+    def printExtraPlayerStats(self,player): pass
 
