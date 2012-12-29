@@ -19,10 +19,7 @@ class GameClock(QtGui.QLCDNumber):
         self.timer.start(1000)
         self.setNumDigits(5)
         self.showTime()
-        
-
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL('timeout()'), self.showTime)
-     
+        self.timer.timeout.connect(self.showTime)
         
     def showTime(self):
         

@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from controllers.db import db
-from model.base import AbstractRoundMatch,AbstractRound
+from model.base import GenericRoundMatch,GenericRound
 
-class RemigioMatch(AbstractRoundMatch):
+class RemigioMatch(GenericRoundMatch):
     def __init__(self,players=dict()):
-        AbstractRoundMatch.__init__(self,players)
+        GenericRoundMatch.__init__(self,players)
         self.game = 'Remigio'
         self.activeplayers = []
         self.top = 100
@@ -36,15 +36,13 @@ class RemigioMatch(AbstractRoundMatch):
     def setTop(self,top):
         self.top = top
             
-class RemigioRound(AbstractRound):
+class RemigioRound(GenericRound):
     def __init__( self):
-        AbstractRound.__init__(self)
+        GenericRound.__init__(self)
         self.closeType = 1
-
-    def addRoundInfo(self,player,score,closeType=1):
-        self.score[player]=score
-        if (score == 0): self.winner = player
-        self.closeType = closeType
  
-
+    def addExtraInfo(self,player,extras):
+        if (self.score[player] == 0): self.winner = player
+        try: self.closeType = extras['closeType']
+        except KeyError: pass
 
