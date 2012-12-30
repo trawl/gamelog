@@ -42,6 +42,9 @@ class RoundGameEngine:
 
     def commitRound(self):
         self.match.addRound(self.round)
+        
+    def getGame(self):
+        return self.game
 
     def getRounds(self):
         return self.match.getRounds()
@@ -106,3 +109,48 @@ class RoundGameEngine:
     def printExtraStats(self): pass        
     def printExtraPlayerStats(self,player): pass
 
+def readInput(prompt,cast=str,validator=lambda x : True,errormsg="Sorry, invalid answer."):
+    validInput = False
+    while not validInput:
+        try:
+            ret = cast(raw_input(prompt))
+        except ValueError:
+            print(errormsg)
+            continue
+        if validator(ret):
+            validInput = True
+        else:
+            print(errormsg)
+    return ret
+
+def gameStub(engine,roundPlayerFunction):
+
+    print("Welcome to {} Engine Stub".format(engine.getGame()))
+    
+    db.connectDB("../db/gamelog.db")
+
+    playersOrder = []
+    validPlayers = db.getPlayerNicks()
+    maxPlayers =  engine.getGameMaxPlayers()
+    
+    nplayers = readInput("Number of players: ",int,lambda x: x>=2 and x<=maxPlayers,"Sorry, number of players must be between 2 and {}.".format(engine.getGameMaxPlayers()))
+
+    for i in range (1,nplayers+1):
+        print ("Player {} Info:".format(i))
+        nick = readInput("Nick: ",str,lambda x: x in validPlayers,"Sorry, player not found in DB")
+        engine.addPlayer(nick)
+        playersOrder.append(nick)
+
+    engine.begin()
+    engine.printStats()
+    nround=1;
+    while not engine.getWinner():
+        engine.openRound()
+        rnd_winner = readInput("Round {} Winner: ".format(nround),str,lambda x: x in playersOrder,"Sorry, player not found in current match.")
+        for n in playersOrder:
+            roundPlayerFunction(engine,n,rnd_winner)
+        engine.commitRound()
+        engine.printStats()
+        nround+=1
+
+    
