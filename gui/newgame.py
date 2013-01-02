@@ -89,6 +89,8 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.game = None
         self.initUI()
         self.gameStatsText = u"Último Ganador: {} ({})"
+        sp = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
+        self.setSizePolicy(sp)
         
     def initUI(self):
         self.setTitle(u"Estadísticas")
@@ -117,10 +119,12 @@ class QuickStatsBox(QtGui.QGroupBox):
         
         if not gamestats:
             self.gameStatsLabel.setText("No hay estadisticas")
-            return
-        
-        self.gameStatsLabel.setText(self.gameStatsText.format(gamestats['lastwinner'],gamestats['lastwinnerdate']))
-         
+            self.playerStatsTitleLabel.hide()
+            self.matchStatsTitleLabel.hide()
+        else:
+            self.gameStatsLabel.setText(self.gameStatsText.format(gamestats['lastwinner'],gamestats['lastwinnerdate']))
+            self.playerStatsTitleLabel.show()
+            self.matchStatsTitleLabel.show()
         keys = ['maxduration','minduration','avgduration','maxscore','minscore','avgscore']
         headers = ['Mas Larga','Mas corta','Media','Peor','Mejor','Media']
         self.updateTable(self.matchStatsTable, matchstats, keys, 'nplayers', headers)
@@ -133,6 +137,7 @@ class QuickStatsBox(QtGui.QGroupBox):
     def updateTable(self,table,contents,keyorder,rowheaderkey,cheaders):
         table.clear()
         if len(contents) and len(contents[0])>1:
+            table.show()
             displayed = contents[:4]
             table.setRowCount(len(displayed))
             table.setColumnCount(len(displayed[0])-2)
@@ -152,8 +157,9 @@ class QuickStatsBox(QtGui.QGroupBox):
             table.resizeRowsToContents()
             table.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
             size = table.rowHeight(0)*(len(displayed)+1)+len(displayed)
-            table.setFixedHeight(size)          
-        
+            table.setFixedHeight(size)      
+        else:
+            table.hide()
 
 class NewGameWidget(QtGui.QWidget):
     def __init__(self, parent=None):

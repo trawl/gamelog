@@ -50,9 +50,10 @@ class RemigioRound(GenericRound):
         self.closeType = 1
  
     def addExtraInfo(self,player,extras):
-        if player == self.getWinner():
-            try: self.closeType = extras['closeType']
-            except KeyError: pass
+        try: 
+            self.closeType = extras['closeType']
+            print("setting closeType to {}".format(extras['closeType']))
+        except KeyError: pass
     
     def getCloseType(self):
         return self.closeType
