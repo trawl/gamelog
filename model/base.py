@@ -82,7 +82,17 @@ class GenericRound:
     def __init__(self):
         self.score = dict() # nick -> points
         self.winner = None
-
+        
+    def setWinner(self,player):
+        self.winner = player
+        
+    def getWinner(self):
+        return self.winner
+    
+    def getScore(self,player):
+        try: return self.score[player]
+        except KeyError: return -1
+    
     def addInfo(self,player,score,extras=None):
         self.score[player] = score
         if extras: self.addExtraInfo(player,extras)

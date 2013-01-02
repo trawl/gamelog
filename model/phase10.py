@@ -54,7 +54,6 @@ class Phase10Round(GenericRound):
         self.aimedPhase = dict()
 
     def addExtraInfo(self,player,extras):
-        if (self.score[player] == 0): self.winner = player
         try:
             self.aimedPhase[player] = extras['aimedPhase']
             if extras['isCompleted']:

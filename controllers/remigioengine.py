@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from controllers.db import db
 from controllers.baseengine import RoundGameEngine,readInput,gameStub
 from model.remigio import RemigioRound
 
@@ -15,6 +14,9 @@ class RemigioEngine(RoundGameEngine):
 
     def getActivePlayers(self):
         return self.match.getActivePlayers()
+    
+    def isPlayerOff(self,player):
+        return self.match.isPlayerOff(player)
 
     def getTop(self):
         return self.match.getTop()
