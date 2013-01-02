@@ -244,7 +244,7 @@ class RemigioInputWidget(QtGui.QWidget):
         for player,le in self.scoreLineEditList.items():
             if le.isEnabled():
                 try:
-                    scores[player] = int(le.text())
+                    scores[player] = int(le.text())*self.getCloseType()
                 except ValueError:
                     scores[player] = -1
         return scores
@@ -298,10 +298,12 @@ class RemigioPlayerWidget(QtGui.QWidget):
         self.scoreLCD.display(points)
         
     def setShuffler(self):
-        self.nameLabel.setStyleSheet("QLabel { font-size: 16px; font-weight: bold; color: red }")
+        if self.isEnabled():
+            self.nameLabel.setStyleSheet("QLabel { font-size: 16px; font-weight: bold; color: red }")
         
     def unsetShuffler(self):
         self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: black}")
+        if not self.isEnabled(): self.setDisabled(True)
         
     def koPlayer(self):
         self.setDisabled(True)
