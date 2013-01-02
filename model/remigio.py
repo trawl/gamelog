@@ -9,6 +9,7 @@ class RemigioMatch(GenericRoundMatch):
         GenericRoundMatch.__init__(self,players)
         self.game = 'Remigio'
         self.activeplayers = []
+        self.playersoff = []
         self.top = 100
         
     def playerStart(self,player):
@@ -23,12 +24,19 @@ class RemigioMatch(GenericRoundMatch):
         for p in self.activeplayers[:]:
             if self.totalScores[p] >= self.top:
                 self.activeplayers.remove(p)
+                self.playersoff.append(p)
         
         if len(self.activeplayers) == 1:
             self.winner = self.activeplayers[0]
     
     def getActivePlayers(self):
         return self.activeplayers
+    
+    def getPlayersOff(self):
+        return self.playersoff
+    
+    def isPlayerOff(self,player):
+        return player in self.playersoff
     
     def getTop(self):
         return self.top
@@ -42,7 +50,9 @@ class RemigioRound(GenericRound):
         self.closeType = 1
  
     def addExtraInfo(self,player,extras):
-        if (self.score[player] == 0): self.winner = player
-        try: self.closeType = extras['closeType']
-        except KeyError: pass
-
+        if player == self.getWinner():
+            try: self.closeType = extras['closeType']
+            except KeyError: pass
+    
+    def getCloseType(self):
+        return self.closeType

@@ -47,17 +47,24 @@ class Phase10Widget(GameWidget):
         self.miscElementsLayout = QtGui.QVBoxLayout()
         self.widgetLayout.addLayout(self.miscElementsLayout,1,1)
         
+        self.matchGroup = QtGui.QGroupBox(self)
+        self.matchGroup.setTitle("Partida")
+        self.matchGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
+#        self.rightLayout.addWidget(self.matchGroup)
+        self.widgetLayout.addWidget(self.matchGroup,0,1)
+        
+        self.matchGroupLayout = QtGui.QVBoxLayout(self.matchGroup)
+        
         self.clock = GameClock(self)
         self.clock.setMinimumHeight(100)
-        self.widgetLayout.addWidget(self.clock,0,1)
+        self.matchGroupLayout.addWidget(self.clock)
         
-        
-        self.phasesInOrderCheckBox = QtGui.QCheckBox(self)
-        self.phasesInOrderCheckBox.setText("Seguir las fases en orden")
+        self.phasesInOrderCheckBox = QtGui.QCheckBox(self.matchGroup)
+        self.phasesInOrderCheckBox.setText("Fases en orden")
         self.phasesInOrderCheckBox.setChecked(True)
         self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
         
-        self.miscElementsLayout.addWidget(self.phasesInOrderCheckBox)
+        self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
         
         self.extraGroup = QtGui.QGroupBox(self)
         self.extraGroup.setTitle("Phases")
@@ -133,6 +140,7 @@ class Phase10Widget(GameWidget):
             cleared =  pw.isRoundCleared()
             if pw.isWinner():
                 winner = player
+                self.engine.setRoundWinner(winner)
                 score = 0
                 if not cleared:
                     ErrorMessage(u"Ninguna Phase seleccionada para el ganador ({})".format(player)).exec_()
@@ -231,7 +239,7 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.scoreLCD = QtGui.QLCDNumber(self)
         self.scoreLCD.setSegmentStyle(QtGui.QLCDNumber.Flat)
         self.leftLayout.addWidget(self.scoreLCD)
-        self.scoreLCD.setNumDigits(3)
+        self.scoreLCD.setNumDigits(2)
         self.scoreLCD.setMinimumWidth(75)
         self.scoreLCD.setMaximumHeight(100)
         
@@ -275,6 +283,8 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         else: self.current_phase = min(remaining_phases)
         
         self.roundWinnerRadioButton.setDown(True)
+        if points >= 100: self.scoreLCD.setNumDigits(3)
+        elif points >= 1000: self.scoreLCD.setNumDigits(4)
         self.scoreLCD.display(points)
         self.roundScore.clear()
         self.roundPhaseClearedCheckbox.setChecked(False)
@@ -410,7 +420,7 @@ class Phase10RoundsDetail(QtGui.QDialog):
         for r in rounds:
             j=0
             for player in players:
-                item = QtGui.QTableWidgetItem(str(r.score[player]))
+                item = QtGui.QTableWidgetItem(str(r.getScore(player)))
                 item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
                 item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignRight)
                 self.table.setItem(i,j,item)

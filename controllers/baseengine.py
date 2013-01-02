@@ -37,6 +37,9 @@ class RoundGameEngine:
     def openRound(self):
         self.round = GenericRound()
         
+    def setRoundWinner(self,winner):
+        self.round.setWinner(winner)
+        
     def addRoundInfo(self,player,score, extras=None):
         self.round.addInfo(player,score,extras)
 
@@ -147,6 +150,7 @@ def gameStub(engine,roundPlayerFunction):
     while not engine.getWinner():
         engine.openRound()
         rnd_winner = readInput("Round {} Winner: ".format(nround),str,lambda x: x in playersOrder,"Sorry, player not found in current match.")
+        engine.setRoundWinner(rnd_winner)
         for n in playersOrder:
             roundPlayerFunction(engine,n,rnd_winner)
         engine.commitRound()
