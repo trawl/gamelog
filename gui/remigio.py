@@ -193,82 +193,146 @@ class RemigioInputWidget(QtGui.QWidget):
     def initUI(self):
         self.widgetLayout = QtGui.QVBoxLayout(self)
         
-        self.middleLayout = QtGui.QHBoxLayout()
-        self.widgetLayout.addLayout(self.middleLayout)
-        self.winnerLayout = QtGui.QGridLayout()
-        self.middleLayout.addLayout(self.winnerLayout)
-        self.middleLayout.addStretch()
-        
-        self.winnerLabel = QtGui.QLabel(self)
-        self.winnerLabel.setText("Ganador")
-        self.winnerLayout.addWidget(self.winnerLabel,0,0)
-    
+#        self.middleLayout = QtGui.QHBoxLayout()
+#        self.widgetLayout.addLayout(self.middleLayout)
+#        self.winnerLayout = QtGui.QGridLayout()
+#        self.middleLayout.addLayout(self.winnerLayout)
+#        self.middleLayout.addStretch()
 #        
-        self.winnerCombo = QtGui.QComboBox(self)
-        self.winnerCombo.addItem("")
-        self.winnerCombo.addItems(self.engine.getListPlayers())
-        self.winnerCombo.currentIndexChanged.connect(self.changedWinner)
-        self.winnerLayout.addWidget(self.winnerCombo,0,1)
+#        self.winnerLabel = QtGui.QLabel(self)
+#        self.winnerLabel.setText("Ganador")
+#        self.winnerLayout.addWidget(self.winnerLabel,0,0)
+#    
+##        
+#        self.winnerCombo = QtGui.QComboBox(self)
+#        self.winnerCombo.addItem("")
+#        self.winnerCombo.addItems(self.engine.getListPlayers())
+#        self.winnerCombo.currentIndexChanged.connect(self.changedWinner)
+#        self.winnerLayout.addWidget(self.winnerCombo,0,1)
+#        
+#        self.typeLabel = QtGui.QLabel(self)
+#        self.typeLabel.setText("Tipo")
+#        self.winnerLayout.addWidget(self.typeLabel,1,0)
+#    
+#        self.typeCombo = QtGui.QComboBox(self)
+#        self.typeCombo.addItems(['1x','2x','3x','4x'])
+#        self.winnerLayout.addWidget(self.typeCombo,1,1)
         
-        self.typeLabel = QtGui.QLabel(self)
-        self.typeLabel.setText("Tipo")
-        self.winnerLayout.addWidget(self.typeLabel,1,0)
-    
-        self.typeCombo = QtGui.QComboBox(self)
-        self.typeCombo.addItems(['1x','2x','3x','4x'])
-        self.winnerLayout.addWidget(self.typeCombo,1,1)
-        
-        self.tableLayout = QtGui.QGridLayout()
+        self.tableLayout = QtGui.QHBoxLayout()
         self.widgetLayout.addLayout(self.tableLayout)
         
-        players = self.engine.getListPlayers()
-        self.scoreLineEditList = {}
-        for player,column in zip(players,range(len(players))):
-            label = QtGui.QLabel(self)
-            label.setText(player)
-            label.setAlignment(QtCore.Qt.AlignCenter)
-            self.tableLayout.addWidget(label,0,column)
-            le = QtGui.QLineEdit(self)
-            le.setAlignment(QtCore.Qt.AlignCenter)
-            self.tableLayout.addWidget(le,1,column)
-            self.scoreLineEditList[player] = le
+        self.playerInputList = {}
+        for player in self.engine.getListPlayers():
+            self.playerInputList[player] = RemigioPlayerInputWidget(player, self)
+            self.tableLayout.addWidget(self.playerInputList[player])
+            self.playerInputList[player].winnerSet.connect(self.changedWinner)
+
             
     def getWinner(self):
-        return self.winnerCombo.currentText()
+        return self.winnerSelected
+#        return self.winnerCombo.currentText()
     
     def getCloseType(self):
-        return self.typeCombo.currentIndex()+1
+#        return self.typeCombo.currentIndex()+1
+        try: return self.playerInputList[self.winnerSelected].getCloseType()
+        except KeyError: return 0
     
     def getScores(self):
         scores = {}
-        for player,le in self.scoreLineEditList.items():
-            if le.isEnabled():
-                try:
-                    scores[player] = int(le.text())*self.getCloseType()
-                except ValueError:
-                    scores[player] = -1
+        for player,piw in self.playerInputList.items():
+            if not piw.isKo():
+                scores[player] = piw.getScore()*self.getCloseType()
         return scores
     
     def reset(self):
-        self.winnerCombo.setCurrentIndex(0)
-        self.typeCombo.setCurrentIndex(0)
-        for _, le in self.scoreLineEditList.items():
-            le.setText("")
+        self.winnerSelected = ""
+        for piw in self.playerInputList.values():
+            piw.reset()
     
     def changedWinner(self,winner):
+        winner = str(winner)
         if self.winnerSelected != "":
-            self.scoreLineEditList[self.winnerSelected].setText("")
-            self.scoreLineEditList[self.winnerSelected].setEnabled(True)  
-        self.winnerSelected = str(self.winnerCombo.currentText())
-        if self.winnerSelected != "":
-            self.scoreLineEditList[self.winnerSelected].setText("0")
-            self.scoreLineEditList[self.winnerSelected].setDisabled(True)
+            self.playerInputList[self.winnerSelected].reset()
+        self.winnerSelected = winner
             
     def koPlayer(self,player):
-        self.winnerCombo.removeItem(self.winnerCombo.findText(player))
-        self.scoreLineEditList[player].setDisabled(True)
+        self.playerInputList[player].setKo()
         
-           
+class RemigioPlayerInputWidget(QtGui.QWidget):
+    
+    winnerSet = QtCore.Signal(str)
+    
+    def __init__(self,player,parent=None):
+        super(RemigioPlayerInputWidget, self).__init__(parent)
+        self.player = player
+        self.ko = False
+        self.bgcolors = [0,0xCCFF99,0xFFFF99,0xFFCC99,0xFFCCFF]
+        
+        self.mainLayout = QtGui.QVBoxLayout(self)
+        
+        self.label = QtGui.QLabel(self)
+        self.mainLayout.addWidget(self.label)
+        self.label.setAutoFillBackground(False)
+        self.label.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.label.setFrameShadow(QtGui.QFrame.Raised)
+        self.label.setScaledContents(True)
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setWordWrap(False)
+        
+        self.scoreLineEdit = QtGui.QLineEdit(self)
+        self.scoreLineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.mainLayout.addWidget(self.scoreLineEdit)
+        self.reset()
+    
+    def reset(self):
+        self.closeType = 0
+        self.updatePanel()
+        
+    def increaseCloseType(self):
+        self.closeType = (self.closeType)%4 + 1
+        self.updatePanel()
+        
+    def updatePanel(self):
+        
+        text = "{}".format(self.player)
+        css = ""
+        if self.closeType > 0:
+            text = text + "({}x)".format(self.closeType)
+            css = "font-weight: bold; background-color {0:X}".format(self.bgcolors[self.closeType])
+            self.scoreLineEdit.setText("0")
+            self.scoreLineEdit.setDisabled(True)
+        else:
+            self.scoreLineEdit.setText("")
+            self.scoreLineEdit.setEnabled(True)
+        
+        self.label.setText(text)
+        self.label.setStyleSheet("QLabel {{ {} }}".format(css))
+        
+    def mousePressEvent(self, event):
+        if not self.isWinner(): 
+            self.winnerSet.emit(self.player)
+        self.increaseCloseType()
+
+        
+    def isWinner(self): return self.closeType > 0
+    
+    def getCloseType(self): return self.closeType
+    
+    def getPlayer(self): return self.player      
+    
+    def getScore(self):
+        if self.isWinner():
+            return 0
+        else:
+            try:
+                score =  int(self.scoreLineEdit.text())
+            except ValueError:
+                score = -1
+            return score
+                
+    def isKo(self): return self.ko
+    
+    def setKo(self): self.ko = True
         
     
 class RemigioPlayerWidget(QtGui.QWidget):
