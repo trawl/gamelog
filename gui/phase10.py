@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import random
-
 try:
     from PySide import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
@@ -59,11 +56,21 @@ class Phase10Widget(GameWidget):
         self.clock.setMinimumHeight(100)
         self.matchGroupLayout.addWidget(self.clock)
         
+        self.dealerPolicyCheckBox = QtGui.QCheckBox(self.matchGroup)
+        self.dealerPolicyCheckBox.setText("El ganador reparte")
+        if self.engine.getDealingPolicy() == self.engine.WinnerDealer:
+            self.dealerPolicyCheckBox.setChecked(True)
+        else:
+            self.dealerPolicyCheckBox.setChecked(False)
+        self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
+        self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
+        self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
+        
+        
         self.phasesInOrderCheckBox = QtGui.QCheckBox(self.matchGroup)
         self.phasesInOrderCheckBox.setText("Fases en orden")
         self.phasesInOrderCheckBox.setChecked(True)
         self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
-        
         self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
         
         self.extraGroup = QtGui.QGroupBox(self)
@@ -127,8 +134,7 @@ class Phase10Widget(GameWidget):
             
         if not players_grid: self.playerGroupsLayout.addStretch()
         
-        self.shuffler = random.choice(range(0,len(self.players)))
-        self.playerGroupBox[self.players[self.shuffler]].setShuffler()
+        self.playerGroupBox[self.engine.getDealer()].setDealer()
 
                 
     def commitRound(self):
@@ -168,7 +174,7 @@ class Phase10Widget(GameWidget):
         if ret == QtGui.QMessageBox.No: return
 
         # Once here, we can commit round...
-        self.playerGroupBox[self.players[self.shuffler]].unsetShuffler() 
+        self.playerGroupBox[self.engine.getDealer()].unsetDealer() 
         self.engine.commitRound()
         self.engine.printStats()
         
@@ -186,14 +192,20 @@ class Phase10Widget(GameWidget):
             else:
                 ErrorMessage("{} ha ganado la partida.".format(winner),"Fin de la partida").exec_()
 
+        else:   
+            self.playerGroupBox[self.engine.getDealer()].setDealer() 
+
+    def changeDealingPolicy(self, *args, **kwargs):
+        if self.dealerPolicyCheckBox.isChecked():
+            self.engine.setDealingPolicy(self.engine.WinnerDealer)
         else:
-            self.shuffler = (self.shuffler + 1)%len(self.players)            
-            self.playerGroupBox[self.players[self.shuffler]].setShuffler() 
+            self.engine.setDealingPolicy(self.engine.RRDealer)
 
 
     def updatePanel(self):        
         self.detailMatchButton.setEnabled(True)
-        self.phasesInOrderCheckBox.setDisabled(True)
+        self.phasesInOrderCheckBox.setEnabled(False)
+        self.dealerPolicyCheckBox.setEnabled(False)
         if not self.engine.getWinner():
             self.buttonGroup.setTitle("Ronda {}".format(str(self.engine.getNumRound())))
             
@@ -349,10 +361,10 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
             self.roundWinnerRadioButton.setChecked(False) 
             self.roundPhaseClearedCheckbox.setChecked(True)
             
-    def setShuffler(self):
+    def setDealer(self):
         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: red }")
         
-    def unsetShuffler(self):
+    def unsetDealer(self):
         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: black }")
         
     def mousePressEvent(self, event):

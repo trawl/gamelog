@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import random
-
 try:
     from PySide import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
@@ -20,7 +18,6 @@ class RemigioWidget(GameWidget):
 
     def __init__(self, game, players, parent=None):
         super(RemigioWidget, self).__init__(game,players,parent)
-        self.shuffler = random.choice(self.players)
         self.initUI()
         
     def createEngine(self):
@@ -71,6 +68,16 @@ class RemigioWidget(GameWidget):
         self.clock.setMinimumHeight(100)
         self.matchGroupLayout.addWidget(self.clock)
         
+        self.dealerPolicyCheckBox = QtGui.QCheckBox(self.matchGroup)
+        self.dealerPolicyCheckBox.setText("El ganador reparte")
+        if self.engine.getDealingPolicy() == self.engine.WinnerDealer:
+            self.dealerPolicyCheckBox.setChecked(True)
+        else:
+            self.dealerPolicyCheckBox.setChecked(False)
+        self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
+        self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
+        self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
+        
         self.configLayout = QtGui.QGridLayout()
         self.matchGroupLayout.addLayout(self.configLayout)
         self.topPointsLabel = QtGui.QLabel(self.matchGroup)
@@ -102,8 +109,8 @@ class RemigioWidget(GameWidget):
         self.playerGroupBox = {}
         for player in self.players:
             pw = RemigioPlayerWidget(player,self.playerGroup)
-            if player == self.shuffler:
-                pw.setShuffler()
+            if player == self.engine.getDealer():
+                pw.setDealer()
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
  
@@ -134,7 +141,7 @@ class RemigioWidget(GameWidget):
         if ret == QtGui.QMessageBox.No: return
 
         # Once here, we can commit round...
-        #Shuffler
+        self.playerGroupBox[self.engine.getDealer()].unsetDealer()
         self.engine.commitRound()
         self.engine.printStats()
         
@@ -146,24 +153,19 @@ class RemigioWidget(GameWidget):
                 self.inputGroup.setDisabled(True)
             ErrorMessage("{} ha ganado la partida.".format(winner),"Fin de la partida").exec_()
             self.commitRoundButton.setDisabled(True)
-        else:
-            self.playerGroupBox[self.shuffler].unsetShuffler()
-            candidate = (self.players.index(self.shuffler) + 1)%len(self.players)
-            player = self.players[candidate]
-            while True:
-                if not self.engine.isPlayerOff(player):
-                    self.shuffler = player
-                    break
-                else:
-                    candidate = (candidate + 1)%len(self.players)
-                    player = self.players[candidate]
+        else:           
+            self.playerGroupBox[self.engine.getDealer()].setDealer() 
             
-            self.playerGroupBox[self.shuffler].setShuffler()
-
+    def changeDealingPolicy(self, *args, **kwargs):
+        if self.dealerPolicyCheckBox.isChecked():
+            self.engine.setDealingPolicy(self.engine.WinnerDealer)
+        else:
+            self.engine.setDealingPolicy(self.engine.RRDealer)
 
     def updatePanel(self):
         self.inputGroup.reset()
         self.topPointsLineEdit.setReadOnly(True)
+        self.dealerPolicyCheckBox.setEnabled(False)
         
         if not self.engine.getWinner():
             self.buttonGroup.setTitle("Ronda {}".format(str(self.engine.getNumRound())))
@@ -361,11 +363,11 @@ class RemigioPlayerWidget(QtGui.QWidget):
         if points >= 1000: self.scoreLCD.setNumDigits(4)
         self.scoreLCD.display(points)
         
-    def setShuffler(self):
+    def setDealer(self):
         if self.isEnabled():
             self.nameLabel.setStyleSheet("QLabel { font-size: 16px; font-weight: bold; color: red }")
         
-    def unsetShuffler(self):
+    def unsetDealer(self):
         self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: black}")
         if not self.isEnabled(): self.setDisabled(True)
         
@@ -404,7 +406,8 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
             item = QtGui.QTableWidgetItem()
             item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
             item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
-            item.setBackgroundColor(QtGui.QColor(background))
+#            item.setBackgroundColor(QtGui.QColor(background))
+            item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
             if player == winner:
                 text = "Ganador ({}x)".format(closeType)
                 font = item.font()
@@ -412,7 +415,8 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
                 item.setFont(font)
             elif self.engine.isPlayerOff(player):
                 text = ""
-                item.setBackgroundColor(QtCore.Qt.gray)          
+#                item.setBackgroundColor(QtCore.Qt.gray)
+                item.setBackground(QtGui.QBrush(QtCore.Qt.gray))          
             else:
                 text = str(r.getScore(player))
             item.setText(text)

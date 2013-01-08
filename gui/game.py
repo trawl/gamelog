@@ -20,6 +20,7 @@ class GameWidget(QtGui.QWidget):
         self.createEngine()  
         for nick in players:
             self.engine.addPlayer(nick)
+        self.engine.setDealingPolicy(self.engine.RRDealer)
         self.engine.begin()
         self.engine.printStats()
         
