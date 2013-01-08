@@ -52,7 +52,6 @@ class RemigioRound(GenericRound):
     def addExtraInfo(self,player,extras):
         try: 
             self.closeType = extras['closeType']
-            print("setting closeType to {}".format(extras['closeType']))
         except KeyError: pass
     
     def getCloseType(self):
