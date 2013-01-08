@@ -2,17 +2,25 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import random
 from model.base import Player,GenericRound
 from model.gamefactory import GameFactory
 from controllers.db import db
 
 class RoundGameEngine:
+    
+    NoDealer = 0
+    RRDealer = 1
+    WinnerDealer = 2
+    
     def __init__(self):
         self.match = None
         self.players = dict()
         self.porder = list()
         self.game = None
         self.round = None
+        self.dealer = None
+        self.dealingp = self.NoDealer
         
     def addPlayer(self,nick,fullName=""):
         if (fullName == ""):
@@ -33,6 +41,8 @@ class RoundGameEngine:
     def begin(self):
         self.match = GameFactory.createMatch(self.game, self.players)    
         self.match.startMatch()
+        if self.dealingp != self.NoDealer :
+            self.dealer = random.choice(self.porder)
         
     def openRound(self):
         self.round = GenericRound()
@@ -45,6 +55,7 @@ class RoundGameEngine:
 
     def commitRound(self):
         self.match.addRound(self.round)
+        self.updateDealer()
         
     def getGame(self):
         return self.game
@@ -77,6 +88,30 @@ class RoundGameEngine:
     
     def cancelMatch(self):
         self.match.cancel()
+        
+    def setDealingPolicy(self, policy):
+        if policy == self.RRDealer or policy == self.WinnerDealer:
+            self.dealingp = policy
+        
+    def getDealingPolicy(self):
+        return self.dealingp
+    
+    def getDealer(self):
+        return self.dealer
+    
+    def updateDealer(self):
+        if self.match.getWinner(): return
+        if self.dealingp == self.RRDealer:
+            self.updateRRDealer()
+        elif self.dealingp == self.WinnerDealer:
+            self.updateWinnerDealer()
+
+    def updateRRDealer(self):
+        candidate = (self.porder.index(self.dealer) + 1)%len(self.porder)
+        self.dealer = self.porder[candidate]
+        
+    def updateWinnerDealer(self):
+        self.dealer = self.round.getWinner()
 
     def printStats(self):
         lastround = self.getNumRound()-1
@@ -85,7 +120,13 @@ class RoundGameEngine:
             print("|{0:^25}|".format(self.game))
             print("===========================")
             print("")
-            print("Players: {}".format(self.porder))
+            print("Players:".format(self.porder))
+            for n in self.porder:
+                if n == self.dealer: print(" * {} (Dealer)".format(n))
+                else: print(" * {}".format(n))
+            print("")
+            policies = ["None","Round Robin","Winner"]
+            print("DealingPolicy: {}".format(policies[self.getDealingPolicy()]))
             self.printExtraStats()
             print("***************************")
         else:
@@ -98,7 +139,9 @@ class RoundGameEngine:
             print("***************************")
             for n in self.porder:
                 print("")
-                print(n)
+                if n == self.dealer: print("{} (Dealer)".format(n))
+                else: print(n)
+                    
                 print("Current score: {}".format(self.getScoreFromPlayer(n)))
                 self.printExtraPlayerStats(n)
                 print("***************************")
@@ -111,6 +154,12 @@ class RoundGameEngine:
     
     def printExtraStats(self): pass        
     def printExtraPlayerStats(self,player): pass
+    
+    
+#
+# Helper functions for cli test
+#
+    
 
 def readInput(prompt,cast=str,validator=lambda x : True,errormsg="Sorry, invalid answer."):
     validInput = False
@@ -144,6 +193,11 @@ def gameStub(engine,roundPlayerFunction):
         engine.addPlayer(nick)
         playersOrder.append(nick)
 
+    option = readInput("Dealing policy[0:None/1:RoundRobin/2:Winner]: ",int,lambda x: x in [0,1,2])
+    if option == 0: engine.setDealingPolicy(RoundGameEngine.NoDealer)
+    elif option == 1: engine.setDealingPolicy(RoundGameEngine.RRDealer)
+    elif option == 2: engine.setDealingPolicy(RoundGameEngine.WinnerDealer)
+    
     engine.begin()
     engine.printStats()
     nround=1;
