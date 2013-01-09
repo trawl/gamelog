@@ -81,9 +81,10 @@ class Phase10Widget(GameWidget):
         
         text =""
         for phase in range(1,len(self.phases["key"])):
-            text = self.phases["key"][phase] + ": " + self.phases["desc"][phase] +"\n"
+            self.extraGroupLayout.addSpacing(10)
+            text = "{}: {}".format(self.phases["key"][phase],self.phases["desc"][phase])
             label = QtGui.QLabel(text,self)
-            label.setStyleSheet("QLabel {font-size: 14px; font-weight: bold; }")
+            label.setStyleSheet("QLabel {font-size: 16px; font-weight: bold; }")
             self.extraGroupLayout.addWidget(label)
    
         self.buttonGroup=QtGui.QGroupBox(self)
