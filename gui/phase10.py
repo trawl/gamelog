@@ -252,9 +252,9 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.scoreLCD = QtGui.QLCDNumber(self)
         self.scoreLCD.setSegmentStyle(QtGui.QLCDNumber.Flat)
         self.leftLayout.addWidget(self.scoreLCD)
-        self.scoreLCD.setNumDigits(2)
-        self.scoreLCD.setMinimumWidth(75)
-        self.scoreLCD.setMaximumHeight(100)
+        self.scoreLCD.setNumDigits(3)
+        self.scoreLCD.setMinimumWidth(100)
+        self.scoreLCD.setMaximumHeight(125)
         
         #Middle part - Phase list
         self.phaseLabels=list()
@@ -296,8 +296,7 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         else: self.current_phase = min(remaining_phases)
         
         self.roundWinnerRadioButton.setDown(True)
-        if points >= 100: self.scoreLCD.setNumDigits(3)
-        elif points >= 1000: self.scoreLCD.setNumDigits(4)
+        if points >= 1000: self.scoreLCD.setNumDigits(4)
         self.scoreLCD.display(points)
         self.roundScore.clear()
         self.roundPhaseClearedCheckbox.setChecked(False)

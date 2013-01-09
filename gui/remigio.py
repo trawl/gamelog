@@ -230,7 +230,7 @@ class RemigioInputWidget(QtGui.QWidget):
     def koPlayer(self,player):
         self.playerInputList[player].setKo()
         
-class RemigioPlayerInputWidget(QtGui.QWidget):
+class RemigioPlayerInputWidget(QtGui.QFrame):
     
     winnerSet = QtCore.Signal(str)
     
@@ -245,15 +245,17 @@ class RemigioPlayerInputWidget(QtGui.QWidget):
         self.label = QtGui.QLabel(self)
         self.mainLayout.addWidget(self.label)
         self.label.setAutoFillBackground(False)
-        self.label.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.label.setFrameShadow(QtGui.QFrame.Raised)
+        self.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.setFrameShadow(QtGui.QFrame.Raised)
         self.label.setScaledContents(True)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setWordWrap(False)
         
         self.scoreLineEdit = QtGui.QLineEdit(self)
         self.scoreLineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.scoreLineEdit.setMaximumWidth(60)
         self.mainLayout.addWidget(self.scoreLineEdit)
+        self.mainLayout.setAlignment(self.scoreLineEdit,QtCore.Qt.AlignCenter)
         self.reset()
     
     def reset(self):
@@ -273,14 +275,14 @@ class RemigioPlayerInputWidget(QtGui.QWidget):
             css = "font-weight: bold; background-color: #{0:X}".format(self.bgcolors[self.closeType])
             self.scoreLineEdit.setText("0")
             self.scoreLineEdit.setDisabled(True)
-            self.label.setFrameShadow(QtGui.QFrame.Sunken)
+            self.setFrameShadow(QtGui.QFrame.Sunken)
         else:
-            self.label.setFrameShadow(QtGui.QFrame.Raised)
+            self.setFrameShadow(QtGui.QFrame.Raised)
             self.scoreLineEdit.setText("")
             self.scoreLineEdit.setEnabled(True)
         
         self.label.setText(text)
-        self.label.setStyleSheet("QLabel {{ {} }}".format(css))
+        self.setStyleSheet("QFrame {{ {} }}".format(css))
         
     def mousePressEvent(self, event):
         if not self.isWinner(): 
