@@ -53,26 +53,19 @@ class GenericRoundMatch(GenericMatch):
         GenericMatch.__init__(self,players)
         self.rounds = list()
     
-    def addRound(self,r):
+    def addRound(self,rnd):
 
-        self.rounds.append(r)
-        for p in r.score:
-            if (r.winner==p):
-                winner = 1
-            else:
-                winner=0
-            self.totalScores[p]+=r.score[p]
-
-#            db.execute("INSERT INTO Round (idMatch,nick,idRound,winner,score) VALUES ("+str(self.idMatch)+",'"+str(p)+"',"+str(len(self.rounds))+","+str(winner)+","+str(r.score[p])+")")
-#            db.execute("UPDATE MatchPlayer SET totalScore="+str(self.totalScores[p]) + " WHERE idMatch="+str(self.idMatch)+" AND nick='"+p+"'")
-            db.execute("INSERT INTO Round (idMatch,nick,idRound,winner,score) VALUES ({},'{}',{},{},{});".format(self.idMatch,str(p),len(self.rounds),winner,r.score[p]))
-            db.execute("UPDATE MatchPlayer SET totalScore={} WHERE idMatch={} AND nick='{}';".format(self.totalScores[p],self.idMatch,str(p)))
-            self.playerAddRound(p,r)
+        self.rounds.append(rnd)
+        for player,score in rnd.getScore().items():
+            if (rnd.getWinner()==player): winner = 1
+            else: winner=0
+            self.totalScores[player]+=score
+            db.execute("INSERT INTO Round (idMatch,nick,idRound,winner,score) VALUES ({},'{}',{},{},{});".format(self.idMatch,str(player),len(self.rounds),winner,score))
+            db.execute("UPDATE MatchPlayer SET totalScore={} WHERE idMatch={} AND nick='{}';".format(self.totalScores[player],self.idMatch,str(player)))
+            self.playerAddRound(player,rnd)
         self.updateWinner()
         
-    def getRounds(self):
-        return self.rounds
-
+    def getRounds(self): return self.rounds
 
     # To be implemented in subclasses
     def playerAddRound(self,player,rnd): pass
@@ -89,12 +82,20 @@ class GenericRound:
     def getWinner(self):
         return self.winner
     
-    def getScore(self,player):
+    def getPlayerScore(self,player):
         try: return self.score[player]
         except KeyError: return -1
+        
+    def setPlayerScore(self,player,score):
+        try:  self.score[player] = score
+        except KeyError: pass
+        
+    def getScore(self):
+        return self.score
     
     def addInfo(self,player,score,extras=None):
         self.score[player] = score
         if extras: self.addExtraInfo(player,extras)
-        
+     
+    # To be implemented in subclasses    
     def addExtraInfo(self,player,extras): pass

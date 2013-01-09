@@ -27,18 +27,13 @@ class RemigioWidget(GameWidget):
         self.engine = RemigioEngine()     
 
     def initUI(self):
-#        self.mainLayout = QtGui.QHBoxLayout(self)
-#        self.leftLayout = QtGui.QVBoxLayout()
-#        self.rightLayout = QtGui.QVBoxLayout()
-#        self.mainLayout.addLayout(self.leftLayout)
-#        self.mainLayout.addLayout(self.rightLayout)
         self.mainLayout = QtGui.QGridLayout(self)
     
         self.buttonGroup=QtGui.QGroupBox(self)
         self.buttonGroup.setTitle("Ronda {}".format(str(self.engine.getNumRound())))
         self.buttonGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
 
-#        self.leftLayout.addWidget(self.buttonGroup)
+
         self.mainLayout.addWidget(self.buttonGroup,0,0)
         self.buttonGroupLayout= QtGui.QVBoxLayout(self.buttonGroup)
         self.buttonGroupSubLayout= QtGui.QHBoxLayout()
@@ -59,7 +54,6 @@ class RemigioWidget(GameWidget):
         self.matchGroup = QtGui.QGroupBox(self)
         self.matchGroup.setTitle("Partida")
         self.matchGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-#        self.rightLayout.addWidget(self.matchGroup)
         self.mainLayout.addWidget(self.matchGroup,0,1)
         
         self.matchGroupLayout = QtGui.QVBoxLayout(self.matchGroup)
@@ -80,27 +74,27 @@ class RemigioWidget(GameWidget):
         
         self.configLayout = QtGui.QGridLayout()
         self.matchGroupLayout.addLayout(self.configLayout)
-        self.topPointsLabel = QtGui.QLabel(self.matchGroup)
-        self.topPointsLabel.setText("Puntos")
-        self.topPointsLabel.setFixedWidth(35)
-        self.configLayout.addWidget(self.topPointsLabel,0,0)
         
         self.topPointsLineEdit = QtGui.QLineEdit(self.matchGroup)
         self.topPointsLineEdit.setText(str(self.engine.getTop()))
         self.topPointsLineEdit.setValidator(QtGui.QIntValidator(0,10000,self.topPointsLineEdit))
-        self.topPointsLineEdit.setFixedWidth(30)
+        self.topPointsLineEdit.setFixedWidth(35)
         sp = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
         self.topPointsLineEdit.setSizePolicy(sp)
         self.topPointsLineEdit.textChanged.connect(self.changeTop)
-        self.configLayout.addWidget(self.topPointsLineEdit,0,1)
+        self.configLayout.addWidget(self.topPointsLineEdit,0,0)
+        
+        
+        self.topPointsLabel = QtGui.QLabel(self.matchGroup)
+        self.topPointsLabel.setText("Puntos")
+        self.topPointsLabel.setStyleSheet("QLabel { font-size: 14px; font-weight: bold; }")
+        self.configLayout.addWidget(self.topPointsLabel,0,1)
         
         self.detailGroup = RemigioRoundsDetail(self.engine,self)
         self.detailGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-#        self.leftLayout.addWidget(self.detailGroup)
         self.mainLayout.addWidget(self.detailGroup,1,0)        
         
         self.playerGroup = QtGui.QGroupBox(self)
-#        self.rightLayout.addWidget(self.playerGroup)
         self.mainLayout.addWidget(self.playerGroup,1,1)
         self.playerGroup.setTitle("Marcador")
         self.playerGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
@@ -193,33 +187,7 @@ class RemigioInputWidget(QtGui.QWidget):
         self.winnerSelected = ""
 
     def initUI(self):
-        self.widgetLayout = QtGui.QVBoxLayout(self)
-        
-#        self.middleLayout = QtGui.QHBoxLayout()
-#        self.widgetLayout.addLayout(self.middleLayout)
-#        self.winnerLayout = QtGui.QGridLayout()
-#        self.middleLayout.addLayout(self.winnerLayout)
-#        self.middleLayout.addStretch()
-#        
-#        self.winnerLabel = QtGui.QLabel(self)
-#        self.winnerLabel.setText("Ganador")
-#        self.winnerLayout.addWidget(self.winnerLabel,0,0)
-#    
-##        
-#        self.winnerCombo = QtGui.QComboBox(self)
-#        self.winnerCombo.addItem("")
-#        self.winnerCombo.addItems(self.engine.getListPlayers())
-#        self.winnerCombo.currentIndexChanged.connect(self.changedWinner)
-#        self.winnerLayout.addWidget(self.winnerCombo,0,1)
-#        
-#        self.typeLabel = QtGui.QLabel(self)
-#        self.typeLabel.setText("Tipo")
-#        self.winnerLayout.addWidget(self.typeLabel,1,0)
-#    
-#        self.typeCombo = QtGui.QComboBox(self)
-#        self.typeCombo.addItems(['1x','2x','3x','4x'])
-#        self.winnerLayout.addWidget(self.typeCombo,1,1)
-        
+        self.widgetLayout = QtGui.QVBoxLayout(self)       
         self.tableLayout = QtGui.QHBoxLayout()
         self.widgetLayout.addLayout(self.tableLayout)
         
@@ -232,10 +200,8 @@ class RemigioInputWidget(QtGui.QWidget):
             
     def getWinner(self):
         return self.winnerSelected
-#        return self.winnerCombo.currentText()
     
     def getCloseType(self):
-#        return self.typeCombo.currentIndex()+1
         try: return self.playerInputList[self.winnerSelected].getCloseType()
         except KeyError: return 0
     
@@ -243,7 +209,7 @@ class RemigioInputWidget(QtGui.QWidget):
         scores = {}
         for player,piw in self.playerInputList.items():
             if not piw.isKo():
-                scores[player] = piw.getScore()*self.getCloseType()
+                scores[player] = piw.getScore()
         return scores
     
     def reset(self):
@@ -299,11 +265,13 @@ class RemigioPlayerInputWidget(QtGui.QWidget):
         text = "{}".format(self.player)
         css = ""
         if self.closeType > 0:
-            text = text + "({}x)".format(self.closeType)
-            css = "font-weight: bold; background-color {0:X}".format(self.bgcolors[self.closeType])
+            text = text + " ({}x)".format(self.closeType)
+            css = "font-weight: bold; background-color: #{0:X}".format(self.bgcolors[self.closeType])
             self.scoreLineEdit.setText("0")
             self.scoreLineEdit.setDisabled(True)
+            self.label.setFrameShadow(QtGui.QFrame.Sunken)
         else:
+            self.label.setFrameShadow(QtGui.QFrame.Raised)
             self.scoreLineEdit.setText("")
             self.scoreLineEdit.setEnabled(True)
         
@@ -334,7 +302,9 @@ class RemigioPlayerInputWidget(QtGui.QWidget):
                 
     def isKo(self): return self.ko
     
-    def setKo(self): self.ko = True
+    def setKo(self): 
+        self.ko = True
+        self.setDisabled(True)
         
     
 class RemigioPlayerWidget(QtGui.QWidget):
@@ -418,7 +388,7 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
 #                item.setBackgroundColor(QtCore.Qt.gray)
                 item.setBackground(QtGui.QBrush(QtCore.Qt.gray))          
             else:
-                text = str(r.getScore(player))
+                text = str(r.getPlayerScore(player))
             item.setText(text)
             self.table.setItem(i,j,item)
         

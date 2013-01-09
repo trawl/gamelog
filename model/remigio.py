@@ -15,6 +15,13 @@ class RemigioMatch(GenericRoundMatch):
     def playerStart(self,player):
         self.activeplayers.append(player)
         
+    def addRound(self,rnd):
+        closeType = rnd.getCloseType()
+        if closeType > 1:
+            for player in rnd.getScore().keys():
+                rnd.setPlayerScore(player,closeType*rnd.getPlayerScore(player))
+        GenericRoundMatch.addRound(self,rnd)
+        
     def playerAddRound(self,player,rnd):
         if rnd.winner==player:
             db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'closeType','{}');".format(self.idMatch,player,len(self.rounds),rnd.closeType))
@@ -50,9 +57,11 @@ class RemigioRound(GenericRound):
         self.closeType = 1
  
     def addExtraInfo(self,player,extras):
-        try: 
-            self.closeType = extras['closeType']
-        except KeyError: pass
+        player = str(player)
+        if player == self.getWinner():
+            try: 
+                self.closeType = extras['closeType']
+            except KeyError: pass
     
     def getCloseType(self):
         return self.closeType
