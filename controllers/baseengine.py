@@ -120,7 +120,7 @@ class RoundGameEngine:
             print("|{0:^25}|".format(self.game))
             print("===========================")
             print("")
-            print("Players:".format(self.porder))
+            print("Players:")
             for n in self.porder:
                 if n == self.dealer: print(" * {} (Dealer)".format(n))
                 else: print(" * {}".format(n))
