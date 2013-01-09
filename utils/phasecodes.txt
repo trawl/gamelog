@@ -1,0 +1,32 @@
+Standard:
+2s3
+1s3 1r4
+1r7
+1r8
+1r9
+2s4
+1c7
+1s5 1s2
+1s5 1s3
+Master:
+4s2
+1c6
+1s4 1r4
+1r8
+1c7
+1r9
+2s4
+1cr4 1s3
+1s5 1s3
+1s5 1cr3
+Brett:
+1c5 1r3
+4s2
+1s3 1r4
+2r4
+1c6 1s3
+1r8
+1s2 1s3 1s4
+2s4
+1r9
+1s5 1s3
