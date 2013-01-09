@@ -16,6 +16,8 @@ from gui.clock import GameClock
 
 class RemigioWidget(GameWidget):
 
+    bgcolors = [0,0xCCFF99,0xFFFF99,0xFFCC99,0xFFCCFF]
+
     def __init__(self, game, players, parent=None):
         super(RemigioWidget, self).__init__(game,players,parent)
         self.initUI()
@@ -48,7 +50,9 @@ class RemigioWidget(GameWidget):
         self.buttonGroupSubLayout.addWidget(self.commitRoundButton)
         self.commitRoundButton.clicked.connect(self.commitRound)
         
-        self.inputGroup = RemigioInputWidget(self.engine,self)
+        self.infoLabel = QtGui.QLabel("Aviso: El programa calcula los puntos reales segun el tipo de cierre",self)
+        self.buttonGroupLayout.addWidget(self.infoLabel)
+        self.inputGroup = RemigioInputWidget(self.engine,RemigioWidget.bgcolors, self)
         self.buttonGroupLayout.addWidget(self.inputGroup)
 
         self.matchGroup = QtGui.QGroupBox(self)
@@ -77,20 +81,19 @@ class RemigioWidget(GameWidget):
         
         self.topPointsLineEdit = QtGui.QLineEdit(self.matchGroup)
         self.topPointsLineEdit.setText(str(self.engine.getTop()))
-        self.topPointsLineEdit.setValidator(QtGui.QIntValidator(0,10000,self.topPointsLineEdit))
+        self.topPointsLineEdit.setValidator(QtGui.QIntValidator(1,10000,self.topPointsLineEdit))
         self.topPointsLineEdit.setFixedWidth(35)
         sp = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
         self.topPointsLineEdit.setSizePolicy(sp)
         self.topPointsLineEdit.textChanged.connect(self.changeTop)
         self.configLayout.addWidget(self.topPointsLineEdit,0,0)
         
-        
         self.topPointsLabel = QtGui.QLabel(self.matchGroup)
         self.topPointsLabel.setText("Puntos")
         self.topPointsLabel.setStyleSheet("QLabel { font-size: 14px; font-weight: bold; }")
         self.configLayout.addWidget(self.topPointsLabel,0,1)
         
-        self.detailGroup = RemigioRoundsDetail(self.engine,self)
+        self.detailGroup = RemigioRoundsDetail(self.engine, RemigioWidget.bgcolors, self)
         self.detailGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.mainLayout.addWidget(self.detailGroup,1,0)        
         
@@ -180,9 +183,10 @@ class RemigioWidget(GameWidget):
         except ValueError: pass
         
 class RemigioInputWidget(QtGui.QWidget):
-    def __init__(self,engine,parent=None):
+    def __init__(self,engine,bgcolors, parent=None):
         super(RemigioInputWidget,self).__init__(parent)
         self.engine = engine
+        self.bgcolors = bgcolors
         self.initUI()
         self.winnerSelected = ""
 
@@ -193,7 +197,7 @@ class RemigioInputWidget(QtGui.QWidget):
         
         self.playerInputList = {}
         for player in self.engine.getListPlayers():
-            self.playerInputList[player] = RemigioPlayerInputWidget(player, self)
+            self.playerInputList[player] = RemigioPlayerInputWidget(player,self.bgcolors,self)
             self.tableLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
 
@@ -230,11 +234,11 @@ class RemigioPlayerInputWidget(QtGui.QWidget):
     
     winnerSet = QtCore.Signal(str)
     
-    def __init__(self,player,parent=None):
+    def __init__(self,player,bgcolors,parent=None):
         super(RemigioPlayerInputWidget, self).__init__(parent)
         self.player = player
         self.ko = False
-        self.bgcolors = [0,0xCCFF99,0xFFFF99,0xFFCC99,0xFFCCFF]
+        self.bgcolors = bgcolors
         
         self.mainLayout = QtGui.QVBoxLayout(self)
         
@@ -346,8 +350,9 @@ class RemigioPlayerWidget(QtGui.QWidget):
      
             
 class RemigioRoundsDetail(QtGui.QGroupBox):
-    def __init__(self, engine, parent=None):
+    def __init__(self, engine, bgcolors, parent=None):
         super(RemigioRoundsDetail, self).__init__(parent)
+        self.bgcolors = bgcolors
         self.engine = engine
         self.initUI()
 
@@ -369,14 +374,12 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
         self.table.insertRow(i)
         closeType = r.getCloseType()
         winner = r.getWinner()
-        bgcolors = [0,0xCCFF99,0xFFFF99,0xFFCC99,0xFFCCFF]
-        background = bgcolors[closeType]
+        background = self.bgcolors[closeType]
         
         for player,j in zip(players,range(len(players))):
             item = QtGui.QTableWidgetItem()
             item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
             item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
-#            item.setBackgroundColor(QtGui.QColor(background))
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
             if player == winner:
                 text = "Ganador ({}x)".format(closeType)
@@ -385,10 +388,11 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
                 item.setFont(font)
             elif self.engine.isPlayerOff(player):
                 text = ""
-#                item.setBackgroundColor(QtCore.Qt.gray)
                 item.setBackground(QtGui.QBrush(QtCore.Qt.gray))          
             else:
                 text = str(r.getPlayerScore(player))
             item.setText(text)
             self.table.setItem(i,j,item)
+            
+        self.table.scrollToBottom()
         

@@ -154,9 +154,10 @@ class QuickStatsBox(QtGui.QGroupBox):
                     table.setItem(i,j,item)
                     
             table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-            table.resizeRowsToContents()
             table.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
-            size = table.rowHeight(0)*(len(displayed)+1)+len(displayed)
+            table.resizeColumnsToContents()
+            table.resizeRowsToContents()
+            size = table.rowHeight(0)*(len(displayed)+1)+(len(displayed)+1)*2
             table.setFixedHeight(size)      
         else:
             table.hide()
