@@ -432,7 +432,7 @@ class Phase10RoundsDetail(QtGui.QDialog):
         for r in rounds:
             j=0
             for player in players:
-                item = QtGui.QTableWidgetItem(str(r.getScore(player)))
+                item = QtGui.QTableWidgetItem(str(r.getPlayerScore(player)))
                 item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
                 item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignRight)
                 self.table.setItem(i,j,item)
