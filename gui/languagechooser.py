@@ -38,6 +38,12 @@ class LanguageChooser(QtGui.QDialog):
         ci = self.languageListWidget.currentItem()
         if ci:
             selected = ci.text()
-            print("Now I would change the language to {}!".format(selected))
+            file = self.supportedLanguages[unicode(selected)]
+            print("Now I would change the language to {}: {}!".format(selected,file))
+            translator = QtCore.QTranslator()
+            ret = translator.load(file)
+            if ret: 
+                QtGui.qApp.installTranslator(translator)
+                print ("Translator loaded successfully!")
         self.close()
 

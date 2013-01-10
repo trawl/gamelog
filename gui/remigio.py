@@ -113,7 +113,7 @@ class RemigioWidget(GameWidget):
         
         
     def retranslateUI(self):
-        self.buttonGroup.setTitle(QtGui.QApplication.translate("RemigioWidget","Round {0}").format(str(self.engine.getNumRound())))
+        self.buttonGroup.setTitle(unicode(QtGui.QApplication.translate("RemigioWidget","Round {0}")).format(str(self.engine.getNumRound())))
         self.cancelMatchButton.setText(QtGui.QApplication.translate("RemigioWidget","&Cancel Match"))
         self.commitRoundButton.setText(QtGui.QApplication.translate("RemigioWidget","Commit &Round"))
         self.infoLabel.setText(QtGui.QApplication.translate("RemigioWidget","Warning: real points are computed automatically depending on the close type"))    
@@ -137,7 +137,7 @@ class RemigioWidget(GameWidget):
             if score>=0 :
                 self.engine.addRoundInfo(player,score, {'closeType':c_type})
             else:
-                ErrorMessage(QtGui.QApplication.translate("RemigioWidget","{0} score is not valid").format(player)).exec_()
+                ErrorMessage(unicode(QtGui.QApplication.translate("RemigioWidget","{0} score is not valid")).format(player)).exec_()
                 return
 
         #Everything ok so far, let's confirm
@@ -159,7 +159,7 @@ class RemigioWidget(GameWidget):
             self.commitRoundButton.setDisabled(True)
             for player in self.players:
                 self.inputGroup.setDisabled(True)
-            ErrorMessage(QtGui.QApplication.translate("RemigioWidget","{0} won this game!").format(winner),QtGui.QApplication.translate("RemigioWidget","Game Over")).exec_()
+            ErrorMessage(unicode(QtGui.QApplication.translate("RemigioWidget","{0} won this game!")).format(winner),QtGui.QApplication.translate("RemigioWidget","Game Over")).exec_()
         else:           
             self.playerGroupBox[self.engine.getDealer()].setDealer() 
             
@@ -175,7 +175,7 @@ class RemigioWidget(GameWidget):
         self.dealerPolicyCheckBox.setEnabled(False)
         
         if not self.engine.getWinner():
-            self.buttonGroup.setTitle(QtGui.QApplication.translate("RemigioWidget","Round {0}").format(str(self.engine.getNumRound())))
+            self.buttonGroup.setTitle(unicode(QtGui.QApplication.translate("RemigioWidget","Round {0}")).format(str(self.engine.getNumRound())))
             
         for player in self.players:
             score = self.engine.getScoreFromPlayer(player)
@@ -397,7 +397,7 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
             item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
             if player == winner:
-                text = QtGui.QApplication.translate("RemigioRoundsDetail","Winner ({}x)").format(closeType)
+                text = unicode(QtGui.QApplication.translate("RemigioRoundsDetail","Winner ({}x)")).format(closeType)
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)
