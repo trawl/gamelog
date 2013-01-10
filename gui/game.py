@@ -28,8 +28,8 @@ class GameWidget(QtGui.QWidget):
     
     
     def cancelMatch(self):
-        ret = QtGui.QMessageBox.question(self, 'Finalizar partida',
-        u"Estás seguro que quieres finalizar la partida?", QtGui.QMessageBox.Yes | 
+        ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("GameWidget",'Cancel Match'),
+        QtGui.QApplication.translate("GameWidget","Are you sure you want to cancel this match?"), QtGui.QMessageBox.Yes | 
         QtGui.QMessageBox.No, QtGui.QMessageBox.No)
         
         if ret == QtGui.QMessageBox.No: return

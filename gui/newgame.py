@@ -88,27 +88,32 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.stats = StatsEngine()
         self.game = None
         self.initUI()
-        self.gameStatsText = u"Último Ganador: {} ({})"
+
         sp = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
         self.setSizePolicy(sp)
         
     def initUI(self):
-        self.setTitle(u"Estadísticas")
+
         self.widgetLayout = QtGui.QVBoxLayout(self)
         self.gameStatsLabel = QtGui.QLabel(self)
         self.widgetLayout.addWidget(self.gameStatsLabel)
         self.matchStatsTitleLabel = QtGui.QLabel(self)
         self.widgetLayout.addWidget(self.matchStatsTitleLabel)
-        self.matchStatsTitleLabel.setText("Partidas")   
+
         self.matchStatsTable = QtGui.QTableWidget(self)
         self.matchStatsTable.setMinimumSize(0, 10)
         self.widgetLayout.addWidget(self.matchStatsTable)
         self.playerStatsTitleLabel = QtGui.QLabel(self)
         self.widgetLayout.addWidget(self.playerStatsTitleLabel)
-        self.playerStatsTitleLabel.setText("Jugadores")  
         self.playerStatsTable = QtGui.QTableWidget(self)
         self.widgetLayout.addWidget(self.playerStatsTable)
+        self.retranslateUI()
         
+    def retranslateUI(self):
+        self.gameStatsText = QtGui.QApplication.translate("QuickStatsBox",'Last winner') + ": {} ({})"
+        self.setTitle(QtGui.QApplication.translate("QuickStatsBox",'Statistics'))
+        self.matchStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Matches"))
+        self.playerStatsTitleLabel.setText("Players")     
         
     def update(self,game=None):
         if game is not None: self.game = game
@@ -117,8 +122,10 @@ class QuickStatsBox(QtGui.QGroupBox):
         matchstats = self.stats.getMatchGameStats(self.game)
         playerstats = self.stats.getPlayerGameStats(self.game)
         
+        self.retranslateUI()
+        
         if not gamestats:
-            self.gameStatsLabel.setText("No hay estadisticas")
+            self.gameStatsLabel.setText(QtGui.QApplication.translate("QuickStatsBox","No statistics found"))
             self.playerStatsTitleLabel.hide()
             self.matchStatsTitleLabel.hide()
         else:
@@ -126,11 +133,11 @@ class QuickStatsBox(QtGui.QGroupBox):
             self.playerStatsTitleLabel.show()
             self.matchStatsTitleLabel.show()
         keys = ['maxduration','minduration','avgduration','maxscore','minscore','avgscore']
-        headers = ['Mas Larga','Mas corta','Media','Peor','Mejor','Media']
+        headers = [QtGui.QApplication.translate("QuickStatsBox",'Longest'),QtGui.QApplication.translate("QuickStatsBox",'Shortest'),QtGui.QApplication.translate("QuickStatsBox",'Average'),QtGui.QApplication.translate("QuickStatsBox",'Worst'),QtGui.QApplication.translate("QuickStatsBox",'Best'),QtGui.QApplication.translate("QuickStatsBox",'Average')]
         self.updateTable(self.matchStatsTable, matchstats, keys, 'nplayers', headers)
             
         keys = ['played','victories','victoryp','maxscore','minscore','avgscore','sumscore']
-        headers = ['Jugadas','Victorias','Ratio (%)','Peor','Mejor','Media','Total']
+        headers = [QtGui.QApplication.translate("QuickStatsBox",'Played'),QtGui.QApplication.translate("QuickStatsBox",'Victories'),QtGui.QApplication.translate("QuickStatsBox",'Ratio (%)'),QtGui.QApplication.translate("QuickStatsBox",'Worst'),QtGui.QApplication.translate("QuickStatsBox",'Best'),QtGui.QApplication.translate("QuickStatsBox",'Average'),QtGui.QApplication.translate("QuickStatsBox",'Total')]
         self.updateTable(self.playerStatsTable, playerstats, keys, 'nick', headers)
                             
 
@@ -187,10 +194,20 @@ class NewGameWidget(QtGui.QWidget):
         self.playersGroupBox = QtGui.QGroupBox(self)
         self.rightColumnLayout.addWidget(self.playersGroupBox)
         self.populatePlayersGroupBox()
-
-
+        self.retranslateUI()
+    
+    def retranslateUI(self):
+        self.gameGroupBox.setTitle(QtGui.QApplication.translate("NewGameWidget","Games"))
+        self.updateGameInfo()
+        self.playersGroupBox.setTitle(QtGui.QApplication.translate("NewGameWidget","Players"))
+        self.availablePlayersLabel.setText(QtGui.QApplication.translate("NewGameWidget","Available Players"))
+        self.newPlayerButton.setText(QtGui.QApplication.translate("NewGameWidget","New Player"))
+        self.inGameLabel.setText(QtGui.QApplication.translate("NewGameWidget","Selected Players"))
+        self.startGameButton.setText(QtGui.QApplication.translate("NewGameWidget","Play!"))
+        self.gameStatsBox.retranslateUI()
+        
     def populateGamesGroupBox(self):
-        self.gameGroupBox.setTitle("Juegos")
+
         self.gameGroupBoxLayout = QtGui.QVBoxLayout(self.gameGroupBox)
         self.gameComboBox = QtGui.QComboBox(self.gameGroupBox)
         self.gameGroupBoxLayout.addWidget(self.gameComboBox)
@@ -211,17 +228,15 @@ class NewGameWidget(QtGui.QWidget):
 
     def updateGameInfo(self,foo=0):
         game = str(self.gameComboBox.currentText())
-        description = "De 2 a {} jugadores\n\n{}".format(self.games[game]['maxPlayers'],self.games[game]['description'])
+        description = "2 - {} {}\n\n{}".format(self.games[game]['maxPlayers'],QtGui.QApplication.translate("NewGameWidget",'players'),self.games[game]['description'])
         self.gameDescriptionLabel.setText(description)
         self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
         self.gameStatsBox.update(game)
 
     def populatePlayersGroupBox(self):
-        self.playersGroupBox.setTitle("Jugadores")
-        self.playersGroupBoxLayout = QtGui.QVBoxLayout(self.playersGroupBox)
 
+        self.playersGroupBoxLayout = QtGui.QVBoxLayout(self.playersGroupBox)
         self.availablePlayersLabel = QtGui.QLabel(self.playersGroupBox)
-        self.availablePlayersLabel.setText("Jugadores Disponibles")
         self.playersGroupBoxLayout.addWidget(self.availablePlayersLabel)
         self.playersAvailableList = PlayerList(self.playersGroupBox)
         self.playersGroupBoxLayout.addWidget(self.playersAvailableList)
@@ -233,20 +248,17 @@ class NewGameWidget(QtGui.QWidget):
         self.playersGroupBoxLayout.addLayout(self.playersButtonsLayout)
 
         self.newPlayerButton = QtGui.QPushButton(self.playersGroupBox)
-        self.newPlayerButton.setText("Nuevo Jugador")
         self.newPlayerButton.clicked.connect(self.createNewPlayer)
         self.playersButtonsLayout.addWidget( self.newPlayerButton)
 
 
         self.inGameLabel = QtGui.QLabel(self.playersGroupBox)
-        self.inGameLabel.setText("Jugadores seleccionados")
         self.playersGroupBoxLayout.addWidget(self.inGameLabel)
         self.playersInGameList = PlayerList(self.playersGroupBox)
         self.playersGroupBoxLayout.addWidget(self.playersInGameList)
         
         #Start button
         self.startGameButton = QtGui.QPushButton(self)
-        self.startGameButton.setText("A Jugar!")
         self.startGameButton.clicked.connect(self.createNewGame)
         self.playersGroupBoxLayout.addWidget(self.startGameButton)
 
@@ -255,16 +267,16 @@ class NewGameWidget(QtGui.QWidget):
         maxPlayers = self.games[game]['maxPlayers']
         players = self.playersInGameList.model().retrievePlayers()
         if len(players)<2:
-            ErrorMessage("Se necesitan al menos 2 jugadores para jugar a {}".format(game),"Nueva Partida").exec_()
+            ErrorMessage(QtGui.QApplication.translate("NewGameWidget","At least 2 players are needed to play"),QtGui.QApplication.translate("NewGameWidget","New Match")).exec_()
         elif len(players)>maxPlayers:
-            ErrorMessage("El máximo número de jugadores para {} es {}".format(game, maxPlayers),"Nueva Partida").exec_()
+            ErrorMessage("{} {}".format(QtGui.QApplication.translate("NewGameWidget",'The maximum number of players is'), maxPlayers),QtGui.QApplication.translate("NewGameWidget","New Match")).exec_()
         else:
             matchTab = GameWidgetFactory.createGameWidget(game,players,self.parent)
             if matchTab:
                 matchTab.closeRequested.connect(self.parent.removeTab)
                 self.parent.newTab(matchTab,game)
             else:
-                ErrorMessage("Widget de {} no implementado".format(game),"Nueva Partida").exec_()
+                ErrorMessage(QtGui.QApplication.translate("NewGameWidget","Widget not implemented"),QtGui.QApplication.translate("NewGameWidget","New Match")).exec_()
                 return
             
 
