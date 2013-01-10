@@ -19,7 +19,7 @@ class NewPlayerDialog(QtGui.QDialog):
         super(NewPlayerDialog,self).__init__(parent)
         self.initUI()
 #        self.com = com
-        self.setWindowTitle("Nuevo Jugador")
+        self.setWindowTitle(QtGui.QApplication.translate("NewPlayerDialog","New Player"))
         self.existingplayers = [ str(nick).lower() for nick in db.getPlayerNicks() ] 
 
         
@@ -28,13 +28,13 @@ class NewPlayerDialog(QtGui.QDialog):
         self.layout = QtGui.QGridLayout()
         self.vlayout.addLayout(self.layout)
         self.nicklabel = QtGui.QLabel(self)
-        self.nicklabel.setText("Nick")
+        self.nicklabel.setText(QtGui.QApplication.translate("NewPlayerDialog","Nick"))
         self.layout.addWidget(self.nicklabel,0,0)
         self.nicklineedit = QtGui.QLineEdit(self)
         self.nicklineedit.textChanged.connect(self.checkExisting)
         self.layout.addWidget(self.nicklineedit, 0,1)
         self.namelabel = QtGui.QLabel(self)
-        self.namelabel.setText("Nombre")
+        self.namelabel.setText(QtGui.QApplication.translate("NewPlayerDialog","Name"))
         self.layout.addWidget(self.namelabel,1,0)
         self.namelineedit = QtGui.QLineEdit(self)
         self.namelineedit.textChanged.connect(self.checkExisting)
@@ -43,7 +43,7 @@ class NewPlayerDialog(QtGui.QDialog):
         self.existinglabel.setStyleSheet("QLabel {color: red; }")
         self.vlayout.addWidget(self.existinglabel)
         self.createbutton = QtGui.QPushButton(self)
-        self.createbutton.setText("Crear")
+        self.createbutton.setText(QtGui.QApplication.translate("NewPlayerDialog","Create"))
         self.createbutton.setDisabled(True)
         self.createbutton.clicked.connect(self.createAction)
         self.vlayout.addWidget(self.createbutton)
@@ -56,7 +56,7 @@ class NewPlayerDialog(QtGui.QDialog):
             self.createbutton.setDisabled(True)
             return
         if tempnick.lower() in self.existingplayers:
-            self.existinglabel.setText("El jugador ya existe")
+            self.existinglabel.setText(QtGui.QApplication.translate("NewPlayerDialog","Player already exists!"))
             self.createbutton.setDisabled(True)
         else:
             self.existinglabel.setText("")

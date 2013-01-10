@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 try:
     from PySide import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
@@ -11,11 +10,12 @@ except ImportError as error:
 
 from controllers.db import db
 from gui.newgame import NewGameWidget
+from gui.languagechooser import LanguageChooser
 
 class MainWindow(QtGui.QMainWindow):
 
-    def __init__(self):
-        super(MainWindow, self).__init__()
+    def __init__(self,parent=None):
+        super(MainWindow, self).__init__(parent)
         db.connectDB()
         self.initUI()
         self.openedGames = []
@@ -24,19 +24,21 @@ class MainWindow(QtGui.QMainWindow):
     def initUI(self):
 
         #Window settings
-        self.setWindowTitle('GameLog')
-        self.statusBar().showMessage('GameLog')
+
         self.setGeometry(100, 50, 1024, 600)
 
         #Menu settings
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&Archivo')
-        exitAction = QtGui.QAction(QtGui.QIcon('exit.png'), '&Salir', self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Salir de GameLog')
-        exitAction.triggered.connect(self.closeAction)
-        fileMenu.addAction(exitAction)
-
+        self.menubar = self.menuBar()
+        self.fileMenu = self.menubar.addMenu('')
+        
+        self.languageAction = QtGui.QAction(self)
+        self.languageAction.triggered.connect(self.changeLanguageAction)
+        self.fileMenu.addAction(self.languageAction)
+        
+        self.exitAction = QtGui.QAction(self)
+        self.exitAction.triggered.connect(self.close)
+        self.fileMenu.addAction(self.exitAction)
+        
         #Central stuff!!
         self.centralwidget = QtGui.QWidget(None)
         self.setCentralWidget(self.centralwidget)
@@ -47,28 +49,34 @@ class MainWindow(QtGui.QMainWindow):
         self.verticalLayout.addWidget(self.tabWidget)
 
         #New game tab
-        #self.newGameTab = QtGui.QWidget()
         self.newGameTab = NewGameWidget(self)
-        self.tabWidget.addTab(self.newGameTab, "Nueva Partida")
-        self.tabWidget.setCurrentIndex(1)
-        
-#        game = "Phase10"
-#        players = ["Xavi","Rosa"]
-#        
-#        self.matchTab = Phase10Widget(game, players,self)
-#        self.tabWidget.addTab(self.matchTab, game)
+        self.tabWidget.addTab(self.newGameTab, "")
+        self.tabWidget.setCurrentIndex(0)
 
+        self.retranslateUi()
 
         #And finally, show it!
         self.show()
         
+    def retranslateUi(self):
+        self.setWindowTitle(QtGui.QApplication.translate("MainWindow",'GameLog'))
+        self.statusBar().showMessage(QtGui.QApplication.translate("MainWindow",'GameLog'))
+        self.fileMenu.setTitle(QtGui.QApplication.translate("MainWindow",'&File'))
+        self.languageAction.setText(QtGui.QApplication.translate("MainWindow",'&Language...'))
+        self.exitAction.setText(QtGui.QApplication.translate("MainWindow",'&Quit'))
+        self.exitAction.setShortcut(QtGui.QApplication.translate("MainWindow",'Ctrl+Q'))
+        self.exitAction.setStatusTip(QtGui.QApplication.translate("MainWindow",'Quit GameLog'))
+        self.tabWidget.setTabText(0,QtGui.QApplication.translate("MainWindow",'New Match'))
+        for i in range(self.tabWidget.count()):
+            self.tabWidget.widget(i).retranslateUI()
+        
     def closeEvent(self, event):
-        if self.closeAction(): event.accept()
+        if self.ensureClose(): event.accept()
         else: event.ignore()
-            
-    def closeAction(self):
-        reply = QtGui.QMessageBox.question(self, 'Salir',
-            u"Estás seguro que quieres salir de GameLog?", QtGui.QMessageBox.Yes | 
+        
+    def ensureClose(self):
+        reply = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("MainWindow",'Exit'),
+            QtGui.QApplication.translate("MainWindow","Are you sure you want to exit GameLog?"), QtGui.QMessageBox.Yes | 
             QtGui.QMessageBox.No, QtGui.QMessageBox.No)
 
         if reply == QtGui.QMessageBox.Yes:
@@ -86,3 +94,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def removeTab(self,tab):
         self.tabWidget.removeTab(self.tabWidget.indexOf(tab))
+        
+    def changeLanguageAction(self):
+        LanguageChooser().exec_()
+        
