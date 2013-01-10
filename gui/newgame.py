@@ -110,10 +110,11 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.retranslateUI()
         
     def retranslateUI(self):
-        self.gameStatsText = QtGui.QApplication.translate("QuickStatsBox",'Last winner') + ": {} ({})"
+        self.gameStatsText = str(QtGui.QApplication.translate("QuickStatsBox",'Last winner') + ": {} ({})")
         self.setTitle(QtGui.QApplication.translate("QuickStatsBox",'Statistics'))
         self.matchStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Matches"))
-        self.playerStatsTitleLabel.setText("Players")     
+        self.playerStatsTitleLabel.setText("Players")
+        self.update()
         
     def update(self,game=None):
         if game is not None: self.game = game
@@ -121,8 +122,6 @@ class QuickStatsBox(QtGui.QGroupBox):
         gamestats = self.stats.getGameStats(self.game)
         matchstats = self.stats.getMatchGameStats(self.game)
         playerstats = self.stats.getPlayerGameStats(self.game)
-        
-        self.retranslateUI()
         
         if not gamestats:
             self.gameStatsLabel.setText(QtGui.QApplication.translate("QuickStatsBox","No statistics found"))
@@ -161,9 +160,6 @@ class QuickStatsBox(QtGui.QGroupBox):
                     table.setItem(i,j,item)
                     
             table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-            table.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
-            table.resizeColumnsToContents()
-            table.resizeRowsToContents()
             size = table.rowHeight(0)*(len(displayed)+1)+(len(displayed)+1)*2
             table.setFixedHeight(size)      
         else:

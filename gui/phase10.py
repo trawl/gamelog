@@ -164,10 +164,10 @@ class Phase10Widget(GameWidget):
                 try:
                     score = int(pw.getRoundScore())
                 except ValueError:
-                    ErrorMessage(QtGui.QApplication.translate("Phase10Widget","{0} score is not valid").format(player)).exec_()
+                    ErrorMessage(unicode(QtGui.QApplication.translate("Phase10Widget","{0} score is not valid")).format(player)).exec_()
                     return
                 if score%5!=0 or (score<50 and not cleared):
-                    ErrorMessage(QtGui.QApplication.translate("Phase10Widget","{0} score is not valid").format(player)).exec_()
+                    ErrorMessage(unicode(QtGui.QApplication.translate("Phase10Widget","{0} score is not valid")).format(player)).exec_()
                     return
             self.engine.addRoundInfo(player,score, {'aimedPhase':a_phase, 'isCompleted':cleared})
         if not winner:
@@ -195,7 +195,7 @@ class Phase10Widget(GameWidget):
                 self.commitRoundButton.setDisabled(True)
                 self.phasesInOrderCheckBox.setDisabled(True)  
 
-            ErrorMessage(QtGui.QApplication.translate("Phase10Widget","{0} won this game!").format(winner),QtGui.QApplication.translate("Phase10Widget","Game Over")).exec_()
+            ErrorMessage(unicode(QtGui.QApplication.translate("Phase10Widget","{0} won this game!")).format(winner),QtGui.QApplication.translate("Phase10Widget","Game Over")).exec_()
         else:   
             self.playerGroupBox[self.engine.getDealer()].setDealer() 
 
@@ -211,7 +211,7 @@ class Phase10Widget(GameWidget):
         self.phasesInOrderCheckBox.setEnabled(False)
         self.dealerPolicyCheckBox.setEnabled(False)
         if not self.engine.getWinner():
-            self.buttonGroup.setTitle(QtGui.QApplication.translate("Phase10Widget","Round {0}").format(str(self.engine.getNumRound())))
+            self.buttonGroup.setTitle(unicode(QtGui.QApplication.translate("Phase10Widget","Round {0}")).format(str(self.engine.getNumRound())))
             
         self.nobodyWinnerRadioButton.setChecked(True)
         for player in self.players:
@@ -432,7 +432,7 @@ class Phase10RoundsDetail(QtGui.QDialog):
         rounds = self.engine.getRounds()
         players = self.engine.getListPlayers()
         for i in range(1, len(rounds)+1):
-            roundlist.append(QtGui.QApplication.translate("Phase10RoundsDetail","Ronda {}".format(i)))
+            roundlist.append(unicode(QtGui.QApplication.translate("Phase10RoundsDetail","Ronda {}")).format(i))
         self.table.setVerticalHeaderLabels(roundlist)
         self.table.setHorizontalHeaderLabels(players)
         i = 0

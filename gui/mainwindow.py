@@ -59,6 +59,7 @@ class MainWindow(QtGui.QMainWindow):
         self.show()
         
     def retranslateUi(self):
+        print("Retranslating {}".format(self.__class__.__name__))
         self.setWindowTitle(QtGui.QApplication.translate("MainWindow",'GameLog'))
         self.statusBar().showMessage(QtGui.QApplication.translate("MainWindow",'GameLog'))
         self.fileMenu.setTitle(QtGui.QApplication.translate("MainWindow",'&File'))
@@ -97,4 +98,13 @@ class MainWindow(QtGui.QMainWindow):
         
     def changeLanguageAction(self):
         LanguageChooser().exec_()
+        
+    def changeEvent(self,event):
+        if event.type() == QtCore.QEvent.LanguageChange:
+            print("Launching retranslation")
+            self.retranslateUi()
+            
+        return super(MainWindow,self).changeEvent(event)
+        
+        
         
