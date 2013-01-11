@@ -432,7 +432,7 @@ class Phase10RoundsDetail(QtGui.QDialog):
         rounds = self.engine.getRounds()
         players = self.engine.getListPlayers()
         for i in range(1, len(rounds)+1):
-            roundlist.append(unicode(QtGui.QApplication.translate("Phase10RoundsDetail","Ronda {}")).format(i))
+            roundlist.append(unicode(QtGui.QApplication.translate("Phase10RoundsDetail","Round {}")).format(i))
         self.table.setVerticalHeaderLabels(roundlist)
         self.table.setHorizontalHeaderLabels(players)
         i = 0

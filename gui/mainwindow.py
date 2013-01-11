@@ -19,7 +19,7 @@ class MainWindow(QtGui.QMainWindow):
         db.connectDB()
         self.initUI()
         self.openedGames = []
-
+        self.translator = None
 
     def initUI(self):
 
@@ -32,7 +32,7 @@ class MainWindow(QtGui.QMainWindow):
         self.fileMenu = self.menubar.addMenu('')
         
         self.languageAction = QtGui.QAction(self)
-        self.languageAction.triggered.connect(self.changeLanguageAction)
+        self.languageAction.triggered.connect(self.chooseLanguage)
         self.fileMenu.addAction(self.languageAction)
         
         self.exitAction = QtGui.QAction(self)
@@ -59,7 +59,6 @@ class MainWindow(QtGui.QMainWindow):
         self.show()
         
     def retranslateUi(self):
-        print("Retranslating {}".format(self.__class__.__name__))
         self.setWindowTitle(QtGui.QApplication.translate("MainWindow",'GameLog'))
         self.statusBar().showMessage(QtGui.QApplication.translate("MainWindow",'GameLog'))
         self.fileMenu.setTitle(QtGui.QApplication.translate("MainWindow",'&File'))
@@ -96,12 +95,22 @@ class MainWindow(QtGui.QMainWindow):
     def removeTab(self,tab):
         self.tabWidget.removeTab(self.tabWidget.indexOf(tab))
         
-    def changeLanguageAction(self):
-        LanguageChooser().exec_()
+    def chooseLanguage(self):
+        lc = LanguageChooser(self)
+        lc.newQM.connect(self.loadTranslator)
+        lc.exec_()
+        
+    def loadTranslator(self,tfile):
+        translator = QtCore.QTranslator()
+        ret = translator.load(tfile)
+        if ret: 
+            if self.translator: QtGui.qApp.removeTranslator(self.translator)
+            self.translator = translator
+            QtGui.qApp.installTranslator(self.translator)
+                
         
     def changeEvent(self,event):
         if event.type() == QtCore.QEvent.LanguageChange:
-            print("Launching retranslation")
             self.retranslateUi()
             
         return super(MainWindow,self).changeEvent(event)

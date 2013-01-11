@@ -110,7 +110,7 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.retranslateUI()
         
     def retranslateUI(self):
-        self.gameStatsText = str(QtGui.QApplication.translate("QuickStatsBox",'Last winner') + ": {} ({})")
+        self.gameStatsText = unicode(QtGui.QApplication.translate("QuickStatsBox",'Last winner') + ": {} ({})")
         self.setTitle(QtGui.QApplication.translate("QuickStatsBox",'Statistics'))
         self.matchStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Matches"))
         self.playerStatsTitleLabel.setText("Players")
