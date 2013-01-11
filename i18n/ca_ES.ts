@@ -35,47 +35,47 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="gui/mainwindow.py" line="63"/>
+        <location filename="gui/mainwindow.py" line="69"/>
         <source>GameLog</source>
         <translation>GameLog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="64"/>
+        <location filename="gui/mainwindow.py" line="70"/>
         <source>&amp;File</source>
         <translation>&amp;Arxiu</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="66"/>
+        <location filename="gui/mainwindow.py" line="72"/>
         <source>&amp;Quit</source>
         <translation>&amp;Sortir</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="67"/>
+        <location filename="gui/mainwindow.py" line="73"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="68"/>
+        <location filename="gui/mainwindow.py" line="74"/>
         <source>Quit GameLog</source>
         <translation>Sortir de GameLog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="69"/>
+        <location filename="gui/mainwindow.py" line="75"/>
         <source>New Match</source>
         <translation>Nova Partida</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="78"/>
+        <location filename="gui/mainwindow.py" line="84"/>
         <source>Exit</source>
         <translation>Sortir</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="79"/>
+        <location filename="gui/mainwindow.py" line="85"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Estàs segur de voler sortir de GameLog?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="65"/>
+        <location filename="gui/mainwindow.py" line="71"/>
         <source>&amp;Language...</source>
         <translation>&amp;Idioma...</translation>
     </message>
@@ -273,6 +273,29 @@
         <location filename="gui/phase10.py" line="214"/>
         <source>Round {0}</source>
         <translation>Ronda {0}</translation>
+    </message>
+</context>
+<context>
+    <name>QDialogButtonBox</name>
+    <message>
+        <location filename="gui/mainwindow.py" line="19"/>
+        <source>&amp;Yes</source>
+        <translation>&amp;Sí</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.py" line="20"/>
+        <source>&amp;No</source>
+        <translation>&amp;No</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.py" line="21"/>
+        <source>OK</source>
+        <translation>Accepta</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.py" line="23"/>
+        <source>Cancel</source>
+        <translation>Cancel·la</translation>
     </message>
 </context>
 <context>

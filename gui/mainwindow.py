@@ -13,6 +13,12 @@ from gui.newgame import NewGameWidget
 from gui.languagechooser import LanguageChooser
 
 class MainWindow(QtGui.QMainWindow):
+    
+    #Dialog translations
+    QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "&Yes")
+    QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "&No")
+    QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "OK")
+    QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "Cancel")
 
     def __init__(self,parent=None):
         super(MainWindow, self).__init__(parent)
