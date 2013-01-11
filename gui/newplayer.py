@@ -18,7 +18,6 @@ class NewPlayerDialog(QtGui.QDialog):
     def __init__(self,parent=None):
         super(NewPlayerDialog,self).__init__(parent)
         self.initUI()
-#        self.com = com
         self.setWindowTitle(QtGui.QApplication.translate("NewPlayerDialog","New Player"))
         self.existingplayers = [ str(nick).lower() for nick in db.getPlayerNicks() ] 
 
