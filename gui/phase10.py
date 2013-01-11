@@ -146,7 +146,7 @@ class Phase10Widget(GameWidget):
             self.playerGroupBox[player].retranslateUI()
         
         phaseword = unicode(QtGui.QApplication.translate("Phase10Widget","Phase"))
-        for number,phase,label in zip(range(1,len(self.phaseLabels)+1),self.getPhases(),self.phaseLabels):
+        for number,(phase,label) in enumerate(zip(self.getPhases(),self.phaseLabels)):
             label.setText(unicode("{0} {1:02}: {2}".format(phaseword,number,phase)))
                 
     def commitRound(self):
