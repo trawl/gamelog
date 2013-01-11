@@ -17,6 +17,7 @@ class LanguageChooser(QtGui.QDialog):
         self.initUI()
         
     def initUI(self):
+        self.setWindowTitle(unicode(QtGui.QApplication.translate("LanguageChooser","Language")))
         self.widgetLayout = QtGui.QVBoxLayout(self)
         self.infoLabel = QtGui.QLabel(self)
         self.infoLabel.setText(QtGui.QApplication.translate("LanguageChooser","Select the desired language:"))
@@ -25,16 +26,12 @@ class LanguageChooser(QtGui.QDialog):
         self.widgetLayout.addWidget(self.languageListWidget)
         for language in self.supportedLanguages.keys():
             self.languageListWidget.addItem(language)
-        self.buttonsLayout = QtGui.QHBoxLayout()
-        self.widgetLayout.addLayout(self.buttonsLayout)
-        self.cancelButton = QtGui.QPushButton(self)
-        self.cancelButton.setText(QtGui.QApplication.translate("LanguageChooser","Cancel"))
-        self.cancelButton.pressed.connect(self.close)
-        self.buttonsLayout.addWidget(self.cancelButton)
-        self.okButton = QtGui.QPushButton(self)
-        self.okButton.setText(QtGui.QApplication.translate("LanguageChooser","OK"))
-        self.okButton.pressed.connect(self.changeLanguage)
-        self.buttonsLayout.addWidget(self.okButton)
+
+            
+        self.buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok|QtGui.QDialogButtonBox.Cancel,QtCore.Qt.Horizontal,self)
+        self.buttonBox.accepted.connect(self.changeLanguage)
+        self.buttonBox.rejected.connect(self.close)
+        self.widgetLayout.addWidget(self.buttonBox)
 
     def changeLanguage(self):
 
