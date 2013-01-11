@@ -14,13 +14,14 @@ class Phase10Engine(RoundGameEngine):
         self.round = Phase10Round()
                     
     def getPhases(self):
+        cur = db.execute("Select key,value from GameExtras where Game_name='{}' and key like 'Phase %' order by key asc".format(self.game))
+        return [row['value'] for row in cur ]
         # Empty phase (0)
-        phases = {'key':[""],'desc':[""]}
-        cur = db.execute("Select key,value from GameExtras where Game_name='{}' and key like'Phase %'".format(self.game))
-        for row in cur:
-            phases["key"].append(row['key'])
-            phases["desc"].append(row['value'])
-        return phases
+#        phases = {'key':[""],'desc':[""]}
+#        for row in cur:
+#            phases["key"].append(row['key'])
+#            phases["desc"].append(row['value'])
+#        return phases
 
     def getRemainingPhasesFromPlayer(self, player):
         remaining = range (1,11)
