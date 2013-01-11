@@ -11,7 +11,6 @@ except ImportError as error:
 
 from controllers.remigioengine import RemigioEngine
 from gui.game import GameWidget
-from gui.message import ErrorMessage
 from gui.clock import GameClock
 
 class RemigioWidget(GameWidget):
@@ -127,7 +126,7 @@ class RemigioWidget(GameWidget):
         self.engine.openRound()
         winner = self.inputGroup.getWinner()
         if not winner:
-            ErrorMessage("Debe haber un ganador").exec_()
+            QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("RemigioWidget","No winner selected")))
             return
         else:
             self.engine.setRoundWinner(winner)
@@ -137,7 +136,7 @@ class RemigioWidget(GameWidget):
             if score>=0 :
                 self.engine.addRoundInfo(player,score, {'closeType':c_type})
             else:
-                ErrorMessage(unicode(QtGui.QApplication.translate("RemigioWidget","{0} score is not valid")).format(player)).exec_()
+                QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("RemigioWidget","{0} score is not valid").format(player)))
                 return
 
         #Everything ok so far, let's confirm
@@ -159,7 +158,7 @@ class RemigioWidget(GameWidget):
             self.commitRoundButton.setDisabled(True)
             for player in self.players:
                 self.inputGroup.setDisabled(True)
-            ErrorMessage(unicode(QtGui.QApplication.translate("RemigioWidget","{0} won this game!")).format(winner),QtGui.QApplication.translate("RemigioWidget","Game Over")).exec_()
+            QtGui.QMessageBox.information(self,self.game,unicode(QtGui.QApplication.translate("RemigioWidget","{0} won this game!").format(winner)))
         else:           
             self.playerGroupBox[self.engine.getDealer()].setDealer() 
             
