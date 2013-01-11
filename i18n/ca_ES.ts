@@ -15,49 +15,67 @@
     </message>
 </context>
 <context>
+    <name>LanguageChooser</name>
+    <message>
+        <location filename="gui/languagechooser.py" line="22"/>
+        <source>Select the desired language:</source>
+        <translation>Sel·lecciona l&apos;idioma:</translation>
+    </message>
+    <message>
+        <location filename="gui/languagechooser.py" line="31"/>
+        <source>Cancel</source>
+        <translation>Cancel·la</translation>
+    </message>
+    <message>
+        <location filename="gui/languagechooser.py" line="35"/>
+        <source>OK</source>
+        <translation>Accepta</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
-        <location filename="gui/mainwindow.py" line="62"/>
+        <location filename="gui/mainwindow.py" line="63"/>
         <source>GameLog</source>
         <translation>GameLog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="63"/>
+        <location filename="gui/mainwindow.py" line="64"/>
         <source>&amp;File</source>
         <translation>&amp;Arxiu</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="65"/>
+        <location filename="gui/mainwindow.py" line="66"/>
         <source>&amp;Quit</source>
         <translation>&amp;Sortir</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="66"/>
+        <location filename="gui/mainwindow.py" line="67"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="67"/>
+        <location filename="gui/mainwindow.py" line="68"/>
         <source>Quit GameLog</source>
         <translation>Sortir de GameLog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="68"/>
+        <location filename="gui/mainwindow.py" line="69"/>
         <source>New Match</source>
         <translation>Nova Partida</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="77"/>
+        <location filename="gui/mainwindow.py" line="78"/>
         <source>Exit</source>
         <translation>Sortir</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="78"/>
+        <location filename="gui/mainwindow.py" line="79"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Estàs segur de voler sortir de GameLog?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="64"/>
+        <location filename="gui/mainwindow.py" line="65"/>
         <source>&amp;Language...</source>
         <translation>&amp;Idioma...</translation>
     </message>
@@ -65,57 +83,57 @@
 <context>
     <name>NewGameWidget</name>
     <message>
-        <location filename="gui/newgame.py" line="200"/>
+        <location filename="gui/newgame.py" line="196"/>
         <source>Games</source>
         <translation>Jocs</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="202"/>
+        <location filename="gui/newgame.py" line="198"/>
         <source>Players</source>
         <translation>Jugadors</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="203"/>
+        <location filename="gui/newgame.py" line="199"/>
         <source>Available Players</source>
         <translation>Jugadors Disponibles</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="204"/>
+        <location filename="gui/newgame.py" line="200"/>
         <source>New Player</source>
         <translation>Nou Jugador</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="205"/>
+        <location filename="gui/newgame.py" line="201"/>
         <source>Selected Players</source>
         <translation>Jugadors Sel·leccionats</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="206"/>
+        <location filename="gui/newgame.py" line="202"/>
         <source>Play!</source>
         <translation>A Jugar!</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="231"/>
+        <location filename="gui/newgame.py" line="227"/>
         <source>players</source>
         <translation>jugadors</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="270"/>
+        <location filename="gui/newgame.py" line="266"/>
         <source>At least 2 players are needed to play</source>
         <translation>Calen almenys 2 jugadors per jugar</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="279"/>
+        <location filename="gui/newgame.py" line="275"/>
         <source>New Match</source>
         <translation>Nova Partida</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="272"/>
+        <location filename="gui/newgame.py" line="268"/>
         <source>The maximum number of players is</source>
         <translation>El màxim nombre de jugadors és</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="279"/>
+        <location filename="gui/newgame.py" line="275"/>
         <source>Widget not implemented</source>
         <translation>Widget no implementat</translation>
     </message>
@@ -167,6 +185,11 @@
         <location filename="gui/phase10.py" line="427"/>
         <source>Details</source>
         <translation>Detalls</translation>
+    </message>
+    <message>
+        <location filename="gui/phase10.py" line="435"/>
+        <source>Round {}</source>
+        <translation>Ronda {}</translation>
     </message>
 </context>
 <context>
@@ -270,52 +293,52 @@
         <translation>Partides</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="128"/>
+        <location filename="gui/newgame.py" line="127"/>
         <source>No statistics found</source>
         <translation>No s&apos;han trobat estadístiques</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="136"/>
+        <location filename="gui/newgame.py" line="135"/>
         <source>Longest</source>
         <translation>Més llarga</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="136"/>
+        <location filename="gui/newgame.py" line="135"/>
         <source>Shortest</source>
         <translation>Més curta</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="140"/>
+        <location filename="gui/newgame.py" line="139"/>
         <source>Average</source>
         <translation>Mitja</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="140"/>
+        <location filename="gui/newgame.py" line="139"/>
         <source>Worst</source>
         <translation>Pitjor</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="140"/>
+        <location filename="gui/newgame.py" line="139"/>
         <source>Best</source>
         <translation>Millor</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="140"/>
+        <location filename="gui/newgame.py" line="139"/>
         <source>Played</source>
         <translation>Jugades</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="140"/>
+        <location filename="gui/newgame.py" line="139"/>
         <source>Victories</source>
         <translation>Guanyades</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="140"/>
+        <location filename="gui/newgame.py" line="139"/>
         <source>Ratio (%)</source>
         <translation>Ratio (%)</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="141"/>
+        <location filename="gui/newgame.py" line="140"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>

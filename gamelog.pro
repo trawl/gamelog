@@ -4,7 +4,8 @@ SOURCES = \
 	gui/newplayer.py \
 	gui/game.py \
 	gui/phase10.py \
-	gui/remigio.py 
+	gui/remigio.py \
+	gui/languagechooser.py
    
 TRANSLATIONS = \
 	i18n/es_ES.ts \

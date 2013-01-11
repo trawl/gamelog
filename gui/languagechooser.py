@@ -8,9 +8,12 @@ except ImportError as error:
     
     
 class LanguageChooser(QtGui.QDialog):
+    
+    newQM = QtCore.Signal(str)
+    supportedLanguages = {u'Español':'i18n/es_ES',u'English':'i18n/en_GB',u'Català':'i18n/ca_ES'}
+    
     def __init__(self,parent=None):
         super(LanguageChooser,self).__init__(parent)
-        self.supportedLanguages = {u'Español':'i18n/es_ES',u'English':'i18n/en_GB',u'Català':'i18n/ca_ES'}
         self.initUI()
         
     def initUI(self):
@@ -38,12 +41,7 @@ class LanguageChooser(QtGui.QDialog):
         ci = self.languageListWidget.currentItem()
         if ci:
             selected = ci.text()
-            file = self.supportedLanguages[unicode(selected)]
-            print("Now I would change the language to {}: {}!".format(selected,file))
-            translator = QtCore.QTranslator()
-            ret = translator.load(file)
-            if ret: 
-                QtGui.qApp.installTranslator(translator)
-                print ("Translator loaded successfully!")
+            fname = self.supportedLanguages[unicode(selected)]
+            self.newQM.emit(fname)
         self.close()
 
