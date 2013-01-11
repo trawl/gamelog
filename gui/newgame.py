@@ -12,7 +12,6 @@ except ImportError as error:
 
 from controllers.db import db
 from controllers.statsengine import StatsEngine
-from gui.message import ErrorMessage
 from gui.gamewidgetfactory import GameWidgetFactory
 from gui.newplayer import NewPlayerDialog
 
@@ -263,16 +262,16 @@ class NewGameWidget(QtGui.QWidget):
         maxPlayers = self.games[game]['maxPlayers']
         players = self.playersInGameList.model().retrievePlayers()
         if len(players)<2:
-            ErrorMessage(QtGui.QApplication.translate("NewGameWidget","At least 2 players are needed to play"),QtGui.QApplication.translate("NewGameWidget","New Match")).exec_()
+            QtGui.QMessageBox.warning(self,QtGui.QApplication.translate("NewGameWidget","New Match"),QtGui.QApplication.translate("NewGameWidget","At least 2 players are needed to play"))
         elif len(players)>maxPlayers:
-            ErrorMessage("{} {}".format(QtGui.QApplication.translate("NewGameWidget",'The maximum number of players is'), maxPlayers),QtGui.QApplication.translate("NewGameWidget","New Match")).exec_()
+            QtGui.QMessageBox.warning(self,QtGui.QApplication.translate("NewGameWidget","New Match"),unicode("{} {}".format(QtGui.QApplication.translate("NewGameWidget",'The maximum number of players is'), maxPlayers)))
         else:
             matchTab = GameWidgetFactory.createGameWidget(game,players,self.parent)
             if matchTab:
                 matchTab.closeRequested.connect(self.parent.removeTab)
                 self.parent.newTab(matchTab,game)
             else:
-                ErrorMessage(QtGui.QApplication.translate("NewGameWidget","Widget not implemented"),QtGui.QApplication.translate("NewGameWidget","New Match")).exec_()
+                QtGui.QMessageBox.warning(self,QtGui.QApplication.translate("NewGameWidget","New Match"),QtGui.QApplication.translate("NewGameWidget","Widget not implemented"))
                 return
             
 

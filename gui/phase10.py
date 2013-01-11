@@ -9,7 +9,6 @@ except ImportError as error:
     QtCore.Slot = QtCore.pyqtSlot
 
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
-from gui.message import ErrorMessage
 from gui.game import GameWidget
 from gui.clock import GameClock
 
@@ -157,21 +156,21 @@ class Phase10Widget(GameWidget):
                 self.engine.setRoundWinner(winner)
                 score = 0
                 if not cleared:
-                    ErrorMessage("{} ({})".format(QtGui.QApplication.translate("Phase10Widget","No phase selected for the winner"),player)).exec_()
+                    QtGui.QMessageBox.warning(self,self.game,unicode("{} ({})".format(QtGui.QApplication.translate("Phase10Widget","No phase selected for the winner"),player)))
                     return
 
             else:
                 try:
                     score = int(pw.getRoundScore())
                 except ValueError:
-                    ErrorMessage(unicode(QtGui.QApplication.translate("Phase10Widget","{0} score is not valid")).format(player)).exec_()
+                    QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("Phase10Widget","{0} score is not valid").format(player)))
                     return
                 if score%5!=0 or (score<50 and not cleared):
-                    ErrorMessage(unicode(QtGui.QApplication.translate("Phase10Widget","{0} score is not valid")).format(player)).exec_()
+                    QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("Phase10Widget","{0} score is not valid").format(player)))
                     return
             self.engine.addRoundInfo(player,score, {'aimedPhase':a_phase, 'isCompleted':cleared})
         if not winner:
-            ErrorMessage(QtGui.QApplication.translate("Phase10Widget","No winner selected")).exec_()
+            QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("Phase10Widget","No winner selected")))
             return
 
         #Everything ok so far, let's confirm
@@ -195,7 +194,7 @@ class Phase10Widget(GameWidget):
                 self.commitRoundButton.setDisabled(True)
                 self.phasesInOrderCheckBox.setDisabled(True)  
 
-            ErrorMessage(unicode(QtGui.QApplication.translate("Phase10Widget","{0} won this game!")).format(winner),QtGui.QApplication.translate("Phase10Widget","Game Over")).exec_()
+            QtGui.QMessageBox.information(self,self.game,unicode(QtGui.QApplication.translate("Phase10Widget","{0} won this game!").format(winner)))
         else:   
             self.playerGroupBox[self.engine.getDealer()].setDealer() 
 
