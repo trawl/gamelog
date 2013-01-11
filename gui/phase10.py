@@ -75,11 +75,9 @@ class Phase10Widget(GameWidget):
         self.miscElementsLayout.addWidget(self.extraGroup)
         self.extraGroupLayout = QtGui.QVBoxLayout(self.extraGroup)
         
-        text =""
         self.phaseLabels = []
-        for phase in range(len(self.getPhases())):
+        for _ in range(len(self.getPhases())):
             self.extraGroupLayout.addSpacing(10)
-#            text = "{}: {}".format(self.phases["key"][phase],self.phases["desc"][phase])
             label = QtGui.QLabel(self)
             label.setStyleSheet("QLabel {font-size: 16px; font-weight: bold; }")
             self.phaseLabels.append(label)
