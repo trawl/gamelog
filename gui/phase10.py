@@ -7,6 +7,8 @@ except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
+    
+import re
 
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
 from gui.game import GameWidget
@@ -16,7 +18,6 @@ class Phase10Widget(GameWidget):
 
     def __init__(self, game, players, parent=None):
         super(Phase10Widget, self).__init__(game,players,parent)
-        self.phases = self.engine.getPhases()
         self.initUI()
 
     def createEngine(self):
@@ -75,11 +76,13 @@ class Phase10Widget(GameWidget):
         self.extraGroupLayout = QtGui.QVBoxLayout(self.extraGroup)
         
         text =""
-        for phase in range(1,len(self.phases["key"])):
+        self.phaseLabels = []
+        for phase in range(len(self.getPhases())):
             self.extraGroupLayout.addSpacing(10)
-            text = "{}: {}".format(self.phases["key"][phase],self.phases["desc"][phase])
-            label = QtGui.QLabel(text,self)
+#            text = "{}: {}".format(self.phases["key"][phase],self.phases["desc"][phase])
+            label = QtGui.QLabel(self)
             label.setStyleSheet("QLabel {font-size: 16px; font-weight: bold; }")
+            self.phaseLabels.append(label)
             self.extraGroupLayout.addWidget(label)
    
         self.buttonGroup=QtGui.QGroupBox(self)
@@ -120,7 +123,7 @@ class Phase10Widget(GameWidget):
         if not players_grid: self.playerGroupsLayout.addStretch()
         np = 0
         for player in self.players:
-            self.playerGroupBox[player] = Phase10PlayerWidget(player, self.phases,self.winnerButtonGroup,self)
+            self.playerGroupBox[player] = Phase10PlayerWidget(player,self.winnerButtonGroup,self)
             self.phasesInOrderCheckBox.stateChanged.connect(self.playerGroupBox[player].switchPhasesInOrder)
             if players_grid: 
                 self.playerGroupsLayout.addWidget(self.playerGroupBox[player],np/2,np%2)
@@ -143,6 +146,10 @@ class Phase10Widget(GameWidget):
         self.commitRoundButton.setText(QtGui.QApplication.translate("Phase10Widget","Commit &Round"))
         for player in self.players:
             self.playerGroupBox[player].retranslateUI()
+        
+        phaseword = unicode(QtGui.QApplication.translate("Phase10Widget","Phase"))
+        for number,phase,label in zip(range(1,len(self.phaseLabels)+1),self.getPhases(),self.phaseLabels):
+            label.setText(unicode("{0} {1:02}: {2}".format(phaseword,number,phase)))
                 
     def commitRound(self):
         self.engine.openRound()
@@ -221,14 +228,62 @@ class Phase10Widget(GameWidget):
 
     def showDetails(self):
         Phase10RoundsDetail(self.engine).exec_()
-
+        
+    def getPhases(self):
+        types = {'s': {
+                       '2':[
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'pair')),
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'pairs'))
+                            ], 
+                       '3':[
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'three of a kind','singular')),
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'three of a kind','plural'))
+                            ], 
+                       '4':[
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'four of a kind','singular')),
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'four of a kind','plural'))
+                            ],
+                       '5':[
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'five of a kind','singular')),
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'five of a kind','plural'))
+                            ]
+                        },
+                 'c': unicode(QtGui.QApplication.translate("Phase10Widget","cards of the same colour")), 
+                 'r': [
+                       unicode(QtGui.QApplication.translate("Phase10Widget",'run of')),
+                       unicode(QtGui.QApplication.translate("Phase10Widget", 'runs of'))
+                       ], 
+                 'cr': [
+                        unicode(QtGui.QApplication.translate("Phase10Widget",'colour run of')),
+                        unicode(QtGui.QApplication.translate("Phase10Widget",'colour runs of'))
+                        ]
+                 }
+        phases = []
+        for code in self.engine.getPhases():
+            first = True
+            phase = ""
+            for part in code.split():
+                m = re.match(r'(\d)([src]|cr)(\d)',part)
+                if m:
+                    n, tcode, cards = m.groups()
+                    if int(n)>1: plural = 1
+                    else: plural = 0
+                    if not first: phase += " + "
+                    first = False
+                    if tcode == 's':
+                        phase += "{} {}".format(n,types[tcode][cards][plural])
+                    elif tcode == 'c':
+                        phase += "{} {}".format(cards,types[tcode])
+                    elif tcode in ['r', 'cr']:
+                        phase += "{} {} {}".format(n,types[tcode][plural],cards)
+            phases.append(phase)
+        return phases
 
 
 class Phase10PlayerWidget(QtGui.QGroupBox):
-    def __init__(self, nick, phases, bgroup = None, parent=None):
+    def __init__(self, nick, bgroup = None, parent=None):
         super(Phase10PlayerWidget,self).__init__(parent)
         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-        self.phases = phases
         self.setTitle(nick)
         self.nick = nick
         self.bgroup = bgroup

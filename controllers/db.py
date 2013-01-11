@@ -116,26 +116,26 @@ CREATE TABLE `GameExtras` (
     REFERENCES `Game` (`name` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 01','Dos trios');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 02','Un trio y una escalera de cuatro');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 03','Un cuarteto y una escalera de cuatro');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 04','Una escalera de siete');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 05','Una escalera de ocho');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 06','Una escalera de nueve');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 07','Dos cuartetos');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 08','Siete cartas del mismo color');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 09','Un quinteto y una pareja');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 10','Un quinteto y un trio');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 01','4 parejas');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 02','6 cartas del mismo color');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 03','1 Cuarteto y escalera de 4');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 04','1 Escalera de 8');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 05','7 cartas del mismo color');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 06','1 Escalera de 9');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 07','2 cuartetos');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 08','1 Escalera de 4 del mismo color y 1 trio');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 09','1 Quinteto y 1 trio');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 10','1 Quinteto y una escalera de 3 cartas de color');
+INSERT INTO "GameExtras" VALUES('Phase10','Phase 01','2s3');
+INSERT INTO "GameExtras" VALUES('Phase10','Phase 02','1s3 1r4');
+INSERT INTO "GameExtras" VALUES('Phase10','Phase 03','1s4 1r4');
+INSERT INTO "GameExtras" VALUES('Phase10','Phase 04','1r7');
+INSERT INTO "GameExtras" VALUES('Phase10','Phase 05','1r8');
+INSERT INTO "GameExtras" VALUES('Phase10','Phase 06','1r9');
+INSERT INTO "GameExtras" VALUES('Phase10','Phase 07','2s4');
+INSERT INTO "GameExtras" VALUES('Phase10','Phase 08','1c7');
+INSERT INTO "GameExtras" VALUES('Phase10','Phase 09','1s5 1s2');
+INSERT INTO "GameExtras" VALUES('Phase10','Phase 10','1s5 1s3');
+INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 01','4s2');
+INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 02','1c6');
+INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 03','1s4 1r4');
+INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 04','1r8');
+INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 05','1c7');
+INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 06','1r9');
+INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 07','2s4');
+INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 08','1cr4 1s3');
+INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 09','1s5 1s3');
+INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 10','1s5 1cr3');
 DROP TABLE IF EXISTS "Match";
 CREATE TABLE `Match` (
   `idMatch` INTEGER  PRIMARY KEY ,
