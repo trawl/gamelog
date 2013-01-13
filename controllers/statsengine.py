@@ -23,13 +23,15 @@ class StatsEngine:
         TIME(MAX(duration),'unixepoch') AS maxduration, 
         TIME(MIN(duration),'unixepoch') AS minduration,
         TIME(AVG(duration),'unixepoch') AS avgduration, 
-        MAX(CAST(totalScore as integer)) AS maxscore, 
-        MIN(CAST(totalScore as integer)) AS minscore,
-        CAST(ROUND(AVG(CAST(totalScore as integer))) as integer) AS avgscore 
+        MAX(CAST(maxscore as integer)) AS maxscore, 
+        MIN(CAST(minscore as integer)) AS minscore,
+        CAST(ROUND(AVG(CAST(avgscore as integer))) as integer) AS avgscore 
     FROM (
         SELECT Game_name as game, 
             idMatch, strftime('%s', finished) - strftime('%s', started) AS duration,
-            totalScore, 
+            MAX( totalScore) AS maxscore,
+            MIN( totalScore) AS minscore,
+            AVG( totalScore) AS avgscore,        
             count(nick) AS 'nplayers' 
         FROM Match JOIN MatchPlayer USING (idMatch) 
         WHERE state=1 
