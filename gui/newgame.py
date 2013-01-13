@@ -237,7 +237,7 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.gameStatsText = unicode(QtGui.QApplication.translate("QuickStatsBox",'Last winner') + ": {} ({})")
         self.setTitle(QtGui.QApplication.translate("QuickStatsBox",'Statistics'))
         self.matchStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Matches"))
-        self.playerStatsTitleLabel.setText("Players")
+        self.playerStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Players"))
         self.update()
         
     def update(self,game=None):
@@ -256,11 +256,11 @@ class QuickStatsBox(QtGui.QGroupBox):
             self.playerStatsTitleLabel.show()
             self.matchStatsTitleLabel.show()
         keys = ['maxduration','minduration','avgduration','maxscore','minscore','avgscore']
-        headers = [QtGui.QApplication.translate("QuickStatsBox",'Longest'),QtGui.QApplication.translate("QuickStatsBox",'Shortest'),QtGui.QApplication.translate("QuickStatsBox",'Average'),QtGui.QApplication.translate("QuickStatsBox",'Worst'),QtGui.QApplication.translate("QuickStatsBox",'Best'),QtGui.QApplication.translate("QuickStatsBox",'Average')]
+        headers = [QtGui.QApplication.translate("QuickStatsBox",'Longest'),QtGui.QApplication.translate("QuickStatsBox",'Shortest'),QtGui.QApplication.translate("QuickStatsBox",'Average'),QtGui.QApplication.translate("QuickStatsBox",'Highest'),QtGui.QApplication.translate("QuickStatsBox",'Lowest'),QtGui.QApplication.translate("QuickStatsBox",'Average')]
         self.updateTable(self.matchStatsTable, matchstats, keys, 'nplayers', headers)
             
         keys = ['played','victories','victoryp','maxscore','minscore','avgscore','sumscore']
-        headers = [QtGui.QApplication.translate("QuickStatsBox",'Played'),QtGui.QApplication.translate("QuickStatsBox",'Victories'),QtGui.QApplication.translate("QuickStatsBox",'Ratio (%)'),QtGui.QApplication.translate("QuickStatsBox",'Worst'),QtGui.QApplication.translate("QuickStatsBox",'Best'),QtGui.QApplication.translate("QuickStatsBox",'Average'),QtGui.QApplication.translate("QuickStatsBox",'Total')]
+        headers = [QtGui.QApplication.translate("QuickStatsBox",'Played'),QtGui.QApplication.translate("QuickStatsBox",'Victories'),QtGui.QApplication.translate("QuickStatsBox",'Ratio (%)'),QtGui.QApplication.translate("QuickStatsBox",'Highest'),QtGui.QApplication.translate("QuickStatsBox",'Lowest'),QtGui.QApplication.translate("QuickStatsBox",'Average'),QtGui.QApplication.translate("QuickStatsBox",'Total')]
         self.updateTable(self.playerStatsTable, playerstats, keys, 'nick', headers)
                             
 
