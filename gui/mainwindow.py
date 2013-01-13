@@ -32,6 +32,9 @@ class MainWindow(QtGui.QMainWindow):
         #Window settings
 
         self.setGeometry(100, 50, 1024, 600)
+        
+        self.icon = QtGui.QIcon('icons/cards.png')
+        self.setWindowIcon(self.icon)
 
         #Menu settings
         self.menubar = self.menuBar()
