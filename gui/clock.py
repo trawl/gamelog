@@ -17,6 +17,8 @@ class GameClock(QtGui.QLCDNumber):
         super(GameClock,self).__init__(parent)
         self.setSegmentStyle(QtGui.QLCDNumber.Filled)
         self.startTime = datetime.datetime.now()
+        self.accumulated = 0
+        self.paused = False
         self.timer = QtCore.QTimer(self)
         self.timer.start(1000)
         self.setNumDigits(5)
@@ -27,12 +29,28 @@ class GameClock(QtGui.QLCDNumber):
         
         now = datetime.datetime.now()
         timediff = now - self.startTime
-        hours, remainder = divmod(timediff.seconds, 3600)
+        elapsed = timediff.seconds + self.accumulated
+        hours, remainder = divmod(elapsed, 3600)
         minutes, seconds = divmod(remainder,60)
         text = "{0:02}:{1:02}:{2:02}".format(hours,minutes,seconds)
         if hours: self.setNumDigits(8)
         self.display(text)
         
+    def pauseTimer(self):
+        self.timer.stop()
+        now = datetime.datetime.now()
+        timediff = now - self.startTime
+        self.accumulated += timediff.seconds
+        
+        
+    def unpauseTimer(self):
+        self.startTime = datetime.datetime.now()
+        self.timer.start(1000)
+        self.showTime()
+        
     def stopTimer(self):
         self.timer.stop()
+        self.starTime = None
+        self.accumulated = None
+
         

@@ -20,15 +20,15 @@ class StatsEngine:
     _generalmatchstatsquery = """
      SELECT game, 
         nplayers,
-        TIME(MAX(duration),'unixepoch') AS maxduration, 
-        TIME(MIN(duration),'unixepoch') AS minduration,
-        TIME(AVG(duration),'unixepoch') AS avgduration, 
+        TIME(MAX(elapsed),'unixepoch') AS maxduration, 
+        TIME(MIN(elapsed),'unixepoch') AS minduration,
+        TIME(AVG(elapsed),'unixepoch') AS avgduration, 
         MAX(CAST(maxscore as integer)) AS maxscore, 
         MIN(CAST(minscore as integer)) AS minscore,
         CAST(ROUND(AVG(CAST(avgscore as integer))) as integer) AS avgscore 
     FROM (
         SELECT Game_name as game, 
-            idMatch, strftime('%s', finished) - strftime('%s', started) AS duration,
+            idMatch, elapsed,
             MAX( totalScore) AS maxscore,
             MIN( totalScore) AS minscore,
             AVG( totalScore) AS avgscore,        

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="es_ES">
+<!DOCTYPE TS>
+<TS version="2.0" language="es_ES">
 <context>
     <name>GameWidget</name>
     <message>
@@ -439,12 +440,12 @@
 <context>
     <name>RemigioRoundsDetail</name>
     <message>
-        <location filename="gui/remigio.py" line="380"/>
+        <location filename="gui/remigio.py" line="425"/>
         <source>Details</source>
         <translation>Detalles</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="399"/>
+        <location filename="gui/remigio.py" line="444"/>
         <source>Winner ({}x)</source>
         <translation>Ganador ({}x)</translation>
     </message>
@@ -452,69 +453,84 @@
 <context>
     <name>RemigioWidget</name>
     <message>
-        <location filename="gui/remigio.py" line="177"/>
+        <location filename="gui/remigio.py" line="216"/>
         <source>Round {0}</source>
         <translation>Ronda {0}</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="116"/>
+        <location filename="gui/remigio.py" line="144"/>
         <source>&amp;Cancel Match</source>
         <translation>&amp;Finalizar Partida</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="117"/>
+        <location filename="gui/remigio.py" line="145"/>
         <source>Commit &amp;Round</source>
         <translation>Cerrar &amp;Ronda</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="118"/>
+        <location filename="gui/remigio.py" line="147"/>
         <source>Warning: real points are computed automatically depending on the close type</source>
         <translation>Atención: el programa calcula los puntos reales dependiendo del tipo de cierre</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="119"/>
+        <location filename="gui/remigio.py" line="148"/>
         <source>Match</source>
         <translation>Partida</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="120"/>
+        <location filename="gui/remigio.py" line="149"/>
         <source>Winner deals</source>
         <translation>El ganador reparte</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="121"/>
+        <location filename="gui/remigio.py" line="150"/>
         <source>Score Limit</source>
         <translation>Límite de puntos</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="122"/>
+        <location filename="gui/remigio.py" line="151"/>
         <source>Score</source>
         <translation>Marcador</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="139"/>
+        <location filename="gui/remigio.py" line="175"/>
         <source>{0} score is not valid</source>
         <translation>La puntación de {0} no es válida</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="143"/>
+        <location filename="gui/remigio.py" line="179"/>
         <source>Commit Round</source>
         <translation>Cerrar Ronda</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="144"/>
+        <location filename="gui/remigio.py" line="180"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>¿Estás seguro que quieres cerrar la ronda actual?</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="161"/>
+        <location filename="gui/remigio.py" line="200"/>
         <source>{0} won this game!</source>
         <translation>¡{0} ha ganado la partida!</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="129"/>
+        <location filename="gui/remigio.py" line="165"/>
         <source>No winner selected</source>
         <translation>No se ha seleccionado ningún ganador</translation>
+    </message>
+    <message>
+        <location filename="gui/remigio.py" line="146"/>
+        <source>&amp;Pause/Play</source>
+        <translation>&amp;Pausar/Reanudar</translation>
+    </message>
+    <message>
+        <location filename="gui/remigio.py" line="196"/>
+        <source>{} won this match!</source>
+        <translation>¡{} ha ganado la partida!</translation>
+    </message>
+    <message>
+        <location filename="gui/remigio.py" line="158"/>
+        <source>Game is paused</source>
+        <translation>El juego está pausado</translation>
     </message>
 </context>
 </TS>
