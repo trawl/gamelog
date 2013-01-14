@@ -18,7 +18,7 @@ class RemigioWidget(GameWidget):
     bgcolors = [0,0xCCFF99,0xFFFF99,0xFFCC99,0xFFCCFF]
 
     def __init__(self, game, players, parent=None):
-        super(RemigioWidget, self).__init__(game,players,parent)
+        super(self.__class__, self).__init__(game,players,parent)
         self.initUI()
         
     def createEngine(self):
@@ -193,7 +193,7 @@ class RemigioWidget(GameWidget):
         
 class RemigioInputWidget(QtGui.QWidget):
     def __init__(self,engine,bgcolors, parent=None):
-        super(RemigioInputWidget,self).__init__(parent)
+        super(self.__class__,self).__init__(parent)
         self.engine = engine
         self.bgcolors = bgcolors
         self.initUI()
@@ -244,7 +244,7 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
     winnerSet = QtCore.Signal(str)
     
     def __init__(self,player,bgcolors,parent=None):
-        super(RemigioPlayerInputWidget, self).__init__(parent)
+        super(self.__class__, self).__init__(parent)
         self.player = player
         self.ko = False
         self.bgcolors = bgcolors
@@ -294,9 +294,15 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         self.setStyleSheet("QFrame {{ {} }}".format(css))
         
     def mousePressEvent(self, event):
+        if self.isWinner(): self.increaseCloseType()
+        else: self.scoreLineEdit.setFocus()
+        
+    def mouseDoubleClickEvent(self, event):
         if not self.isWinner(): 
             self.winnerSet.emit(self.player)
-        self.increaseCloseType()
+            self.increaseCloseType()
+        else:
+            super(self.__class__,self).mouseDoubleClickEvent(event)
 
         
     def isWinner(self): return self.closeType > 0
@@ -324,7 +330,7 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
     
 class RemigioPlayerWidget(QtGui.QWidget):
     def __init__(self,nick,parent = None):
-        super(RemigioPlayerWidget,self).__init__(parent)
+        super(self.__class__,self).__init__(parent)
         self.player = nick
         self.initUI()
         
@@ -362,7 +368,7 @@ class RemigioPlayerWidget(QtGui.QWidget):
             
 class RemigioRoundsDetail(QtGui.QGroupBox):
     def __init__(self, engine, bgcolors, parent=None):
-        super(RemigioRoundsDetail, self).__init__(parent)
+        super(self.__class__, self).__init__(parent)
         self.bgcolors = bgcolors
         self.engine = engine
         self.initUI()
