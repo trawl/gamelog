@@ -86,8 +86,13 @@ class RoundGameEngine:
         r = cur.fetchone()
         return int(r['maxPlayers'])
     
-    def cancelMatch(self):
-        self.match.cancel()
+    def pause(self): self.match.pause()
+    
+    def unpause(self): self.match.unpause()
+    
+    def isPaused(self): return self.match.isPaused()
+    
+    def cancelMatch(self): self.match.cancel()
         
     def setDealingPolicy(self, policy):
         if policy == self.RRDealer or policy == self.WinnerDealer:
@@ -128,6 +133,7 @@ class RoundGameEngine:
             policies = ["None","Round Robin","Winner"]
             print("DealingPolicy: {}".format(policies[self.getDealingPolicy()]))
             self.printExtraStats()
+            print("Game started at {}".format(self.match.getStartTime()))
             print("***************************")
         else:
             print("")
@@ -135,6 +141,7 @@ class RoundGameEngine:
             print("|        Round {0:<3}        |".format(lastround))
             print("===========================")
             print("")
+            print("Time played: {}".format(self.match.getGameTime()))
             self.printExtraStats()
             print("***************************")
             for n in self.porder:
@@ -151,6 +158,11 @@ class RoundGameEngine:
                 print("!!!!!!!!! Winner: !!!!!!!!!")
                 print("{0:^27}".format(self.getWinner()))
                 print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                print("")
+                print("{} match finished at {}".format(self.game,datetime.datetime.now()))
+                print("Time played {}".format(self.match.getGameTime()))                   
+                print("")
+
     
     def printExtraStats(self): pass        
     def printExtraPlayerStats(self,player): pass
@@ -203,7 +215,14 @@ def gameStub(engine,roundPlayerFunction):
     nround=1;
     while not engine.getWinner():
         engine.openRound()
-        rnd_winner = readInput("Round {} Winner: ".format(nround),str,lambda x: x in playersOrder,"Sorry, player not found in current match.")
+        while True:
+            rnd_winner = readInput("Round {} Winner (or p to pause): ".format(nround),str,lambda x: x in playersOrder or x =='p',"Sorry, player not found in current match.")
+            if rnd_winner == 'p':
+                engine.pause()
+                readInput("Press Enter to unpause...")
+                engine.unpause()
+            else: break
+            
         engine.setRoundWinner(rnd_winner)
         for n in playersOrder:
             roundPlayerFunction(engine,n,rnd_winner)

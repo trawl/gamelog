@@ -44,11 +44,24 @@ class RemigioWidget(GameWidget):
         self.buttonGroupSubLayout.addWidget(self.cancelMatchButton)
         self.cancelMatchButton.clicked.connect(self.cancelMatch)
         
+        self.pauseMatchButton = QtGui.QPushButton(self.buttonGroup)
+        self.buttonGroupSubLayout.addWidget(self.pauseMatchButton)
+        self.pauseMatchButton.clicked.connect(self.pauseMatch)
+        
         self.commitRoundButton = QtGui.QPushButton(self.buttonGroup)
         self.buttonGroupSubLayout.addWidget(self.commitRoundButton)
         self.commitRoundButton.clicked.connect(self.commitRound)
         
+        self.gameStatusLabel = QtGui.QLabel(self)
+        self.gameStatusLabel.setStyleSheet("QLabel { font-size: 16px; font-weight:bold; color: red;}")
+        self.gameStatusLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.gameStatusLabel.hide()
+        self.buttonGroupLayout.addWidget(self.gameStatusLabel)
+        
         self.infoLabel = QtGui.QLabel(self)
+        self.infoLabel.setStyleSheet("QLabel {font-weight:bold;}")
+        self.infoLabel.setAlignment(QtCore.Qt.AlignCenter)
+        
         self.buttonGroupLayout.addWidget(self.infoLabel)
         self.inputGroup = RemigioInputWidget(self.engine,RemigioWidget.bgcolors, self)
         self.buttonGroupLayout.addWidget(self.inputGroup)
@@ -109,18 +122,41 @@ class RemigioWidget(GameWidget):
         self.playersLayout.addStretch()
         
         self.retranslateUI()
-        
+    
+            
+    def pauseMatch(self):
+        if self.engine.isPaused():
+            self.engine.unpause()
+            self.clock.unpauseTimer()
+            self.gameStatusLabel.hide()
+            self.inputGroup.setEnabled(True)
+            self.commitRoundButton.setEnabled(True)
+        else:
+            self.engine.pause()
+            self.clock.pauseTimer()
+            self.gameStatusLabel.show()
+            self.inputGroup.setDisabled(True)
+            self.commitRoundButton.setDisabled(True)
+
         
     def retranslateUI(self):
         self.buttonGroup.setTitle(unicode(QtGui.QApplication.translate("RemigioWidget","Round {0}")).format(str(self.engine.getNumRound())))
         self.cancelMatchButton.setText(QtGui.QApplication.translate("RemigioWidget","&Cancel Match"))
         self.commitRoundButton.setText(QtGui.QApplication.translate("RemigioWidget","Commit &Round"))
+        self.pauseMatchButton.setText(QtGui.QApplication.translate("RemigioWidget","&Pause/Play"))
         self.infoLabel.setText(QtGui.QApplication.translate("RemigioWidget","Warning: real points are computed automatically depending on the close type"))    
         self.matchGroup.setTitle(QtGui.QApplication.translate("RemigioWidget","Match"))
         self.dealerPolicyCheckBox.setText(QtGui.QApplication.translate("RemigioWidget","Winner deals"))
         self.topPointsLabel.setText(QtGui.QApplication.translate("RemigioWidget","Score Limit"))
         self.playerGroup.setTitle(QtGui.QApplication.translate("RemigioWidget","Score"))
         self.detailGroup.retranslateUI()
+        
+        winner = self.engine.getWinner()
+        if winner:
+            self.gameStatusLabel.setText(QtGui.QApplication.translate("RemigioWidget","{} won this match!").format(winner))    
+        else:
+            self.gameStatusLabel.setText(QtGui.QApplication.translate("RemigioWidget","Game is paused"))    
+    
         
     def commitRound(self):
         self.engine.openRound()
@@ -154,8 +190,11 @@ class RemigioWidget(GameWidget):
         self.updatePanel()
         winner = self.engine.getWinner()
         if winner:
+            self.pauseMatchButton.setDisabled(True)
             self.clock.stopTimer()
             self.commitRoundButton.setDisabled(True)
+            self.gameStatusLabel.setText(QtGui.QApplication.translate("RemigioWidget","{} won this match!").format(winner))    
+            self.gameStatusLabel.show()
             for player in self.players:
                 self.inputGroup.setDisabled(True)
             QtGui.QMessageBox.information(self,self.game,unicode(QtGui.QApplication.translate("RemigioWidget","{0} won this game!").format(winner)))

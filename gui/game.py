@@ -37,6 +37,5 @@ class GameWidget(QtGui.QWidget):
         self.closeRequested.emit(self)   
         
     def closeMatch(self):
-        pass
         self.engine.cancelMatch()
      

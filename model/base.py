@@ -13,13 +13,16 @@ class Player:
         self.dateCreation = None
 
 class GenericMatch:
+#    UPDATE Match set elapsed=strftime('%s', finished) - strftime('%s', started) WHERE finished is not NULL
     def __init__(self,players=dict()):
         self.game = None
         self.players = players
         self.winner = None
         self.start = datetime.datetime.now()
+        self.elapsed = 0
         self.finish = None
         self.totalScores = dict()
+        self.paused = False
         
     def startMatch(self):
         cur = db.execute("INSERT INTO Match (Game_name,started) VALUES ('{}','{}');".format(self.game,str(self.start)))
@@ -33,7 +36,9 @@ class GenericMatch:
         self.computeWinner()
         if self.winner:
             self.finish = datetime.datetime.now()
-            db.execute("UPDATE Match SET finished='{}',state=1 WHERE idMatch={};".format(str(self.finish),str(self.idMatch)))
+            timediff = self.finish - self.start
+            self.elapsed += timediff.seconds
+            db.execute("UPDATE Match SET finished='{}',state=1,elapsed={} WHERE idMatch={};".format(str(self.finish),self.elapsed,str(self.idMatch)))
             db.execute("UPDATE MatchPlayer SET winner=1 WHERE idMatch={}  and nick='{}';".format(str(self.idMatch),self.winner))
 
     def getWinner(self):
@@ -42,7 +47,41 @@ class GenericMatch:
     def cancel(self):
         if not self.winner:
             self.finish = datetime.datetime.now()
-            db.execute("UPDATE Match SET finished='{}',state=2 WHERE idMatch={};".format(str(self.finish),str(self.idMatch)))
+            timediff = self.finish - self.start
+            self.elapsed += timediff.seconds
+            db.execute("UPDATE Match SET finished='{}',state=2, elapsed={} WHERE idMatch={};".format(str(self.finish),self.elapsed,str(self.idMatch)))
+            print("{} Match Cancelled at {}".format(self.game,self.finish))
+            
+    def getStartTime(self): return self.start
+    
+    def getGameTime(self): 
+        if self.isPaused() or self.winner:
+            elapsed = self.elapsed
+        else:
+            timediff = datetime.datetime.now() - self.start
+            elapsed = self.elapsed + timediff.seconds
+            
+        hours, remainder = divmod(elapsed, 3600)
+        minutes, seconds = divmod(remainder,60)
+        return "{0:02}:{1:02}:{2:02}".format(hours,minutes,seconds)
+            
+    def pause(self):
+        if not self.isPaused():
+            self.finish = datetime.datetime.now()
+            timediff = self.finish - self.start
+            self.elapsed += timediff.seconds
+            db.execute("UPDATE Match SET finished='{}', elapsed={}, state=3 WHERE idMatch={};".format(str(self.finish),self.elapsed,str(self.idMatch)))
+            print("{} Paused at {}".format(self.game, self.finish))
+            self.paused = True
+            
+    def unpause(self):
+        if self.isPaused():
+            self.start = datetime.datetime.now()
+            db.execute("UPDATE Match SET state=0 WHERE idMatch={};".format(str(self.idMatch)))
+            print("{} Resumed at {}".format(self.game, self.start))
+            self.paused = False
+            
+    def isPaused(self): return self.paused
 
     # To be implemented in subclasses
     def playerStart(self,player): pass
