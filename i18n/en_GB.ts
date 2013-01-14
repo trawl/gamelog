@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="en_GB">
+<!DOCTYPE TS><TS version="1.1" language="en_GB">
 <context>
     <name>GameWidget</name>
     <message>
@@ -9,7 +8,7 @@
         <translation>Cancel Match</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="31"/>
+        <location filename="gui/game.py" line="32"/>
         <source>Are you sure you want to cancel this match?</source>
         <translation>Are you sure you want to cancel this match?</translation>
     </message>
@@ -65,7 +64,7 @@
         <translation>Exit</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="87"/>
+        <location filename="gui/mainwindow.py" line="88"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Are you sure you want to exit GameLog?</translation>
     </message>
@@ -250,7 +249,7 @@
         <translation>Commit Round</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="182"/>
+        <location filename="gui/phase10.py" line="183"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>Are you sure you want to commit the current round?</translation>
     </message>
@@ -344,22 +343,22 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="gui/mainwindow.py" line="18"/>
+        <location filename="gui/mainwindow.py" line="19"/>
         <source>&amp;Yes</source>
         <translation>&amp;Yes</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="19"/>
+        <location filename="gui/mainwindow.py" line="20"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="20"/>
+        <location filename="gui/mainwindow.py" line="21"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="21"/>
+        <location filename="gui/mainwindow.py" line="23"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
@@ -417,7 +416,7 @@
         <translation>Ratio(%)</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="263"/>
+        <location filename="gui/newgame.py" line="264"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
@@ -503,7 +502,7 @@
         <translation>Commit Round</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="143"/>
+        <location filename="gui/remigio.py" line="144"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>Are you sure you want to commit the current round?</translation>
     </message>

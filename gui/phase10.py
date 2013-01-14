@@ -147,7 +147,7 @@ class Phase10Widget(GameWidget):
         
         phaseword = unicode(QtGui.QApplication.translate("Phase10Widget","Phase"))
         for number,(phase,label) in enumerate(zip(self.getPhases(),self.phaseLabels),start=1):
-            label.setText(unicode("{0} {1:02}: {2}".format(phaseword,number,phase)))
+            label.setText(unicode(u"{0} {1:02}: {2}".format(phaseword,number,phase)))
                 
     def commitRound(self):
         self.engine.openRound()
@@ -259,7 +259,7 @@ class Phase10Widget(GameWidget):
         phases = []
         for code in self.engine.getPhases():
             first = True
-            phase = ""
+            phase = u""
             for part in code.split():
                 m = re.match(r'(\d)([src]|cr)(\d)',part)
                 if m:
@@ -269,11 +269,11 @@ class Phase10Widget(GameWidget):
                     if not first: phase += " + "
                     first = False
                     if tcode == 's':
-                        phase += "{} {}".format(n,types[tcode][cards][plural])
+                        phase += u"{} {}".format(n,types[tcode][cards][plural])
                     elif tcode == 'c':
-                        phase += "{} {}".format(cards,types[tcode])
+                        phase += u"{} {}".format(cards,types[tcode])
                     elif tcode in ['r', 'cr']:
-                        phase += "{} {} {}".format(n,types[tcode][plural],cards)
+                        phase += u"{} {} {}".format(n,types[tcode][plural],cards)
             phases.append(phase)
         return phases
 
