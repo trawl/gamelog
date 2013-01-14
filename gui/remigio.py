@@ -254,7 +254,7 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         self.label = QtGui.QLabel(self)
         self.mainLayout.addWidget(self.label)
         self.label.setAutoFillBackground(False)
-        self.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.setFrameShape(QtGui.QFrame.Panel)
         self.setFrameShadow(QtGui.QFrame.Raised)
         self.label.setScaledContents(True)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
