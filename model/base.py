@@ -22,11 +22,12 @@ class GenericMatch:
         self.elapsed = 0
         self.finish = None
         self.totalScores = dict()
-        self.paused = False
+        self.status = 'cancelled'
         
     def startMatch(self):
         cur = db.execute("INSERT INTO Match (Game_name,started) VALUES ('{}','{}');".format(self.game,str(self.start)))
         self.idMatch = cur.lastrowid
+        self.status = 'running'
         for p in self.players:
             self.totalScores[p] = 0
             db.execute("INSERT INTO MatchPlayer (idMatch,nick) VALUES ({},'{}');".format(str(self.idMatch),str(p)))
@@ -45,11 +46,12 @@ class GenericMatch:
         return self.winner
     
     def cancel(self):
-        if not self.winner:
+        if not self.isCancelled() and not self.winner:
             self.finish = datetime.datetime.now()
             timediff = self.finish - self.start
             self.elapsed += timediff.seconds
             db.execute("UPDATE Match SET finished='{}',state=2, elapsed={} WHERE idMatch={};".format(str(self.finish),self.elapsed,str(self.idMatch)))
+            self.status = 'cancelled'
             print("{} Match Cancelled at {}".format(self.game,self.finish))
             
     def getStartTime(self): return self.start
@@ -72,17 +74,24 @@ class GenericMatch:
             self.elapsed += timediff.seconds
             db.execute("UPDATE Match SET finished='{}', elapsed={}, state=3 WHERE idMatch={};".format(str(self.finish),self.elapsed,str(self.idMatch)))
             print("{} Paused at {}".format(self.game, self.finish))
-            self.paused = True
+            self.status = 'paused'
             
     def unpause(self):
         if self.isPaused():
             self.start = datetime.datetime.now()
             db.execute("UPDATE Match SET state=0 WHERE idMatch={};".format(str(self.idMatch)))
             print("{} Resumed at {}".format(self.game, self.start))
-            self.paused = False
+            self.status = 'running'
             
-    def isPaused(self): return self.paused
-
+    def isPaused(self): 
+        return self.status == 'paused'
+    
+    def isRunning(self):
+        return self.status == 'running'
+    
+    def isCancelled(self):
+        return self.status == 'cancelled'
+    
     # To be implemented in subclasses
     def playerStart(self,player): pass
     def computeWinner(self): pass
