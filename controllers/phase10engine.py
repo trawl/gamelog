@@ -16,12 +16,6 @@ class Phase10Engine(RoundGameEngine):
     def getPhases(self):
         cur = db.execute("Select key,value from GameExtras where Game_name='{}' and key like 'Phase %' order by key asc".format(self.game))
         return [row['value'] for row in cur ]
-        # Empty phase (0)
-#        phases = {'key':[""],'desc':[""]}
-#        for row in cur:
-#            phases["key"].append(row['key'])
-#            phases["desc"].append(row['value'])
-#        return phases
 
     def getRemainingPhasesFromPlayer(self, player):
         remaining = range (1,11)
@@ -48,7 +42,15 @@ class Phase10Engine(RoundGameEngine):
 
     def printExtraPlayerStats(self,player):
         print("Phases completed: {}".format(self.getCompletedPhasesFromPlayer(player)))
-
+        
+    def printExtraStats(self):
+        print("Phases:")
+        print("====================")
+        for n,phase in enumerate(self.getPhases(),start=1):
+            print(u"  Phase {0:02}: {1}".format(n,phase))
+        print("====================")
+        print("  Quick desc: s=set, r=run, c=colour, cr=colour run")
+        print("  Example: 2s4 = 2 sets of 4 cards")
 
 class Phase10MasterEngine(Phase10Engine):
     def __init__(self):
