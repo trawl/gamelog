@@ -8,10 +8,20 @@ except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
-
-class GameWidget(QtGui.QWidget):
+    
+from gui.clock import GameClock
+    
+class Tab(QtGui.QWidget):
     
     closeRequested = QtCore.Signal(QtGui.QWidget)
+    
+    def __init__(self, parent=None):
+        super(Tab, self).__init__(parent)
+    def requestClose(self):
+        self.closeRequested.emit(self)   
+        
+
+class GameWidget(Tab):
 
     def __init__(self, game, players, parent=None):
         super(GameWidget, self).__init__(parent)
@@ -23,9 +33,82 @@ class GameWidget(QtGui.QWidget):
         self.engine.setDealingPolicy(self.engine.RRDealer)
         self.engine.begin()
         self.engine.printStats()
+        self.gameInput = None
+#        self.initUI()
         
-    def createEngine(self): pass
+    def initUI(self):
+        #Set up the main grid
+        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
+        self.widgetLayout = QtGui.QGridLayout(self)
+        self.roundGroup = QtGui.QGroupBox(self)
+        self.widgetLayout.addWidget(self.roundGroup,0,0)
+        self.matchGroup = QtGui.QGroupBox(self)
+        self.widgetLayout.addWidget(self.matchGroup,0,1)
+        self.leftGroup = QtGui.QGroupBox(self)
+        self.widgetLayout.addWidget(self.leftGroup,0,1)
+        self.rightGroup = QtGui.QGroupBox(self)
+        self.widgetLayout.addWidget(self.rightGroup,1,1)
+         
+        #Round Group
+        self.roundLayout = QtGui.QVBoxLayout(self.roundGroup)
+        self.buttonGroupLayout= QtGui.QHBoxLayout()
+        self.roundLayout.addLayout(self.buttonGroupLayout)        
+        
+        self.cancelMatchButton = QtGui.QPushButton(self.roundGroup)
+        self.buttonGroupLayout.addWidget(self.cancelMatchButton)
+        self.cancelMatchButton.clicked.connect(self.cancelMatch)
+        
+        self.pauseMatchButton = QtGui.QPushButton(self.roundGroup)
+        self.buttonGroupLayout.addWidget(self.pauseMatchButton)
+        self.pauseMatchButton.clicked.connect(self.pauseMatch)
+
+        self.commitRoundButton = QtGui.QPushButton(self.roundGroup)
+        self.buttonGroupLayout.addWidget(self.commitRoundButton)
+        self.commitRoundButton.clicked.connect(self.commitRound)
+        
+        self.roundLayout.addStretch()
+        
+        self.gameStatusLabel = QtGui.QLabel(self.roundGroup)
+        
+        self.gameStatusLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.roundLayout.addWidget(self.gameStatusLabel)
+        
+        #Match Group
+        self.matchGroupLayout = QtGui.QVBoxLayout(self.matchGroup)
+        
+        self.clock = GameClock(self)
+        self.clock.setMinimumHeight(100)
+        self.matchGroupLayout.addWidget(self.clock)
+        
+        self.dealerPolicyCheckBox = QtGui.QCheckBox(self.matchGroup)
+        if self.engine.getDealingPolicy() == self.engine.WinnerDealer:
+            self.dealerPolicyCheckBox.setChecked(True)
+        else:
+            self.dealerPolicyCheckBox.setChecked(False)
+        self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
+        self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
+        self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
+        
+        self.retranslateUI()
+        
+    def retranslateUI(self):
+        self.roundGroup.setTitle("{} {}".format(QtGui.QApplication.translate("GameWidget","Round"),str(self.engine.getNumRound())))
+        self.pauseMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Pause/Play"))
+        self.cancelMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Cancel Match"))
+        self.commitRoundButton.setText(QtGui.QApplication.translate("GameWidget","Commit &Round"))
+        self.matchGroup.setTitle(QtGui.QApplication.translate("GameWidget","Match"))
+        self.dealerPolicyCheckBox.setText(QtGui.QApplication.translate("GameWidget","Winner deals"))
+        self.updateGameStatusLabel()
     
+    def updateGameStatusLabel(self):
+        self.gameStatusLabel.setStyleSheet("QLabel { font-size: 16px; font-weight:bold; color: red;}")    
+        winner = self.engine.getWinner()
+        if winner:
+            self.gameStatusLabel.setText(unicode(QtGui.QApplication.translate("GameWidget","{} won this match!")).format(winner))
+        elif self.engine.isPaused():
+            self.gameStatusLabel.setText(QtGui.QApplication.translate("GameWidget","Game is paused"))
+        else:
+            self.gameStatusLabel.setText(QtGui.QApplication.translate("GameWidget",""))      
     
     def cancelMatch(self):
         ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("GameWidget",'Cancel Match'),
@@ -34,8 +117,112 @@ class GameWidget(QtGui.QWidget):
         
         if ret == QtGui.QMessageBox.No: return
         self.closeMatch()
-        self.closeRequested.emit(self)   
+        self.requestClose()
         
-    def closeMatch(self):
-        self.engine.cancelMatch()
+    def pauseMatch(self):
+        self.updateGameStatusLabel()
+        if self.engine.isPaused():
+            self.engine.unpause()
+            self.clock.unpauseTimer()
+            self.commitRoundButton.setEnabled(True)
+        else:
+            self.engine.pause()
+            self.clock.pauseTimer()
+
+            self.commitRoundButton.setDisabled(True)
+        
+    def commitRound(self):
+        self.engine.openRound()
+        winner = self.gameInput.getWinner()
+        if not winner:
+            QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("GameWidget","No winner selected")))
+            return
+        else:
+            self.engine.setRoundWinner(winner)
+        scores = self.gameInput.getScores()
+        for player,score in scores.items():
+            if not self.checkPlayerScore(score):
+                QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("GameWidget","{0} score is not valid").format(player)))
+                return
+            extras = self.getPlayerExtraInfo(player)
+            if extras is None: return
+            self.engine.addRoundInfo(player,score, extras)
+
+        #Everything ok so far, let's confirm
+        ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("GameWidget",'Commit Round'),
+        QtGui.QApplication.translate("GameWidget","Are you sure you want to commit the current round?"), QtGui.QMessageBox.Yes | 
+        QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
+        
+        if ret == QtGui.QMessageBox.No: return
+
+        # Once here, we can commit round...
+        self.unsetDealer()
+        self.engine.commitRound()
+        self.engine.printStats()
+        
+        self.updatePanel()
+        winner = self.engine.getWinner()
+        if winner:
+            self.pauseMatchButton.setDisabled(True)
+            self.clock.stopTimer()
+            self.commitRoundButton.setDisabled(True)
+            self.updateGameStatusLabel()    
+            for player in self.players:
+                self.gameInput.setDisabled(True)
+        else:           
+            self.setDealer() 
+    
+    def changeDealingPolicy(self, *args, **kwargs):
+        if self.dealerPolicyCheckBox.isChecked():
+            self.engine.setDealingPolicy(self.engine.WinnerDealer)
+        else:
+            self.engine.setDealingPolicy(self.engine.RRDealer)
+        
+    def closeMatch(self): self.engine.cancelMatch()
+    
+    #To be implemented in subclasses
+    def createEngine(self): pass
+    
+    def checkPlayerScore(self,score): 
+        if score >= 0: return True
+        else: return False
+    
+    def getPlayerExtraInfo(self,player):  return {}
+    
+    def unsetDealer(self): pass
+    
+    def setDealer(self): pass
+    
+    
      
+class GameInputWidget(QtGui.QWidget):
+    
+    def __init__(self,engine,parent=None):
+        super(GameInputWidget,self).__init__(parent)
+        self.engine = engine
+        self.winnerSelected = ""
+        self.playerInputList = {}
+
+            
+    def getWinner(self):
+        return self.winnerSelected
+    
+    def getScores(self):
+        scores = {}
+        for player,piw in self.playerInputList.items():
+            scores[player] = piw.getScore()
+        return scores
+    
+    def reset(self):
+        self.winnerSelected = ""
+        for piw in self.playerInputList.values():
+            piw.reset()
+    
+    def changedWinner(self,winner):
+        winner = str(winner)
+        if self.winnerSelected != "":
+            self.playerInputList[self.winnerSelected].reset()
+        self.winnerSelected = winner
+        
+        
+    
