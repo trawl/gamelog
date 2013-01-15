@@ -10,7 +10,7 @@ except ImportError as error:
     QtCore.Slot = QtCore.pyqtSlot
 
 from controllers.remigioengine import RemigioEngine
-from gui.game import GameWidget
+from gui.game import GameWidget,GameInputWidget
 from gui.clock import GameClock
 
 class RemigioWidget(GameWidget):
@@ -122,16 +122,14 @@ class RemigioWidget(GameWidget):
         if self.engine.isPaused():
             self.engine.unpause()
             self.clock.unpauseTimer()
-            self.updateGameStatusLabel()
             self.inputGroup.setEnabled(True)
             self.commitRoundButton.setEnabled(True)
         else:
             self.engine.pause()
             self.clock.pauseTimer()
-            self.updateGameStatusLabel()
             self.inputGroup.setDisabled(True)
             self.commitRoundButton.setDisabled(True)
-
+        self.updateGameStatusLabel()
         
     def retranslateUI(self):
         self.buttonGroup.setTitle(unicode(QtGui.QApplication.translate("RemigioWidget","Round {0}")).format(str(self.engine.getNumRound())))
@@ -230,28 +228,19 @@ class RemigioWidget(GameWidget):
             self.engine.setTop(newtop)
         except ValueError: pass
         
-class RemigioInputWidget(QtGui.QWidget):
+class RemigioInputWidget(GameInputWidget):
     def __init__(self,engine,bgcolors, parent=None):
-        super(RemigioInputWidget,self).__init__(parent)
-        self.engine = engine
+        super(RemigioInputWidget,self).__init__(engine,parent)
         self.bgcolors = bgcolors
         self.initUI()
-        self.winnerSelected = ""
 
     def initUI(self):
-        self.widgetLayout = QtGui.QVBoxLayout(self)       
-        self.tableLayout = QtGui.QHBoxLayout()
-        self.widgetLayout.addLayout(self.tableLayout)
-        
-        self.playerInputList = {}
+        self.widgetLayout = QtGui.QHBoxLayout(self)
+
         for player in self.engine.getListPlayers():
             self.playerInputList[player] = RemigioPlayerInputWidget(player,self.bgcolors,self)
-            self.tableLayout.addWidget(self.playerInputList[player])
+            self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
-
-            
-    def getWinner(self):
-        return self.winnerSelected
     
     def getCloseType(self):
         try: return self.playerInputList[self.winnerSelected].getCloseType()
@@ -260,20 +249,8 @@ class RemigioInputWidget(QtGui.QWidget):
     def getScores(self):
         scores = {}
         for player,piw in self.playerInputList.items():
-            if not piw.isKo():
-                scores[player] = piw.getScore()
+            if not piw.isKo(): scores[player] = piw.getScore()
         return scores
-    
-    def reset(self):
-        self.winnerSelected = ""
-        for piw in self.playerInputList.values():
-            piw.reset()
-    
-    def changedWinner(self,winner):
-        winner = str(winner)
-        if self.winnerSelected != "":
-            self.playerInputList[self.winnerSelected].reset()
-        self.winnerSelected = winner
             
     def koPlayer(self,player):
         self.playerInputList[player].setKo()
