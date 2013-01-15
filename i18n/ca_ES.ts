@@ -1,16 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ca_ES">
+<!DOCTYPE TS>
+<TS version="2.0" language="ca_ES">
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="gui/game.py" line="31"/>
+        <location filename="gui/game.py" line="110"/>
         <source>Cancel Match</source>
         <translation>Finalitzar Partida</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="31"/>
+        <location filename="gui/game.py" line="110"/>
         <source>Are you sure you want to cancel this match?</source>
         <translation>Estàs segur de voler finalitzar aquesta partida?</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="91"/>
+        <source>Round</source>
+        <translation>Ronda</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="92"/>
+        <source>&amp;Pause/Play</source>
+        <translation>&amp;Pausa/Reanuda</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="93"/>
+        <source>&amp;Cancel Match</source>
+        <translation>&amp;Finalitzar Partida</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="94"/>
+        <source>Commit &amp;Round</source>
+        <translation>Tancar &amp;Ronda</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="95"/>
+        <source>Match</source>
+        <translation>Partida</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="96"/>
+        <source>Winner deals</source>
+        <translation>El guanyador reparteix</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="103"/>
+        <source>{} won this match!</source>
+        <translation>{} ha guanyat la partida!</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="105"/>
+        <source>Game is paused</source>
+        <translation>El joc està pausat</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="135"/>
+        <source>No winner selected</source>
+        <translation>Cal sel·leccionar un guanyador</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="142"/>
+        <source>{0} score is not valid</source>
+        <translation>La puntuació de {0} no és vàlida</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="149"/>
+        <source>Commit Round</source>
+        <translation>Tancar Ronda</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="149"/>
+        <source>Are you sure you want to commit the current round?</source>
+        <translation>Estàs segur de voler tancar la ronda actual?</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="183"/>
+        <source>Round {0}</source>
+        <translation>Ronda {0}</translation>
     </message>
 </context>
 <context>
@@ -163,12 +229,12 @@
 <context>
     <name>Phase10PlayerWidget</name>
     <message>
-        <location filename="gui/phase10.py" line="396"/>
+        <location filename="gui/phase10.py" line="389"/>
         <source>Winner</source>
         <translation>Guanyador</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="397"/>
+        <location filename="gui/phase10.py" line="390"/>
         <source>Completed</source>
         <translation>Exposada</translation>
     </message>
@@ -176,12 +242,12 @@
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="gui/phase10.py" line="526"/>
+        <location filename="gui/phase10.py" line="519"/>
         <source>Details</source>
         <translation>Detalls</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="534"/>
+        <location filename="gui/phase10.py" line="527"/>
         <source>Round {}</source>
         <translation>Ronda {}</translation>
     </message>
@@ -189,163 +255,163 @@
 <context>
     <name>Phase10Widget</name>
     <message>
-        <location filename="gui/phase10.py" line="151"/>
+        <location filename="gui/phase10.py" line="149"/>
         <source>Match</source>
         <translation>Partida</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="152"/>
+        <location filename="gui/phase10.py" line="150"/>
         <source>Winner deals</source>
         <translation>El guanyador reparteix</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="153"/>
+        <location filename="gui/phase10.py" line="151"/>
         <source>Phases in order</source>
         <translation>Fases en ordre</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="155"/>
+        <location filename="gui/phase10.py" line="153"/>
         <source>Phases</source>
         <translation>Fases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="156"/>
+        <location filename="gui/phase10.py" line="154"/>
         <source>Round</source>
         <translation>Ronda</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="157"/>
+        <location filename="gui/phase10.py" line="155"/>
         <source>&amp;Cancel Match</source>
         <translation>&amp;Finalitzar Partida</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="158"/>
+        <location filename="gui/phase10.py" line="156"/>
         <source>&amp;Details...</source>
         <translation>&amp;Detalls...</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="159"/>
+        <location filename="gui/phase10.py" line="157"/>
         <source>Commit &amp;Round</source>
         <translation>Tancar &amp;Ronda</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="213"/>
+        <location filename="gui/phase10.py" line="205"/>
         <source>No phase selected for the winner</source>
         <translation>Cap fase sel·leccionada pel guanyador</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="223"/>
+        <location filename="gui/phase10.py" line="215"/>
         <source>{0} score is not valid</source>
         <translation>La puntuació de {0} no és vàlida</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="227"/>
+        <location filename="gui/phase10.py" line="219"/>
         <source>No winner selected</source>
         <translation>Cal sel·leccionar un guanyador</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="231"/>
+        <location filename="gui/phase10.py" line="223"/>
         <source>Commit Round</source>
         <translation>Tancar Ronda</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="231"/>
+        <location filename="gui/phase10.py" line="223"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>Estàs segur de voler tancar la ronda actual?</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="265"/>
+        <location filename="gui/phase10.py" line="258"/>
         <source>Round {0}</source>
         <translation>Ronda {0}</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="171"/>
+        <location filename="gui/phase10.py" line="163"/>
         <source>Phase</source>
         <translation>Fase</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="296"/>
+        <location filename="gui/phase10.py" line="289"/>
         <source>cards of the same colour</source>
         <translation>cartes del mateix color</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="298"/>
+        <location filename="gui/phase10.py" line="291"/>
         <source>run of</source>
         <translation>escala de</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="299"/>
+        <location filename="gui/phase10.py" line="292"/>
         <source>runs of</source>
         <translation>escales de</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="302"/>
+        <location filename="gui/phase10.py" line="295"/>
         <source>colour run of</source>
         <translation>escala de color de</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="303"/>
+        <location filename="gui/phase10.py" line="296"/>
         <source>colour runs of</source>
         <translation>escales de color de</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="280"/>
+        <location filename="gui/phase10.py" line="273"/>
         <source>pair</source>
         <translation>parella</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="281"/>
+        <location filename="gui/phase10.py" line="274"/>
         <source>pairs</source>
         <translation>parelles</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="284"/>
+        <location filename="gui/phase10.py" line="277"/>
         <source>three of a kind</source>
         <comment>singular</comment>
         <translation>trio</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="285"/>
+        <location filename="gui/phase10.py" line="278"/>
         <source>three of a kind</source>
         <comment>plural</comment>
         <translation>trios</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="288"/>
+        <location filename="gui/phase10.py" line="281"/>
         <source>four of a kind</source>
         <comment>singular</comment>
         <translation>cuartet</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="289"/>
+        <location filename="gui/phase10.py" line="282"/>
         <source>four of a kind</source>
         <comment>plural</comment>
         <translation>cuartets</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="292"/>
+        <location filename="gui/phase10.py" line="285"/>
         <source>five of a kind</source>
         <comment>singular</comment>
         <translation>quintet</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="293"/>
+        <location filename="gui/phase10.py" line="286"/>
         <source>five of a kind</source>
         <comment>plural</comment>
         <translation>quintets</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="154"/>
+        <location filename="gui/phase10.py" line="152"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pausa/Reanuda</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="179"/>
+        <location filename="gui/phase10.py" line="171"/>
         <source>{} won this match!</source>
         <translation>{} ha guanyat la partida!</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="181"/>
+        <location filename="gui/phase10.py" line="173"/>
         <source>Game is paused</source>
         <translation>El joc està pausat</translation>
     </message>
@@ -449,12 +515,12 @@
 <context>
     <name>RemigioRoundsDetail</name>
     <message>
-        <location filename="gui/remigio.py" line="425"/>
+        <location filename="gui/remigio.py" line="286"/>
         <source>Details</source>
         <translation>Detalls</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="444"/>
+        <location filename="gui/remigio.py" line="305"/>
         <source>Winner ({}x)</source>
         <translation>Guanyador ({}x)</translation>
     </message>
@@ -462,79 +528,19 @@
 <context>
     <name>RemigioWidget</name>
     <message>
-        <location filename="gui/remigio.py" line="216"/>
-        <source>Round {0}</source>
-        <translation>Ronda {0}</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="138"/>
-        <source>&amp;Cancel Match</source>
-        <translation>&amp;Finalitzar Partida</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="139"/>
-        <source>Commit &amp;Round</source>
-        <translation>Tancar &amp;Ronda</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="159"/>
+        <location filename="gui/remigio.py" line="82"/>
         <source>Warning: real points are computed automatically depending on the close type</source>
         <translation>Atenció: el programa calcula els punts reals segons el tipus de tancament</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="141"/>
-        <source>Match</source>
-        <translation>Partida</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="142"/>
-        <source>Winner deals</source>
-        <translation>El guanyador reparteix</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="143"/>
+        <location filename="gui/remigio.py" line="73"/>
         <source>Score Limit</source>
         <translation>Límit de punts</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="144"/>
+        <location filename="gui/remigio.py" line="74"/>
         <source>Score</source>
         <translation>Marcador</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="176"/>
-        <source>{0} score is not valid</source>
-        <translation>La puntuació de {0} no és vàlida</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="180"/>
-        <source>Commit Round</source>
-        <translation>Tancar Ronda</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="180"/>
-        <source>Are you sure you want to commit the current round?</source>
-        <translation>Estàs segur de voler tancar la ronda actual?</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="166"/>
-        <source>No winner selected</source>
-        <translation>Cal sel·leccionar un guanyador</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="140"/>
-        <source>&amp;Pause/Play</source>
-        <translation>&amp;Pausa/Reanuda</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="152"/>
-        <source>{} won this match!</source>
-        <translation>{} ha guanyat la partida!</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="155"/>
-        <source>Game is paused</source>
-        <translation>El joc està pausat</translation>
     </message>
 </context>
 </TS>

@@ -34,7 +34,7 @@ class GameWidget(Tab):
         self.engine.begin()
         self.engine.printStats()
         self.gameInput = None
-#        self.initUI()
+        self.initUI()
         
     def initUI(self):
         #Set up the main grid
@@ -44,10 +44,6 @@ class GameWidget(Tab):
         self.widgetLayout.addWidget(self.roundGroup,0,0)
         self.matchGroup = QtGui.QGroupBox(self)
         self.widgetLayout.addWidget(self.matchGroup,0,1)
-        self.leftGroup = QtGui.QGroupBox(self)
-        self.widgetLayout.addWidget(self.leftGroup,0,1)
-        self.rightGroup = QtGui.QGroupBox(self)
-        self.widgetLayout.addWidget(self.rightGroup,1,1)
          
         #Round Group
         self.roundLayout = QtGui.QVBoxLayout(self.roundGroup)
@@ -66,7 +62,7 @@ class GameWidget(Tab):
         self.buttonGroupLayout.addWidget(self.commitRoundButton)
         self.commitRoundButton.clicked.connect(self.commitRound)
         
-        self.roundLayout.addStretch()
+#        self.roundLayout.addStretch()
         
         self.gameStatusLabel = QtGui.QLabel(self.roundGroup)
         
@@ -89,7 +85,7 @@ class GameWidget(Tab):
         self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
         self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
         
-        self.retranslateUI()
+#        self.retranslateUI()
         
     def retranslateUI(self):
         self.roundGroup.setTitle("{} {}".format(QtGui.QApplication.translate("GameWidget","Round"),str(self.engine.getNumRound())))
@@ -120,17 +116,18 @@ class GameWidget(Tab):
         self.requestClose()
         
     def pauseMatch(self):
-        self.updateGameStatusLabel()
         if self.engine.isPaused():
-            self.engine.unpause()
             self.clock.unpauseTimer()
             self.commitRoundButton.setEnabled(True)
+            self.gameInput.setEnabled(True)
+            self.engine.unpause()
         else:
-            self.engine.pause()
             self.clock.pauseTimer()
-
             self.commitRoundButton.setDisabled(True)
-        
+            self.gameInput.setDisabled(True)
+            self.engine.pause()
+        self.updateGameStatusLabel()
+            
     def commitRound(self):
         self.engine.openRound()
         winner = self.gameInput.getWinner()
@@ -156,21 +153,9 @@ class GameWidget(Tab):
         if ret == QtGui.QMessageBox.No: return
 
         # Once here, we can commit round...
-        self.unsetDealer()
         self.engine.commitRound()
         self.engine.printStats()
-        
         self.updatePanel()
-        winner = self.engine.getWinner()
-        if winner:
-            self.pauseMatchButton.setDisabled(True)
-            self.clock.stopTimer()
-            self.commitRoundButton.setDisabled(True)
-            self.updateGameStatusLabel()    
-            for player in self.players:
-                self.gameInput.setDisabled(True)
-        else:           
-            self.setDealer() 
     
     def changeDealingPolicy(self, *args, **kwargs):
         if self.dealerPolicyCheckBox.isChecked():
@@ -180,12 +165,27 @@ class GameWidget(Tab):
         
     def closeMatch(self): self.engine.cancelMatch()
     
-    #To be implemented in subclasses
-    def createEngine(self): pass
-    
     def checkPlayerScore(self,score): 
         if score >= 0: return True
         else: return False
+        
+    def updatePanel(self):
+        self.unsetDealer()
+        self.gameInput.reset()
+        self.dealerPolicyCheckBox.setEnabled(False)
+        if self.engine.getWinner():
+            self.pauseMatchButton.setDisabled(True)
+            self.clock.stopTimer()
+            self.commitRoundButton.setDisabled(True)
+            self.updateGameStatusLabel()    
+            self.gameInput.setDisabled(True)
+        else:
+            self.roundGroup.setTitle(unicode(QtGui.QApplication.translate("GameWidget","Round {0}")).format(str(self.engine.getNumRound())))           
+            self.setDealer() 
+
+    
+    #To be implemented in subclasses
+    def createEngine(self): pass
     
     def getPlayerExtraInfo(self,player):  return {}
     
