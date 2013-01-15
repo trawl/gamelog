@@ -103,6 +103,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def removeTab(self,tab):
         self.tabWidget.removeTab(self.tabWidget.indexOf(tab))
+        self.openedGames.remove(tab)
         
     def chooseLanguage(self):
         lc = LanguageChooser(self)
