@@ -11,7 +11,7 @@ except ImportError as error:
 import re
 
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
-from gui.game import GameWidget
+from gui.game import GameWidget,GameInputWidget
 from gui.clock import GameClock
 
 class Phase10Widget(GameWidget):
@@ -123,11 +123,7 @@ class Phase10Widget(GameWidget):
         self.roundScore=dict()
         self.roundPhaseCleared=dict()
         self.phaseCompletedLabels=dict()
-        self.winnerButtonGroup=QtGui.QButtonGroup()
-        self.nobodyWinnerRadioButton = QtGui.QRadioButton(self)
-        self.nobodyWinnerRadioButton.hide()
-        self.nobodyWinnerRadioButton.setChecked(True)
-        self.winnerButtonGroup.addButton(self.nobodyWinnerRadioButton)
+
         
         
         if not players_grid: self.playerGroupsLayout.addStretch()
@@ -318,7 +314,44 @@ class Phase10Widget(GameWidget):
         return phases
 
 
+class Phase10InputWidget(GameInputWidget):
+    def __init__(self,engine,parent=None):
+        super(Phase10InputWidget,self).__init__(engine,parent)
+    
+    def initUI(self):
+        
+        self.winnerButtonGroup=QtGui.QButtonGroup()
+        self.nobodyWinnerRadioButton = QtGui.QRadioButton(self)
+        self.nobodyWinnerRadioButton.hide()
+        self.nobodyWinnerRadioButton.setChecked(True)
+        self.winnerButtonGroup.addButton(self.nobodyWinnerRadioButton)
+        
+        players = self.engine.getListPlayers()
+        if len(players)>4:
+            players_grid = True
+            self.widgetLayout =  QtGui.QGridLayout()
+        else:
+            players_grid = False
+            self.widgetLayout =  QtGui.QVBoxLayout()
+
+        if not players_grid: self.widgetLayout.addStretch()
+        for np, player in enumerate(self.players):
+            self.playerInputList[player] = Phase10PlayerWidget(player,self.winnerButtonGroup,self)
+            self.playerInputList[player].winnerSet.connect(self.changedWinner)
+            if players_grid: 
+                self.widgetLayout.addWidget(self.playerGroupBox[player],np/2,np%2)
+            else: self.widgetLayout.addWidget(self.playerGroupBox[player])
+        if not players_grid: self.widgetLayout.addStretch()
+        
+    def switchPhasesInOrder(self):
+        for player in self.engine.getListPlayers():
+            self.playerInputList[player].switchPhasesInOrder()
+    
+
 class Phase10PlayerWidget(QtGui.QGroupBox):
+    
+    winnerSet = QtCore.Signal(str)
+    
     def __init__(self, nick, bgroup = None, parent=None):
         super(Phase10PlayerWidget,self).__init__(parent)
         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
@@ -388,6 +421,9 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
     def retranslateUI(self):
         self.roundWinnerRadioButton.setText(QtGui.QApplication.translate("Phase10PlayerWidget","Winner"))
         self.roundPhaseClearedCheckbox.setText(QtGui.QApplication.translate("Phase10PlayerWidget","Completed"))
+        
+    def winnerSetAction(self,isset):
+        if isset: self.winnerSet.emit()
             
     def updateDisplay(self,points,completed_phases,remaining_phases):
         
