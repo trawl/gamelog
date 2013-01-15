@@ -11,15 +11,13 @@ except ImportError as error:
 
 from controllers.remigioengine import RemigioEngine
 from gui.game import GameWidget,GameInputWidget
-from gui.clock import GameClock
 
 class RemigioWidget(GameWidget):
 
     bgcolors = [0,0xCCFF99,0xFFFF99,0xFFCC99,0xFFCCFF]
 
-    def __init__(self, game, players, parent=None):
-        super(RemigioWidget, self).__init__(game,players,parent)
-        self.initUI()
+#    def __init__(self, game, players, parent=None):
+#        super(RemigioWidget, self).__init__(game,players,parent)
         
     def createEngine(self):
         if self.game != 'Remigio':
@@ -28,60 +26,13 @@ class RemigioWidget(GameWidget):
         self.engine = RemigioEngine()     
 
     def initUI(self):
-        self.mainLayout = QtGui.QGridLayout(self)
-    
-        self.buttonGroup=QtGui.QGroupBox(self)
-        self.buttonGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-
-
-        self.mainLayout.addWidget(self.buttonGroup,0,0)
-        self.buttonGroupLayout= QtGui.QVBoxLayout(self.buttonGroup)
-        self.buttonGroupSubLayout= QtGui.QHBoxLayout()
-        self.buttonGroupLayout.addLayout(self.buttonGroupSubLayout)
-
-        self.cancelMatchButton = QtGui.QPushButton(self.buttonGroup)
-        self.buttonGroupSubLayout.addWidget(self.cancelMatchButton)
-        self.cancelMatchButton.clicked.connect(self.cancelMatch)
-        
-        self.pauseMatchButton = QtGui.QPushButton(self.buttonGroup)
-        self.buttonGroupSubLayout.addWidget(self.pauseMatchButton)
-        self.pauseMatchButton.clicked.connect(self.pauseMatch)
-        
-        self.commitRoundButton = QtGui.QPushButton(self.buttonGroup)
-        self.buttonGroupSubLayout.addWidget(self.commitRoundButton)
-        self.commitRoundButton.clicked.connect(self.commitRound)
-        
-        self.gameStatusLabel = QtGui.QLabel(self)
-        self.gameStatusLabel.setMaximumHeight(20)
-        self.gameStatusLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.buttonGroupLayout.addWidget(self.gameStatusLabel)
-        
-        self.inputGroup = RemigioInputWidget(self.engine,RemigioWidget.bgcolors, self)
-        self.buttonGroupLayout.addWidget(self.inputGroup)
-#        self.buttonGroupLayout.addStretch()
-
-        self.matchGroup = QtGui.QGroupBox(self)
-        self.matchGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-        self.mainLayout.addWidget(self.matchGroup,0,1)
-        
-        self.matchGroupLayout = QtGui.QVBoxLayout(self.matchGroup)
-        
-        self.clock = GameClock(self)
-        self.clock.setMinimumHeight(100)
-        self.matchGroupLayout.addWidget(self.clock)
-        
-        self.dealerPolicyCheckBox = QtGui.QCheckBox(self.matchGroup)
-        if self.engine.getDealingPolicy() == self.engine.WinnerDealer:
-            self.dealerPolicyCheckBox.setChecked(True)
-        else:
-            self.dealerPolicyCheckBox.setChecked(False)
-        self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
-        self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
-        self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
+        super(RemigioWidget,self).initUI()
+ 
+        self.gameInput = RemigioInputWidget(self.engine,RemigioWidget.bgcolors, self)
+        self.roundLayout.addWidget(self.gameInput)
         
         self.configLayout = QtGui.QGridLayout()
         self.matchGroupLayout.addLayout(self.configLayout)
-        
         self.topPointsLineEdit = QtGui.QLineEdit(self.matchGroup)
         self.topPointsLineEdit.setText(str(self.engine.getTop()))
         self.topPointsLineEdit.setValidator(QtGui.QIntValidator(1,10000,self.topPointsLineEdit))
@@ -97,10 +48,10 @@ class RemigioWidget(GameWidget):
         
         self.detailGroup = RemigioRoundsDetail(self.engine, RemigioWidget.bgcolors, self)
         self.detailGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-        self.mainLayout.addWidget(self.detailGroup,1,0)        
+        self.widgetLayout.addWidget(self.detailGroup,1,0)        
         
         self.playerGroup = QtGui.QGroupBox(self)
-        self.mainLayout.addWidget(self.playerGroup,1,1)
+        self.widgetLayout.addWidget(self.playerGroup,1,1)
 
         self.playerGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.playersLayout = QtGui.QVBoxLayout(self.playerGroup)
@@ -116,117 +67,49 @@ class RemigioWidget(GameWidget):
         self.playersLayout.addStretch()
         
         self.retranslateUI()
-    
-            
-    def pauseMatch(self):
-        if self.engine.isPaused():
-            self.engine.unpause()
-            self.clock.unpauseTimer()
-            self.inputGroup.setEnabled(True)
-            self.commitRoundButton.setEnabled(True)
-        else:
-            self.engine.pause()
-            self.clock.pauseTimer()
-            self.inputGroup.setDisabled(True)
-            self.commitRoundButton.setDisabled(True)
-        self.updateGameStatusLabel()
         
     def retranslateUI(self):
-        self.buttonGroup.setTitle(unicode(QtGui.QApplication.translate("RemigioWidget","Round {0}")).format(str(self.engine.getNumRound())))
-        self.cancelMatchButton.setText(QtGui.QApplication.translate("RemigioWidget","&Cancel Match"))
-        self.commitRoundButton.setText(QtGui.QApplication.translate("RemigioWidget","Commit &Round"))
-        self.pauseMatchButton.setText(QtGui.QApplication.translate("RemigioWidget","&Pause/Play"))
-        self.matchGroup.setTitle(QtGui.QApplication.translate("RemigioWidget","Match"))
-        self.dealerPolicyCheckBox.setText(QtGui.QApplication.translate("RemigioWidget","Winner deals"))
+        super(RemigioWidget,self).retranslateUI()
         self.topPointsLabel.setText(QtGui.QApplication.translate("RemigioWidget","Score Limit"))
         self.playerGroup.setTitle(QtGui.QApplication.translate("RemigioWidget","Score"))
-        self.updateGameStatusLabel()
         self.detailGroup.retranslateUI()
         
     
     def updateGameStatusLabel(self):
-        winner = self.engine.getWinner()
-        if winner:
-            self.gameStatusLabel.setText(unicode(QtGui.QApplication.translate("RemigioWidget","{} won this match!")).format(winner))
-            self.gameStatusLabel.setStyleSheet("QLabel { font-size: 16px; font-weight:bold; color: red;}")    
-        elif self.engine.isPaused():
-            self.gameStatusLabel.setText(QtGui.QApplication.translate("RemigioWidget","Game is paused"))
-            self.gameStatusLabel.setStyleSheet("QLabel { font-size: 16px; font-weight:bold; color: red;}")    
-        else:
+        super(RemigioWidget,self).updateGameStatusLabel()
+        if self.gameStatusLabel.text() == "":
             self.gameStatusLabel.setStyleSheet("QLabel {font-weight:bold;}")
             self.gameStatusLabel.setText(QtGui.QApplication.translate("RemigioWidget","Warning: real points are computed automatically depending on the close type"))
-        
-        
-    def commitRound(self):
-        self.engine.openRound()
-        winner = self.inputGroup.getWinner()
-        if not winner:
-            QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("RemigioWidget","No winner selected")))
-            return
-        else:
-            self.engine.setRoundWinner(winner)
-        c_type = self.inputGroup.getCloseType()
-        scores = self.inputGroup.getScores()
-        for player,score in scores.items():
-            if score>=0 :
-                self.engine.addRoundInfo(player,score, {'closeType':c_type})
-            else:
-                QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("RemigioWidget","{0} score is not valid").format(player)))
-                return
-
-        #Everything ok so far, let's confirm
-        ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("RemigioWidget",'Commit Round'),
-        QtGui.QApplication.translate("RemigioWidget","Are you sure you want to commit the current round?"), QtGui.QMessageBox.Yes | 
-        QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
-        
-        if ret == QtGui.QMessageBox.No: return
-
-        # Once here, we can commit round...
-        self.playerGroupBox[self.engine.getDealer()].unsetDealer()
-        self.engine.commitRound()
-        self.engine.printStats()
-        
-        self.updatePanel()
-        winner = self.engine.getWinner()
-        if winner:
-            self.pauseMatchButton.setDisabled(True)
-            self.clock.stopTimer()
-            self.commitRoundButton.setDisabled(True)
-            self.updateGameStatusLabel()    
-            self.gameStatusLabel.show()
-            for player in self.players:
-                self.inputGroup.setDisabled(True)
-        else:           
-            self.playerGroupBox[self.engine.getDealer()].setDealer() 
-            
-    def changeDealingPolicy(self, *args, **kwargs):
-        if self.dealerPolicyCheckBox.isChecked():
-            self.engine.setDealingPolicy(self.engine.WinnerDealer)
-        else:
-            self.engine.setDealingPolicy(self.engine.RRDealer)
+    
+    
+    def getPlayerExtraInfo(self,player):  
+        c_type = self.gameInput.getCloseType()
+        if c_type: return {'closeType':c_type}
+        else: return None
+    
+    def unsetDealer(self): self.playerGroupBox[self.engine.getDealer()].unsetDealer()
+    
+    def setDealer(self): self.playerGroupBox[self.engine.getDealer()].setDealer() 
 
     def updatePanel(self):
-        self.inputGroup.reset()
         self.topPointsLineEdit.setReadOnly(True)
         self.dealerPolicyCheckBox.setEnabled(False)
-        
-        if not self.engine.getWinner():
-            self.buttonGroup.setTitle(unicode(QtGui.QApplication.translate("RemigioWidget","Round {0}")).format(str(self.engine.getNumRound())))
-            
         for player in self.players:
             score = self.engine.getScoreFromPlayer(player)
             self.playerGroupBox[player].updateDisplay(score)
             if self.engine.isPlayerOff(player):
                 self.playerGroupBox[player].koPlayer()
-                self.inputGroup.koPlayer(player)
+                self.gameInput.koPlayer(player)
         
         self.detailGroup.updateRound()
+        super(RemigioWidget,self).updatePanel()
         
     def changeTop(self,newtop):
         try:
             newtop = int(newtop)    
             self.engine.setTop(newtop)
         except ValueError: pass
+        
         
 class RemigioInputWidget(GameInputWidget):
     def __init__(self,engine,bgcolors, parent=None):
@@ -254,6 +137,7 @@ class RemigioInputWidget(GameInputWidget):
             
     def koPlayer(self,player):
         self.playerInputList[player].setKo()
+        
         
 class RemigioPlayerInputWidget(QtGui.QFrame):
     
@@ -437,6 +321,3 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
         r = rounds[-1]
         i = len(rounds) - 1
         self.insertRound(r,i)
-    
-
-        
