@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+import re
+
 try:
     from PySide import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
@@ -7,18 +10,11 @@ except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
-    
-import re
 
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
 from gui.game import GameWidget,GameInputWidget
-from gui.clock import GameClock
 
 class Phase10Widget(GameWidget):
-
-    def __init__(self, game, players, parent=None):
-        super(Phase10Widget, self).__init__(game,players,parent)
-        self.initUI()
 
     def createEngine(self):
         if self.game == 'Phase10Master':
@@ -30,49 +26,25 @@ class Phase10Widget(GameWidget):
             return
 
     def initUI(self):
-        #Setup Layouts
-        self.widgetLayout = QtGui.QGridLayout(self)
-        self.leftLayout =  QtGui.QVBoxLayout()
-        if len(self.players)>4:
-            players_grid = True
-            self.playerGroupsLayout =  QtGui.QGridLayout()
-            
-        else:
-            players_grid = False
-            self.playerGroupsLayout =  QtGui.QVBoxLayout()
-        
-        self.miscElementsLayout = QtGui.QVBoxLayout()
-        self.widgetLayout.addLayout(self.miscElementsLayout,1,1)
-        
-        self.matchGroup = QtGui.QGroupBox(self)
-        self.matchGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-#        self.rightLayout.addWidget(self.matchGroup)
-        self.widgetLayout.addWidget(self.matchGroup,0,1)
-        
-        self.matchGroupLayout = QtGui.QVBoxLayout(self.matchGroup)
-        
-        self.clock = GameClock(self)
-        self.clock.setMinimumHeight(100)
-        self.matchGroupLayout.addWidget(self.clock)
-        
-        self.dealerPolicyCheckBox = QtGui.QCheckBox(self.matchGroup)
-        if self.engine.getDealingPolicy() == self.engine.WinnerDealer:
-            self.dealerPolicyCheckBox.setChecked(True)
-        else:
-            self.dealerPolicyCheckBox.setChecked(False)
-        self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
-        self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
-        self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
-        
-        
+        super(Phase10Widget,self).initUI()
+         
+        self.detailMatchButton = QtGui.QPushButton(self.roundGroup)
+        self.detailMatchButton.setDisabled(True)
+        self.buttonGroupLayout.insertWidget(2,self.detailMatchButton)
+        self.detailMatchButton.clicked.connect(self.showDetails)
+               
         self.phasesInOrderCheckBox = QtGui.QCheckBox(self.matchGroup)
         self.phasesInOrderCheckBox.setChecked(True)
         self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
         self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
-        
+
+        self.gameInput = Phase10InputWidget(self.engine,self.matchGroup)
+        self.phasesInOrderCheckBox.stateChanged.connect(self.gameInput.switchPhasesInOrder)
+        self.widgetLayout.addWidget(self.gameInput,1,0)
+    
         self.extraGroup = QtGui.QGroupBox(self)
         self.extraGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-        self.miscElementsLayout.addWidget(self.extraGroup)
+        self.widgetLayout.addWidget(self.extraGroup,1,1)
         self.extraGroupLayout = QtGui.QVBoxLayout(self.extraGroup)
         
         self.phaseLabels = []
@@ -82,162 +54,29 @@ class Phase10Widget(GameWidget):
             label.setStyleSheet("QLabel {font-size: 16px; font-weight: bold; }")
             self.phaseLabels.append(label)
             self.extraGroupLayout.addWidget(label)
-   
-        self.roundGroup = QtGui.QGroupBox(self)
-        self.roundGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-        self.widgetLayout.addWidget(self.roundGroup,0,0)
         
-        self.roundLayout = QtGui.QVBoxLayout(self.roundGroup)
-        self.buttonGroupLayout= QtGui.QHBoxLayout()
-        self.roundLayout.addLayout(self.buttonGroupLayout)
-        self.roundLayout.addStretch()
-        
-        self.cancelMatchButton = QtGui.QPushButton(self.roundGroup)
-        self.buttonGroupLayout.addWidget(self.cancelMatchButton)
-        self.cancelMatchButton.clicked.connect(self.cancelMatch)
-        
-        self.pauseMatchButton = QtGui.QPushButton(self.roundGroup)
-        self.buttonGroupLayout.addWidget(self.pauseMatchButton)
-        self.pauseMatchButton.clicked.connect(self.pauseMatch)
-
-        self.detailMatchButton = QtGui.QPushButton(self.roundGroup)
-        self.detailMatchButton.setDisabled(True)
-        self.buttonGroupLayout.addWidget(self.detailMatchButton)
-        self.detailMatchButton.clicked.connect(self.showDetails)
-
-        self.commitRoundButton = QtGui.QPushButton(self.roundGroup)
-        self.buttonGroupLayout.addWidget(self.commitRoundButton)
-        self.commitRoundButton.clicked.connect(self.commitRound)
-        
-        self.gameStatusLabel = QtGui.QLabel(self.roundGroup)
-        self.gameStatusLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.roundLayout.addWidget(self.gameStatusLabel)
-        self.roundLayout.addStretch()
-
-        self.widgetLayout.addLayout(self.playerGroupsLayout,1,0)
-        
-        #Init variables
-        self.playerGroupBox=dict()
-        self.playerNewRoundLayout=dict()
-        self.roundWinnerRadioButton=dict()
-        self.roundScore=dict()
-        self.roundPhaseCleared=dict()
-        self.phaseCompletedLabels=dict()
-
-        
-        
-        if not players_grid: self.playerGroupsLayout.addStretch()
-        np = 0
-        for player in self.players:
-            self.playerGroupBox[player] = Phase10PlayerWidget(player,self.winnerButtonGroup,self)
-            self.phasesInOrderCheckBox.stateChanged.connect(self.playerGroupBox[player].switchPhasesInOrder)
-            if players_grid: 
-                self.playerGroupsLayout.addWidget(self.playerGroupBox[player],np/2,np%2)
-            else: self.playerGroupsLayout.addWidget(self.playerGroupBox[player])    
-            np += 1
-            
-        if not players_grid: self.playerGroupsLayout.addStretch()
-        
-        self.playerGroupBox[self.engine.getDealer()].setDealer()
+        self.setDealer()
         self.retranslateUI()
         
     def retranslateUI(self):
-        self.matchGroup.setTitle(QtGui.QApplication.translate("Phase10Widget","Match"))
-        self.dealerPolicyCheckBox.setText(QtGui.QApplication.translate("Phase10Widget","Winner deals"))
+        super(Phase10Widget,self).retranslateUI()
         self.phasesInOrderCheckBox.setText(QtGui.QApplication.translate("Phase10Widget","Phases in order"))
-        self.pauseMatchButton.setText(QtGui.QApplication.translate("Phase10Widget","&Pause/Play"))
         self.extraGroup.setTitle(QtGui.QApplication.translate("Phase10Widget","Phases"))
-        self.roundGroup.setTitle("{} {}".format(QtGui.QApplication.translate("Phase10Widget","Round"),str(self.engine.getNumRound())))
-        self.cancelMatchButton.setText(QtGui.QApplication.translate("Phase10Widget","&Cancel Match"))
         self.detailMatchButton.setText(QtGui.QApplication.translate("Phase10Widget","&Details..."))
-        self.commitRoundButton.setText(QtGui.QApplication.translate("Phase10Widget","Commit &Round"))
-        self.updateGameStatusLabel()
-        
-        for player in self.players:
-            self.playerGroupBox[player].retranslateUI()
-        
+        self.gameInput.retranslateUI()        
         phaseword = unicode(QtGui.QApplication.translate("Phase10Widget","Phase"))
         for number,(phase,label) in enumerate(zip(self.getPhases(),self.phaseLabels),start=1):
             label.setText(unicode(u"{0} {1:02}: {2}".format(phaseword,number,phase)))
+    
+    def checkPlayerScore(self,player,score): 
+        return super(Phase10Widget,self).checkPlayerScore(self,score) \
+            and not (score%5!=0 or (score<50 and not self.gameInput.hasPlayerCleared(player)))
             
-    def updateGameStatusLabel(self):
-        self.gameStatusLabel.setStyleSheet("QLabel { font-size: 16px; font-weight:bold; color: red;}")    
-        winner = self.engine.getWinner()
-        if winner:
-            self.gameStatusLabel.setText(unicode(QtGui.QApplication.translate("Phase10Widget","{} won this match!")).format(winner))
-        elif self.engine.isPaused():
-            self.gameStatusLabel.setText(QtGui.QApplication.translate("Phase10Widget","Game is paused"))
-        else:
-            self.gameStatusLabel.setText(QtGui.QApplication.translate("Phase10Widget",""))        
-            
-    def pauseMatch(self):
-        if self.engine.isPaused():
-            self.engine.unpause()
-            self.clock.unpauseTimer()
-            self.commitRoundButton.setEnabled(True)
-            for player in self.players:
-                self.playerGroupBox[player].setEnabled(True)
-        else:
-            self.engine.pause()
-            self.clock.pauseTimer()
-            self.commitRoundButton.setDisabled(True)
-            for player in self.players:
-                self.playerGroupBox[player].setDisabled(True)
-                
-        self.updateGameStatusLabel()
-                
-    def commitRound(self):
-        self.engine.openRound()
-        winner=None
-        for player in self.players:
-            pw = self.playerGroupBox[player]
-            a_phase = pw.getRoundPhase()
-            cleared =  pw.isRoundCleared()
-            if pw.isWinner():
-                winner = player
-                self.engine.setRoundWinner(winner)
-                score = 0
-                if not cleared:
-                    QtGui.QMessageBox.warning(self,self.game,unicode("{} ({})".format(QtGui.QApplication.translate("Phase10Widget","No phase selected for the winner"),player)))
-                    return
-
-            else:
-                try:
-                    score = int(pw.getRoundScore())
-                except ValueError:
-                    QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("Phase10Widget","{0} score is not valid").format(player)))
-                    return
-                if score%5!=0 or (score<50 and not cleared):
-                    QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("Phase10Widget","{0} score is not valid").format(player)))
-                    return
-            self.engine.addRoundInfo(player,score, {'aimedPhase':a_phase, 'isCompleted':cleared})
-        if not winner:
-            QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("Phase10Widget","No winner selected")))
-            return
-
-        #Everything ok so far, let's confirm
-        ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("Phase10Widget",'Commit Round'),
-        QtGui.QApplication.translate("Phase10Widget","Are you sure you want to commit the current round?"), QtGui.QMessageBox.Yes | 
-        QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
-        
-        if ret == QtGui.QMessageBox.No: return
-
-        # Once here, we can commit round...
-        self.playerGroupBox[self.engine.getDealer()].unsetDealer() 
-        self.engine.commitRound()
-        self.engine.printStats()
-        
-        self.updatePanel()
-        winner = self.engine.getWinner()
-        if winner:
-            self.updateGameStatusLabel()
-            for player in self.players:
-                self.playerGroupBox[player].setDisabled(True)
-                self.clock.stopTimer()
-                self.commitRoundButton.setDisabled(True)
-                self.phasesInOrderCheckBox.setDisabled(True)  
-        else:   
-            self.playerGroupBox[self.engine.getDealer()].setDealer() 
+    def getPlayerExtraInfo(self,player):  
+        cleared = self.gameInput.hasPlayerCleared(player)
+        a_phase = self.gameInput.getPlayerAimedPhase(player)
+        if a_phase: return {'aimedPhase':a_phase, 'isCompleted':cleared}
+        else: return {}
 
     def changeDealingPolicy(self, *args, **kwargs):
         if self.dealerPolicyCheckBox.isChecked():
@@ -245,23 +84,18 @@ class Phase10Widget(GameWidget):
         else:
             self.engine.setDealingPolicy(self.engine.RRDealer)
 
-
     def updatePanel(self):        
         self.detailMatchButton.setEnabled(True)
         self.phasesInOrderCheckBox.setEnabled(False)
         self.dealerPolicyCheckBox.setEnabled(False)
-        if not self.engine.getWinner():
-            self.roundGroup.setTitle(unicode(QtGui.QApplication.translate("Phase10Widget","Round {0}")).format(str(self.engine.getNumRound())))
-            
-        self.nobodyWinnerRadioButton.setChecked(True)
-        for player in self.players:
-            score = self.engine.getScoreFromPlayer(player)
-            completed = self.engine.getCompletedPhasesFromPlayer(player)
-            remaining = self.engine.getRemainingPhasesFromPlayer(player)
-            self.playerGroupBox[player].updateDisplay(score,completed,remaining)
-
-    def showDetails(self):
-        Phase10RoundsDetail(self.engine).exec_()
+        self.gameInput.updatePanel()
+        super(Phase10Widget,self).updatePanel()
+        
+    def unsetDealer(self): self.gameInput.unsetDealer()
+    
+    def setDealer(self): self.gameInput.setDealer() 
+    
+    def showDetails(self): Phase10RoundsDetail(self.engine).exec_()
         
     def getPhases(self):
         types = {'s': {
@@ -315,11 +149,12 @@ class Phase10Widget(GameWidget):
 
 
 class Phase10InputWidget(GameInputWidget):
+    
     def __init__(self,engine,parent=None):
         super(Phase10InputWidget,self).__init__(engine,parent)
+        self.initUI()
     
     def initUI(self):
-        
         self.winnerButtonGroup=QtGui.QButtonGroup()
         self.nobodyWinnerRadioButton = QtGui.QRadioButton(self)
         self.nobodyWinnerRadioButton.hide()
@@ -329,23 +164,47 @@ class Phase10InputWidget(GameInputWidget):
         players = self.engine.getListPlayers()
         if len(players)>4:
             players_grid = True
-            self.widgetLayout =  QtGui.QGridLayout()
+            self.widgetLayout =  QtGui.QGridLayout(self)
         else:
             players_grid = False
-            self.widgetLayout =  QtGui.QVBoxLayout()
+            self.widgetLayout =  QtGui.QVBoxLayout(self)
+            self.widgetLayout.addStretch()
 
-        if not players_grid: self.widgetLayout.addStretch()
-        for np, player in enumerate(self.players):
+        for np, player in enumerate(players):
             self.playerInputList[player] = Phase10PlayerWidget(player,self.winnerButtonGroup,self)
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
             if players_grid: 
-                self.widgetLayout.addWidget(self.playerGroupBox[player],np/2,np%2)
-            else: self.widgetLayout.addWidget(self.playerGroupBox[player])
+                self.widgetLayout.addWidget(self.playerInputList[player],np/2,np%2)
+            else: 
+                self.widgetLayout.addWidget(self.playerInputList[player])
+            
         if not players_grid: self.widgetLayout.addStretch()
         
-    def switchPhasesInOrder(self):
+    def retranslateUI(self):
+        for piw in self.playerInputList.values():
+            piw.retranslateUI()
+        
+    def switchPhasesInOrder(self, in_order):
         for player in self.engine.getListPlayers():
-            self.playerInputList[player].switchPhasesInOrder()
+            self.playerInputList[player].switchPhasesInOrder(in_order)
+            
+    def hasPlayerCleared(self,player):
+        return self.playerInputList[player].isRoundCleared()
+    
+    def getPlayerAimedPhase(self,player):
+        return self.playerInputList[player].getRoundPhase()
+    
+    def updatePanel(self):
+        self.nobodyWinnerRadioButton.setChecked(True)
+        for player in self.engine.getListPlayers():
+            score = self.engine.getScoreFromPlayer(player)
+            completed = self.engine.getCompletedPhasesFromPlayer(player)
+            remaining = self.engine.getRemainingPhasesFromPlayer(player)
+            self.playerInputList[player].updateDisplay(score,completed,remaining)
+            
+    def unsetDealer(self): self.playerInputList[self.engine.getDealer()].unsetDealer()
+    
+    def setDealer(self): self.playerInputList[self.engine.getDealer()].setDealer() 
     
 
 class Phase10PlayerWidget(QtGui.QGroupBox):
@@ -366,9 +225,7 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.widgetLayout = QtGui.QHBoxLayout(self)
         self.leftLayout = QtGui.QHBoxLayout()
         self.middleLayout = QtGui.QGridLayout()
-#        self.middleLayout.setMargin(5)
         self.middleLayout.setSpacing(5)
-#        self.rightLayout = QtGui.QVBoxLayout()
         self.rightLayout = QtGui.QGridLayout()
         self.widgetLayout.addStretch()
         self.widgetLayout.addLayout(self.leftLayout)
@@ -392,21 +249,16 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
                 label.setCurrent()
             self.phaseLabels.append(label)
             self.middleLayout.addWidget(label,(phase-1)/5,(phase-1)%5,1,1)
-        
-        #Right Part - New round form
-#        self.rightLayout.addSpacing(20)
-#        layout = QtGui.QHBoxLayout()
-#        self.rightLayout.addLayout(layout)
+            
+        #Middle part - Inputs
         self.roundWinnerRadioButton = QtGui.QRadioButton()
-
         self.bgroup.addButton(self.roundWinnerRadioButton)
-#        layout.addWidget(self.roundWinnerRadioButton)
         self.rightLayout.addWidget(self.roundWinnerRadioButton,0,0)
-        
         
         self.roundScore=QtGui.QLineEdit(self)
         self.roundScore.setFixedWidth(30)
         self.roundScore.setValidator(QtGui.QIntValidator(5,200,None))
+        self.roundScore.textChanged.connect(self.updateRoundPhaseCleared)
         self.rightLayout.addWidget(self.roundScore,0,1)
 
         self.roundPhaseClearedCheckbox = QtGui.QCheckBox(self)
@@ -415,16 +267,14 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.roundWinnerRadioButton.toggled.connect(self.roundScore.setDisabled)
         self.roundWinnerRadioButton.toggled.connect(self.roundPhaseClearedCheckbox.setDisabled)
         self.roundWinnerRadioButton.toggled.connect(self.roundPhaseClearedCheckbox.setChecked)
-        self.roundScore.textChanged.connect(self.updateRoundPhaseCleared)
+        self.roundWinnerRadioButton.toggled.connect(self.winnerSetAction)
+        
         self.retranslateUI()
         
     def retranslateUI(self):
         self.roundWinnerRadioButton.setText(QtGui.QApplication.translate("Phase10PlayerWidget","Winner"))
         self.roundPhaseClearedCheckbox.setText(QtGui.QApplication.translate("Phase10PlayerWidget","Completed"))
-        
-    def winnerSetAction(self,isset):
-        if isset: self.winnerSet.emit()
-            
+                    
     def updateDisplay(self,points,completed_phases,remaining_phases):
         
         if len(remaining_phases)==0:
@@ -437,28 +287,23 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.roundScore.clear()
         self.roundPhaseClearedCheckbox.setChecked(False)
         
-        phase = 1
-        for label in self.phaseLabels:
+        for phase, label in enumerate(self.phaseLabels,start=1):
             if phase == self.current_phase:
                 if not label.isCurrent():label.setCurrent()
             elif phase in completed_phases:
                 if not label.isPassed(): label.setPassed()
             else:
                 if not label.isRemaining(): label.setRemaining()
-            phase += 1
             
-    def isWinner(self):
-        return self.roundWinnerRadioButton.isChecked()
- 
-    def getRoundPhase(self):
-        return self.current_phase
-    
-    def isRoundCleared(self):
-        return self.roundPhaseClearedCheckbox.isChecked()
-            
-        
-    def getRoundScore(self):
-        return self.roundScore.text()
+    def getScore(self):
+        if self.isWinner():
+            return 0
+        else:
+            try:
+                score =  int(self.roundScore.text())
+            except ValueError:
+                score = -1
+            return score
     
     def switchPhasesInOrder(self,in_order):
         self.phases_in_order = (in_order==QtCore.Qt.Checked)
@@ -497,19 +342,32 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
             self.roundWinnerRadioButton.setChecked(False) 
             self.roundPhaseClearedCheckbox.setChecked(True)
             
-    def setDealer(self):
-        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: red }")
-        
-    def unsetDealer(self):
-        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: black }")
-        
     def mousePressEvent(self, event):
         child = self.childAt(event.pos())
         if child is None: self.roundScore.setFocus()
         elif type(child) == Phase10Label and not self.phases_in_order:
             self.updatePhaseSelected(child)
         return QtGui.QGroupBox.mousePressEvent(self, event)
+            
+    def setDealer(self):
+        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: red }")
         
+    def unsetDealer(self):
+        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: black }")
+        
+    def isWinner(self):
+        return self.roundWinnerRadioButton.isChecked()
+ 
+    def getRoundPhase(self):
+        return self.current_phase
+    
+    def isRoundCleared(self):
+        return self.roundPhaseClearedCheckbox.isChecked()
+    
+    def winnerSetAction(self,isset):
+        if isset: self.winnerSet.emit(self.nick)
+        
+    def reset(self): pass
         
 
 class Phase10Label(QtGui.QLabel):

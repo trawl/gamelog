@@ -9,16 +9,8 @@ except ImportError as error:
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
     
+from gui.tab import Tab
 from gui.clock import GameClock
-    
-class Tab(QtGui.QWidget):
-    
-    closeRequested = QtCore.Signal(QtGui.QWidget)
-    
-    def __init__(self, parent=None):
-        super(Tab, self).__init__(parent)
-    def requestClose(self):
-        self.closeRequested.emit(self)   
         
 
 class GameWidget(Tab):
@@ -61,11 +53,8 @@ class GameWidget(Tab):
         self.commitRoundButton = QtGui.QPushButton(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.commitRoundButton)
         self.commitRoundButton.clicked.connect(self.commitRound)
-        
-#        self.roundLayout.addStretch()
-        
+
         self.gameStatusLabel = QtGui.QLabel(self.roundGroup)
-        
         self.gameStatusLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.roundLayout.addWidget(self.gameStatusLabel)
         
@@ -84,8 +73,6 @@ class GameWidget(Tab):
         self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
         self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
         self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
-        
-#        self.retranslateUI()
         
     def retranslateUI(self):
         self.roundGroup.setTitle("{} {}".format(QtGui.QApplication.translate("GameWidget","Round"),str(self.engine.getNumRound())))
@@ -138,7 +125,7 @@ class GameWidget(Tab):
             self.engine.setRoundWinner(winner)
         scores = self.gameInput.getScores()
         for player,score in scores.items():
-            if not self.checkPlayerScore(score):
+            if not self.checkPlayerScore(player,score):
                 QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("GameWidget","{0} score is not valid").format(player)))
                 return
             extras = self.getPlayerExtraInfo(player)
@@ -152,10 +139,12 @@ class GameWidget(Tab):
         
         if ret == QtGui.QMessageBox.No: return
 
-        # Once here, we can commit round...
+        # Once here, we can commit round
+        self.unsetDealer()
         self.engine.commitRound()
         self.engine.printStats()
         self.updatePanel()
+        if not self.engine.getWinner(): self.setDealer() 
     
     def changeDealingPolicy(self, *args, **kwargs):
         if self.dealerPolicyCheckBox.isChecked():
@@ -165,12 +154,11 @@ class GameWidget(Tab):
         
     def closeMatch(self): self.engine.cancelMatch()
     
-    def checkPlayerScore(self,score): 
+    def checkPlayerScore(self,player,score): 
         if score >= 0: return True
         else: return False
         
     def updatePanel(self):
-        self.unsetDealer()
         self.gameInput.reset()
         self.dealerPolicyCheckBox.setEnabled(False)
         if self.engine.getWinner():
@@ -181,8 +169,6 @@ class GameWidget(Tab):
             self.gameInput.setDisabled(True)
         else:
             self.roundGroup.setTitle(unicode(QtGui.QApplication.translate("GameWidget","Round {0}")).format(str(self.engine.getNumRound())))           
-            self.setDealer() 
-
     
     #To be implemented in subclasses
     def createEngine(self): pass
@@ -193,7 +179,6 @@ class GameWidget(Tab):
     
     def setDealer(self): pass
     
-    
      
 class GameInputWidget(QtGui.QWidget):
     
@@ -202,7 +187,6 @@ class GameInputWidget(QtGui.QWidget):
         self.engine = engine
         self.winnerSelected = ""
         self.playerInputList = {}
-
             
     def getWinner(self):
         return self.winnerSelected
@@ -219,10 +203,10 @@ class GameInputWidget(QtGui.QWidget):
             piw.reset()
     
     def changedWinner(self,winner):
+        print("Changing winner to {}".format(winner))
         winner = str(winner)
         if self.winnerSelected != "":
             self.playerInputList[self.winnerSelected].reset()
         self.winnerSelected = winner
         
         
-    

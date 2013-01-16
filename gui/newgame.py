@@ -10,11 +10,12 @@ except ImportError as error:
 
 from controllers.db import db
 from controllers.statsengine import StatsEngine
+from gui.tab import Tab
 from gui.gamewidgetfactory import GameWidgetFactory
 from gui.newplayer import NewPlayerDialog
 
 
-class NewGameWidget(QtGui.QWidget):
+class NewGameWidget(Tab):
     def __init__(self, parent=None):
         super(NewGameWidget, self).__init__(parent)
         self.parent = parent
