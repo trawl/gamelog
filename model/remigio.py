@@ -35,21 +35,46 @@ class RemigioMatch(GenericRoundMatch):
         
         if len(self.activeplayers) == 1:
             self.winner = self.activeplayers[0]
+            
+    def resumeMatch(self,idMatch):
+        if not super(RemigioMatch,self).resumeMatch(idMatch): return False
+        cur = db.execute("SELECT idRound,nick,key,value FROM Round WHERE idMatch ={} ORDER BY idRound,nick;".format(idMatch))
+        
+        currentr = 0
+        currentp = ""
+        extras = {}
+        for row in cur:
+            if row['idRound'] != currentr:
+                if len(extras):
+                    for player,extra in extras.items(): 
+                        self.rounds[currentr-1].addExtraInfo(player,extra)
+                extras = {}
+                currentp = ""
+                currentr += 1
+                
+            if str(row['nick']) != currentp:
+                currentp = str(row['nick'])
+                extras['nick'] = {}
+            
+            if (str(row['key']) == 'closeType'):
+                extras['nick'][str(row['key'])] = int(row['value'])
+                
+        if len(extras):
+            for player,extra in extras.items(): 
+                self.rounds[currentr-1].addExtraInfo(player,extra)
+        return True
     
-    def getActivePlayers(self):
-        return self.activeplayers
+    def createRound(self): return RemigioRound()
     
-    def getPlayersOff(self):
-        return self.playersoff
+    def getActivePlayers(self): return self.activeplayers
     
-    def isPlayerOff(self,player):
-        return player in self.playersoff
+    def getPlayersOff(self): return self.playersoff
     
-    def getTop(self):
-        return self.top
+    def isPlayerOff(self,player): return player in self.playersoff
     
-    def setTop(self,top):
-        self.top = top
+    def getTop(self): return self.top
+    
+    def setTop(self,top): self.top = top
             
 class RemigioRound(GenericRound):
     def __init__( self):
@@ -63,5 +88,4 @@ class RemigioRound(GenericRound):
                 self.closeType = extras['closeType']
             except KeyError: pass
     
-    def getCloseType(self):
-        return self.closeType
+    def getCloseType(self): return self.closeType

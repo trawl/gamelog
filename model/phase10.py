@@ -45,6 +45,39 @@ class Phase10Match(GenericRoundMatch):
                 if self.rounds[-1].score[n]<minScore:
                     self.winner = n
                     minScore = self.rounds[-1].score[n]
+                    
+    def createRound(self): return Phase10Round()
+    
+    def resumeMatch(self,idMatch):
+        if not super(Phase10Match,self).resumeMatch(idMatch): return False
+        cur = db.execute("SELECT idRound,nick,key,value FROM Round WHERE idMatch ={} ORDER BY idRound,nick;".format(idMatch))
+        
+        currentr = 0
+        currentp = ""
+        extras = {}
+        for row in cur:
+            if row['idRound'] != currentr:
+                if len(extras):
+                    for player,extra in extras.items(): 
+                        self.rounds[currentr-1].addExtraInfo(player,extra)
+                extras = {}
+                currentp = ""
+                currentr += 1
+                
+            if str(row['nick']) != currentp:
+                currentp = str(row['nick'])
+                extras['nick'] = {}
+            
+            if (str(row['key']) == 'PhaseAimed'):
+                extras['nick']['aimedPhase'] = int(row['value'])
+            if (str(row['key']) == 'PhaseCompleted'):
+                if int(row['value'])>0: extras['nick']['isCompleted'] = True
+                else: extras['nick']['isCompleted'] = False
+                
+        if len(extras):
+            for player,extra in extras.items(): 
+                self.rounds[currentr-1].addExtraInfo(player,extra)
+        return True
         
             
 class Phase10Round(GenericRound):
