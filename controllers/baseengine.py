@@ -39,7 +39,7 @@ class RoundGameEngine:
             db.execute("INSERT INTO Player (nick, fullName, dateCreation) values ('"+nick+"','"+fullName+"','"+str(self.players[nick].dateCreation)+"');")
 
     def begin(self):
-        self.match = GameFactory.createMatch(self.game, self.players)    
+        self.match = GameFactory.createMatch(self.game, self.porder)    
         self.match.startMatch()
         if self.dealingp != self.NoDealer :
             self.dealer = random.choice(self.porder)
@@ -171,7 +171,6 @@ class RoundGameEngine:
 #
 # Helper functions for cli test
 #
-    
 
 def readInput(prompt,cast=str,validator=lambda x : True,errormsg="Sorry, invalid answer."):
     validInput = False
@@ -186,6 +185,24 @@ def readInput(prompt,cast=str,validator=lambda x : True,errormsg="Sorry, invalid
         else:
             print(errormsg)
     return ret
+
+def runRoundLoop(engine,roundPlayerFunction):
+    engine.printStats()
+    while not engine.getWinner():
+        engine.openRound()
+        while True:
+            rnd_winner = readInput("Round {} Winner (or p to pause): ".format(engine.getNumRound()),str,lambda x: x in engine.getListPlayers() or x =='p',"Sorry, player not found in current match.")
+            if rnd_winner == 'p':
+                engine.pause()
+                readInput("Press Enter to unpause...")
+                engine.unpause()
+            else: break
+            
+        engine.setRoundWinner(rnd_winner)
+        for n in engine.getListPlayers():
+            roundPlayerFunction(engine,n,rnd_winner)
+        engine.commitRound()
+        engine.printStats()
 
 def gameStub(engine,roundPlayerFunction):
 
@@ -211,23 +228,6 @@ def gameStub(engine,roundPlayerFunction):
     elif option == 2: engine.setDealingPolicy(RoundGameEngine.WinnerDealer)
     
     engine.begin()
-    engine.printStats()
-    nround=1;
-    while not engine.getWinner():
-        engine.openRound()
-        while True:
-            rnd_winner = readInput("Round {} Winner (or p to pause): ".format(nround),str,lambda x: x in playersOrder or x =='p',"Sorry, player not found in current match.")
-            if rnd_winner == 'p':
-                engine.pause()
-                readInput("Press Enter to unpause...")
-                engine.unpause()
-            else: break
-            
-        engine.setRoundWinner(rnd_winner)
-        for n in playersOrder:
-            roundPlayerFunction(engine,n,rnd_winner)
-        engine.commitRound()
-        engine.printStats()
-        nround+=1
+    runRoundLoop(engine,roundPlayerFunction)
 
     
