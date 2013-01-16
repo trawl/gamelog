@@ -112,6 +112,7 @@ class RemigioWidget(GameWidget):
         
         
 class RemigioInputWidget(GameInputWidget):
+    
     def __init__(self,engine,bgcolors, parent=None):
         super(RemigioInputWidget,self).__init__(engine,parent)
         self.bgcolors = bgcolors
@@ -229,6 +230,7 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         
     
 class RemigioPlayerWidget(QtGui.QWidget):
+    
     def __init__(self,nick,parent = None):
         super(RemigioPlayerWidget,self).__init__(parent)
         self.player = nick
@@ -256,17 +258,17 @@ class RemigioPlayerWidget(QtGui.QWidget):
         
     def setDealer(self):
         if self.isEnabled():
-            self.nameLabel.setStyleSheet("QLabel { font-size: 16px; font-weight: bold; color: red }")
+            self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: red }")
         
     def unsetDealer(self):
         self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: black}")
-        if not self.isEnabled(): self.setDisabled(True)
         
     def koPlayer(self):
         self.setDisabled(True)
      
             
 class RemigioRoundsDetail(QtGui.QGroupBox):
+    
     def __init__(self, engine, bgcolors, parent=None):
         super(RemigioRoundsDetail, self).__init__(parent)
         self.bgcolors = bgcolors

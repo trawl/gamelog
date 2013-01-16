@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="en_GB">
+<!DOCTYPE TS><TS version="1.1" language="en_GB">
 <context>
     <name>GameWidget</name>
     <message>
@@ -9,7 +8,7 @@
         <translation>Cancel Match</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="110"/>
+        <location filename="gui/game.py" line="111"/>
         <source>Are you sure you want to cancel this match?</source>
         <translation>Are you sure you want to cancel this match?</translation>
     </message>
@@ -69,7 +68,7 @@
         <translation>Commit Round</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="149"/>
+        <location filename="gui/game.py" line="150"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>Are you sure you want to commit the current round?</translation>
     </message>
@@ -130,7 +129,7 @@
         <translation>Exit</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="87"/>
+        <location filename="gui/mainwindow.py" line="88"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Are you sure you want to exit GameLog?</translation>
     </message>
@@ -229,12 +228,12 @@
 <context>
     <name>Phase10PlayerWidget</name>
     <message>
-        <location filename="gui/phase10.py" line="389"/>
+        <location filename="gui/phase10.py" line="287"/>
         <source>Winner</source>
         <translation>Winner</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="390"/>
+        <location filename="gui/phase10.py" line="288"/>
         <source>Completed</source>
         <translation>Completed</translation>
     </message>
@@ -242,12 +241,12 @@
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="gui/phase10.py" line="519"/>
+        <location filename="gui/phase10.py" line="427"/>
         <source>Details</source>
         <translation>Details</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="527"/>
+        <location filename="gui/phase10.py" line="435"/>
         <source>Round {}</source>
         <translation>Round {}</translation>
     </message>
@@ -255,186 +254,116 @@
 <context>
     <name>Phase10Widget</name>
     <message>
-        <location filename="gui/phase10.py" line="149"/>
-        <source>Match</source>
-        <translation>Match</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="150"/>
-        <source>Winner deals</source>
-        <translation>Winner deals</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="151"/>
+        <location filename="gui/phase10.py" line="71"/>
         <source>Phases in order</source>
         <translation>Phases in order</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="153"/>
+        <location filename="gui/phase10.py" line="72"/>
         <source>Phases</source>
         <translation>Phases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="154"/>
-        <source>Round</source>
-        <translation>Round</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="155"/>
-        <source>&amp;Cancel Match</source>
-        <translation>&amp;Cancel Match</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="156"/>
+        <location filename="gui/phase10.py" line="73"/>
         <source>&amp;Details...</source>
         <translation>&amp;Details...</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="157"/>
-        <source>Commit &amp;Round</source>
-        <translation>Commit &amp;Round</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="205"/>
-        <source>No phase selected for the winner</source>
-        <translation>No phase selected for the winner</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="215"/>
-        <source>{0} score is not valid</source>
-        <translation>{0} score is not valid</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="219"/>
-        <source>No winner selected</source>
-        <translation>No winner selected</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="223"/>
-        <source>Commit Round</source>
-        <translation>Commit Round</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="223"/>
-        <source>Are you sure you want to commit the current round?</source>
-        <translation>Are you sure you want to commit the current round?</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="258"/>
-        <source>Round {0}</source>
-        <translation>Round {0}</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="163"/>
+        <location filename="gui/phase10.py" line="75"/>
         <source>Phase</source>
         <translation>Phase</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="289"/>
+        <location filename="gui/phase10.py" line="128"/>
         <source>cards of the same colour</source>
         <translation>cards of the same colour</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="291"/>
+        <location filename="gui/phase10.py" line="130"/>
         <source>run of</source>
         <translation>run of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="292"/>
+        <location filename="gui/phase10.py" line="131"/>
         <source>runs of</source>
         <translation>runs of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="295"/>
+        <location filename="gui/phase10.py" line="134"/>
         <source>colour run of</source>
         <translation>colour run of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="296"/>
+        <location filename="gui/phase10.py" line="135"/>
         <source>colour runs of</source>
         <translation>colour runs of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="273"/>
+        <location filename="gui/phase10.py" line="112"/>
         <source>pair</source>
         <translation>pair</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="274"/>
+        <location filename="gui/phase10.py" line="113"/>
         <source>pairs</source>
         <translation>pairs</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="277"/>
+        <location filename="gui/phase10.py" line="116"/>
         <source>three of a kind</source>
         <comment>singular</comment>
         <translation>three of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="278"/>
+        <location filename="gui/phase10.py" line="117"/>
         <source>three of a kind</source>
         <comment>plural</comment>
         <translation>three of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="281"/>
+        <location filename="gui/phase10.py" line="120"/>
         <source>four of a kind</source>
         <comment>singular</comment>
         <translation>four of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="282"/>
+        <location filename="gui/phase10.py" line="121"/>
         <source>four of a kind</source>
         <comment>plural</comment>
         <translation>four of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="285"/>
+        <location filename="gui/phase10.py" line="124"/>
         <source>five of a kind</source>
         <comment>singular</comment>
         <translation>five of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="286"/>
+        <location filename="gui/phase10.py" line="125"/>
         <source>five of a kind</source>
         <comment>plural</comment>
         <translation>five of a kind</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="152"/>
-        <source>&amp;Pause/Play</source>
-        <translation>&amp;Pause/Play</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="171"/>
-        <source>{} won this match!</source>
-        <translation>{} won this match!</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="173"/>
-        <source>Game is paused</source>
-        <translation>Game is paused</translation>
     </message>
 </context>
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="gui/mainwindow.py" line="18"/>
+        <location filename="gui/mainwindow.py" line="19"/>
         <source>&amp;Yes</source>
         <translation>&amp;Yes</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="19"/>
+        <location filename="gui/mainwindow.py" line="20"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="20"/>
+        <location filename="gui/mainwindow.py" line="21"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="21"/>
+        <location filename="gui/mainwindow.py" line="23"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
@@ -492,7 +421,7 @@
         <translation>Ratio(%)</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="263"/>
+        <location filename="gui/newgame.py" line="264"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
