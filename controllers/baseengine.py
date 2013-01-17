@@ -43,6 +43,14 @@ class RoundGameEngine:
         self.match.startMatch()
         if self.dealingp != self.NoDealer :
             self.dealer = random.choice(self.porder)
+            
+    def resume(self,idMatch):
+        self.match = GameFactory.createMatch(self.game)    
+        if self.match.resumeMatch(idMatch):
+            for nick in self.match.getPlayers(): 
+                self.addPlayer(nick)
+            return True
+        return False
         
     def openRound(self):
         self.round = GenericRound()
@@ -162,11 +170,60 @@ class RoundGameEngine:
                 print("{} match finished at {}".format(self.game,datetime.datetime.now()))
                 print("Time played {}".format(self.match.getGameTime()))                   
                 print("")
-
+#
+# Helper functions for cli test
+#
+    def gameStub(self):
     
+        print("Welcome to {} Engine Stub".format(self.getGame()))
+        
+        if not db.isConnected(): db.connectDB("../db/gamelog.db")
+    
+        playersOrder = []
+        validPlayers = db.getPlayerNicks()
+        maxPlayers =  self.getGameMaxPlayers()
+        
+        nplayers = readInput("Number of players: ",int,lambda x: x>=2 and x<=maxPlayers,"Sorry, number of players must be between 2 and {}.".format(self.getGameMaxPlayers()))
+    
+        for i in range (1,nplayers+1):
+            print ("Player {} Info:".format(i))
+            nick = readInput("Nick: ",str,lambda x: x in validPlayers,"Sorry, player not found in DB")
+            self.addPlayer(nick)
+            playersOrder.append(nick)
+    
+        option = readInput("Dealing policy[0:None/1:RoundRobin/2:Winner]: ",int,lambda x: x in [0,1,2])
+        if option == 0: self.setDealingPolicy(RoundGameEngine.NoDealer)
+        elif option == 1: self.setDealingPolicy(RoundGameEngine.RRDealer)
+        elif option == 2: self.setDealingPolicy(RoundGameEngine.WinnerDealer)
+        
+        self.begin()
+        self.runRoundLoop()
+
+    def runRoundLoop(self):
+        self.printStats()
+        while not self.getWinner():
+            self.openRound()
+            while True:
+                rnd_winner = readInput("Round {} Winner (or p to pause): ".format(self.getNumRound()),str,lambda x: x in self.getListPlayers() or x =='p',"Sorry, player not found in current match.")
+                if rnd_winner == 'p':
+                    self.pause()
+                    readInput("Press Enter to unpause...")
+                    self.unpause()
+                else: break
+                
+            self.setRoundWinner(rnd_winner)
+            for n in self.getListPlayers():
+                self.runRoundPlayer(n,rnd_winner)
+            self.commitRound()
+            self.printStats()
+            
+    # To be implemented in subclasses
     def printExtraStats(self): pass        
     def printExtraPlayerStats(self,player): pass
-    
+    def runRoundPlayer(self,player,winner): pass
+
+
+
     
 #
 # Helper functions for cli test
@@ -186,48 +243,6 @@ def readInput(prompt,cast=str,validator=lambda x : True,errormsg="Sorry, invalid
             print(errormsg)
     return ret
 
-def runRoundLoop(engine,roundPlayerFunction):
-    engine.printStats()
-    while not engine.getWinner():
-        engine.openRound()
-        while True:
-            rnd_winner = readInput("Round {} Winner (or p to pause): ".format(engine.getNumRound()),str,lambda x: x in engine.getListPlayers() or x =='p',"Sorry, player not found in current match.")
-            if rnd_winner == 'p':
-                engine.pause()
-                readInput("Press Enter to unpause...")
-                engine.unpause()
-            else: break
-            
-        engine.setRoundWinner(rnd_winner)
-        for n in engine.getListPlayers():
-            roundPlayerFunction(engine,n,rnd_winner)
-        engine.commitRound()
-        engine.printStats()
 
-def gameStub(engine,roundPlayerFunction):
-
-    print("Welcome to {} Engine Stub".format(engine.getGame()))
-    
-    db.connectDB("../db/gamelog.db")
-
-    playersOrder = []
-    validPlayers = db.getPlayerNicks()
-    maxPlayers =  engine.getGameMaxPlayers()
-    
-    nplayers = readInput("Number of players: ",int,lambda x: x>=2 and x<=maxPlayers,"Sorry, number of players must be between 2 and {}.".format(engine.getGameMaxPlayers()))
-
-    for i in range (1,nplayers+1):
-        print ("Player {} Info:".format(i))
-        nick = readInput("Nick: ",str,lambda x: x in validPlayers,"Sorry, player not found in DB")
-        engine.addPlayer(nick)
-        playersOrder.append(nick)
-
-    option = readInput("Dealing policy[0:None/1:RoundRobin/2:Winner]: ",int,lambda x: x in [0,1,2])
-    if option == 0: engine.setDealingPolicy(RoundGameEngine.NoDealer)
-    elif option == 1: engine.setDealingPolicy(RoundGameEngine.RRDealer)
-    elif option == 2: engine.setDealingPolicy(RoundGameEngine.WinnerDealer)
-    
-    engine.begin()
-    runRoundLoop(engine,roundPlayerFunction)
 
     

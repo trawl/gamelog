@@ -27,6 +27,8 @@ class GameLogDB:
         except Exception as e:
             self._printError("Error creating DB: {}".format(e.args[0]))
 
+    def isConnected(self):
+        return self.con is not None
 
     def disconnectDB(self):
         if self.con:

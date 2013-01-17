@@ -6,13 +6,13 @@ import datetime
 # Model
 from controllers.db import db
 
-class Player:
+class Player(object):
     def __init__(self):
         self.nick = ""
         self.fullName = ""
         self.dateCreation = None
 
-class GenericMatch:
+class GenericMatch(object):
     
     def __init__(self,players=[]):
         self.game = None
@@ -22,26 +22,28 @@ class GenericMatch:
         self.finish = None
         self.elapsed = 0
         self.totalScores = dict()
+        self.idMatch = -1
         self.status = 'cancelled'
         
     def resumeMatch(self,idMatch):
         if self.start is not None: return False
         if not isinstance(idMatch,int): return False
-        cur = db.execute("SELECT * FROM Match WHERE idMatch ={};".format(idMatch))
+        cur = db.execute("SELECT Game_name,state,elapsed FROM Match WHERE idMatch ={};".format(idMatch))
         row = cur.fetchone()
         if not row: return False
         if row['Game_name']!=self.game or row['state']!=3: return False
-        self.elapsed = row['elapsed']
-        self.start = row['started']
-        self.finish = row['finished']
+        self.elapsed = int(row['elapsed'])
+        self.start = datetime.datetime.now()
         #Retrieve players
         self.players = []
         cur = db.execute("SELECT rowid,nick,totalScore FROM MatchPlayer WHERE idMatch ={} ORDER BY rowid;".format(idMatch))
         for row in cur:
             player = str(row['nick'])
             self.players.append(player)
-            self.totalScores[player] = row['totalScore']
+            self.totalScores[player] = int(row['totalScore'])
         
+        self.status = 'running'
+        self.idMatch = idMatch
         return True
 
         
@@ -102,6 +104,8 @@ class GenericMatch:
             
     def getStartTime(self): return self.start
     
+    def getPlayers(self): return self.players
+    
     def getWinner(self): return self.winner
             
     def isPaused(self):  return self.status == 'paused'
@@ -117,7 +121,7 @@ class GenericMatch:
         
         
 class GenericRoundMatch(GenericMatch):
-    def __init__(self,players=dict()):
+    def __init__(self,players=[]):
         GenericMatch.__init__(self,players)
         self.rounds = list()
         
@@ -131,8 +135,8 @@ class GenericRoundMatch(GenericMatch):
                 if rnd is not None: self.rounds.append(rnd)
                 rnd = self.createRound()
                 current += 1
-            if row['winner'] == 1: rnd.setWinner(row['nick'])
-            rnd.addInfo(row['nick'], row['score'])
+            if row['winner'] == 1: rnd.setWinner(str(row['nick']))
+            rnd.addInfo(str(row['nick']), int(row['score']))
         if rnd is not None: self.rounds.append(rnd) 
         return True
     
@@ -156,7 +160,7 @@ class GenericRoundMatch(GenericMatch):
     def createRound(self): return GenericRound()
 
 
-class GenericRound:
+class GenericRound(object):
     def __init__(self):
         self.score = dict() # nick -> points
         self.winner = None

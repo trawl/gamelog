@@ -9,7 +9,7 @@ from model.remigio import RemigioMatch
 class GameFactory:
     
     @classmethod
-    def createMatch(cls,gname,players):
+    def createMatch(cls,gname,players=[]):
         if gname == 'Phase10':
             return Phase10Match(players)
         if gname == 'Phase10Master':
