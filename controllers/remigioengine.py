@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from controllers.baseengine import RoundGameEngine,readInput,gameStub
+from controllers.baseengine import RoundGameEngine,readInput
 from model.remigio import RemigioRound
 
 class RemigioEngine(RoundGameEngine):
@@ -38,23 +38,18 @@ class RemigioEngine(RoundGameEngine):
             if not self.isPlayerOff(player):
                 self.dealer = player
                 break
-
-
-#
-# Helper functions for cli test
-#
-def runRound(re,player,winner):
-    score = 0
-    closeType = 1
-    if winner == player:
-        closeType = readInput("{} close type: ".format(player),int,lambda x: x in [1,2,3,4],"Sorry, invalid Close Type number [1,2,3,4].")
-    else:
-        score = readInput("{} round score: ".format(player),int,lambda x: x>0,"Sorry, invalid score number.")
-    re.addRoundInfo(player,score,{'closeType':closeType})        
+    def runRoundPlayer(self,player,winner):
+        score = 0
+        closeType = 1
+        if winner == player:
+            closeType = readInput("{} close type: ".format(player),int,lambda x: x in [1,2,3,4],"Sorry, invalid Close Type number [1,2,3,4].")
+        else:
+            score = readInput("{} round score: ".format(player),int,lambda x: x>0,"Sorry, invalid score number.")
+        self.addRoundInfo(player,score,{'closeType':closeType})   
 
 
 if __name__ == "__main__":
     re = RemigioEngine()
-    gameStub(re,runRound)
+    re.gameStub()
 
     

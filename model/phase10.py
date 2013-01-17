@@ -7,7 +7,7 @@ from controllers.db import db
 from model.base import GenericRoundMatch,GenericRound
 
 class Phase10Match(GenericRoundMatch):
-    def __init__(self,players=dict()):
+    def __init__(self,players=[]):
         GenericRoundMatch.__init__(self,players)
         self.game = "Phase10"
         self.phasesCleared = dict() # player -> list of phases cleared
@@ -50,7 +50,10 @@ class Phase10Match(GenericRoundMatch):
     
     def resumeMatch(self,idMatch):
         if not super(Phase10Match,self).resumeMatch(idMatch): return False
-        cur = db.execute("SELECT idRound,nick,key,value FROM Round WHERE idMatch ={} ORDER BY idRound,nick;".format(idMatch))
+        
+        for player in self.players: self.phasesCleared[player]=[]
+        
+        cur = db.execute("SELECT idRound,nick,key,value FROM RoundStatistics WHERE idMatch ={} ORDER BY idRound,nick,key,value;".format(idMatch))
         
         currentr = 0
         currentp = ""
@@ -66,13 +69,16 @@ class Phase10Match(GenericRoundMatch):
                 
             if str(row['nick']) != currentp:
                 currentp = str(row['nick'])
-                extras['nick'] = {}
+                extras[currentp] = {}
             
             if (str(row['key']) == 'PhaseAimed'):
-                extras['nick']['aimedPhase'] = int(row['value'])
+                extras[currentp]['aimedPhase'] = int(row['value'])
             if (str(row['key']) == 'PhaseCompleted'):
-                if int(row['value'])>0: extras['nick']['isCompleted'] = True
-                else: extras['nick']['isCompleted'] = False
+                value = int(row['value'])
+                if value>0: 
+                    extras[currentp]['isCompleted'] = True
+                    self.phasesCleared[currentp].append(value)
+                else: extras[currentp]['isCompleted'] = False
                 
         if len(extras):
             for player,extra in extras.items(): 
@@ -81,6 +87,7 @@ class Phase10Match(GenericRoundMatch):
         
             
 class Phase10Round(GenericRound):
+    
     def __init__( self):
         GenericRound.__init__(self)
         self.completedPhase = dict() # nick -> Phase idx or 0
@@ -99,7 +106,7 @@ class Phase10Round(GenericRound):
         
 class Phase10MasterMatch(Phase10Match):
 
-    def __init__(self,players=dict()):
+    def __init__(self,players=[]):
         Phase10Match.__init__(self,players)
         self.game = 'Phase10Master'
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from controllers.baseengine import RoundGameEngine,gameStub,readInput
+from controllers.baseengine import RoundGameEngine,readInput
 from model.phase10 import Phase10Round
 from controllers.db import db
 
@@ -51,6 +51,16 @@ class Phase10Engine(RoundGameEngine):
         print("====================")
         print("  Quick desc: s=set, r=run, c=colour, cr=colour run")
         print("  Example: 2s4 = 2 sets of 4 cards")
+        
+    def runRoundPlayer(self,player,winner):
+        score = 0
+        cleared = 1
+        a_phase = readInput("{} aimed phase number: ".format(player),int,lambda x: x > 0 and self.hasPhaseRemaining(player,x),"Sorry, phase not valid or already completed.")
+        if not winner == player:
+            cleared = readInput("Did {} complete phase {}?[1/0]: ".format(player,a_phase),int,lambda x: x in [0,1])
+            score = readInput("{} round score: ".format(player),int,lambda x: x>0,"Sorry, invalid score number.")
+        self.addRoundInfo(player,score, {'aimedPhase':a_phase, 'isCompleted':cleared})
+
 
 class Phase10MasterEngine(Phase10Engine):
     def __init__(self):
@@ -58,23 +68,9 @@ class Phase10MasterEngine(Phase10Engine):
         self.game = "Phase10Master"
 
 
-#
-# Helper functions for cli test
-#
-
-def runRound(pe,player,winner):
-        score = 0
-        cleared = 1
-        a_phase = readInput("{} aimed phase number: ".format(player),int,lambda x: x > 0 and pe.hasPhaseRemaining(player,x),"Sorry, phase not valid or already completed.")
-        if not winner == player:
-            cleared = readInput("Did {} complete phase {}?[1/0]: ".format(player,a_phase),int,lambda x: x in [0,1])
-            score = readInput("{} round score: ".format(player),int,lambda x: x>0,"Sorry, invalid score number.")
-        pe.addRoundInfo(player,score, {'aimedPhase':a_phase, 'isCompleted':cleared})
-
-
 if __name__ == "__main__":
     game = readInput('Game to play (Phase10/Phase10Master): ',str,lambda x: x in ['Phase10','Phase10Master'])
     if game == 'Phase10': pe = Phase10Engine()
     else: pe = Phase10MasterEngine()
-    gameStub(pe,runRound)        
+    pe.gameStub()        
         

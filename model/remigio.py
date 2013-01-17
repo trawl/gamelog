@@ -5,7 +5,7 @@ from controllers.db import db
 from model.base import GenericRoundMatch,GenericRound
 
 class RemigioMatch(GenericRoundMatch):
-    def __init__(self,players=dict()):
+    def __init__(self,players=[]):
         GenericRoundMatch.__init__(self,players)
         self.game = 'Remigio'
         self.activeplayers = []
@@ -37,12 +37,17 @@ class RemigioMatch(GenericRoundMatch):
             self.winner = self.activeplayers[0]
             
     def resumeMatch(self,idMatch):
-        if not super(RemigioMatch,self).resumeMatch(idMatch): return False
-        cur = db.execute("SELECT idRound,nick,key,value FROM Round WHERE idMatch ={} ORDER BY idRound,nick;".format(idMatch))
-        
+        if not super(RemigioMatch,self).resumeMatch(idMatch): 
+            return False
+     
+        for player,score in self.totalScores.items():
+            if score < self.top: self.activeplayers.append(player)
+            else: self.playersoff.append(player)
+
         currentr = 0
         currentp = ""
         extras = {}
+        cur = db.execute("SELECT idRound,nick,key,value FROM RoundStatistics WHERE idMatch ={} ORDER BY idRound,nick;".format(idMatch))
         for row in cur:
             if row['idRound'] != currentr:
                 if len(extras):
