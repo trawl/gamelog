@@ -22,10 +22,6 @@ class RemigioMatch(GenericRoundMatch):
                 rnd.setPlayerScore(player,closeType*rnd.getPlayerScore(player))
         GenericRoundMatch.addRound(self,rnd)
         
-    def playerAddRound(self,player,rnd):
-        if rnd.winner==player:
-            db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'closeType','{}');".format(self.idMatch,player,len(self.rounds),rnd.closeType))
-            
     def computeWinner(self):
         
         for p in self.activeplayers[:]:
@@ -74,7 +70,7 @@ class RemigioMatch(GenericRoundMatch):
                 
         return True
     
-    def createRound(self): return RemigioRound()
+    def createRound(self,numround): return RemigioRound(numround)
     
     def getActivePlayers(self): return self.activeplayers
     
@@ -87,11 +83,18 @@ class RemigioMatch(GenericRoundMatch):
     def setTop(self,top): 
         if top <=0: return
         self.top = top
-        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'Top','{}');".format(self.idMatch,top))
+#        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'Top','{}');".format(self.idMatch,top))
+        
+    def flushToDB(self):
+        super(RemigioMatch,self).flushToDB()
+        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'Top','{}');".format(self.idMatch,self.top))
+        for rnd in self.rounds:
+            db.execute("INSERT OR REPLACE INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'closeType','{}');".format(self.idMatch,rnd.getWinner(),rnd.getNumRound(),rnd.closeType))
+            
             
 class RemigioRound(GenericRound):
-    def __init__( self):
-        GenericRound.__init__(self)
+    def __init__( self,numround):
+        GenericRound.__init__(self,numround)
         self.closeType = 1
  
     def addExtraInfo(self,player,extras):

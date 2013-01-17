@@ -19,8 +19,8 @@ class Phase10Match(GenericRoundMatch):
     def playerAddRound(self,player,rnd):
         if (rnd.completedPhase[player]):
             self.phasesCleared[player].append(rnd.completedPhase[player])
-        db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'PhaseAimed','{}');".format(self.idMatch,player,len(self.rounds),rnd.aimedPhase[player]))
-        db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'PhaseCompleted','{}');".format(self.idMatch,player,len(self.rounds),rnd.completedPhase[player]))            
+#        db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'PhaseAimed','{}');".format(self.idMatch,player,rnd.getNumRound(),rnd.aimedPhase[player]))
+#        db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'PhaseCompleted','{}');".format(self.idMatch,player,rnd.getNumRound(),rnd.completedPhase[player]))            
 
     def computeWinner(self):
         
@@ -47,7 +47,7 @@ class Phase10Match(GenericRoundMatch):
                     self.winner = n
                     minScore = self.rounds[-1].score[n]
                     
-    def createRound(self): return Phase10Round()
+    def createRound(self,numround): return Phase10Round(numround)
     
     def resumeMatch(self,idMatch):
         if not super(Phase10Match,self).resumeMatch(idMatch): return False
@@ -96,12 +96,21 @@ class Phase10Match(GenericRoundMatch):
     def setPhasesInOrderFlag(self,flag): 
         if flag not in [True,False]: return
         self.phasesinorder = flag
-        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'PhasesInOrder','{}');".format(self.idMatch,flag))
+#        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'PhasesInOrder','{}');".format(self.idMatch,flag))
+        
+    def flushToDB(self):
+        super(Phase10Match,self).flushToDB()
+        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'PhasesInOrder','{}');".format(self.idMatch,self.phasesinorder))
+        for rnd in self.rounds:
+            for player in rnd.score.keys():
+                db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'PhaseAimed','{}');".format(self.idMatch,player,rnd.getNumRound(),rnd.aimedPhase[player]))
+                db.execute("INSERT INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'PhaseCompleted','{}');".format(self.idMatch,player,rnd.getNumRound(),rnd.completedPhase[player]))  
+            
             
 class Phase10Round(GenericRound):
     
-    def __init__( self):
-        GenericRound.__init__(self)
+    def __init__( self,numround):
+        GenericRound.__init__(self,numround)
         self.completedPhase = dict() # nick -> Phase idx or 0
         self.aimedPhase = dict()
 
