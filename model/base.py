@@ -6,11 +6,13 @@ import datetime
 # Model
 from controllers.db import db
 
+
 class Player(object):
     def __init__(self):
         self.nick = ""
         self.fullName = ""
         self.dateCreation = None
+
 
 class GenericMatch(object):
     
@@ -106,6 +108,8 @@ class GenericMatch(object):
     
     def getPlayers(self): return self.players
     
+    def setPlayers(self, players): self.players = players
+    
     def getWinner(self): return self.winner
             
     def isPaused(self):  return self.status == 'paused'
@@ -124,6 +128,8 @@ class GenericRoundMatch(GenericMatch):
     def __init__(self,players=[]):
         GenericMatch.__init__(self,players)
         self.rounds = list()
+        self.dealer = None
+        self.dealingp = 0
         
     def resumeMatch(self,idMatch):
         if not super(GenericRoundMatch,self).resumeMatch(idMatch): return False
@@ -138,6 +144,15 @@ class GenericRoundMatch(GenericMatch):
             if row['winner'] == 1: rnd.setWinner(str(row['nick']))
             rnd.addInfo(str(row['nick']), int(row['score']))
         if rnd is not None: self.rounds.append(rnd) 
+        
+        cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='Dealer';".format(idMatch))
+        row = cur.fetchone()
+        if row: self.dealer = str(row['value'])
+
+        cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='DealingPolicy';".format(idMatch))
+        row = cur.fetchone()
+        if row: self.dealingp = int(row['value'])
+        
         return True
     
     
@@ -158,7 +173,24 @@ class GenericRoundMatch(GenericMatch):
     def playerAddRound(self,player,rnd): pass
     
     def createRound(self): return GenericRound()
+    
+    def getDealer(self):
+        return self.dealer
 
+    def setDealer(self,player):
+        if player not in self.players: return
+        self.dealer = player
+        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'Dealer','{}');".format(self.idMatch,player))
+
+    def getDealingPolicy(self):
+        return self.dealingp
+        
+    def setDealingPolicy(self,policy):
+        if not policy in [0,1,2]: return
+        self.dealingp = policy
+        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'DealingPolicy','{}');".format(self.idMatch,policy))
+        pass
+    
 
 class GenericRound(object):
     def __init__(self):

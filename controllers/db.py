@@ -167,6 +167,16 @@ CREATE TABLE `MatchPlayer` (
     REFERENCES `Player` (`nick` )
     ON DELETE NO ACTION
     ON UPDATE CASCADE);
+DROP TABLE IF EXISTS "MatchExtras";    
+CREATE TABLE `MatchExtras` (
+  `idMatch` INTEGER  NOT NULL ,
+  `key` VARCHAR(45) NOT NULL ,
+  `value` VARCHAR(255) NULL ,
+  PRIMARY KEY (`idMatch`, `key`) ,
+    FOREIGN KEY (`idMatch` )
+    REFERENCES `Match` (`idMatch` )
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE);
 DROP TABLE IF EXISTS "MatchStatistics";
 CREATE TABLE `MatchStatistics` (
   `idMatch` INTEGER  NOT NULL ,

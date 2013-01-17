@@ -14,13 +14,10 @@ class RoundGameEngine:
     WinnerDealer = 2
     
     def __init__(self):
-        self.match = None
         self.players = dict()
         self.porder = list()
-        self.game = None
         self.round = None
-        self.dealer = None
-        self.dealingp = self.NoDealer
+        self.match = GameFactory.createMatch(self.game)    
         
     def addPlayer(self,nick,fullName=""):
         if (fullName == ""):
@@ -39,10 +36,10 @@ class RoundGameEngine:
             db.execute("INSERT INTO Player (nick, fullName, dateCreation) values ('"+nick+"','"+fullName+"','"+str(self.players[nick].dateCreation)+"');")
 
     def begin(self):
-        self.match = GameFactory.createMatch(self.game, self.porder)    
+        self.match.setPlayers(self.porder)
         self.match.startMatch()
-        if self.dealingp != self.NoDealer :
-            self.dealer = random.choice(self.porder)
+        if self.getDealingPolicy() != self.NoDealer :
+            self.match.setDealer(random.choice(self.porder))
             
     def resume(self,idMatch):
         self.match = GameFactory.createMatch(self.game)    
@@ -102,29 +99,25 @@ class RoundGameEngine:
     
     def cancelMatch(self): self.match.cancel()
         
-    def setDealingPolicy(self, policy):
-        if policy == self.RRDealer or policy == self.WinnerDealer:
-            self.dealingp = policy
+    def setDealingPolicy(self, policy): self.match.setDealingPolicy(policy)
         
-    def getDealingPolicy(self):
-        return self.dealingp
+    def getDealingPolicy(self): return self.match.getDealingPolicy()
     
-    def getDealer(self):
-        return self.dealer
+    def getDealer(self): return self.match.getDealer()
     
     def updateDealer(self):
         if self.match.getWinner(): return
-        if self.dealingp == self.RRDealer:
+        if self.getDealingPolicy() == self.RRDealer:
             self.updateRRDealer()
-        elif self.dealingp == self.WinnerDealer:
+        elif self.getDealingPolicy() == self.WinnerDealer:
             self.updateWinnerDealer()
 
     def updateRRDealer(self):
-        candidate = (self.porder.index(self.dealer) + 1)%len(self.porder)
-        self.dealer = self.porder[candidate]
+        candidate = (self.porder.index(self.getDealer()) + 1)%len(self.porder)
+        self.match.setDealer(self.porder[candidate])
         
     def updateWinnerDealer(self):
-        self.dealer = self.round.getWinner()
+        self.match.setDealer(self.round.getWinner())
 
     def printStats(self):
         lastround = self.getNumRound()-1
@@ -135,7 +128,7 @@ class RoundGameEngine:
             print("")
             print("Players:")
             for n in self.porder:
-                if n == self.dealer: print(" * {} (Dealer)".format(n))
+                if n == self.getDealer(): print(" * {} (Dealer)".format(n))
                 else: print(" * {}".format(n))
             print("")
             policies = ["None","Round Robin","Winner"]
@@ -154,7 +147,7 @@ class RoundGameEngine:
             print("***************************")
             for n in self.porder:
                 print("")
-                if n == self.dealer: print("{} (Dealer)".format(n))
+                if n == self.getDealer(): print("{} (Dealer)".format(n))
                 else: print(n)
                     
                 print("Current score: {}".format(self.getScoreFromPlayer(n)))
@@ -195,7 +188,7 @@ class RoundGameEngine:
         if option == 0: self.setDealingPolicy(RoundGameEngine.NoDealer)
         elif option == 1: self.setDealingPolicy(RoundGameEngine.RRDealer)
         elif option == 2: self.setDealingPolicy(RoundGameEngine.WinnerDealer)
-        
+        self.extraStubConfig()
         self.begin()
         self.runRoundLoop()
 
@@ -221,6 +214,7 @@ class RoundGameEngine:
     def printExtraStats(self): pass        
     def printExtraPlayerStats(self,player): pass
     def runRoundPlayer(self,player,winner): pass
+    def extraStubConfig(self): pass
 
 
 

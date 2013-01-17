@@ -7,8 +7,8 @@ from controllers.db import db
 
 class Phase10Engine(RoundGameEngine):
     def __init__(self):
-        RoundGameEngine.__init__(self)
         self.game = "Phase10"
+        RoundGameEngine.__init__(self)
         
     def openRound(self):
         self.round = Phase10Round()
@@ -60,12 +60,21 @@ class Phase10Engine(RoundGameEngine):
             cleared = readInput("Did {} complete phase {}?[1/0]: ".format(player,a_phase),int,lambda x: x in [0,1])
             score = readInput("{} round score: ".format(player),int,lambda x: x>0,"Sorry, invalid score number.")
         self.addRoundInfo(player,score, {'aimedPhase':a_phase, 'isCompleted':cleared})
-
+        
+    def extraStubConfig(self):
+        pio = readInput("Follow phases in order? [1/0]",int,lambda x: x in (0,1))
+        self.setPhasesInOrderFlag(bool(pio))
+        
+    def getPhasesInOrderFlag(self): return self.match.getPhasesInOrderFlag()
+     
+    def setPhasesInOrderFlag(self,flag): self.match.setPhasesInOrderFlag(flag)
+        
 
 class Phase10MasterEngine(Phase10Engine):
     def __init__(self):
-        Phase10Engine.__init__(self)
         self.game = "Phase10Master"
+        Phase10Engine.__init__(self)
+
 
 
 if __name__ == "__main__":
