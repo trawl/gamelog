@@ -95,11 +95,14 @@ class GameWidget(Tab):
     
     def cancelMatch(self):
         ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("GameWidget",'Cancel Match'),
-        QtGui.QApplication.translate("GameWidget","Are you sure you want to cancel this match?"), QtGui.QMessageBox.Yes | 
-        QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+        unicode(QtGui.QApplication.translate("GameWidget","Do you want to save the current {} match?")).format(self.game), QtGui.QMessageBox.Yes | 
+        QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
         
-        if ret == QtGui.QMessageBox.No: return
-        self.closeMatch()
+        if ret == QtGui.QMessageBox.Cancel: return
+        if ret == QtGui.QMessageBox.No:
+            self.closeMatch()
+        else:
+            self.engine.pause()
         self.requestClose()
         
     def pauseMatch(self):

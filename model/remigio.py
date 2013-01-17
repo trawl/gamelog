@@ -67,6 +67,11 @@ class RemigioMatch(GenericRoundMatch):
         if len(extras):
             for player,extra in extras.items(): 
                 self.rounds[currentr-1].addExtraInfo(player,extra)
+                
+        cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='Top';".format(idMatch))
+        row = cur.fetchone()
+        if row: self.top = int(row['value'])
+                
         return True
     
     def createRound(self): return RemigioRound()
@@ -79,7 +84,10 @@ class RemigioMatch(GenericRoundMatch):
     
     def getTop(self): return self.top
     
-    def setTop(self,top): self.top = top
+    def setTop(self,top): 
+        if top <=0: return
+        self.top = top
+        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'Top','{}');".format(self.idMatch,top))
             
 class RemigioRound(GenericRound):
     def __init__( self):

@@ -10,6 +10,7 @@ class Phase10Match(GenericRoundMatch):
     def __init__(self,players=[]):
         GenericRoundMatch.__init__(self,players)
         self.game = "Phase10"
+        self.phasesinorder = True
         self.phasesCleared = dict() # player -> list of phases cleared
         
     def playerStart(self,player):
@@ -83,8 +84,19 @@ class Phase10Match(GenericRoundMatch):
         if len(extras):
             for player,extra in extras.items(): 
                 self.rounds[currentr-1].addExtraInfo(player,extra)
+                
+        cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='DealingPolicy';".format(idMatch))
+        row = cur.fetchone()
+        if row: self.phasesinorder = bool(row['value'])
         return True
         
+    def getPhasesInOrderFlag(self): 
+        return self.phasesinorder
+     
+    def setPhasesInOrderFlag(self,flag): 
+        if flag not in [True,False]: return
+        self.phasesinorder = flag
+        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'PhasesInOrder','{}');".format(self.idMatch,flag))
             
 class Phase10Round(GenericRound):
     
