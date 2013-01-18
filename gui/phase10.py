@@ -29,17 +29,18 @@ class Phase10Widget(GameWidget):
         super(Phase10Widget,self).initUI()
          
         self.detailMatchButton = QtGui.QPushButton(self.roundGroup)
-        self.detailMatchButton.setDisabled(True)
+        self.detailMatchButton.setEnabled(self.engine.getNumRound()>1)
         self.buttonGroupLayout.insertWidget(2,self.detailMatchButton)
         self.detailMatchButton.clicked.connect(self.showDetails)
                
         self.phasesInOrderCheckBox = QtGui.QCheckBox(self.matchGroup)
-        self.phasesInOrderCheckBox.setChecked(True)
+        self.phasesInOrderCheckBox.setChecked(self.engine.getPhasesInOrderFlag())
         self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
+        self.phasesInOrderCheckBox.setDisabled(self.engine.getNumRound()>1)
         self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
 
         self.gameInput = Phase10InputWidget(self.engine,self.matchGroup)
-        self.phasesInOrderCheckBox.stateChanged.connect(self.gameInput.switchPhasesInOrder)
+        self.phasesInOrderCheckBox.toggled.connect(self.gameInput.switchPhasesInOrder)
         self.widgetLayout.addWidget(self.gameInput,1,0)
     
         self.extraGroup = QtGui.QGroupBox(self)
@@ -171,7 +172,7 @@ class Phase10InputWidget(GameInputWidget):
             self.widgetLayout.addStretch()
 
         for np, player in enumerate(players):
-            self.playerInputList[player] = Phase10PlayerWidget(player,self.winnerButtonGroup,self)
+            self.playerInputList[player] = Phase10PlayerWidget(player,self.engine,self.winnerButtonGroup,self)
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
             if players_grid: 
                 self.widgetLayout.addWidget(self.playerInputList[player],np/2,np%2)
@@ -211,14 +212,15 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
     
     winnerSet = QtCore.Signal(str)
     
-    def __init__(self, nick, bgroup = None, parent=None):
+    def __init__(self, nick, engine, bgroup = None, parent=None):
         super(Phase10PlayerWidget,self).__init__(parent)
         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.setTitle(nick)
         self.nick = nick
         self.bgroup = bgroup
-        self.phases_in_order = True
-        self.current_phase = 1
+        self.engine = engine
+        self.current_phase = min(self.engine.getRemainingPhasesFromPlayer(self.nick))
+        self.phases_in_order = self.engine.getPhasesInOrderFlag()
         self.initUI()
 
     def initUI(self):
@@ -240,6 +242,7 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.scoreLCD.setNumDigits(3)
         self.scoreLCD.setMinimumWidth(100)
         self.scoreLCD.setMaximumHeight(125)
+        self.scoreLCD.display(self.engine.getScoreFromPlayer(self.nick))
         
         #Middle part - Phase list
         self.phaseLabels=list()
@@ -247,6 +250,8 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
             label = Phase10Label(phase,self)
             if phase == self.current_phase:
                 label.setCurrent()
+            elif self.engine.hasPhaseCompleted(self.nick, phase):
+                label.setPassed()
             self.phaseLabels.append(label)
             self.middleLayout.addWidget(label,(phase-1)/5,(phase-1)%5,1,1)
             
@@ -306,7 +311,7 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
             return score
     
     def switchPhasesInOrder(self,in_order):
-        self.phases_in_order = (in_order==QtCore.Qt.Checked)
+        self.phases_in_order = in_order
         if not self.phases_in_order: return
         self.phaseLabels[self.current_phase-1].setRemaining()
         for label in self.phaseLabels:

@@ -111,15 +111,16 @@ class GenericMatch(object):
             db.execute("INSERT OR REPLACE INTO MatchPlayer (idMatch,nick,totalScore,winner) VALUES ({},'{}',{},{});".format(str(self.idMatch),str(p),self.getScoreFromPlayer(str(p)),winner))
 
     def getGameTime(self): 
-        if self.isPaused() or self.winner:
-            elapsed = self.elapsed
-        else:
-            timediff = datetime.datetime.now() - self.resumed
-            elapsed = self.elapsed + timediff.seconds
-            
-        hours, remainder = divmod(elapsed, 3600)
+        hours, remainder = divmod(self.getGameSeconds(), 3600)
         minutes, seconds = divmod(remainder,60)
         return "{0:02}:{1:02}:{2:02}".format(hours,minutes,seconds)
+    
+    def getGameSeconds(self):
+        if self.isPaused() or self.winner:
+            return self.elapsed
+        else:
+            timediff = datetime.datetime.now() - self.resumed
+            return self.elapsed + timediff.seconds
             
     def getStartTime(self): return self.start
     
@@ -149,7 +150,7 @@ class GenericRoundMatch(GenericMatch):
         super(GenericRoundMatch,self).__init__(players)
         self.rounds = list()
         self.dealer = None
-        self.dealingp = 0
+        self.dealingp = 1
         
     def resumeMatch(self,idMatch):
         if not super(GenericRoundMatch,self).resumeMatch(idMatch): return False

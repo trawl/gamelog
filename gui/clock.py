@@ -13,11 +13,11 @@ import datetime
 
 class GameClock(QtGui.QLCDNumber):
     
-    def __init__(self,parent=None):
+    def __init__(self,elapsed=0,parent=None):
         super(GameClock,self).__init__(parent)
         self.setSegmentStyle(QtGui.QLCDNumber.Filled)
         self.startTime = datetime.datetime.now()
-        self.accumulated = 0
+        self.accumulated = elapsed
         self.paused = False
         self.timer = QtCore.QTimer(self)
         self.timer.start(1000)
