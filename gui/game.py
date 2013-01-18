@@ -15,15 +15,17 @@ from gui.clock import GameClock
 
 class GameWidget(Tab):
 
-    def __init__(self, game, players, parent=None):
+    def __init__(self, game, players, engine = None, parent=None):
         super(GameWidget, self).__init__(parent)
         self.game = game
-        self.players=players
-        self.createEngine()  
-        for nick in players:
-            self.engine.addPlayer(nick)
-        self.engine.setDealingPolicy(self.engine.RRDealer)
-        self.engine.begin()
+        if engine is not None:
+            self.engine = engine
+            self.players = self.engine.getPlayers()
+        else:
+            self.players = players
+            self.createEngine()  
+            for nick in players: self.engine.addPlayer(nick)
+            self.engine.begin()
         self.engine.printStats()
         self.gameInput = None
         self.initUI()
@@ -61,7 +63,7 @@ class GameWidget(Tab):
         #Match Group
         self.matchGroupLayout = QtGui.QVBoxLayout(self.matchGroup)
         
-        self.clock = GameClock(self)
+        self.clock = GameClock(self.engine.getGameSeconds(),self)
         self.clock.setMinimumHeight(100)
         self.matchGroupLayout.addWidget(self.clock)
         
@@ -72,6 +74,7 @@ class GameWidget(Tab):
             self.dealerPolicyCheckBox.setChecked(False)
         self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
         self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
+        self.dealerPolicyCheckBox.setDisabled(self.engine.getNumRound()>1)
         self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
         
     def retranslateUI(self):
@@ -102,7 +105,7 @@ class GameWidget(Tab):
         if ret == QtGui.QMessageBox.No:
             self.closeMatch()
         else:
-            self.engine.pause()
+            self.engine.cancelMatch()
         self.requestClose()
         
     def pauseMatch(self):

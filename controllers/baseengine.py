@@ -97,6 +97,8 @@ class RoundGameEngine:
     
     def isPaused(self): return self.match.isPaused()
     
+    def getGameSeconds(self): return self.match.getGameSeconds()
+    
     def cancelMatch(self): self.match.cancel()
         
     def setDealingPolicy(self, policy): self.match.setDealingPolicy(policy)

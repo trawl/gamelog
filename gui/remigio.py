@@ -40,6 +40,7 @@ class RemigioWidget(GameWidget):
         sp = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
         self.topPointsLineEdit.setSizePolicy(sp)
         self.topPointsLineEdit.textChanged.connect(self.changeTop)
+        self.topPointsLineEdit.setDisabled(self.engine.getNumRound()>1)
         self.configLayout.addWidget(self.topPointsLineEdit,0,0)
         
         self.topPointsLabel = QtGui.QLabel(self.matchGroup)
@@ -59,8 +60,9 @@ class RemigioWidget(GameWidget):
         self.playerGroupBox = {}
         for player in self.players:
             pw = RemigioPlayerWidget(player,self.playerGroup)
-            if player == self.engine.getDealer():
-                pw.setDealer()
+            pw.updateDisplay(self.engine.getScoreFromPlayer(player))
+            if player == self.engine.getDealer(): pw.setDealer()
+            if self.engine.isPlayerOff(player): pw.koPlayer()
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
  

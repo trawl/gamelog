@@ -8,7 +8,7 @@ class GameWidgetFactory:
     @classmethod
     def createGameWidget(cls,gname,players,parent):
         if gname in ['Phase10','Phase10Master']:
-            return Phase10Widget(gname,players,parent)
+            return Phase10Widget(gname,players,None,parent)
         if gname == 'Remigio':
-            return RemigioWidget(gname,players,parent)      
+            return RemigioWidget(gname,players,None,parent)      
         return None
