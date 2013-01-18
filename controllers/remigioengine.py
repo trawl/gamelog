@@ -8,8 +8,6 @@ class RemigioEngine(RoundGameEngine):
     def __init__(self):
         self.game = 'Remigio'
         RoundGameEngine.__init__(self)
-        
-    def openRound(self): self.round = RemigioRound()
 
     def getActivePlayers(self): return self.match.getActivePlayers()
     
@@ -34,7 +32,7 @@ class RemigioEngine(RoundGameEngine):
                 self.match.setDealer(player)
                 break
             
-    def runRoundPlayer(self,player,winner):
+    def runStubRoundPlayer(self,player,winner):
         score = 0
         closeType = 1
         if winner == player:

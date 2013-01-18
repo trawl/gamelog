@@ -3,15 +3,14 @@
 
 from controllers.db import db
 from controllers.baseengine import readInput
-from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
-from controllers.remigioengine import RemigioEngine
+from controllers.enginefactory import GameEngineFactory
 
 class ResumeEngine():
     
     def __init__(self,game):
         self.game = game
         self.candidates = {}
-        cur = db.execute("SELECT idMatch,started,finished,elapsed FROM Match WHERE state=3 and Game_name='{}'".format(self.game))
+        cur = db.execute("SELECT idMatch,started,finished,elapsed FROM Match WHERE state=4 and Game_name='{}'".format(self.game))
         for row in cur:
             self.candidates[row['idMatch']] = {}
             self.candidates[row['idMatch']]['started'] = row['started']
@@ -27,17 +26,9 @@ class ResumeEngine():
     def getCandidates(self): return self.candidates
     
     def resume(self,idMatch):
-        if self.game == 'Phase10':
-            engine = Phase10Engine()
-        if self.game == 'Phase10Master':
-            engine = Phase10MasterEngine()
-        if self.game == 'Remigio':
-            engine = RemigioEngine()
-        
-        if engine.resume(idMatch):
-            return engine
-        else:
-            return None
+        engine = GameEngineFactory.createMatch(self.game)
+        if engine and engine.resume(idMatch): return engine
+        return None
         
         
 if __name__ == "__main__":
@@ -60,6 +51,6 @@ if __name__ == "__main__":
             print("Could not restore match #{}".format(idMatch))
             exit()
         else:
-            engine.runRoundLoop()
+            engine.runStubRoundLoop()
             
             

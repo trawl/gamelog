@@ -9,9 +9,6 @@ class Phase10Engine(RoundGameEngine):
     def __init__(self):
         self.game = "Phase10"
         RoundGameEngine.__init__(self)
-        
-    def openRound(self):
-        self.round = Phase10Round()
                     
     def getPhases(self):
         cur = db.execute("Select key,value from GameExtras where Game_name='{}' and key like 'Phase %' order by key asc".format(self.game))
@@ -52,17 +49,22 @@ class Phase10Engine(RoundGameEngine):
         print("  Quick desc: s=set, r=run, c=colour, cr=colour run")
         print("  Example: 2s4 = 2 sets of 4 cards")
         
-    def runRoundPlayer(self,player,winner):
+    def runStubRoundPlayer(self,player,winner):
         score = 0
         cleared = 1
-        a_phase = readInput("{} aimed phase number: ".format(player),int,lambda x: x > 0 and self.hasPhaseRemaining(player,x),"Sorry, phase not valid or already completed.")
+        if self.getPhasesInOrderFlag():
+            try: a_phase = self.getCompletedPhasesFromPlayer(player)[-1] + 1
+            except IndexError: a_phase = 1
+        else:
+            a_phase = readInput("{} aimed phase number: ".format(player),int,lambda x: x > 0 and self.hasPhaseRemaining(player,x),"Sorry, phase not valid or already completed.")
         if not winner == player:
-            cleared = readInput("Did {} complete phase {}?[1/0]: ".format(player,a_phase),int,lambda x: x in [0,1])
             score = readInput("{} round score: ".format(player),int,lambda x: x>0,"Sorry, invalid score number.")
+            if (score>=50):
+                cleared = readInput("Did {} complete phase {}?[1/0]: ".format(player,a_phase),int,lambda x: x in [0,1])
         self.addRoundInfo(player,score, {'aimedPhase':a_phase, 'isCompleted':cleared})
         
     def extraStubConfig(self):
-        pio = readInput("Follow phases in order? [1/0]",int,lambda x: x in (0,1))
+        pio = readInput("Follow phases in order? [1/0]: ",int,lambda x: x in (0,1))
         self.setPhasesInOrderFlag(bool(pio))
         
     def getPhasesInOrderFlag(self): return self.match.getPhasesInOrderFlag()
@@ -72,9 +74,8 @@ class Phase10Engine(RoundGameEngine):
 
 class Phase10MasterEngine(Phase10Engine):
     def __init__(self):
-        self.game = "Phase10Master"
         Phase10Engine.__init__(self)
-
+        self.game = "Phase10Master"
 
 
 if __name__ == "__main__":

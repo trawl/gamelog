@@ -6,14 +6,15 @@ from model.base import GenericRoundMatch,GenericRound
 
 class RemigioMatch(GenericRoundMatch):
     def __init__(self,players=[]):
-        GenericRoundMatch.__init__(self,players)
+        super(RemigioMatch,self).__init__(players)
         self.game = 'Remigio'
         self.activeplayers = []
         self.playersoff = []
         self.top = 100
         
     def playerStart(self,player):
-        self.activeplayers.append(player)
+        if self.getScoreFromPlayer(player) < self.top: self.activeplayers.append(player)
+        else: self.playersoff.append(player)
         
     def addRound(self,rnd):
         closeType = rnd.getCloseType()
@@ -33,42 +34,20 @@ class RemigioMatch(GenericRoundMatch):
             self.winner = self.activeplayers[0]
             
     def resumeMatch(self,idMatch):
-        if not super(RemigioMatch,self).resumeMatch(idMatch): 
-            return False
-     
-        for player,score in self.totalScores.items():
-            if score < self.top: self.activeplayers.append(player)
-            else: self.playersoff.append(player)
-
-        currentr = 0
-        currentp = ""
-        extras = {}
-        cur = db.execute("SELECT idRound,nick,key,value FROM RoundStatistics WHERE idMatch ={} ORDER BY idRound,nick;".format(idMatch))
-        for row in cur:
-            if row['idRound'] != currentr:
-                if len(extras):
-                    for player,extra in extras.items(): 
-                        self.rounds[currentr-1].addExtraInfo(player,extra)
-                extras = {}
-                currentp = ""
-                currentr += 1
-                
-            if str(row['nick']) != currentp:
-                currentp = str(row['nick'])
-                extras['nick'] = {}
-            
-            if (str(row['key']) == 'closeType'):
-                extras['nick'][str(row['key'])] = int(row['value'])
-                
-        if len(extras):
-            for player,extra in extras.items(): 
-                self.rounds[currentr-1].addExtraInfo(player,extra)
-                
+        if not super(RemigioMatch,self).resumeMatch(idMatch): return False
+        
+        for player in self.getPlayers(): self.playerStart(player)
+                       
         cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='Top';".format(idMatch))
         row = cur.fetchone()
         if row: self.top = int(row['value'])
                 
         return True
+    
+    def resumeExtraInfo(self,player,key,value): 
+        extra = {}
+        if key == 'closeType': extra[key] = int(value)
+        return extra
     
     def createRound(self,numround): return RemigioRound(numround)
     
@@ -94,7 +73,7 @@ class RemigioMatch(GenericRoundMatch):
             
 class RemigioRound(GenericRound):
     def __init__( self,numround):
-        GenericRound.__init__(self,numround)
+        super(RemigioRound,self).__init__(numround)
         self.closeType = 1
  
     def addExtraInfo(self,player,extras):

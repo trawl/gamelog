@@ -3,7 +3,7 @@
 
 import datetime
 import random
-from model.base import Player,GenericRound
+from model.base import Player
 from model.gamefactory import GameFactory
 from controllers.db import db
 
@@ -49,8 +49,8 @@ class RoundGameEngine:
             return True
         return False
         
-    def openRound(self):
-        self.round = GenericRound()
+    def openRound(self,nround):
+        self.round = self.match.createRound(nround)
         
     def setRoundWinner(self,winner):
         self.round.setWinner(winner)
@@ -78,10 +78,8 @@ class RoundGameEngine:
         return self.porder
 
     def getScoreFromPlayer(self,player):
-        if (player in self.match.totalScores):
-            return self.match.totalScores[player]
-        else:
-            return 0
+        try: return self.match.getScoreFromPlayer(player)
+        except KeyError: return 0
 
     def getNumRound(self):
         return len(self.match.rounds)+1
@@ -94,6 +92,8 @@ class RoundGameEngine:
     def pause(self): self.match.pause()
     
     def unpause(self): self.match.unpause()
+    
+    def save(self): self.match.save()
     
     def isPaused(self): return self.match.isPaused()
     
@@ -190,18 +190,24 @@ class RoundGameEngine:
         elif option == 2: self.setDealingPolicy(RoundGameEngine.WinnerDealer)
         self.extraStubConfig()
         self.begin()
-        self.runRoundLoop()
+        self.runStubRoundLoop()
 
-    def runRoundLoop(self):
+    def runStubRoundLoop(self):
         self.printStats()
         while not self.getWinner():
-            self.openRound()
+            self.openRound(self.getNumRound())
             while True:
-                rnd_winner = readInput("Round {} Winner (or p to pause): ".format(self.getNumRound()),str,lambda x: x in self.getListPlayers() or x =='p',"Sorry, player not found in current match.")
+                rnd_winner = readInput("Round {} Winner (or p to pause, s to save and exit, c to cancel without saving): ".format(self.getNumRound()),str,lambda x: x in self.getListPlayers() or x in ('p','s','c'),"Sorry, player not found in current match.")
                 if rnd_winner == 'p':
                     self.pause()
                     readInput("Press Enter to unpause...")
                     self.unpause()
+                elif rnd_winner == 's':
+                    self.save()
+                    exit()
+                elif rnd_winner == 'c':
+                    self.cancelMatch()
+                    exit()
                 else: break
                 
             self.setRoundWinner(rnd_winner)
@@ -213,7 +219,7 @@ class RoundGameEngine:
     # To be implemented in subclasses
     def printExtraStats(self): pass        
     def printExtraPlayerStats(self,player): pass
-    def runRoundPlayer(self,player,winner): pass
+    def runStubRoundPlayer(self,player,winner): pass
     def extraStubConfig(self): pass
 
 

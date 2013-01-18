@@ -20,6 +20,7 @@ class GenericMatch(object):
     FINISHED = 1
     CANCELLED = 2
     PAUSED = 3
+    SAVED = 4
     
     def __init__(self,players=[]):
         self.game = None
@@ -36,12 +37,13 @@ class GenericMatch(object):
     def resumeMatch(self,idMatch):
         if self.start is not None: return False
         if not isinstance(idMatch,int): return False
-        cur = db.execute("SELECT Game_name,state,elapsed FROM Match WHERE idMatch ={};".format(idMatch))
+        cur = db.execute("SELECT Game_name,state,started,elapsed FROM Match WHERE idMatch ={};".format(idMatch))
         row = cur.fetchone()
         if not row: return False
-        if row['Game_name']!=self.game or row['state']!=3: return False
+        if row['Game_name']!=self.game or row['state']!=self.SAVED: return False
         self.elapsed = int(row['elapsed'])
-        self.start = datetime.datetime.now()
+        self.start = datetime.datetime.strptime(row['started'],"%Y-%m-%d %H:%M:%S.%f")
+        self.resumed = datetime.datetime.now()
         #Retrieve players
         self.players = []
         cur = db.execute("SELECT rowid,nick,totalScore FROM MatchPlayer WHERE idMatch ={} ORDER BY rowid;".format(idMatch))
@@ -53,69 +55,49 @@ class GenericMatch(object):
         self.state = self.RUNNING
         self.idMatch = idMatch
         return True
-
         
     def startMatch(self):
         self.start = datetime.datetime.now()
         self.resumed = self.start
-#        cur = db.execute("INSERT INTO Match (Game_name,started) VALUES ('{}','{}');".format(self.game,str(self.start)))
-#        self.idMatch = cur.lastrowid
         self.state = self.RUNNING
         for p in self.players:
             self.totalScores[p] = 0
-#            db.execute("INSERT INTO MatchPlayer (idMatch,nick) VALUES ({},'{}');".format(str(self.idMatch),str(p)))
             self.playerStart(p)
+            
+    def flushState(self,state):
+        self.updateElapsed()
+        self.state = state
+        self.flushToDB()
+        
+    def updateElapsed(self):
+        self.finish = datetime.datetime.now()
+        timediff = self.finish - self.resumed
+        self.elapsed += timediff.seconds
             
     def updateWinner(self):
         self.computeWinner()
-        if self.winner:
-            self.finish = datetime.datetime.now()
-            timediff = self.finish - self.start
-            self.elapsed += timediff.seconds
-            self.flushToDB()
-#            db.execute("UPDATE Match SET finished='{}',state=1,elapsed={} WHERE idMatch={};".format(str(self.finish),self.elapsed,str(self.idMatch)))
-#            db.execute("UPDATE MatchPlayer SET winner=1 WHERE idMatch={}  and nick='{}';".format(str(self.idMatch),self.winner))
+        if self.winner: self.flushState(self.FINISHED)
     
     def cancel(self):
         if not self.isCancelled() and not self.winner:
-            self.finish = datetime.datetime.now()
-            timediff = self.finish - self.start
-            self.elapsed += timediff.seconds
-#            db.execute("UPDATE Match SET finished='{}',state=2, elapsed={} WHERE idMatch={};".format(str(self.finish),self.elapsed,str(self.idMatch)))
-            self.state = self.CANCELLED
-            self.flushToDB()
+            self.flushState(self.CANCELLED)
             print("{} Match Cancelled at {}".format(self.game,self.finish))
-    
-    def getGameTime(self): 
-        if self.isPaused() or self.winner:
-            elapsed = self.elapsed
-        else:
-            timediff = datetime.datetime.now() - self.start
-            elapsed = self.elapsed + timediff.seconds
-            
-        hours, remainder = divmod(elapsed, 3600)
-        minutes, seconds = divmod(remainder,60)
-        return "{0:02}:{1:02}:{2:02}".format(hours,minutes,seconds)
-            
-    def pause(self):
-        if not self.isPaused():
-            self.finish = datetime.datetime.now()
-            timediff = self.finish - self.start
-            self.elapsed += timediff.seconds
-#            db.execute("UPDATE Match SET finished='{}', elapsed={}, state=3 WHERE idMatch={};".format(str(self.finish),self.elapsed,str(self.idMatch)))
-            print("{} Paused at {}".format(self.game, self.finish))
-            self.state = self.PAUSED
-            
-    def unpause(self):
-        if self.isPaused():
-            self.start = datetime.datetime.now()
-#            db.execute("UPDATE Match SET state=0 WHERE idMatch={};".format(str(self.idMatch)))
-            print("{} Resumed at {}".format(self.game, self.start))
-            self.state = self.RUNNING
             
     def save(self):
-        self.pause()
-        self.flushToDB()
+        self.flushState(self.SAVED)
+        print("{} Saved at {}".format(self.game, self.finish))
+    
+    def pause(self):
+        if not self.isPaused():
+            self.updateElapsed()
+            self.state = self.PAUSED
+            print("{} Paused at {}".format(self.game, self.finish))
+
+    def unpause(self):
+        if self.isPaused():
+            self.resumed = datetime.datetime.now()
+            self.state = self.RUNNING
+            print("{} Resumed at {}".format(self.game, self.resumed))
         
     def flushToDB(self):
         if self.idMatch < 0:
@@ -124,13 +106,28 @@ class GenericMatch(object):
         else:
             cur = db.execute("INSERT OR REPLACE INTO Match (idMatch,Game_name,state,started,finished,elapsed) VALUES ({},'{}',{},'{}','{}',{});".format(self.idMatch,self.game,self.state,str(self.start),str(self.finish),self.elapsed))
         for p in self.players:
-            db.execute("INSERT OR REPLACE INTO MatchPlayer (idMatch,nick,winner) VALUES ({},'{}',{});".format(str(self.idMatch),str(p)),str(p)==self.winner)
+            winner = 0
+            if str(p)==self.getWinner(): winner = 1
+            db.execute("INSERT OR REPLACE INTO MatchPlayer (idMatch,nick,totalScore,winner) VALUES ({},'{}',{},{});".format(str(self.idMatch),str(p),self.getScoreFromPlayer(str(p)),winner))
+
+    def getGameTime(self): 
+        if self.isPaused() or self.winner:
+            elapsed = self.elapsed
+        else:
+            timediff = datetime.datetime.now() - self.resumed
+            elapsed = self.elapsed + timediff.seconds
+            
+        hours, remainder = divmod(elapsed, 3600)
+        minutes, seconds = divmod(remainder,60)
+        return "{0:02}:{1:02}:{2:02}".format(hours,minutes,seconds)
             
     def getStartTime(self): return self.start
     
     def getPlayers(self): return self.players
     
     def setPlayers(self, players): self.players = players
+    
+    def getScoreFromPlayer(self,player): return self.totalScores[player]
     
     def getWinner(self): return self.winner
             
@@ -147,8 +144,9 @@ class GenericMatch(object):
         
         
 class GenericRoundMatch(GenericMatch):
+    
     def __init__(self,players=[]):
-        GenericMatch.__init__(self,players)
+        super(GenericRoundMatch,self).__init__(players)
         self.rounds = list()
         self.dealer = None
         self.dealingp = 0
@@ -175,43 +173,32 @@ class GenericRoundMatch(GenericMatch):
         row = cur.fetchone()
         if row: self.dealingp = int(row['value'])
         
+        cur = db.execute("SELECT idRound,nick,key,value FROM RoundStatistics WHERE idMatch ={} ORDER BY idRound,nick,key,value;".format(idMatch))
+        
+        currentr = 0
+        currentp = ""
+        extras = {}
+        for row in cur:
+            if row['idRound'] != currentr:
+                if len(extras):
+                    for player,extra in extras.items(): 
+                        self.rounds[currentr-1].addExtraInfo(player,extra)
+                extras = {}
+                currentp = ""
+                currentr += 1
+                
+            if str(row['nick']) != currentp:
+                currentp = str(row['nick'])
+                extras[currentp] = {}
+            
+            extras[currentp].update(self.resumeExtraInfo(currentp,str(row['key']),str(row['value'])))
+                
+        if len(extras):
+            for player,extra in extras.items(): 
+                self.rounds[currentr-1].addExtraInfo(player,extra)
+        
         return True
-    
-    
-    def addRound(self,rnd):
-        self.rounds.append(rnd)
-        for player,score in rnd.getScore().items():
-#            if (rnd.getWinner()==player): winner = 1
-#            else: winner=0
-            self.totalScores[player]+=score
-#            db.execute("INSERT INTO Round (idMatch,nick,idRound,winner,score) VALUES ({},'{}',{},{},{});".format(self.idMatch,str(player),rnd.getNumRound(),winner,score))
-#            db.execute("UPDATE MatchPlayer SET totalScore={} WHERE idMatch={} AND nick='{}';".format(self.totalScores[player],self.idMatch,str(player)))
-            self.playerAddRound(player,rnd)
-        self.updateWinner()
-        
-    def getRounds(self): return self.rounds
-
-    # To be implemented in subclasses
-    def playerAddRound(self,player,rnd): pass
-    
-    def createRound(self,numround): return GenericRound(numround)
-    
-    def getDealer(self):
-        return self.dealer
-
-    def setDealer(self,player):
-        if player not in self.players: return
-        self.dealer = player
-#        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'Dealer','{}');".format(self.idMatch,player))
-
-    def getDealingPolicy(self):
-        return self.dealingp
-        
-    def setDealingPolicy(self,policy):
-        if not policy in [0,1,2]: return
-        self.dealingp = policy
-#        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'DealingPolicy','{}');".format(self.idMatch,policy))
-        
+           
     def flushToDB(self):
         super(GenericRoundMatch,self).flushToDB()
         
@@ -220,12 +207,41 @@ class GenericRoundMatch(GenericMatch):
         
         for rnd in self.rounds:
             for player,score in rnd.getScore().items():
-                winner = rnd.getWinner()==player
+                winner = 0 
+                if rnd.getWinner() == player: winner = 1
                 db.execute("INSERT OR REPLACE INTO Round (idMatch,nick,idRound,winner,score) VALUES ({},'{}',{},{},{});".format(self.idMatch,str(player),rnd.getNumRound(),winner,score))
-                
+    
+    def addRound(self,rnd):
+        self.rounds.append(rnd)
+        for player,score in rnd.getScore().items():
+            self.totalScores[player]+=score
+            self.playerAddRound(player,rnd)
+            
+        self.updateWinner()
+        
+    def getRounds(self): return self.rounds
+
+    def getDealer(self): return self.dealer
+
+    def setDealer(self,player):
+        if player not in self.players: return
+        self.dealer = player
+
+    def getDealingPolicy(self): return self.dealingp
+        
+    def setDealingPolicy(self,policy):
+        if not policy in [0,1,2]: return
+        self.dealingp = policy
+ 
+    # To be implemented in subclasses
+    def playerAddRound(self,player,rnd): pass
+    def resumeExtraInfo(self,player,key,value): return {}
+    def createRound(self,numround): return GenericRound(numround)
     
 
+
 class GenericRound(object):
+    
     def __init__(self,numround):
         self.numround = numround
         self.score = dict() # nick -> points
@@ -253,3 +269,4 @@ class GenericRound(object):
      
     # To be implemented in subclasses    
     def addExtraInfo(self,player,extras): pass
+    
