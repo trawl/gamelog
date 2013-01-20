@@ -10,6 +10,7 @@ except ImportError as error:
 
 from controllers.db import db
 from controllers.statsengine import StatsEngine
+from controllers.resumeengine import ResumeEngine
 from gui.tab import Tab
 from gui.gamewidgetfactory import GameWidgetFactory
 from gui.newplayer import NewPlayerDialog
@@ -60,9 +61,11 @@ class NewGameWidget(Tab):
         self.gameComboBox = QtGui.QComboBox(self.gameGroupBox)
         self.gameGroupBoxLayout.addWidget(self.gameComboBox)
         self.gameDescriptionLabel = QtGui.QLabel(self.gameGroupBox)
-        self.gameRulesBrowser = QtGui.QTextBrowser(self.gameGroupBox)
+        self.resumeGroup = ResumeBox(self.parent)
+#        self.gameRulesBrowser = QtGui.QTextBrowser(self.gameGroupBox)
         self.gameGroupBoxLayout.addWidget(self.gameDescriptionLabel)
-        self.gameGroupBoxLayout.addWidget(self.gameRulesBrowser)
+        self.gameGroupBoxLayout.addWidget(self.resumeGroup)
+#        self.gameGroupBoxLayout.addWidget(self.gameRulesBrowser)
         self.gameStatsBox = QuickStatsBox(self)
         self.gameGroupBoxLayout.addWidget(self.gameStatsBox)
         self.gameGroupBoxLayout.addStretch()
@@ -78,8 +81,9 @@ class NewGameWidget(Tab):
         game = str(self.gameComboBox.currentText())
         description = "2 - {} {}\n\n{}".format(self.games[game]['maxPlayers'],QtGui.QApplication.translate("NewGameWidget",'players'),self.games[game]['description'])
         self.gameDescriptionLabel.setText(description)
-        self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
+#        self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
         self.gameStatsBox.update(game)
+        self.resumeGroup.changeGame(game)
 
     def populatePlayersGroupBox(self):
 
@@ -207,8 +211,68 @@ class PlayerListModel(QtGui.QStandardItemModel):
             players.append(nick)
         return players
                 
+class ResumeBox(QtGui.QGroupBox):
+    
+    def __init__(self,parent):
+        super(ResumeBox,self).__init__(parent)
+        self.engine = None
+        self.game = None
+        self.parent = parent
+        self.matches = []
+        self.initUI()
+        
+    def initUI(self):
+        self.widgetLayout = QtGui.QVBoxLayout(self)
+        self.savedlist = QtGui.QListWidget(self)
+        self.savedlist.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.savedlist.hide()
+        self.widgetLayout.addWidget(self.savedlist)
+        self.resumebutton = QtGui.QPushButton(self)
+        self.resumebutton.clicked.connect(self.resumeGame)
+        self.resumebutton.hide()
+        self.widgetLayout.addWidget(self.resumebutton)
+        self.emptyLabel = QtGui.QLabel(self)
+        self.widgetLayout.addWidget(self.emptyLabel)
+        self.retranslateUI()
+        
+    def retranslateUI(self):
+        self.setTitle(QtGui.QApplication.translate("ResumeBox",'Saved Games'))
+        self.resumebutton.setText(QtGui.QApplication.translate("ResumeBox",'Resume'))
+        self.emptyLabel.setText(QtGui.QApplication.translate("ResumeBox",'No matches to be resumed'))
+    
+    def changeGame(self,game):
+        self.game = game
+        self.engine = ResumeEngine(game)
+        self.savedlist.clear()
+        self.matches = []
+        candidates = self.engine.getCandidates()
+        if not candidates:
+            self.savedlist.hide()
+            self.resumebutton.hide()
+            self.emptyLabel.show()
+        else:
+            self.emptyLabel.hide()
+            for idMatch,candidate in candidates.items():
+                self.matches.append(idMatch)
+                msg = "{} {} ({})".format(game,candidate['finished'],candidate['elapsed'])
+                item = QtGui.QListWidgetItem(msg,self.savedlist)
+#                item.setStatusTip("Players: {}".format(candidates['players']))
+                self.savedlist.addItem(item)
+            self.savedlist.show()
+            self.resumebutton.show()
+                
+    def resumeGame(self):
+        selected = self.savedlist.selectedIndexes()
+        if len(selected)>0:
+            idMatch = self.matches[selected[0].row()]
+            gameengine = self.engine.resume(idMatch)
+            matchTab = GameWidgetFactory.resumeGameWidget(self.game,gameengine,self.parent)
+            if matchTab:
+                matchTab.closeRequested.connect(self.parent.removeTab)
+                self.parent.newTab(matchTab,self.game)
             
 class QuickStatsBox(QtGui.QGroupBox):
+    
     def __init__(self,parent):
         super(QuickStatsBox, self).__init__(parent)
         self.stats = StatsEngine()
