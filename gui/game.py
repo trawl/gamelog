@@ -105,7 +105,7 @@ class GameWidget(Tab):
         if ret == QtGui.QMessageBox.No:
             self.closeMatch()
         else:
-            self.engine.cancelMatch()
+            self.engine.save()
         self.requestClose()
         
     def pauseMatch(self):
@@ -122,7 +122,10 @@ class GameWidget(Tab):
         self.updateGameStatusLabel()
             
     def commitRound(self):
-        self.engine.openRound()
+        
+        nround = self.engine.getNumRound()
+        print("Opening round {}".format(nround))
+        self.engine.openRound(nround)
         winner = self.gameInput.getWinner()
         if not winner:
             QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("GameWidget","No winner selected")))
