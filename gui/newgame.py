@@ -143,6 +143,7 @@ class NewGameWidget(Tab):
     def showEvent(self, event):
         if hasattr(self, 'gameStatsBox') and hasattr(self,'gameComboBox') and self.gameComboBox.currentText(): 
             self.gameStatsBox.update(self.gameComboBox.currentText())
+            self.resumeGroup.changeGame(self.gameComboBox.currentText())
         return QtGui.QWidget.showEvent(self, event)
 
 

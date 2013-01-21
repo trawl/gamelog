@@ -105,7 +105,7 @@ class GameWidget(Tab):
         if ret == QtGui.QMessageBox.No:
             self.closeMatch()
         else:
-            self.engine.save()
+            self.saveMatch()
         self.requestClose()
         
     def pauseMatch(self):
@@ -163,6 +163,8 @@ class GameWidget(Tab):
         
     def closeMatch(self): self.engine.cancelMatch()
     
+    def saveMatch(self): self.engine.save()
+        
     def checkPlayerScore(self,player,score): 
         if score >= 0: return True
         else: return False
@@ -177,7 +179,9 @@ class GameWidget(Tab):
             self.updateGameStatusLabel()    
             self.gameInput.setDisabled(True)
         else:
-            self.roundGroup.setTitle(unicode(QtGui.QApplication.translate("GameWidget","Round {0}")).format(str(self.engine.getNumRound())))           
+            self.roundGroup.setTitle(unicode(QtGui.QApplication.translate("GameWidget","Round {0}")).format(str(self.engine.getNumRound())))   
+            
+    def getGameName(self): return self.game        
     
     #To be implemented in subclasses
     def createEngine(self): pass

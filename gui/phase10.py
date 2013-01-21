@@ -37,6 +37,7 @@ class Phase10Widget(GameWidget):
         self.phasesInOrderCheckBox.setChecked(self.engine.getPhasesInOrderFlag())
         self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
         self.phasesInOrderCheckBox.setDisabled(self.engine.getNumRound()>1)
+        self.phasesInOrderCheckBox.stateChanged.connect(self.phasesInOrderChanged)
         self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
 
         self.gameInput = Phase10InputWidget(self.engine,self.matchGroup)
@@ -148,6 +149,11 @@ class Phase10Widget(GameWidget):
             phases.append(phase)
         return phases
 
+    def phasesInOrderChanged(self,state):
+        if state == QtCore.Qt.Unchecked:
+            self.engine.setPhasesInOrderFlag(False)
+        elif state == QtCore.Qt.Checked:
+            self.engine.setPhasesInOrderFlag(True)
 
 class Phase10InputWidget(GameInputWidget):
     

@@ -15,9 +15,6 @@ from gui.game import GameWidget,GameInputWidget
 class RemigioWidget(GameWidget):
 
     bgcolors = [0,0xCCFF99,0xFFFF99,0xFFCC99,0xFFCCFF]
-
-#    def __init__(self, game, players, parent=None):
-#        super(RemigioWidget, self).__init__(game,players,parent)
         
     def createEngine(self):
         if self.game != 'Remigio':
@@ -251,8 +248,8 @@ class RemigioPlayerWidget(QtGui.QWidget):
 #        self.scoreLCD.setMaximumHeight(100)
         self.nameLabel = QtGui.QLabel(self)
         self.nameLabel.setText(self.player)
-        self.nameLabel.setStyleSheet("QLabel { font-size: 16px; font-weight:bold; }")
         self.mainLayout.addWidget(self.nameLabel)
+        self.unsetDealer()
         
     def updateDisplay(self,points):
         if points >= 1000: self.scoreLCD.setNumDigits(4)
@@ -292,13 +289,14 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
 
     def recomputeTable(self):
         self.table.clearContents()
-        for i,r in enumerate(self.engine.getRounds()):
-            self.insertRound(r,i)
+        self.table.setRowCount(0)
+        for r in self.engine.getRounds(): self.insertRound(r)
     
-    def insertRound(self,r,i):
+    def insertRound(self,r):
         closeType = r.getCloseType()
         winner = r.getWinner()
         background = self.bgcolors[closeType]
+        i = r.getNumRound() - 1
         self.table.insertRow(i)
         for j, player in enumerate(self.engine.getListPlayers()):
             item = QtGui.QTableWidgetItem()
@@ -323,5 +321,4 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
         rounds = self.engine.getRounds()
         if not len(rounds): return
         r = rounds[-1]
-        i = len(rounds) - 1
-        self.insertRound(r,i)
+        self.insertRound(r)

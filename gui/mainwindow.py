@@ -84,17 +84,35 @@ class MainWindow(QtGui.QMainWindow):
         else: event.ignore()
         
     def ensureClose(self):
-        reply = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("MainWindow",'Exit'),
-            QtGui.QApplication.translate("MainWindow","Are you sure you want to exit GameLog?"), QtGui.QMessageBox.Yes | 
-            QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-
-        if reply == QtGui.QMessageBox.Yes:
+        numgames = len(self.openedGames)
+        if numgames > 0:
+            if (numgames == 1):
+                reply = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("MainWindow",'Exit'),
+                                                   unicode(QtGui.QApplication.translate("MainWindow","You have an opened {} match. Do you want to save it before exiting?")).format(self.openedGames[0].getGameName()), QtGui.QMessageBox.Yes | 
+                                                   QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
+            else:
+                reply = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("MainWindow",'Exit'),
+                                                   unicode(QtGui.QApplication.translate("MainWindow","You have {} opened matches. Do you want to save them before exiting?")).format(numgames), QtGui.QMessageBox.Yes | 
+                                                   QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
+            
+            if reply == QtGui.QMessageBox.Cancel: return False
+            
             for game in self.openedGames:
-                game.closeMatch()
-            if db: db.disconnectDB()
-            return True
+                if reply == QtGui.QMessageBox.No:
+                    game.closeMatch()
+                else:
+                    game.saveMatch()
+        else:
+            reply = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("MainWindow",'Exit'),
+                QtGui.QApplication.translate("MainWindow","Are you sure you want to exit GameLog?"), QtGui.QMessageBox.Yes | 
+                QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+
+            if reply == QtGui.QMessageBox.No: return False
+            
+        if db: db.disconnectDB()
+        return True
         
-        return False
+
             
     def newTab(self,matchTab,title):
         self.openedGames.append(matchTab)
