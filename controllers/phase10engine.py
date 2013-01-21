@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from controllers.baseengine import RoundGameEngine,readInput
-from model.phase10 import Phase10Round
 from controllers.db import db
 
 class Phase10Engine(RoundGameEngine):

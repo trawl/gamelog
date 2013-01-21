@@ -50,10 +50,10 @@ class Phase10Match(GenericRoundMatch):
     def resumeMatch(self,idMatch):
         if not super(Phase10Match,self).resumeMatch(idMatch): return False
         
-        cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='DealingPolicy';".format(idMatch))
+        cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='PhasesInOrder';".format(idMatch))
         row = cur.fetchone()
-        if row: self.phasesinorder = bool(row['value'])
-        
+        if row: 
+            self.phasesinorder = bool(int(row['value']))
         return True
         
     def resumeExtraInfo(self,player,key,value): 
@@ -71,7 +71,9 @@ class Phase10Match(GenericRoundMatch):
     
     def flushToDB(self):
         super(Phase10Match,self).flushToDB()
-        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'PhasesInOrder','{}');".format(self.idMatch,self.phasesinorder))
+        if self.phasesinorder: inorderflag = 1
+        else: inorderflag = 0
+        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'PhasesInOrder','{}');".format(self.idMatch,inorderflag))
         for rnd in self.rounds:
             for player in rnd.score.keys():
                 db.execute("INSERT OR REPLACE INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'PhaseAimed','{}');".format(self.idMatch,player,rnd.getNumRound(),rnd.aimedPhase[player]))
@@ -81,6 +83,7 @@ class Phase10Match(GenericRoundMatch):
      
     def setPhasesInOrderFlag(self,flag): 
         if flag not in [True,False]: return
+        print("Setting phases in order flag to {}".format(flag))
         self.phasesinorder = flag
         
             
