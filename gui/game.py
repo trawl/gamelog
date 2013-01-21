@@ -28,6 +28,7 @@ class GameWidget(Tab):
             self.engine.begin()
         self.engine.printStats()
         self.gameInput = None
+        self.finished = False
         self.initUI()
         
     def initUI(self):
@@ -97,15 +98,16 @@ class GameWidget(Tab):
             self.gameStatusLabel.setText(QtGui.QApplication.translate("GameWidget",""))      
     
     def cancelMatch(self):
-        ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("GameWidget",'Cancel Match'),
-        unicode(QtGui.QApplication.translate("GameWidget","Do you want to save the current {} match?")).format(self.game), QtGui.QMessageBox.Yes | 
-        QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
-        
-        if ret == QtGui.QMessageBox.Cancel: return
-        if ret == QtGui.QMessageBox.No:
-            self.closeMatch()
-        else:
-            self.saveMatch()
+        if not self.isFinished():
+            ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("GameWidget",'Cancel Match'),
+            unicode(QtGui.QApplication.translate("GameWidget","Do you want to save the current {} match?")).format(self.game), QtGui.QMessageBox.Yes | 
+            QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
+            
+            if ret == QtGui.QMessageBox.Cancel: return
+            if ret == QtGui.QMessageBox.No:
+                self.closeMatch()
+            else:
+                self.saveMatch()
         self.requestClose()
         
     def pauseMatch(self):
@@ -173,15 +175,19 @@ class GameWidget(Tab):
         self.gameInput.reset()
         self.dealerPolicyCheckBox.setEnabled(False)
         if self.engine.getWinner():
+            self.finished = True
             self.pauseMatchButton.setDisabled(True)
             self.clock.stopTimer()
             self.commitRoundButton.setDisabled(True)
             self.updateGameStatusLabel()    
             self.gameInput.setDisabled(True)
+            
         else:
             self.roundGroup.setTitle(unicode(QtGui.QApplication.translate("GameWidget","Round {0}")).format(str(self.engine.getNumRound())))   
             
     def getGameName(self): return self.game        
+    
+    def isFinished(self): return self.finished
     
     #To be implemented in subclasses
     def createEngine(self): pass
