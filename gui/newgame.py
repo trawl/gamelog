@@ -8,6 +8,8 @@ except ImportError as error:
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
 
+import datetime
+
 from controllers.db import db
 from controllers.statsengine import StatsEngine
 from controllers.resumeengine import ResumeEngine
@@ -228,10 +230,16 @@ class ResumeBox(QtGui.QGroupBox):
         self.savedlist.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.savedlist.hide()
         self.widgetLayout.addWidget(self.savedlist)
+        self.buttonLayout = QtGui.QHBoxLayout()
+        self.widgetLayout.addLayout(self.buttonLayout)
         self.resumebutton = QtGui.QPushButton(self)
         self.resumebutton.clicked.connect(self.resumeGame)
         self.resumebutton.hide()
-        self.widgetLayout.addWidget(self.resumebutton)
+        self.buttonLayout.addWidget(self.resumebutton)
+        self.cancelbutton = QtGui.QPushButton(self)
+        self.cancelbutton.clicked.connect(self.deleteGame)
+        self.cancelbutton.hide()
+        self.buttonLayout.addWidget(self.cancelbutton)
         self.emptyLabel = QtGui.QLabel(self)
         self.widgetLayout.addWidget(self.emptyLabel)
         self.retranslateUI()
@@ -239,6 +247,7 @@ class ResumeBox(QtGui.QGroupBox):
     def retranslateUI(self):
         self.setTitle(QtGui.QApplication.translate("ResumeBox",'Saved Games'))
         self.resumebutton.setText(QtGui.QApplication.translate("ResumeBox",'Resume'))
+        self.cancelbutton.setText(QtGui.QApplication.translate("ResumeBox",'Cancel'))
         self.emptyLabel.setText(QtGui.QApplication.translate("ResumeBox",'No matches to be resumed'))
     
     def changeGame(self,game):
@@ -250,17 +259,27 @@ class ResumeBox(QtGui.QGroupBox):
         if not candidates:
             self.savedlist.hide()
             self.resumebutton.hide()
+            self.cancelbutton.hide()
             self.emptyLabel.show()
         else:
             self.emptyLabel.hide()
             for idMatch,candidate in candidates.items():
                 self.matches.append(idMatch)
-                msg = "{} {} ({})".format(game,candidate['finished'],candidate['elapsed'])
+                savedtime = datetime.datetime.strptime(candidate['started'],"%Y-%m-%d %H:%M:%S.%f")
+                strtime = savedtime.strftime("%Y-%m-%d %H:%M:%S")
+                hours, remainder = divmod(int(candidate['elapsed']), 3600)
+                minutes, seconds = divmod(remainder,60)
+                strelapsed =  "{0:02}:{1:02}:{2:02}".format(hours,minutes,seconds)
+                msg = unicode(QtGui.QApplication.translate("ResumeBox",'Saved on {}. Time played: {}')).format(strtime,strelapsed)
                 item = QtGui.QListWidgetItem(msg,self.savedlist)
-#                item.setStatusTip("Players: {}".format(candidates['players']))
+                playerlist =""
+                for player in candidate['players']:
+                    playerlist += "\n  " + player
+                item.setToolTip(unicode(QtGui.QApplication.translate("ResumeBox","Players: {}")).format(playerlist))
                 self.savedlist.addItem(item)
             self.savedlist.show()
             self.resumebutton.show()
+            self.cancelbutton.show()
                 
     def resumeGame(self):
         selected = self.savedlist.selectedIndexes()
@@ -271,6 +290,20 @@ class ResumeBox(QtGui.QGroupBox):
             if matchTab:
                 matchTab.closeRequested.connect(self.parent.removeTab)
                 self.parent.newTab(matchTab,self.game)
+                
+    def deleteGame(self):
+        selected = self.savedlist.selectedIndexes()
+        if len(selected)>0:
+            idMatch = self.matches[selected[0].row()]
+            reply = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("ResumeBox",'Cancel Saved Game'),
+                QtGui.QApplication.translate("ResumeBox","Are you sure you want to cancel saved game?"), QtGui.QMessageBox.Yes | 
+                QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+
+            if reply == QtGui.QMessageBox.No: return False
+            gameengine = self.engine.resume(idMatch)
+            gameengine.cancelMatch()
+            self.changeGame(self.game)
+        
             
 class QuickStatsBox(QtGui.QGroupBox):
     

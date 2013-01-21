@@ -84,11 +84,12 @@ class MainWindow(QtGui.QMainWindow):
         else: event.ignore()
         
     def ensureClose(self):
-        numgames = len(self.openedGames)
+        realopened = [x for x in self.openedGames if not x.isFinished()]
+        numgames = len(realopened)
         if numgames > 0:
             if (numgames == 1):
                 reply = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("MainWindow",'Exit'),
-                                                   unicode(QtGui.QApplication.translate("MainWindow","You have an opened {} match. Do you want to save it before exiting?")).format(self.openedGames[0].getGameName()), QtGui.QMessageBox.Yes | 
+                                                   unicode(QtGui.QApplication.translate("MainWindow","You have an opened {} match. Do you want to save it before exiting?")).format(realopened[0].getGameName()), QtGui.QMessageBox.Yes | 
                                                    QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
             else:
                 reply = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("MainWindow",'Exit'),
@@ -97,7 +98,7 @@ class MainWindow(QtGui.QMainWindow):
             
             if reply == QtGui.QMessageBox.Cancel: return False
             
-            for game in self.openedGames:
+            for game in realopened:
                 if reply == QtGui.QMessageBox.No:
                     game.closeMatch()
                 else:
