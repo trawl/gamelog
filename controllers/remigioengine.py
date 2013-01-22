@@ -2,12 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from controllers.baseengine import RoundGameEngine,readInput
-from model.remigio import RemigioRound
 
 class RemigioEngine(RoundGameEngine):
     def __init__(self):
-        self.game = 'Remigio'
         RoundGameEngine.__init__(self)
+        self.game = 'Remigio'
 
     def getActivePlayers(self): return self.match.getActivePlayers()
     
