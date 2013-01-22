@@ -7,7 +7,7 @@ from model.base import Player
 from model.gamefactory import GameFactory
 from controllers.db import db
 
-class RoundGameEngine:
+class RoundGameEngine(object):
     
     NoDealer = 0
     RRDealer = 1
@@ -17,7 +17,8 @@ class RoundGameEngine:
         self.players = dict()
         self.porder = list()
         self.round = None
-        self.match = GameFactory.createMatch(self.game)    
+        self.match = None
+        self.game = None
         
     def addPlayer(self,nick,fullName=""):
         if (fullName == ""):
@@ -36,6 +37,7 @@ class RoundGameEngine:
             db.execute("INSERT INTO Player (nick, fullName, dateCreation) values ('"+nick+"','"+fullName+"','"+str(self.players[nick].dateCreation)+"');")
 
     def begin(self):
+        self.match = GameFactory.createMatch(self.game)    
         self.match.setPlayers(self.porder)
         self.match.startMatch()
         if self.getDealingPolicy() != self.NoDealer :
