@@ -122,6 +122,7 @@ class RemigioInputWidget(GameInputWidget):
 
         for player in self.engine.getListPlayers():
             self.playerInputList[player] = RemigioPlayerInputWidget(player,self.bgcolors,self)
+            if self.engine.isPlayerOff(player): self.koPlayer(player)
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
     
@@ -282,6 +283,7 @@ class RemigioPlayerWidget(QtGui.QWidget):
         
     def koPlayer(self):
         self.setDisabled(True)
+        self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: grey}")
      
             
 class RemigioRoundsDetail(QtGui.QGroupBox):

@@ -6,8 +6,8 @@ from controllers.db import db
 
 class Phase10Engine(RoundGameEngine):
     def __init__(self):
+        super(Phase10Engine,self).__init__()
         self.game = "Phase10"
-        RoundGameEngine.__init__(self)
                     
     def getPhases(self):
         cur = db.execute("Select key,value from GameExtras where Game_name='{}' and key like 'Phase %' order by key asc".format(self.game))
@@ -73,9 +73,8 @@ class Phase10Engine(RoundGameEngine):
 
 class Phase10MasterEngine(Phase10Engine):
     def __init__(self):
-        Phase10Engine.__init__(self)
+        super(Phase10MasterEngine,self).__init__()
         self.game = "Phase10Master"
-
 
 if __name__ == "__main__":
     game = readInput('Game to play (Phase10/Phase10Master): ',str,lambda x: x in ['Phase10','Phase10Master'])
