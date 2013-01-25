@@ -213,6 +213,18 @@ class Phase10InputWidget(GameInputWidget):
     
     def setDealer(self): self.playerInputList[self.engine.getDealer()].setDealer() 
     
+class Phase10ScoreSpinBox(ScoreSpinBox):
+    
+    def __init__(self,parent=None):
+        super(Phase10ScoreSpinBox,self).__init__(parent)
+        self.setSingleStep(5)
+
+    def validate(self,text,pos):
+        try: score = int(text)
+        except ValueError: return (QtGui.QValidator.Invalid,pos)
+        if score%5 != 0: return (QtGui.QValidator.Intermediate,pos)
+        else: return (QtGui.QValidator.Acceptable,pos)
+
 
 class Phase10PlayerWidget(QtGui.QGroupBox):
     
@@ -266,10 +278,8 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.bgroup.addButton(self.roundWinnerRadioButton)
         self.rightLayout.addWidget(self.roundWinnerRadioButton,0,0)
         
-        self.roundScore=ScoreSpinBox(self)
+        self.roundScore=Phase10ScoreSpinBox(self)
         self.roundScore.setFixedWidth(60)
-#        self.roundScore.setValidator(QtGui.QIntValidator(5,200,None))
-#        self.roundScore.setSingleStep(5)
         self.roundScore.valueChanged.connect(self.updateRoundPhaseCleared)
         self.rightLayout.addWidget(self.roundScore,0,1)
 
@@ -308,15 +318,8 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
                 if not label.isRemaining(): label.setRemaining()
             
     def getScore(self):
-        if self.isWinner():
-            return 0
-        else:
-            return self.roundScore.value()
-#            try:
-#                score =  int(self.roundScore.text())
-#            except ValueError:
-#                score = -1
-#            return score
+        if self.isWinner(): return 0
+        else: return self.roundScore.value()
     
     def switchPhasesInOrder(self,in_order):
         self.phases_in_order = in_order
