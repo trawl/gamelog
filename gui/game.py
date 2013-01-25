@@ -137,7 +137,7 @@ class GameWidget(Tab):
         scores = self.gameInput.getScores()
         for player,score in scores.items():
             if not self.checkPlayerScore(player,score):
-                QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("GameWidget","{0} score is not valid").format(player)))
+                QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("GameWidget","{0} score is not valid")).format(player))
                 return
             extras = self.getPlayerExtraInfo(player)
             if extras is None: return
