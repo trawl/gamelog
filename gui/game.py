@@ -228,4 +228,12 @@ class GameInputWidget(QtGui.QWidget):
             self.playerInputList[self.winnerSelected].reset()
         self.winnerSelected = winner
         
+class ScoreSpinBox(QtGui.QSpinBox):
+
+    def valueFromText(self,text):
+        if text == "": return self.minimum()
+        else: return super(ScoreSpinBox,self).valueFromText(text)
         
+    def textFromValue(self,value):
+        if value == self.minimum(): return ""
+        else: return super(ScoreSpinBox,self).textFromValue(value)        

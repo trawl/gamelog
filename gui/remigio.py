@@ -10,7 +10,7 @@ except ImportError as error:
     QtCore.Slot = QtCore.pyqtSlot
 
 from controllers.remigioengine import RemigioEngine
-from gui.game import GameWidget,GameInputWidget
+from gui.game import GameWidget,GameInputWidget,ScoreSpinBox
 
 class RemigioWidget(GameWidget):
 
@@ -160,11 +160,20 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setWordWrap(False)
         
-        self.scoreLineEdit = QtGui.QLineEdit(self)
-        self.scoreLineEdit.setAlignment(QtCore.Qt.AlignCenter)
-        self.scoreLineEdit.setMaximumWidth(60)
-        self.mainLayout.addWidget(self.scoreLineEdit)
-        self.mainLayout.setAlignment(self.scoreLineEdit,QtCore.Qt.AlignCenter)
+#        self.scoreLineEdit = QtGui.QLineEdit(self)
+#        self.scoreLineEdit.setAlignment(QtCore.Qt.AlignCenter)
+#        self.scoreLineEdit.setMaximumWidth(60)
+#        self.mainLayout.addWidget(self.scoreLineEdit)
+#        self.mainLayout.setAlignment(self.scoreLineEdit,QtCore.Qt.AlignCenter)
+        
+        self.scoreSpinBox = ScoreSpinBox(self)
+        self.scoreSpinBox.setAlignment(QtCore.Qt.AlignCenter)
+        self.scoreSpinBox.setMaximumWidth(60)
+        self.scoreSpinBox.setRange(-1,100)
+        self.mainLayout.addWidget(self.scoreSpinBox)
+#        self.scoreSpinBox.setSpecialValueText("")
+        self.mainLayout.setAlignment(self.scoreSpinBox,QtCore.Qt.AlignCenter)
+        
         self.reset()
     
     def reset(self):
@@ -182,21 +191,29 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         if self.closeType > 0:
             text = text + " ({}x)".format(self.closeType)
             css = "font-weight: bold; background-color: #{0:X}".format(self.bgcolors[self.closeType])
-            self.scoreLineEdit.setText("0")
-            self.scoreLineEdit.setDisabled(True)
             self.setFrameShadow(QtGui.QFrame.Sunken)
+#            self.scoreLineEdit.setText("0")
+#            self.scoreLineEdit.setDisabled(True)
+            self.scoreSpinBox.setValue(0)
+            self.scoreSpinBox.setDisabled(True)
+
         else:
             self.setFrameShadow(QtGui.QFrame.Raised)
-            self.scoreLineEdit.setText("")
-            self.scoreLineEdit.setEnabled(True)
+            self.scoreSpinBox.setValue(-1)
+#            self.scoreLineEdit.setText("")
+#            self.scoreLineEdit.setEnabled(True)
+            self.scoreSpinBox.setEnabled(True)
+            
         
         self.label.setText(text)
         self.setStyleSheet("QFrame {{ {} }}".format(css))
         
     def mousePressEvent(self, event):
         if self.isWinner(): self.increaseCloseType()
-        else: self.scoreLineEdit.setFocus()
-        
+        else: 
+#            self.scoreLineEdit.setFocus()
+            self.scoreSpinBox.setFocus()
+            
     def mouseDoubleClickEvent(self, event):
         if not self.isWinner(): 
             self.winnerSet.emit(self.player)
@@ -215,18 +232,19 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         if self.isWinner():
             return 0
         else:
-            try:
-                score =  int(self.scoreLineEdit.text())
-            except ValueError:
-                score = -1
-            return score
+            return self.scoreSpinBox.value()
+#            try:
+#                score =  int(self.scoreLineEdit.text())
+#            except ValueError:
+#                score = -1
+#            return score
                 
     def isKo(self): return self.ko
     
     def setKo(self): 
         self.ko = True
         self.setDisabled(True)
-        
+            
     
 class RemigioPlayerWidget(QtGui.QWidget):
     
