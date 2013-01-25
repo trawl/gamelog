@@ -12,7 +12,7 @@ except ImportError as error:
     QtCore.Slot = QtCore.pyqtSlot
 
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
-from gui.game import GameWidget,GameInputWidget
+from gui.game import GameWidget,GameInputWidget, ScoreSpinBox
 
 class Phase10Widget(GameWidget):
 
@@ -266,10 +266,11 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.bgroup.addButton(self.roundWinnerRadioButton)
         self.rightLayout.addWidget(self.roundWinnerRadioButton,0,0)
         
-        self.roundScore=QtGui.QLineEdit(self)
-        self.roundScore.setFixedWidth(30)
-        self.roundScore.setValidator(QtGui.QIntValidator(5,200,None))
-        self.roundScore.textChanged.connect(self.updateRoundPhaseCleared)
+        self.roundScore=ScoreSpinBox(self)
+        self.roundScore.setFixedWidth(60)
+#        self.roundScore.setValidator(QtGui.QIntValidator(5,200,None))
+#        self.roundScore.setSingleStep(5)
+        self.roundScore.valueChanged.connect(self.updateRoundPhaseCleared)
         self.rightLayout.addWidget(self.roundScore,0,1)
 
         self.roundPhaseClearedCheckbox = QtGui.QCheckBox(self)
@@ -310,11 +311,12 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         if self.isWinner():
             return 0
         else:
-            try:
-                score =  int(self.roundScore.text())
-            except ValueError:
-                score = -1
-            return score
+            return self.roundScore.value()
+#            try:
+#                score =  int(self.roundScore.text())
+#            except ValueError:
+#                score = -1
+#            return score
     
     def switchPhasesInOrder(self,in_order):
         self.phases_in_order = in_order
@@ -334,9 +336,8 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
             phaselabel.setCurrent()
                               
     def updateRoundPhaseCleared(self,value):
-        try:
-            score = int(value)
-        except:
+        score = value
+        if score < 0:
             if not self.roundWinnerRadioButton.isChecked():
                 self.roundPhaseClearedCheckbox.setChecked(False)
             return
