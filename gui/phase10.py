@@ -218,12 +218,15 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
     def __init__(self,parent=None):
         super(Phase10ScoreSpinBox,self).__init__(parent)
         self.setSingleStep(5)
+        self.setRange(-5,200)
+        self.setValue(0)
+        self.clear()
 
     def validate(self,text,pos):
         try: score = int(text)
-        except ValueError: return (QtGui.QValidator.Invalid,pos)
-        if score%5 != 0: return (QtGui.QValidator.Intermediate,pos)
-        else: return (QtGui.QValidator.Acceptable,pos)
+        except ValueError: return (QtGui.QValidator.Invalid,text)
+        if score%5 != 0: return (QtGui.QValidator.Intermediate,text)
+        else: return (QtGui.QValidator.Acceptable,text)
 
 
 class Phase10PlayerWidget(QtGui.QGroupBox):
@@ -306,6 +309,7 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.roundWinnerRadioButton.setDown(True)
         if points >= 1000: self.scoreLCD.setNumDigits(4)
         self.scoreLCD.display(points)
+        self.roundScore.setValue(5)
         self.roundScore.clear()
         self.roundPhaseClearedCheckbox.setChecked(False)
         
