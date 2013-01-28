@@ -219,7 +219,7 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
         super(Phase10ScoreSpinBox,self).__init__(parent)
         self.setSingleStep(5)
         self.setRange(-5,200)
-        self.setValue(0)
+        self.setValue(5)
         self.clear()
 
     def validate(self,text,pos):
@@ -227,7 +227,13 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
         except ValueError: return (QtGui.QValidator.Invalid,text)
         if score%5 != 0: return (QtGui.QValidator.Intermediate,text)
         else: return (QtGui.QValidator.Acceptable,text)
-
+        
+    def fixup(self,inp):
+        if not inp: return
+        if not self.hasAcceptableInput():
+            QtGui.QMessageBox.warning(self,unicode(QtGui.QApplication.translate("Phase10ScoreSpinBox","Warning")),unicode(QtGui.QApplication.translate("Phase10ScoreSpinBox","Wrong score. Setting to minimum")))
+            self.setValue(5)
+        
 
 class Phase10PlayerWidget(QtGui.QGroupBox):
     
