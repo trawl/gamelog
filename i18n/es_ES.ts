@@ -64,7 +64,7 @@
         <translation>Cerrar Ronda</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="147"/>
+        <location filename="gui/game.py" line="148"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>¿Estás seguro que quieres cerrar la ronda actual?</translation>
     </message>
@@ -74,7 +74,7 @@
         <translation>Ronda {0}</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="102"/>
+        <location filename="gui/game.py" line="103"/>
         <source>Do you want to save the current {} match?</source>
         <translation>¿Quieres guardar la partida de {} actual?</translation>
     </message>
@@ -130,7 +130,7 @@
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="107"/>
+        <location filename="gui/mainwindow.py" line="108"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>¿Estás seguro que quieres salir de GameLog?</translation>
     </message>
@@ -140,12 +140,12 @@
         <translation>&amp;Idioma...</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="95"/>
+        <location filename="gui/mainwindow.py" line="96"/>
         <source>You have {} opened matches. Do you want to save them before exiting?</source>
         <translation>Hay {} partidas abiertas. ¿Quieres guardarlas antes de salir?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="91"/>
+        <location filename="gui/mainwindow.py" line="92"/>
         <source>You have an opened {} match. Do you want to save it before exiting?</source>
         <translation>Hay una partida de {} abierta. ¿Quieres guardarla antes de salir?</translation>
     </message>
@@ -239,12 +239,12 @@
 <context>
     <name>Phase10PlayerWidget</name>
     <message>
-        <location filename="gui/phase10.py" line="286"/>
+        <location filename="gui/phase10.py" line="306"/>
         <source>Winner</source>
         <translation>Ganador</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="287"/>
+        <location filename="gui/phase10.py" line="307"/>
         <source>Completed</source>
         <translation>Expuesta</translation>
     </message>
@@ -252,14 +252,27 @@
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="gui/phase10.py" line="424"/>
+        <location filename="gui/phase10.py" line="438"/>
         <source>Details</source>
         <translation>Detalles</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="432"/>
+        <location filename="gui/phase10.py" line="446"/>
         <source>Round {}</source>
         <translation>Ronda {}</translation>
+    </message>
+</context>
+<context>
+    <name>Phase10ScoreSpinBox</name>
+    <message>
+        <location filename="gui/phase10.py" line="234"/>
+        <source>Warning</source>
+        <translation>Atención</translation>
+    </message>
+    <message>
+        <location filename="gui/phase10.py" line="234"/>
+        <source>Wrong score. Setting to minimum</source>
+        <translation>Puntación incorrecta. Se establece el mínimo</translation>
     </message>
 </context>
 <context>
@@ -359,22 +372,22 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="gui/mainwindow.py" line="18"/>
+        <location filename="gui/mainwindow.py" line="19"/>
         <source>&amp;Yes</source>
         <translation>&amp;Sí</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="19"/>
+        <location filename="gui/mainwindow.py" line="20"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="20"/>
+        <location filename="gui/mainwindow.py" line="21"/>
         <source>OK</source>
         <translation>Aceptar</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="21"/>
+        <location filename="gui/mainwindow.py" line="23"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
@@ -382,72 +395,72 @@
 <context>
     <name>QuickStatsBox</name>
     <message>
-        <location filename="gui/newgame.py" line="333"/>
+        <location filename="gui/newgame.py" line="336"/>
         <source>Last winner</source>
         <translation>Último ganador</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="334"/>
+        <location filename="gui/newgame.py" line="337"/>
         <source>Statistics</source>
         <translation>Estadísticas</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="335"/>
+        <location filename="gui/newgame.py" line="338"/>
         <source>Matches</source>
         <translation>Partidas</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="347"/>
+        <location filename="gui/newgame.py" line="350"/>
         <source>No statistics found</source>
         <translation>No hay estadísticas</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="355"/>
+        <location filename="gui/newgame.py" line="358"/>
         <source>Longest</source>
         <translation>Más Larga</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="355"/>
+        <location filename="gui/newgame.py" line="358"/>
         <source>Shortest</source>
         <translation>Más Corta</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="359"/>
+        <location filename="gui/newgame.py" line="362"/>
         <source>Average</source>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="359"/>
+        <location filename="gui/newgame.py" line="362"/>
         <source>Played</source>
         <translation>Jugadas</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="359"/>
+        <location filename="gui/newgame.py" line="362"/>
         <source>Victories</source>
         <translation>Victorias</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="359"/>
+        <location filename="gui/newgame.py" line="362"/>
         <source>Ratio (%)</source>
         <translation>Ratio (%)</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="359"/>
+        <location filename="gui/newgame.py" line="363"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="359"/>
+        <location filename="gui/newgame.py" line="362"/>
         <source>Highest</source>
         <translation>Más Alta</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="359"/>
+        <location filename="gui/newgame.py" line="362"/>
         <source>Lowest</source>
         <translation>Más Baja</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="336"/>
+        <location filename="gui/newgame.py" line="339"/>
         <source>Players</source>
         <translation>Jugadores</translation>
     </message>
@@ -455,12 +468,12 @@
 <context>
     <name>RemigioRoundsDetail</name>
     <message>
-        <location filename="gui/remigio.py" line="287"/>
+        <location filename="gui/remigio.py" line="285"/>
         <source>Details</source>
         <translation>Detalles</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="307"/>
+        <location filename="gui/remigio.py" line="305"/>
         <source>Winner ({}x)</source>
         <translation>Ganador ({}x)</translation>
     </message>
@@ -506,12 +519,12 @@
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="295"/>
+        <location filename="gui/newgame.py" line="298"/>
         <source>Cancel Saved Game</source>
         <translation>Cancelar Partida Guardada</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="295"/>
+        <location filename="gui/newgame.py" line="299"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>¿Estás seguro que quieres cancelar la partida guardada?</translation>
     </message>
@@ -521,7 +534,7 @@
         <translation>Guardado el {}. Tiempo jugado: {}</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="275"/>
+        <location filename="gui/newgame.py" line="278"/>
         <source>Players: {}</source>
         <translation>Jugadores: {}</translation>
     </message>
