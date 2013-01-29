@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="es_ES">
+<!DOCTYPE TS><TS version="1.1" language="es_ES">
 <context>
     <name>GameWidget</name>
     <message>
@@ -239,12 +238,12 @@
 <context>
     <name>Phase10PlayerWidget</name>
     <message>
-        <location filename="gui/phase10.py" line="306"/>
+        <location filename="gui/phase10.py" line="343"/>
         <source>Winner</source>
         <translation>Ganador</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="307"/>
+        <location filename="gui/phase10.py" line="344"/>
         <source>Completed</source>
         <translation>Expuesta</translation>
     </message>
@@ -252,27 +251,14 @@
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="gui/phase10.py" line="438"/>
+        <location filename="gui/phase10.py" line="476"/>
         <source>Details</source>
         <translation>Detalles</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="446"/>
+        <location filename="gui/phase10.py" line="484"/>
         <source>Round {}</source>
         <translation>Ronda {}</translation>
-    </message>
-</context>
-<context>
-    <name>Phase10ScoreSpinBox</name>
-    <message>
-        <location filename="gui/phase10.py" line="234"/>
-        <source>Warning</source>
-        <translation>Atención</translation>
-    </message>
-    <message>
-        <location filename="gui/phase10.py" line="234"/>
-        <source>Wrong score. Setting to minimum</source>
-        <translation>Puntación incorrecta. Se establece el mínimo</translation>
     </message>
 </context>
 <context>

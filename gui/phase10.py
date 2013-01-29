@@ -70,7 +70,7 @@ class Phase10Widget(GameWidget):
         for number,(phase,label) in enumerate(zip(self.getPhases(),self.phaseLabels),start=1):
             label.setText(unicode(u"{0} {1:02}: {2}".format(phaseword,number,phase)))
     
-    def checkPlayerScore(self,player,score): 
+    def checkPlayerScore(self,player,score):
         return super(Phase10Widget,self).checkPlayerScore(self,score) \
             and not (score%5!=0 or (score<50 and not self.gameInput.hasPlayerCleared(player)))
             
@@ -221,19 +221,56 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
         self.setRange(-5,200)
         self.setValue(5)
         self.clear()
+        self.fixed = False
+        self.editingFinished.connect(self.clearFixed)
 
     def validate(self,text,pos):
+        self.valueChanged.emit(self.value())
+        if text == "": return (QtGui.QValidator.Intermediate,text)
         try: score = int(text)
         except ValueError: return (QtGui.QValidator.Invalid,text)
+        self.setValidDisplay()
         if score%5 != 0: return (QtGui.QValidator.Intermediate,text)
         else: return (QtGui.QValidator.Acceptable,text)
         
     def fixup(self,inp):
         if not inp: return
         if not self.hasAcceptableInput():
-            QtGui.QMessageBox.warning(self,unicode(QtGui.QApplication.translate("Phase10ScoreSpinBox","Warning")),unicode(QtGui.QApplication.translate("Phase10ScoreSpinBox","Wrong score. Setting to minimum")))
             self.setValue(5)
+            self.fixed = True
+            
+    def clearFixed(self):
+        self.valueChanged.emit(self.value())
+        if self.fixed:
+            self.setInvalidDisplay()
+            self.fixed = False
+            self.clear()
+            
+    def setDisabled(self,disable):
+        if disable: self.setValue(0)
+        else: self.setValue(5)
+        self.setValidDisplay()
+        self.clear()
+        self.valueChanged.emit(self.value())
+        super(Phase10ScoreSpinBox,self).setDisabled(disable)
         
+    def setEnabled(self,enable):
+        if enable: self.setValue(5)
+        else: self.setValue(0)
+        self.setValidDisplay()
+        self.clear()    
+        self.valueChanged.emit(self.value())
+        super(Phase10ScoreSpinBox,self).setEnabled(enable)
+
+    def setValidDisplay(self): 
+        self.setStyleSheet("QSpinBox {}")
+#        self.lineEdit().setStyleSheet("QLineEdit {}")
+    
+    def setInvalidDisplay(self): 
+        self.setStyleSheet("QSpinBox {background-color: #FF5E5E}")
+#        self.lineEdit().setStyleSheet("QLineEdit { background-color: #FF5E5E;}")
+
+    
 
 class Phase10PlayerWidget(QtGui.QGroupBox):
     
@@ -329,7 +366,8 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
             
     def getScore(self):
         if self.isWinner(): return 0
-        else: return self.roundScore.value()
+        try: return int(self.roundScore.value())
+        except: return -1
     
     def switchPhasesInOrder(self,in_order):
         self.phases_in_order = in_order
