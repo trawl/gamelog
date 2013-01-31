@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
+
 try:
     from PySide import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
@@ -8,6 +10,15 @@ except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
+    
+try:
+    import matplotlib
+    matplotlib.use('Qt4Agg')
+    if 'PySide' in sys.modules: matplotlib.rcParams['backend.qt4']='PySide'
+    from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+    from matplotlib.figure import Figure
+
+except ImportError: pass
 
 from controllers.remigioengine import RemigioEngine
 from gui.game import GameWidget,GameInputWidget,ScoreSpinBox
@@ -274,12 +285,19 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
 
     def initUI(self):
         self.widgetLayout = QtGui.QVBoxLayout(self)
+        self.container = QtGui.QToolBox(self)
+        self.widgetLayout.addWidget(self.container)
         self.table = QtGui.QTableWidget(0,len(self.engine.getPlayers()))
-        self.widgetLayout.addWidget(self.table)
+        self.container.addItem(self.table, "Table")
+#        self.widgetLayout.addWidget(self.table)
         players = self.engine.getListPlayers()
         self.table.setHorizontalHeaderLabels(players)
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        self.retranslateUI()
+        
+        self.plot = RemigioRoundPlot(self.engine,self)
+        self.container.addItem(self.plot,"Plot")
+        
+#        self.retranslateUI()
         
     def retranslateUI(self):
         self.setTitle(QtGui.QApplication.translate("RemigioRoundsDetail",'Details'))
@@ -289,6 +307,7 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
         self.table.clearContents()
         self.table.setRowCount(0)
         for r in self.engine.getRounds(): self.insertRound(r)
+        self.plot.updatePlot()
     
     def insertRound(self,r):
         closeType = r.getCloseType()
@@ -320,3 +339,67 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
         if not len(rounds): return
         r = rounds[-1]
         self.insertRound(r)
+        self.plot.updatePlot()
+        
+class RemigioRoundPlot(QtGui.QWidget):
+
+    def __init__(self,engine,parent=None):
+        super(RemigioRoundPlot, self).__init__(parent)
+        self.plotlibavailable = 'matplotlib' in sys.modules
+        self.engine = engine
+        self.parent = parent
+        self.initUI()
+        
+    def initUI(self):
+        self.widgetLayout = QtGui.QVBoxLayout(self)
+        self.canvas = None
+        if not self.plotlibavailable:
+            self.label = QtGui.QLabel(self)
+            self.label.setAlignment(QtCore.Qt.AlignCenter)
+            self.widgetLayout.addWidget(self.label)
+        else:
+#            palette = self.parent.palette()
+#            brush = palette.brush(QtGui.QPalette.Background)
+#            color = brush.color()
+#            fc = (color.red()/256.0,color.green()/256.0,color.blue()/256.0)
+#            print(fc)
+            self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(1,1,1), edgecolor=(0,0,0))
+            self.axes = self.figure.add_subplot(111)
+#            self.figure.patch.set_alpha(0.1)
+#            self.axes.patch.set_facecolor('none')
+#            self.axes.hold(False)
+            self.canvas = FigureCanvas(self.figure)
+            self.widgetLayout.addWidget(self.canvas)
+#        self.updatePlot()
+            
+    def retranslateUI(self):
+        if not self.plotlibavailable:
+            self.label.setText(QtGui.QApplication.translate("RemigioRoundsDetail","No plotting available"))
+        
+    def updatePlot(self):
+        self.retranslateUI()
+        if not self.plotlibavailable: return
+        print("Updating plot")
+        scores = {}
+        for player in self.engine.getPlayers():
+            scores[player] = [0]
+            
+        for rnd in self.engine.getRounds():
+            for player in self.engine.getPlayers():
+                if player not in scores: scores[player] = [0]
+                rndscore = rnd.getPlayerScore(player)
+                if rndscore >= 0 :
+                    accumscore = scores[player][-1] + rndscore
+                    scores[player].append(accumscore)
+        self.axes.cla()
+        self.axes.axis([0, max(1,self.engine.getNumRound()-1),0,self.engine.getTop()+20])
+        self.axes.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
+        self.axes.axhline(y=self.engine.getTop(),linewidth=4, color='r')
+        for player in self.engine.getPlayers():
+            self.axes.plot(scores[player],label=player)
+            print(scores[player])
+        self.axes.legend()
+        self.canvas.draw()
+
+        
+        
