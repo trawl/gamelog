@@ -348,6 +348,7 @@ class RemigioRoundPlot(QtGui.QWidget):
         self.plotlibavailable = 'matplotlib' in sys.modules
         self.engine = engine
         self.parent = parent
+        self.axiswidth = 0
         self.initUI()
         
     def initUI(self):
@@ -379,7 +380,6 @@ class RemigioRoundPlot(QtGui.QWidget):
     def updatePlot(self):
         self.retranslateUI()
         if not self.plotlibavailable: return
-        print("Updating plot")
         scores = {}
         for player in self.engine.getPlayers():
             scores[player] = [0]
@@ -394,12 +394,15 @@ class RemigioRoundPlot(QtGui.QWidget):
         self.axes.cla()
         self.axes.axis([0, max(1,self.engine.getNumRound()-1),0,self.engine.getTop()+20])
         self.axes.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-        self.axes.axhline(y=self.engine.getTop(),linewidth=4, color='r')
-        for player in self.engine.getPlayers():
-            self.axes.plot(scores[player],label=player)
-            print(scores[player])
-        self.axes.legend()
+        self.axes.axhline(y=self.engine.getTop(),linewidth=4, linestyle="-", color='r')
+        for player in self.engine.getListPlayers():
+            self.axes.plot(scores[player],linewidth=2.5, linestyle="-",marker='o',label=player)
+        
+        box = self.axes.get_position()
+        if not self.axiswidth: self.axiswidth = box.width
+        
+        self.axes.set_position([box.x0, box.y0,  self.axiswidth * 0.9, box.height])
+        self.axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         self.canvas.draw()
 
-        
         
