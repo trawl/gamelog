@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import time
 
 try:
     from PySide import QtCore,QtGui
@@ -118,6 +119,7 @@ class RemigioWidget(GameWidget):
         try:
             newtop = int(newtop)    
             self.engine.setTop(newtop)
+            self.detailGroup.updatePlot()
         except ValueError: pass
         
         
@@ -288,26 +290,32 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
         self.container = QtGui.QToolBox(self)
         self.widgetLayout.addWidget(self.container)
         self.table = QtGui.QTableWidget(0,len(self.engine.getPlayers()))
-        self.container.addItem(self.table, "Table")
+        self.container.addItem(self.table,'')
 #        self.widgetLayout.addWidget(self.table)
         players = self.engine.getListPlayers()
         self.table.setHorizontalHeaderLabels(players)
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         
         self.plot = RemigioRoundPlot(self.engine,self)
-        self.container.addItem(self.plot,"Plot")
+        self.container.addItem(self.plot,'')
         
 #        self.retranslateUI()
         
     def retranslateUI(self):
         self.setTitle(QtGui.QApplication.translate("RemigioRoundsDetail",'Details'))
+        self.container.setItemText(0,QtGui.QApplication.translate("RemigioRoundsDetail","Table"))
+        self.container.setItemText(1,QtGui.QApplication.translate("RemigioRoundsDetail","Plot"))
         self.recomputeTable()
+
+
+    def updatePlot(self):
+        self.plot.updatePlot()
 
     def recomputeTable(self):
         self.table.clearContents()
         self.table.setRowCount(0)
         for r in self.engine.getRounds(): self.insertRound(r)
-        self.plot.updatePlot()
+        self.updatePlot()
     
     def insertRound(self,r):
         closeType = r.getCloseType()
@@ -346,6 +354,7 @@ class RemigioRoundPlot(QtGui.QWidget):
     def __init__(self,engine,parent=None):
         super(RemigioRoundPlot, self).__init__(parent)
         self.plotlibavailable = 'matplotlib' in sys.modules
+        self.plotinited = False
         self.engine = engine
         self.parent = parent
         self.axiswidth = 0
@@ -358,20 +367,19 @@ class RemigioRoundPlot(QtGui.QWidget):
             self.label = QtGui.QLabel(self)
             self.label.setAlignment(QtCore.Qt.AlignCenter)
             self.widgetLayout.addWidget(self.label)
-        else:
-#            palette = self.parent.palette()
-#            brush = palette.brush(QtGui.QPalette.Background)
-#            color = brush.color()
-#            fc = (color.red()/256.0,color.green()/256.0,color.blue()/256.0)
-#            print(fc)
-            self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(1,1,1), edgecolor=(0,0,0))
-            self.axes = self.figure.add_subplot(111)
-#            self.figure.patch.set_alpha(0.1)
-#            self.axes.patch.set_facecolor('none')
-#            self.axes.hold(False)
-            self.canvas = FigureCanvas(self.figure)
-            self.widgetLayout.addWidget(self.canvas)
-#        self.updatePlot()
+        else: 
+#            self.initPlot()
+            self.initPlotThread = PlotThread()
+            self.initPlotThread.initplot.connect(self.initPlot)
+            self.initPlotThread.start()
+
+    def initPlot(self):
+        self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(1,1,1), edgecolor=(0,0,0))
+        self.axes = self.figure.add_subplot(111)
+        self.canvas = FigureCanvas(self.figure)
+        self.widgetLayout.addWidget(self.canvas)
+        self.plotinited = True
+        self.updatePlot()
             
     def retranslateUI(self):
         if not self.plotlibavailable:
@@ -380,6 +388,7 @@ class RemigioRoundPlot(QtGui.QWidget):
     def updatePlot(self):
         self.retranslateUI()
         if not self.plotlibavailable: return
+        if not self.plotinited: return
         scores = {}
         for player in self.engine.getPlayers():
             scores[player] = [0]
@@ -392,9 +401,10 @@ class RemigioRoundPlot(QtGui.QWidget):
                     accumscore = scores[player][-1] + rndscore
                     scores[player].append(accumscore)
         self.axes.cla()
-        self.axes.axis([0, max(1,self.engine.getNumRound()-1),0,self.engine.getTop()+20])
+        maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
+        self.axes.axis([0, self.engine.getNumRound(),0,max(self.engine.getTop(),maxscore)+10])
         self.axes.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-        self.axes.axhline(y=self.engine.getTop(),linewidth=4, linestyle="-", color='r')
+        self.axes.axhline(y=self.engine.getTop(),linewidth=3, linestyle="--", color='r')
         for player in self.engine.getListPlayers():
             self.axes.plot(scores[player],linewidth=2.5, linestyle="-",marker='o',label=player)
         
@@ -404,5 +414,19 @@ class RemigioRoundPlot(QtGui.QWidget):
         self.axes.set_position([box.x0, box.y0,  self.axiswidth * 0.9, box.height])
         self.axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         self.canvas.draw()
+        self.show()
 
+class PlotThread(QtCore.QThread):
+    
+    initplot = QtCore.Signal()
+    
+    def __init__(self):
+        QtCore.QThread.__init__(self)
         
+    def __del__(self):
+        self.wait()
+    
+    def run(self):
+        time.sleep(0.1)
+        self.initplot.emit()
+        self.terminate()     
