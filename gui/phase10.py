@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import sys
 
 try:
     from PySide import QtCore,QtGui
@@ -213,6 +214,7 @@ class Phase10InputWidget(GameInputWidget):
     
     def setDealer(self): self.playerInputList[self.engine.getDealer()].setDealer() 
     
+    
 class Phase10ScoreSpinBox(ScoreSpinBox):
     
     def __init__(self,parent=None):
@@ -226,13 +228,18 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
 
     def validate(self,text,pos):
         self.valueChanged.emit(self.value())
-        if text == "": return (QtGui.QValidator.Intermediate,text)
-        try: score = int(text)
-        except ValueError: return (QtGui.QValidator.Invalid,text)
-        self.setValidDisplay()
-        if score%5 != 0: return (QtGui.QValidator.Intermediate,text)
-        else: return (QtGui.QValidator.Acceptable,text)
-        
+        res = QtGui.QValidator.Acceptable
+        if text == "": 
+            res = QtGui.QValidator.Intermediate
+        else:
+            try: 
+                score = int(text)
+                self.setValidDisplay()
+                if score%5 != 0: res = QtGui.QValidator.Intermediate
+            except ValueError: res = QtGui.QValidator.Invalid
+        if 'PySide' in sys.modules: return (res,text)
+        else: return (res,pos)
+            
     def fixup(self,inp):
         if not inp: return
         if not self.hasAcceptableInput():
@@ -270,7 +277,6 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
         self.setStyleSheet("QSpinBox {background-color: #FF5E5E}")
 #        self.lineEdit().setStyleSheet("QLineEdit { background-color: #FF5E5E;}")
 
-    
 
 class Phase10PlayerWidget(QtGui.QGroupBox):
     
