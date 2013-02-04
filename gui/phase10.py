@@ -12,8 +12,11 @@ except ImportError as error:
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
 
+try: import matplotlib
+except ImportError: pass
+
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
-from gui.game import GameWidget,GameInputWidget, ScoreSpinBox
+from gui.game import GameWidget,GameInputWidget, ScoreSpinBox,GameRoundPlot
 
 class Phase10Widget(GameWidget):
 
@@ -28,11 +31,6 @@ class Phase10Widget(GameWidget):
 
     def initUI(self):
         super(Phase10Widget,self).initUI()
-         
-        self.detailMatchButton = QtGui.QPushButton(self.roundGroup)
-        self.detailMatchButton.setEnabled(self.engine.getNumRound()>1)
-        self.buttonGroupLayout.insertWidget(2,self.detailMatchButton)
-        self.detailMatchButton.clicked.connect(self.showDetails)
                
         self.phasesInOrderCheckBox = QtGui.QCheckBox(self.matchGroup)
         self.phasesInOrderCheckBox.setChecked(self.engine.getPhasesInOrderFlag())
@@ -41,10 +39,19 @@ class Phase10Widget(GameWidget):
         self.phasesInOrderCheckBox.stateChanged.connect(self.phasesInOrderChanged)
         self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
 
+        self.container = QtGui.QToolBox(self)
+        self.widgetLayout.addWidget(self.container,1,0)
+        
         self.gameInput = Phase10InputWidget(self.engine,self.matchGroup)
         self.phasesInOrderCheckBox.toggled.connect(self.gameInput.switchPhasesInOrder)
-        self.widgetLayout.addWidget(self.gameInput,1,0)
-    
+        self.container.addItem(self.gameInput,'')
+        
+        self.details = Phase10RoundsDetail(self.engine,self)
+        self.container.addItem(self.details,'')
+        
+        self.plot = Phase10RoundPlot(self.engine,self)
+        self.container.addItem(self.plot,'')
+        
         self.extraGroup = QtGui.QGroupBox(self)
         self.extraGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout.addWidget(self.extraGroup,1,1)
@@ -65,11 +72,16 @@ class Phase10Widget(GameWidget):
         super(Phase10Widget,self).retranslateUI()
         self.phasesInOrderCheckBox.setText(QtGui.QApplication.translate("Phase10Widget","Phases in order"))
         self.extraGroup.setTitle(QtGui.QApplication.translate("Phase10Widget","Phases"))
-        self.detailMatchButton.setText(QtGui.QApplication.translate("Phase10Widget","&Details..."))
-        self.gameInput.retranslateUI()        
+        self.container.setItemText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
+        self.container.setItemText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
+        self.container.setItemText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
+        self.gameInput.retranslateUI()
+        self.details.retranslateUI()
         phaseword = unicode(QtGui.QApplication.translate("Phase10Widget","Phase"))
         for number,(phase,label) in enumerate(zip(self.getPhases(),self.phaseLabels),start=1):
             label.setText(unicode(u"{0} {1:02}: {2}".format(phaseword,number,phase)))
+            
+
     
     def checkPlayerScore(self,player,score):
         return super(Phase10Widget,self).checkPlayerScore(self,score) \
@@ -88,17 +100,16 @@ class Phase10Widget(GameWidget):
             self.engine.setDealingPolicy(self.engine.RRDealer)
 
     def updatePanel(self):        
-        self.detailMatchButton.setEnabled(True)
+        super(Phase10Widget,self).updatePanel()
         self.phasesInOrderCheckBox.setEnabled(False)
         self.dealerPolicyCheckBox.setEnabled(False)
         self.gameInput.updatePanel()
-        super(Phase10Widget,self).updatePanel()
+        self.details.updateRound()
+        self.plot.updatePlot()
         
     def unsetDealer(self): self.gameInput.unsetDealer()
     
     def setDealer(self): self.gameInput.setDealer() 
-    
-    def showDetails(self): Phase10RoundsDetail(self.engine).exec_()
         
     def getPhases(self):
         types = {'s': {
@@ -155,6 +166,7 @@ class Phase10Widget(GameWidget):
             self.engine.setPhasesInOrderFlag(False)
         elif state == QtCore.Qt.Checked:
             self.engine.setPhasesInOrderFlag(True)
+
 
 class Phase10InputWidget(GameInputWidget):
     
@@ -471,40 +483,116 @@ class Phase10Label(QtGui.QLabel):
         self.setStyleSheet("QLabel { background-color: red; font-weight: bold; color:white }")          
     def getNumber(self):
         return self.number
+
+
+class Phase10RoundsDetail(QtGui.QWidget):
     
-class Phase10RoundsDetail(QtGui.QDialog):
     def __init__(self, engine, parent=None):
         super(Phase10RoundsDetail, self).__init__(parent)
         self.engine = engine
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle(QtGui.QApplication.translate("Phase10RoundsDetail",'Details'))
         self.widgetLayout = QtGui.QVBoxLayout(self)
-        self.table = QtGui.QTableWidget(self.engine.getNumRound()-1,len(self.engine.getPlayers()))
+        self.table = QtGui.QTableWidget(0,len(self.engine.getPlayers()))
         self.widgetLayout.addWidget(self.table)
-        roundlist = list()
-        rounds = self.engine.getRounds()
-        players = self.engine.getListPlayers()
-        for i in range(1, len(rounds)+1):
-            roundlist.append(unicode(QtGui.QApplication.translate("Phase10RoundsDetail","Round {}")).format(i))
-        self.table.setVerticalHeaderLabels(roundlist)
-        self.table.setHorizontalHeaderLabels(players)
-        i = 0
-        j = 0
-        for r in rounds:
-            j=0
-            for player in players:
-                item = QtGui.QTableWidgetItem(str(r.getPlayerScore(player)))
-                item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
-                item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignRight)
-                self.table.setItem(i,j,item)
-                j+=1
-            i+=1
+        self.table.setHorizontalHeaderLabels(self.engine.getListPlayers())
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-#        self.table.resizeColumnsToContents()
-        self.table.resizeRowsToContents()
-        self.table.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
-        size = self.table.rowHeight(0)*(len(roundlist)+1)+len(roundlist)
-        self.table.setFixedHeight(size)
+#        self.retranslateUI()
+        
+    def retranslateUI(self):
+        self.recomputeTable()
 
+    def recomputeTable(self):
+        self.table.clearContents()
+        self.table.setRowCount(0)
+        for r in self.engine.getRounds(): self.insertRound(r)
+    
+    def insertRound(self,r):
+        winner = r.getWinner()
+        i = r.getNumRound() - 1
+        self.table.insertRow(i)
+        for j, player in enumerate(self.engine.getListPlayers()):
+            item = QtGui.QTableWidgetItem()
+            item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
+            item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
+            if player == winner:
+                text = QtGui.QApplication.translate("Phase10RoundsDetail","Winner")
+                font = item.font()
+                font.setBold(True)
+                item.setFont(font)   
+            else:
+                text = str(r.getPlayerScore(player))
+            a_phase = r.getPlayerAimedPhase(player)
+            c_phase = r.getPlayerCompletedPhase(player)
+            text += unicode(QtGui.QApplication.translate("Phase10PlayerWidget", " (Phase {})")).format(a_phase)
+            if c_phase != 0: background = 0xCCFF99 #green
+            else: background = 0xFFCC99 #red
+            item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+            item.setText(text)
+            self.table.setItem(i,j,item)
+        self.table.scrollToBottom()
+        
+    def updateRound(self):
+        rounds = self.engine.getRounds()
+        if not len(rounds): return
+        r = rounds[-1]
+        self.insertRound(r)
+        
+        
+class Phase10RoundPlot(GameRoundPlot):
+    
+    def initPlot(self):
+        super(Phase10RoundPlot,self).initPlot()
+        self.phaseaxis = self.figure.add_subplot(121)
+        self.scoreaxis = self.figure.add_subplot(122)
+        self.updatePlot()
+        
+    def updatePlot(self):
+        super(Phase10RoundPlot,self).updatePlot()
+        if not self.isPlotLibAvailable() or not self.isPlotInited(): return
+        scores = {}
+        phases = {}
+        for player in self.engine.getPlayers():
+            scores[player] = [0]
+            phases[player] = [0]
+            
+        for rnd in self.engine.getRounds():
+            for player in self.engine.getPlayers():
+                if player not in scores: scores[player] = [0]
+                rndscore = rnd.getPlayerScore(player)
+                if rndscore >= 0 :
+                    accumscore = scores[player][-1] + rndscore
+                    scores[player].append(accumscore)
+                c_phase = rnd.getPlayerCompletedPhase(player)
+                if c_phase > 0: phases[player].append(phases[player][-1]+1)
+                else: phases[player].append(phases[player][-1])
+                
+        self.phaseaxis.cla()
+        self.scoreaxis.cla()
+        
+        self.phaseaxis.set_title(QtGui.QApplication.translate("Phase10RoundPlot",'Phases') )
+        self.scoreaxis.set_title(QtGui.QApplication.translate("Phase10RoundPlot",'Scores') )
+        
+        self.phaseaxis.axis([0, self.engine.getNumRound(),0,10])
+        maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
+        self.scoreaxis.axis([0, self.engine.getNumRound(),0,max(50,maxscore)+10])
+        self.phaseaxis.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
+        self.scoreaxis.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
+        lines = []
+        for player in self.engine.getListPlayers():
+            lines.append(self.phaseaxis.plot(phases[player],linewidth=2.5, linestyle="-",marker='o',label=player))
+            self.scoreaxis.plot(scores[player],linewidth=2.5, linestyle="-",marker='o',label=player)
+        
+        if not self.axiswidth:
+            phasebox = self.phaseaxis.get_position()
+            scorebox = self.scoreaxis.get_position()
+            if not self.axiswidth: self.axiswidth = scorebox.height
+            self.phaseaxis.set_position([phasebox.x0, phasebox.y0+self.axiswidth*0.2,  phasebox.width, self.axiswidth*0.8])
+            self.scoreaxis.set_position([scorebox.x0, scorebox.y0+self.axiswidth*0.2,  scorebox.width, self.axiswidth*0.8])
+
+        self.phaseaxis.legend(loc='upper center',ncol=len(self.engine.getListPlayers()),bbox_to_anchor=(1.025, -0.125))
+        self.canvas.draw()
+        self.show()        
+        
+        
