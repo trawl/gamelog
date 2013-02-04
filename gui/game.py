@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
+import time
+
 try:
     from PySide import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
@@ -8,6 +11,15 @@ except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
+    
+try:
+    import matplotlib
+    matplotlib.use('Qt4Agg')
+    if 'PySide' in sys.modules: matplotlib.rcParams['backend.qt4']='PySide'
+    from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+    from matplotlib.figure import Figure
+
+except ImportError: pass
     
 from gui.tab import Tab
 from gui.clock import GameClock
@@ -228,6 +240,7 @@ class GameInputWidget(QtGui.QWidget):
             self.playerInputList[self.winnerSelected].reset()
         self.winnerSelected = winner
         
+        
 class ScoreSpinBox(QtGui.QSpinBox):
 
     def valueFromText(self,text):
@@ -237,3 +250,60 @@ class ScoreSpinBox(QtGui.QSpinBox):
     def textFromValue(self,value):
         if value == self.minimum(): return ""
         else: return super(ScoreSpinBox,self).textFromValue(value)        
+
+
+class GameRoundPlot(QtGui.QWidget):
+
+    def __init__(self,engine,parent=None):
+        super(GameRoundPlot, self).__init__(parent)
+        self.plotlibavailable = 'matplotlib' in sys.modules
+        self.plotinited = False
+        self.engine = engine
+        self.parent = parent
+        self.axiswidth = 0
+        self.initUI()
+        
+    def initUI(self):
+        self.widgetLayout = QtGui.QVBoxLayout(self)
+        self.canvas = None
+        if not self.isPlotLibAvailable():
+            self.label = QtGui.QLabel(self)
+            self.label.setAlignment(QtCore.Qt.AlignCenter)
+            self.widgetLayout.addWidget(self.label)
+        else: 
+#            self.initPlot()
+            self.initPlotThread = PlotThread()
+            self.initPlotThread.initplot.connect(self.initPlot)
+            self.initPlotThread.start()
+
+    def initPlot(self):
+        self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(1,1,1), edgecolor=(0,0,0))
+        self.canvas = FigureCanvas(self.figure)
+        self.widgetLayout.addWidget(self.canvas)
+        self.plotinited = True
+        self.initPlotThread.terminate()
+            
+    def retranslateUI(self):
+        if not self.isPlotLibAvailable():
+            self.label.setText(QtGui.QApplication.translate("GameRoundPlot","No plotting available"))
+            
+    def isPlotLibAvailable(self): return self.plotlibavailable
+    
+    def isPlotInited(self): return self.plotinited
+        
+    def updatePlot(self): self.retranslateUI()
+        
+        
+class PlotThread(QtCore.QThread):
+    
+    initplot = QtCore.Signal()
+    
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def __del__(self):
+        self.wait()
+    
+    def run(self):
+        time.sleep(0.5)
+        self.initplot.emit()

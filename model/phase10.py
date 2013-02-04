@@ -6,6 +6,7 @@ import sys
 from controllers.db import db
 from model.base import GenericRoundMatch,GenericRound
 
+
 class Phase10Match(GenericRoundMatch):
     
     def __init__(self,players=[]):
@@ -102,7 +103,14 @@ class Phase10Round(GenericRound):
             else:
                 self.completedPhase[player] = 0
         except KeyError: pass
- 
+        
+    def getPlayerAimedPhase(self,player):
+        try: return self.aimedPhase[player]
+        except KeyError: return 0
+    
+    def getPlayerCompletedPhase(self,player):
+        try: return self.completedPhase[player]
+        except KeyError: return 0
         
         
 class Phase10MasterMatch(Phase10Match):

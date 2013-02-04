@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-import time
-
 try:
     from PySide import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
@@ -12,17 +9,12 @@ except ImportError as error:
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
     
-try:
-    import matplotlib
-    matplotlib.use('Qt4Agg')
-    if 'PySide' in sys.modules: matplotlib.rcParams['backend.qt4']='PySide'
-    from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-    from matplotlib.figure import Figure
-
+try: import matplotlib
 except ImportError: pass
 
 from controllers.remigioengine import RemigioEngine
-from gui.game import GameWidget,GameInputWidget,ScoreSpinBox
+from gui.game import GameWidget,GameInputWidget,ScoreSpinBox,GameRoundPlot
+
 
 class RemigioWidget(GameWidget):
 
@@ -349,46 +341,17 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
         self.insertRound(r)
         self.plot.updatePlot()
         
-class RemigioRoundPlot(QtGui.QWidget):
-
-    def __init__(self,engine,parent=None):
-        super(RemigioRoundPlot, self).__init__(parent)
-        self.plotlibavailable = 'matplotlib' in sys.modules
-        self.plotinited = False
-        self.engine = engine
-        self.parent = parent
-        self.axiswidth = 0
-        self.initUI()
         
-    def initUI(self):
-        self.widgetLayout = QtGui.QVBoxLayout(self)
-        self.canvas = None
-        if not self.plotlibavailable:
-            self.label = QtGui.QLabel(self)
-            self.label.setAlignment(QtCore.Qt.AlignCenter)
-            self.widgetLayout.addWidget(self.label)
-        else: 
-#            self.initPlot()
-            self.initPlotThread = PlotThread()
-            self.initPlotThread.initplot.connect(self.initPlot)
-            self.initPlotThread.start()
-
+class RemigioRoundPlot(GameRoundPlot):
+    
     def initPlot(self):
-        self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(1,1,1), edgecolor=(0,0,0))
+        super(RemigioRoundPlot,self).initPlot()
         self.axes = self.figure.add_subplot(111)
-        self.canvas = FigureCanvas(self.figure)
-        self.widgetLayout.addWidget(self.canvas)
-        self.plotinited = True
         self.updatePlot()
-            
-    def retranslateUI(self):
-        if not self.plotlibavailable:
-            self.label.setText(QtGui.QApplication.translate("RemigioRoundsDetail","No plotting available"))
         
     def updatePlot(self):
-        self.retranslateUI()
-        if not self.plotlibavailable: return
-        if not self.plotinited: return
+        super(RemigioRoundPlot,self).updatePlot()
+        if not self.isPlotLibAvailable() or not self.isPlotInited(): return
         scores = {}
         for player in self.engine.getPlayers():
             scores[player] = [0]
@@ -415,18 +378,3 @@ class RemigioRoundPlot(QtGui.QWidget):
         self.axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         self.canvas.draw()
         self.show()
-
-class PlotThread(QtCore.QThread):
-    
-    initplot = QtCore.Signal()
-    
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def __del__(self):
-        self.wait()
-    
-    def run(self):
-        time.sleep(0.1)
-        self.initplot.emit()
-        self.terminate()     
