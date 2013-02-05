@@ -257,6 +257,7 @@ class GameRoundPlot(QtGui.QWidget):
     def __init__(self,engine,parent=None):
         super(GameRoundPlot, self).__init__(parent)
         self.plotlibavailable = 'matplotlib' in sys.modules
+#        self.plotlibavailable = False
         self.plotinited = False
         self.engine = engine
         self.parent = parent
@@ -265,6 +266,7 @@ class GameRoundPlot(QtGui.QWidget):
         
     def initUI(self):
         self.widgetLayout = QtGui.QVBoxLayout(self)
+        self.setAutoFillBackground(True)
         self.canvas = None
         if not self.isPlotLibAvailable():
             self.label = QtGui.QLabel(self)
@@ -277,7 +279,13 @@ class GameRoundPlot(QtGui.QWidget):
             self.initPlotThread.start()
 
     def initPlot(self):
-        self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(1,1,1), edgecolor=(0,0,0))
+#        (r,g,b,_) = QtGui.QColor(QtGui.QPalette().color(QtGui.QPalette.Active,QtGui.QPalette.Background)).getRgbF()
+#        (r,g,b,a) = self.parent.palette().brush(self.backgroundRole()).color().getRgbF()
+#        
+#        print ("Widget color = {}".format((r,g,b,a)))
+        #(0.82,0.82,0.81)
+        self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(0.85,0.84,0.84), edgecolor=(0,0,0))
+#        self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(r,g,b), edgecolor=(0,0,0))
         self.canvas = FigureCanvas(self.figure)
         self.widgetLayout.addWidget(self.canvas)
         self.plotinited = True
@@ -286,12 +294,15 @@ class GameRoundPlot(QtGui.QWidget):
     def retranslateUI(self):
         if not self.isPlotLibAvailable():
             self.label.setText(QtGui.QApplication.translate("GameRoundPlot","No plotting available"))
+        else: self.retranslatePlot()
             
     def isPlotLibAvailable(self): return self.plotlibavailable
     
     def isPlotInited(self): return self.plotinited
         
-    def updatePlot(self): self.retranslateUI()
+    def updatePlot(self): pass
+    
+    def retranslatePlot(self): pass
         
         
 class PlotThread(QtCore.QThread):

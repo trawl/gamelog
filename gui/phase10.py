@@ -39,8 +39,12 @@ class Phase10Widget(GameWidget):
         self.phasesInOrderCheckBox.stateChanged.connect(self.phasesInOrderChanged)
         self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
 
+        self.maingroup = QtGui.QGroupBox(self)
+        self.widgetLayout.addWidget(self.maingroup,1,0)
+        self.maingroupLayout = QtGui.QVBoxLayout(self.maingroup)
+        
         self.container = QtGui.QToolBox(self)
-        self.widgetLayout.addWidget(self.container,1,0)
+        self.maingroupLayout.addWidget(self.container)
         
         self.gameInput = Phase10InputWidget(self.engine,self.matchGroup)
         self.phasesInOrderCheckBox.toggled.connect(self.gameInput.switchPhasesInOrder)
@@ -77,6 +81,7 @@ class Phase10Widget(GameWidget):
         self.container.setItemText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
         self.gameInput.retranslateUI()
         self.details.retranslateUI()
+        self.plot.retranslateUI()
         phaseword = unicode(QtGui.QApplication.translate("Phase10Widget","Phase"))
         for number,(phase,label) in enumerate(zip(self.getPhases(),self.phaseLabels),start=1):
             label.setText(unicode(u"{0} {1:02}: {2}".format(phaseword,number,phase)))
@@ -544,9 +549,15 @@ class Phase10RoundPlot(GameRoundPlot):
     
     def initPlot(self):
         super(Phase10RoundPlot,self).initPlot()
-        self.phaseaxis = self.figure.add_subplot(121)
-        self.scoreaxis = self.figure.add_subplot(122)
-        self.updatePlot()
+        if self.isPlotInited():
+            self.phaseaxis = self.figure.add_subplot(121)
+            self.scoreaxis = self.figure.add_subplot(122)
+            self.updatePlot()
+        
+    def retranslatePlot(self):
+        if not self.isPlotLibAvailable() or not self.isPlotInited(): return
+        self.phaseaxis.set_title(QtGui.QApplication.translate("Phase10RoundPlot",'Phases') )
+        self.scoreaxis.set_title(QtGui.QApplication.translate("Phase10RoundPlot",'Scores') )
         
     def updatePlot(self):
         super(Phase10RoundPlot,self).updatePlot()
@@ -571,8 +582,8 @@ class Phase10RoundPlot(GameRoundPlot):
         self.phaseaxis.cla()
         self.scoreaxis.cla()
         
-        self.phaseaxis.set_title(QtGui.QApplication.translate("Phase10RoundPlot",'Phases') )
-        self.scoreaxis.set_title(QtGui.QApplication.translate("Phase10RoundPlot",'Scores') )
+        self.phaseaxis.set_axis_bgcolor('none')
+        self.scoreaxis.set_axis_bgcolor('none')
         
         self.phaseaxis.axis([0, self.engine.getNumRound(),0,10])
         maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
@@ -591,7 +602,11 @@ class Phase10RoundPlot(GameRoundPlot):
             self.phaseaxis.set_position([phasebox.x0, phasebox.y0+self.axiswidth*0.2,  phasebox.width, self.axiswidth*0.8])
             self.scoreaxis.set_position([scorebox.x0, scorebox.y0+self.axiswidth*0.2,  scorebox.width, self.axiswidth*0.8])
 
-        self.phaseaxis.legend(loc='upper center',ncol=len(self.engine.getListPlayers()),bbox_to_anchor=(1.025, -0.125))
+        legend = self.phaseaxis.legend(loc='upper center',ncol=len(self.engine.getListPlayers()),bbox_to_anchor=(1.025, -0.125))
+        legend.legendPatch.set_alpha(0.0)
+        
+        self.retranslatePlot()
+        
         self.canvas.draw()
         self.show()        
         
