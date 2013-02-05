@@ -364,6 +364,7 @@ class RemigioRoundPlot(GameRoundPlot):
                     accumscore = scores[player][-1] + rndscore
                     scores[player].append(accumscore)
         self.axes.cla()
+        self.axes.set_axis_bgcolor('none')
         maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
         self.axes.axis([0, self.engine.getNumRound(),0,max(self.engine.getTop(),maxscore)+10])
         self.axes.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
@@ -375,6 +376,7 @@ class RemigioRoundPlot(GameRoundPlot):
         if not self.axiswidth: self.axiswidth = box.width
         
         self.axes.set_position([box.x0, box.y0,  self.axiswidth * 0.9, box.height])
-        self.axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        legend = self.axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        legend.legendPatch.set_alpha(0.0)
         self.canvas.draw()
         self.show()
