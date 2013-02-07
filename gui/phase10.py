@@ -43,18 +43,22 @@ class Phase10Widget(GameWidget):
         self.widgetLayout.addWidget(self.maingroup,1,0)
         self.maingroupLayout = QtGui.QVBoxLayout(self.maingroup)
         
-        self.container = QtGui.QToolBox(self)
+#        self.container = QtGui.QToolBox(self)
+        self.container = QtGui.QTabWidget(self)
         self.maingroupLayout.addWidget(self.container)
         
         self.gameInput = Phase10InputWidget(self.engine,self.matchGroup)
         self.phasesInOrderCheckBox.toggled.connect(self.gameInput.switchPhasesInOrder)
-        self.container.addItem(self.gameInput,'')
+#        self.container.addItem(self.gameInput,'')
+        self.container.addTab(self.gameInput,'')
         
         self.details = Phase10RoundsDetail(self.engine,self)
-        self.container.addItem(self.details,'')
+#        self.container.addItem(self.details,'')
+        self.container.addTab(self.details,'')
         
         self.plot = Phase10RoundPlot(self.engine,self)
-        self.container.addItem(self.plot,'')
+#        self.container.addItem(self.plot,'')
+        self.container.addTab(self.plot,'')
         
         self.extraGroup = QtGui.QGroupBox(self)
         self.extraGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
@@ -76,9 +80,12 @@ class Phase10Widget(GameWidget):
         super(Phase10Widget,self).retranslateUI()
         self.phasesInOrderCheckBox.setText(QtGui.QApplication.translate("Phase10Widget","Phases in order"))
         self.extraGroup.setTitle(QtGui.QApplication.translate("Phase10Widget","Phases"))
-        self.container.setItemText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
-        self.container.setItemText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
-        self.container.setItemText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
+#        self.container.setItemText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
+#        self.container.setItemText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
+#        self.container.setItemText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
+        self.container.setTabText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
+        self.container.setTabText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
+        self.container.setTabText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
         self.gameInput.retranslateUI()
         self.details.retranslateUI()
         self.plot.retranslateUI()
@@ -582,8 +589,8 @@ class Phase10RoundPlot(GameRoundPlot):
         self.phaseaxis.cla()
         self.scoreaxis.cla()
         
-        self.phaseaxis.set_axis_bgcolor('none')
-        self.scoreaxis.set_axis_bgcolor('none')
+#        self.phaseaxis.set_axis_bgcolor('none')
+#        self.scoreaxis.set_axis_bgcolor('none')
         
         self.phaseaxis.axis([0, self.engine.getNumRound(),0,10])
         maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
@@ -603,11 +610,10 @@ class Phase10RoundPlot(GameRoundPlot):
             self.scoreaxis.set_position([scorebox.x0, scorebox.y0+self.axiswidth*0.2,  scorebox.width, self.axiswidth*0.8])
 
         legend = self.phaseaxis.legend(loc='upper center',ncol=len(self.engine.getListPlayers()),bbox_to_anchor=(1.025, -0.125))
-        legend.legendPatch.set_alpha(0.0)
+#        legend.legendPatch.set_alpha(0.0)
         
         self.retranslatePlot()
         
-        self.canvas.draw()
-        self.show()        
+        self.canvas.draw()      
         
         
