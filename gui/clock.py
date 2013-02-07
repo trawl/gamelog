@@ -19,8 +19,9 @@ class GameClock(QtGui.QLCDNumber):
         self.startTime = datetime.datetime.now()
         self.accumulated = elapsed
         self.paused = False
+        self.refreshinterval = 500
         self.timer = QtCore.QTimer(self)
-        self.timer.start(1000)
+        self.timer.start(self.refreshinterval)
         self.setNumDigits(5)
         self.showTime()
         self.timer.timeout.connect(self.showTime)
@@ -45,7 +46,7 @@ class GameClock(QtGui.QLCDNumber):
         
     def unpauseTimer(self):
         self.startTime = datetime.datetime.now()
-        self.timer.start(1000)
+        self.timer.start(self.refreshinterval)
         self.showTime()
         
     def stopTimer(self):
