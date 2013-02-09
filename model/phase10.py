@@ -55,8 +55,12 @@ class Phase10Match(GenericRoundMatch):
         row = cur.fetchone()
         if row: 
             self.phasesinorder = bool(int(row['value']))
+            
+        for player in self.getPlayers():
+            if player not in self.phasesCleared: self.phasesCleared[player] = []
+    
         return True
-        
+
     def resumeExtraInfo(self,player,key,value): 
         if player not in self.phasesCleared: self.phasesCleared[player] = []
         extra = {}

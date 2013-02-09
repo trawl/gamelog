@@ -611,9 +611,8 @@ class Phase10RoundPlot(GameRoundPlot):
 
         legend = self.phaseaxis.legend(loc='upper center',ncol=len(self.engine.getListPlayers()),bbox_to_anchor=(1.025, -0.125))
 #        legend.legendPatch.set_alpha(0.0)
-        
         self.retranslatePlot()
-        
-        self.canvas.draw()      
+        try: self.canvas.draw()
+        except RuntimeError: pass    
         
         
