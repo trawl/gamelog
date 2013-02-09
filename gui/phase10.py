@@ -590,8 +590,8 @@ class Phase10RoundPlot(GameRoundPlot):
         self.phaseaxis.cla()
         self.scoreaxis.cla()
         
-#        self.phaseaxis.set_axis_bgcolor('none')
-#        self.scoreaxis.set_axis_bgcolor('none')
+        self.phaseaxis.set_axis_bgcolor('none')
+        self.scoreaxis.set_axis_bgcolor('none')
         
         self.phaseaxis.axis([0, self.engine.getNumRound(),0,10])
         maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
@@ -612,6 +612,7 @@ class Phase10RoundPlot(GameRoundPlot):
 
         legend = self.phaseaxis.legend(loc='upper center',ncol=len(self.engine.getListPlayers()),bbox_to_anchor=(1.025, -0.125))
 #        legend.legendPatch.set_alpha(0.0)
+        legend.legendPatch.set_facecolor('none')
         self.retranslatePlot()
         try: self.canvas.draw()
         except RuntimeError: pass    
