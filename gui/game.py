@@ -279,12 +279,12 @@ class GameRoundPlot(QtGui.QWidget):
 
     def initPlot(self):
 #        (r,g,b,_) = QtGui.QColor(QtGui.QPalette().color(QtGui.QPalette.Active,QtGui.QPalette.Background)).getRgbF()
-#        (r,g,b,_) = self.palette().color(self.backgroundRole()).getRgbF()
+        (r,g,b,_) = self.palette().color(self.backgroundRole()).getRgbF()
 #        
 #        print ("Widget color = {}".format((r,g,b,_)))
         #(0.82,0.82,0.81)
 #        self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(0.85,0.84,0.84), edgecolor=(0,0,0))
-        self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(1,1,1), edgecolor=(0,0,0))
+        self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(r,g,b), edgecolor=(0,0,0))
         self.canvas = FigureCanvas(self.figure)
         self.widgetLayout.addWidget(self.canvas)
         self.plotinited = True
