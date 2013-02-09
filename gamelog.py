@@ -3,6 +3,7 @@
 
 # Python generic imports
 import sys
+import ctypes
 
 try:
     from PySide import QtGui,QtCore
@@ -13,7 +14,9 @@ except ImportError as error:
 from gui.mainwindow import MainWindow
 
 if __name__ == "__main__":
-    #Default to Spanish language
+    try: ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('GameLog')
+    except: pass
+    #Default to Spanish language    
     translator = QtCore.QTranslator()
     translator.load('i18n/es_ES')
     app = QtGui.QApplication(sys.argv)
