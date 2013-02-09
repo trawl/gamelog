@@ -23,9 +23,9 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self,parent=None):
         super(MainWindow, self).__init__(parent)
         db.connectDB()
-        self.initUI()
         self.openedGames = []
         self.translator = None
+        self.initUI()
 
     def initUI(self):
 
@@ -54,13 +54,14 @@ class MainWindow(QtGui.QMainWindow):
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
 
         # Tab widget
-        self.tabWidget = QtGui.QTabWidget(self.centralwidget)
-        self.verticalLayout.addWidget(self.tabWidget)
+#        self.tabWidget = QtGui.QTabWidget(self.centralwidget)
+#        self.verticalLayout.addWidget(self.tabWidget)
 
         #New game tab
         self.newGameTab = NewGameWidget(self)
-        self.tabWidget.addTab(self.newGameTab, "")
-        self.tabWidget.setCurrentIndex(0)
+        self.verticalLayout.addWidget(self.newGameTab)
+#        self.tabWidget.addTab(self.newGameTab, "")
+#        self.tabWidget.setCurrentIndex(0)
 
         self.retranslateUi()
 
@@ -75,9 +76,12 @@ class MainWindow(QtGui.QMainWindow):
         self.exitAction.setText(QtGui.QApplication.translate("MainWindow",'&Quit'))
         self.exitAction.setShortcut(QtGui.QApplication.translate("MainWindow",'Ctrl+Q'))
         self.exitAction.setStatusTip(QtGui.QApplication.translate("MainWindow",'Quit GameLog'))
-        self.tabWidget.setTabText(0,QtGui.QApplication.translate("MainWindow",'New Match'))
-        for i in range(self.tabWidget.count()):
-            self.tabWidget.widget(i).retranslateUI()
+        
+        self.newGameTab.retranslateUI()
+        for game in self.openedGames: game.retranslateUI()
+#        self.tabWidget.setTabText(0,QtGui.QApplication.translate("MainWindow",'New Match'))
+#        for i in range(self.tabWidget.count()):
+#            self.tabWidget.widget(i).retranslateUI()
         
     def closeEvent(self, event):
         if self.ensureClose(): event.accept()
@@ -116,14 +120,21 @@ class MainWindow(QtGui.QMainWindow):
 
             
     def newTab(self,matchTab,title):
+        self.newGameTab.hide()
+        self.verticalLayout.addWidget(matchTab)
+        self.setWindowTitle("Gamelog - {}".format(title))
+        matchTab.show()
         self.openedGames.append(matchTab)
-        idx = self.tabWidget.addTab(matchTab, title)
-        self.tabWidget.setCurrentIndex(idx)
+#        idx = self.tabWidget.addTab(matchTab, title)
+#        self.tabWidget.setCurrentIndex(idx)
 
     def removeTab(self,tab):
-        self.tabWidget.removeTab(self.tabWidget.indexOf(tab))
+        tab.close()
         self.openedGames.remove(tab)
-        
+        self.setWindowTitle("Gamelog")
+        self.newGameTab.show()
+#        self.tabWidget.removeTab(self.tabWidget.indexOf(tab))
+
     def chooseLanguage(self):
         lc = LanguageChooser(self)
         lc.newQM.connect(self.loadTranslator)

@@ -43,22 +43,23 @@ class Phase10Widget(GameWidget):
         self.widgetLayout.addWidget(self.maingroup,1,0)
         self.maingroupLayout = QtGui.QVBoxLayout(self.maingroup)
         
-#        self.container = QtGui.QToolBox(self)
-        self.container = QtGui.QTabWidget(self)
+        self.container = QtGui.QToolBox(self)
+#        self.container = QtGui.QTabWidget(self)
+#        self.container.setAutoFillBackground(True)
         self.maingroupLayout.addWidget(self.container)
         
         self.gameInput = Phase10InputWidget(self.engine,self.matchGroup)
         self.phasesInOrderCheckBox.toggled.connect(self.gameInput.switchPhasesInOrder)
-#        self.container.addItem(self.gameInput,'')
-        self.container.addTab(self.gameInput,'')
+        self.container.addItem(self.gameInput,'')
+#        self.container.addTab(self.gameInput,'')
         
         self.details = Phase10RoundsDetail(self.engine,self)
-#        self.container.addItem(self.details,'')
-        self.container.addTab(self.details,'')
+        self.container.addItem(self.details,'')
+#        self.container.addTab(self.details,'')
         
         self.plot = Phase10RoundPlot(self.engine,self)
-#        self.container.addItem(self.plot,'')
-        self.container.addTab(self.plot,'')
+        self.container.addItem(self.plot,'')
+#        self.container.addTab(self.plot,'')
         
         self.extraGroup = QtGui.QGroupBox(self)
         self.extraGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
@@ -80,12 +81,12 @@ class Phase10Widget(GameWidget):
         super(Phase10Widget,self).retranslateUI()
         self.phasesInOrderCheckBox.setText(QtGui.QApplication.translate("Phase10Widget","Phases in order"))
         self.extraGroup.setTitle(QtGui.QApplication.translate("Phase10Widget","Phases"))
-#        self.container.setItemText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
-#        self.container.setItemText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
-#        self.container.setItemText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
-        self.container.setTabText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
-        self.container.setTabText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
-        self.container.setTabText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
+        self.container.setItemText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
+        self.container.setItemText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
+        self.container.setItemText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
+#        self.container.setTabText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
+#        self.container.setTabText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
+#        self.container.setTabText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
         self.gameInput.retranslateUI()
         self.details.retranslateUI()
         self.plot.retranslateUI()
@@ -194,7 +195,7 @@ class Phase10InputWidget(GameInputWidget):
         self.winnerButtonGroup.addButton(self.nobodyWinnerRadioButton)
         
         players = self.engine.getListPlayers()
-        if len(players)>4:
+        if len(players)>=4:
             players_grid = True
             self.widgetLayout =  QtGui.QGridLayout(self)
         else:
