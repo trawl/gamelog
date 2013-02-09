@@ -279,24 +279,24 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
 
     def initUI(self):
         self.widgetLayout = QtGui.QVBoxLayout(self)
-        self.container = QtGui.QTabWidget(self)
+        self.container = QtGui.QToolBox(self)
         self.widgetLayout.addWidget(self.container)
         self.table = QtGui.QTableWidget(0,len(self.engine.getPlayers()))
-        self.container.addTab(self.table,'')
+        self.container.addItem(self.table,'')
 #        self.widgetLayout.addWidget(self.table)
         players = self.engine.getListPlayers()
         self.table.setHorizontalHeaderLabels(players)
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         
         self.plot = RemigioRoundPlot(self.engine,self)
-        self.container.addTab(self.plot,'')
+        self.container.addItem(self.plot,'')
         
 #        self.retranslateUI()
         
     def retranslateUI(self):
         self.setTitle(QtGui.QApplication.translate("RemigioRoundsDetail",'Details'))
-        self.container.setTabText(0,QtGui.QApplication.translate("RemigioRoundsDetail","Table"))
-        self.container.setTabText(1,QtGui.QApplication.translate("RemigioRoundsDetail","Plot"))
+        self.container.setItemText(0,QtGui.QApplication.translate("RemigioRoundsDetail","Table"))
+        self.container.setItemText(1,QtGui.QApplication.translate("RemigioRoundsDetail","Plot"))
         self.recomputeTable()
 
 
@@ -364,7 +364,7 @@ class RemigioRoundPlot(GameRoundPlot):
                     accumscore = scores[player][-1] + rndscore
                     scores[player].append(accumscore)
         self.axes.cla()
-#        self.axes.set_axis_bgcolor('none')
+        self.axes.set_axis_bgcolor('none')
         maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
         self.axes.axis([0, self.engine.getNumRound(),0,max(self.engine.getTop(),maxscore)+10])
         self.axes.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
@@ -377,6 +377,7 @@ class RemigioRoundPlot(GameRoundPlot):
         
         self.axes.set_position([box.x0, box.y0,  self.axiswidth * 0.9, box.height])
         legend = self.axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        legend.legendPatch.set_facecolor('none')
 #        legend.legendPatch.set_alpha(0.0)
         try: self.canvas.draw()
         except RuntimeError: pass
