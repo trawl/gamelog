@@ -107,6 +107,7 @@ CREATE TABLE `Game` (
 INSERT INTO "Game" VALUES('Phase10',6,'Standard Edition','Todos las sabemos ya');
 INSERT INTO "Game" VALUES('Phase10Master',6,'Master Edition','El dani las tiene');
 INSERT INTO "Game" VALUES('Remigio',12,'Classic Remigio','Home rules');
+INSERT INTO "Game" VALUES('Ratuki',5,'Ratuki Slap game','Home rules');
 DROP TABLE IF EXISTS "GameExtras";
 CREATE TABLE `GameExtras` (
   `Game_name` VARCHAR(45) NOT NULL ,
