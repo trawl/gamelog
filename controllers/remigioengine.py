@@ -31,7 +31,7 @@ class RemigioEngine(RoundGameEngine):
                 self.match.setDealer(player)
                 break
             
-    def runStubRoundPlayer(self,player,winner):
+    def runRoundPlayer(self,player,winner):
         score = 0
         closeType = 1
         if winner == player:

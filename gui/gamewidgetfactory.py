@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from gui.phase10 import Phase10Widget
 from gui.remigio import RemigioWidget
+from gui.ratuki import RatukiWidget
 
 class GameWidgetFactory:
     
@@ -11,6 +12,8 @@ class GameWidgetFactory:
             return Phase10Widget(gname,players,None,parent)
         if gname == 'Remigio':
             return RemigioWidget(gname,players,None,parent)      
+        if gname == 'Ratuki':
+            return RatukiWidget(gname,players,None,parent)
         return None
     
     @classmethod
@@ -18,5 +21,7 @@ class GameWidgetFactory:
         if gname in ['Phase10','Phase10Master']:
             return Phase10Widget(gname,None,engine,parent)
         if gname == 'Remigio':
-            return RemigioWidget(gname,None,engine,parent)      
+            return RemigioWidget(gname,None,engine,parent)
+        if gname == 'Ratuki':
+            return RatukiWidget(gname,None,engine,parent)
         return None

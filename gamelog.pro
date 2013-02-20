@@ -5,6 +5,7 @@ SOURCES = \
 	gui/game.py \
 	gui/phase10.py \
 	gui/remigio.py \
+	gui/ratuki.py \
 	gui/languagechooser.py
    
 TRANSLATIONS = \

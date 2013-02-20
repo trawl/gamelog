@@ -187,13 +187,13 @@ class RoundGameEngine(object):
             nick = readInput("Nick: ",str,lambda x: x in validPlayers,"Sorry, player not found in DB")
             self.addPlayer(nick)
             playersOrder.append(nick)
-    
+            
+        self.begin()    
         option = readInput("Dealing policy[0:None/1:RoundRobin/2:Winner]: ",int,lambda x: x in [0,1,2])
         if option == 0: self.setDealingPolicy(RoundGameEngine.NoDealer)
         elif option == 1: self.setDealingPolicy(RoundGameEngine.RRDealer)
         elif option == 2: self.setDealingPolicy(RoundGameEngine.WinnerDealer)
         self.extraStubConfig()
-        self.begin()
         self.runStubRoundLoop()
 
     def runStubRoundLoop(self):

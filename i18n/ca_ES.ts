@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ca_ES">
+<!DOCTYPE TS>
+<TS version="2.0" language="ca_ES">
 <context>
     <name>GameRoundPlot</name>
     <message>
-        <location filename="gui/game.py" line="295"/>
+        <location filename="gui/game.py" line="290"/>
         <source>No plotting available</source>
         <translation>Gràfic no disponible</translation>
     </message>
@@ -475,6 +476,42 @@
         <location filename="gui/newgame.py" line="339"/>
         <source>Players</source>
         <translation>Jugadors</translation>
+    </message>
+</context>
+<context>
+    <name>RatukiRoundsDetail</name>
+    <message>
+        <location filename="gui/ratuki.py" line="244"/>
+        <source>Details</source>
+        <translation>Detalls</translation>
+    </message>
+    <message>
+        <location filename="gui/ratuki.py" line="245"/>
+        <source>Table</source>
+        <translation>Taula</translation>
+    </message>
+    <message>
+        <location filename="gui/ratuki.py" line="246"/>
+        <source>Plot</source>
+        <translation>Gràfic</translation>
+    </message>
+    <message>
+        <location filename="gui/ratuki.py" line="272"/>
+        <source> (Winner)</source>
+        <translation> (Guanyador)</translation>
+    </message>
+</context>
+<context>
+    <name>RatukiWidget</name>
+    <message>
+        <location filename="gui/ratuki.py" line="73"/>
+        <source>Score Limit</source>
+        <translation>Límit de punts</translation>
+    </message>
+    <message>
+        <location filename="gui/ratuki.py" line="74"/>
+        <source>Score</source>
+        <translation>Marcador</translation>
     </message>
 </context>
 <context>
