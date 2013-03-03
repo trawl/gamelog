@@ -298,7 +298,6 @@ class RatukiRoundPlot(GameRoundPlot):
             
         for rnd in self.engine.getRounds():
             for player in self.engine.getPlayers():
-                if player not in scores: scores[player] = [0]
                 rndscore = rnd.getPlayerScore(player)
                 accumscore = scores[player][-1] + rndscore
                 scores[player].append(accumscore)
@@ -306,7 +305,7 @@ class RatukiRoundPlot(GameRoundPlot):
         self.axes.set_axis_bgcolor('none')
         maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
         minscore = min([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
-        self.axes.axis([0, self.engine.getNumRound(),minscore-10,max(self.engine.getTop(),maxscore)+10])
+        self.axes.axis([0, self.engine.getNumRound(),min(0,minscore)-10,max(self.engine.getTop(),maxscore)+10])
         self.axes.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
         self.axes.axhline(y=self.engine.getTop(),linewidth=3, linestyle="--", color='r')
         self.axes.axhline(y=0,linewidth=1, linestyle="-", color='black')
