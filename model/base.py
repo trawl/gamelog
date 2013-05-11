@@ -302,10 +302,35 @@ class GenericEntryMatch(GenericMatch):
     def resumeMatch(self,idMatch):
         if not super(GenericEntryMatch,self).resumeMatch(idMatch): return False
         cur = db.execute("SELECT idRound,nick,score FROM Round WHERE idMatch ={} ORDER BY idRound;".format(idMatch))
-        for current,row in enumerate(cur,1):
-            entry = self.createEntry(current)
+        for row in cur:
+            entry = self.createEntry(int(row['idRound']))
             entry.addInfo(str(row['nick']), int(row['score']))
             self.entries.append(entry) 
+            
+        cur = db.execute("SELECT idRound,nick,key,value FROM RoundStatistics WHERE idMatch ={} ORDER BY idRound,nick,key,value;".format(idMatch))
+        
+        currentr = 0
+        currentp = ""
+        extras = {}
+        for row in cur:
+            if row['idRound'] != currentr:
+                if len(extras):
+                    for player,extra in extras.items(): 
+                        self.entries[currentr-1].addExtraInfo(player,extra)
+                extras = {}
+                currentp = ""
+                currentr += 1
+                
+            if str(row['nick']) != currentp:
+                currentp = str(row['nick'])
+                extras[currentp] = {}
+            
+            extras[currentp].update(self.resumeExtraInfo(currentp,str(row['key']),str(row['value'])))
+                
+        if len(extras):
+            for player,extra in extras.items(): 
+                self.entries[currentr-1].addExtraInfo(player,extra)
+        
         return True
            
     def flushToDB(self):

@@ -2,9 +2,103 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_GB">
 <context>
+    <name>CarcassoneEntriesDetail</name>
+    <message>
+        <location filename="gui/carcassone.py" line="261"/>
+        <source>Details</source>
+        <translation>Details</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="262"/>
+        <source>Table</source>
+        <translation>Table</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="263"/>
+        <source>Plot</source>
+        <translation>Plot</translation>
+    </message>
+</context>
+<context>
+    <name>CarcassoneInputWidget</name>
+    <message>
+        <location filename="gui/carcassone.py" line="190"/>
+        <source>Select Player</source>
+        <translation>Select Player</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="191"/>
+        <source>Select kind of entry</source>
+        <translation>Kind of entry</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="192"/>
+        <source>Points</source>
+        <translation>Points</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="166"/>
+        <source>City</source>
+        <translation>City</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="167"/>
+        <source>Road</source>
+        <translation>Road</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="168"/>
+        <source>Cloister</source>
+        <translation>Cloister</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="169"/>
+        <source>Field</source>
+        <translation>Field</translation>
+    </message>
+</context>
+<context>
+    <name>CarcassoneWidget</name>
+    <message>
+        <location filename="gui/carcassone.py" line="65"/>
+        <source>Score</source>
+        <translation>Score</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="94"/>
+        <source>You must select a player</source>
+        <translation>You must select a player</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="98"/>
+        <source>You must select a kind</source>
+        <translation>You must select a kind of entry</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="106"/>
+        <source>Commit Entry</source>
+        <translation>Commit Entry</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="106"/>
+        <source>Are you sure you want to commit this entry?</source>
+        <translation>Are you sure you want to commit this entry?</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="119"/>
+        <source>Finish game</source>
+        <translation>Finish game</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="119"/>
+        <source>Are you sure you want to finish the current game?</source>
+        <translation>Are you sure you want to finish the current game?</translation>
+    </message>
+</context>
+<context>
     <name>GameRoundPlot</name>
     <message>
-        <location filename="gui/game.py" line="290"/>
+        <location filename="gui/game.py" line="299"/>
         <source>No plotting available</source>
         <translation>No plotting available</translation>
     </message>
@@ -12,79 +106,84 @@
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="gui/game.py" line="114"/>
+        <location filename="gui/game.py" line="119"/>
         <source>Cancel Match</source>
         <translation>Cancel Match</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="94"/>
+        <location filename="gui/game.py" line="97"/>
         <source>Round</source>
         <translation>Round</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="95"/>
+        <location filename="gui/game.py" line="99"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pause/Play</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="96"/>
+        <location filename="gui/game.py" line="100"/>
         <source>&amp;Cancel Match</source>
         <translation>&amp;Cancel Match</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="97"/>
+        <location filename="gui/game.py" line="101"/>
         <source>Commit &amp;Round</source>
         <translation>Commit &amp;Round</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="98"/>
+        <location filename="gui/game.py" line="102"/>
         <source>Match</source>
         <translation>Match</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="99"/>
+        <location filename="gui/game.py" line="104"/>
         <source>Winner deals</source>
         <translation>Winner deals</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="106"/>
+        <location filename="gui/game.py" line="111"/>
         <source>{} won this match!</source>
         <translation>{} won this match!</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="108"/>
+        <location filename="gui/game.py" line="113"/>
         <source>Game is paused</source>
         <translation>Game is paused</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="145"/>
+        <location filename="gui/game.py" line="150"/>
         <source>No winner selected</source>
         <translation>No winner selected</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="152"/>
+        <location filename="gui/carcassone.py" line="102"/>
         <source>{0} score is not valid</source>
         <translation>{0} score is not valid</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="159"/>
+        <location filename="gui/game.py" line="164"/>
         <source>Commit Round</source>
         <translation>Commit Round</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="159"/>
+        <location filename="gui/game.py" line="164"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>Are you sure you want to commit the current round?</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="198"/>
+        <location filename="gui/game.py" line="206"/>
         <source>Round {0}</source>
         <translation>Round {0}</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="114"/>
+        <location filename="gui/game.py" line="119"/>
         <source>Do you want to save the current {} match?</source>
         <translation>Do you want to save the current {} match?</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassone.py" line="64"/>
+        <source>&amp;Finish Game</source>
+        <translation>&amp;Finish Game</translation>
     </message>
 </context>
 <context>

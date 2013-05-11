@@ -9,6 +9,10 @@ from controllers.db import db
 
 class GameEngine(object):
     
+    NoDealer = 0
+    RRDealer = 1
+    WinnerDealer = 2
+    
     def __init__(self):
         self.players = dict()
         self.porder = list()
@@ -76,12 +80,10 @@ class GameEngine(object):
     def getGameSeconds(self): return self.match.getGameSeconds()
     
     def cancelMatch(self): self.match.cancel()
+    
+    def getDealingPolicy(self): return self.NoDealer
 
 class RoundGameEngine(GameEngine):
-    
-    NoDealer = 0
-    RRDealer = 1
-    WinnerDealer = 2
     
     def __init__(self):
         super(RoundGameEngine,self).__init__()
@@ -252,7 +254,9 @@ class EntryGameEngine(GameEngine):
 
     def getNumEntry(self): return self.nentry
         
-    def finishGame(self): self.match.updateWinner()
+    def finishGame(self): 
+        self.match.updateWinner()
+        self.printStats()
 
     def printStats(self):
         lastentry = self.getNumEntry()-1
