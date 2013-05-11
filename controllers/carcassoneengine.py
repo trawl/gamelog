@@ -12,6 +12,8 @@ class CarcassoneEngine(EntryGameEngine):
         score = readInput("{} score: ".format(player),int,lambda x: x>0,"Sorry, invalid score number.")
         kind = readInput("Kind: ",str,lambda x: x in self.match.getEntryKinds(),"Sorry, invalid kind [{}]".format(",".join(self.match.getEntryKinds())))
         self.addEntry(player,score,{'kind':kind})   
+        
+    def getEntryKinds(self): return self.match.getEntryKinds()
 
 
 if __name__ == "__main__":

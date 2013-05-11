@@ -11,7 +11,6 @@ class CarcassoneMatch(GenericEntryMatch):
         cur = db.execute("SELECT value FROM GameExtras WHERE Game_name = '{}' and key='Kinds';".format(self.game))
         row = cur.fetchone()
         self.entry_kinds = [ str(kind) for kind in row['value'].split(',') ]
-        print self.entry_kinds
     
     def getEntryKinds(self): return self.entry_kinds    
     

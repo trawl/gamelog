@@ -80,23 +80,28 @@ class GameWidget(Tab):
         self.clock.setMinimumHeight(100)
         self.matchGroupLayout.addWidget(self.clock)
         
-        self.dealerPolicyCheckBox = QtGui.QCheckBox(self.matchGroup)
-        if self.engine.getDealingPolicy() == self.engine.WinnerDealer:
-            self.dealerPolicyCheckBox.setChecked(True)
-        else:
-            self.dealerPolicyCheckBox.setChecked(False)
-        self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
-        self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
-        self.dealerPolicyCheckBox.setDisabled(self.engine.getNumRound()>1)
-        self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
+        dpolicy = self.engine.getDealingPolicy()
+        if (dpolicy != self.engine.NoDealer):
+            self.dealerPolicyCheckBox = QtGui.QCheckBox(self.matchGroup)
+            if self.engine.getDealingPolicy() == self.engine.WinnerDealer:
+                self.dealerPolicyCheckBox.setChecked(True)
+            else:
+                self.dealerPolicyCheckBox.setChecked(False)
+            self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
+            self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
+            self.dealerPolicyCheckBox.setDisabled(self.engine.getNumRound()>1)
+            self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
         
     def retranslateUI(self):
-        self.roundGroup.setTitle("{} {}".format(QtGui.QApplication.translate("GameWidget","Round"),str(self.engine.getNumRound())))
+        try:
+            self.roundGroup.setTitle("{} {}".format(QtGui.QApplication.translate("GameWidget","Round"),str(self.engine.getNumRound())))
+        except AttributeError: pass
         self.pauseMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Pause/Play"))
         self.cancelMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Cancel Match"))
         self.commitRoundButton.setText(QtGui.QApplication.translate("GameWidget","Commit &Round"))
         self.matchGroup.setTitle(QtGui.QApplication.translate("GameWidget","Match"))
-        self.dealerPolicyCheckBox.setText(QtGui.QApplication.translate("GameWidget","Winner deals"))
+        if (self.engine.getDealingPolicy() != self.engine.NoDealer): 
+            self.dealerPolicyCheckBox.setText(QtGui.QApplication.translate("GameWidget","Winner deals"))
         self.updateGameStatusLabel()
     
     def updateGameStatusLabel(self):
@@ -185,7 +190,8 @@ class GameWidget(Tab):
         
     def updatePanel(self):
         self.gameInput.reset()
-        self.dealerPolicyCheckBox.setEnabled(False)
+        try: self.dealerPolicyCheckBox.setEnabled(False)
+        except AttributeError: pass
         if self.engine.getWinner():
             self.finished = True
             self.pauseMatchButton.setDisabled(True)
@@ -195,7 +201,10 @@ class GameWidget(Tab):
             self.gameInput.setDisabled(True)
             
         else:
-            self.roundGroup.setTitle(unicode(QtGui.QApplication.translate("GameWidget","Round {0}")).format(str(self.engine.getNumRound())))   
+            try:
+                nround = self.engine.getNumRound()
+                self.roundGroup.setTitle(unicode(QtGui.QApplication.translate("GameWidget","Round {0}")).format(str(nround)))
+            except AttributeError: pass
             
     def getGameName(self): return self.game        
     
