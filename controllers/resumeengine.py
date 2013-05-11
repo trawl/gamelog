@@ -33,7 +33,7 @@ class ResumeEngine():
         
 if __name__ == "__main__":
     if not db.isConnected(): db.connectDB("../db/gamelog.db")
-    game = readInput('Game to play (Phase10/Phase10Master/Remigio): ',str,lambda x: x in ['Phase10','Phase10Master','Remigio'])
+    game = readInput('Game to play (Phase10/Phase10Master/Remigio/Ratuki/Carcassone): ',str,lambda x: x in ['Phase10','Phase10Master','Remigio','Ratuki','Carcassone'])
     re = ResumeEngine(game)
     candidates = re.getCandidates()
     if not len(candidates):

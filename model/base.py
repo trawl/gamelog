@@ -271,3 +271,65 @@ class GenericRound(object):
     # To be implemented in subclasses    
     def addExtraInfo(self,player,extras): pass
     
+
+class GenericEntry(object):
+    def __init__(self,nentry):
+        self.numentry = nentry
+        self.player = None
+        self.score = 0
+        self.extras = dict()
+        
+    def getNumEntry(self): return self.numentry
+        
+    def getScore(self): return self.score
+    
+    def getPlayer(self):  return self.player
+    
+    def addInfo(self,player,score,extras=None):
+        self.player = player
+        self.score = score
+        if extras: self.addExtraInfo(player,extras)
+           
+    # To be implemented in subclasses    
+    def addExtraInfo(self,player,extras): pass
+        
+    
+class GenericEntryMatch(GenericMatch):
+    def __init__(self,players=[]):
+        super(GenericEntryMatch,self).__init__(players)
+        self.entries = list()
+        
+    def resumeMatch(self,idMatch):
+        if not super(GenericEntryMatch,self).resumeMatch(idMatch): return False
+        cur = db.execute("SELECT idRound,nick,score FROM Round WHERE idMatch ={} ORDER BY idRound;".format(idMatch))
+        for current,row in enumerate(cur,1):
+            entry = self.createEntry(current)
+            entry.addInfo(str(row['nick']), int(row['score']))
+            self.entries.append(entry) 
+        return True
+           
+    def flushToDB(self):
+        super(GenericEntryMatch,self).flushToDB()
+        for entry in self.getEntries():
+            db.execute("INSERT OR REPLACE INTO Round (idMatch,nick,idRound,score) VALUES ({},'{}',{},{});".format(self.idMatch,str(entry.getPlayer()),entry.getNumEntry(),entry.getScore()))
+
+    def addEntry(self,entry):
+        self.entries.append(entry)
+        self.totalScores[entry.getPlayer()] += entry.getScore()
+        self.playerAddEntry(entry.getPlayer(),entry)
+            
+    def getEntries(self): return self.entries
+    
+    def computeWinner(self):
+        maxscore=0
+        for player,score in self.totalScores.items():
+            if score > maxscore: 
+                self.winner = player
+                maxscore = score
+            
+
+    # To be implemented in subclasses
+    def playerAddEntry(self,player,entry): pass
+    def resumeExtraInfo(self,player,key,value): return {}
+    def createEntry(self,numentry): return GenericEntry(numentry)    
+    
