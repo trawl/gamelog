@@ -78,6 +78,11 @@ class GameLogDB:
             games[row['name']]['rules']=row['rules']
         return games
     
+    def getLastGame(self):
+        cur = db.execute("Select Game_name from Match order by idMatch desc limit 1")
+        row = cur.fetchone()
+        if not row: return None
+        return str(row['Game_name'])
     
     def getPlayerNicks(self):
         cur = db.execute("Select nick from Player order by nick")

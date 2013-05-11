@@ -75,6 +75,9 @@ class NewGameWidget(Tab):
         self.games = db.getAvailableGames()
         for game in sorted(self.games.keys()):
             self.gameComboBox.addItem(game)
+        lastgame = db.getLastGame()
+        if lastgame:    
+            self.gameComboBox.setCurrentIndex(self.gameComboBox.findText(lastgame))
         self.updateGameInfo()
         
         self.gameComboBox.currentIndexChanged.connect(self.updateGameInfo)
