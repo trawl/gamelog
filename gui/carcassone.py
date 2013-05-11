@@ -82,7 +82,7 @@ class CarcassoneWidget(GameWidget):
         else: self.detailGroup.updateRound()
         
     def checkPlayerScore(self,player,score): 
-        if score >= 2: return True
+        if score > 0: return True
         else: return False
         
     def commitRound(self):        
@@ -178,7 +178,7 @@ class CarcassoneInputWidget(QtGui.QWidget):
         self.scoreSpinBox = ScoreSpinBox(self)
         self.scoreSpinBox.setAlignment(QtCore.Qt.AlignCenter)
         self.scoreSpinBox.setMaximumWidth(60)
-        self.scoreSpinBox.setRange(1,100)
+        self.scoreSpinBox.setRange(0,300)
         self.scoreGroupLayout.addWidget(self.scoreSpinBox)
 
         self.reset()
