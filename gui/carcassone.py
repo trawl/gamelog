@@ -34,6 +34,7 @@ class CarcassoneWidget(GameWidget):
         self.finishButton.clicked.connect(self.finish)
  
         self.gameInput = CarcassoneInputWidget(self.engine,self.bgcolors,self)
+        self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
         
         self.gameInput.placeCommitButton(self.commitRoundButton)
@@ -127,6 +128,8 @@ class CarcassoneWidget(GameWidget):
         
 class CarcassoneInputWidget(QtGui.QWidget):
     
+    enterPressed = QtCore.Signal()
+    
     def __init__(self,engine, bgcolors, parent=None):
         super(CarcassoneInputWidget,self).__init__(parent)
         self.engine = engine
@@ -206,7 +209,11 @@ class CarcassoneInputWidget(QtGui.QWidget):
         self.playerButtons[0].setChecked(True)
         self.kindButtons[0].setChecked(True)
         self.scoreSpinBox.setValue(0)
-
+        
+    def keyPressEvent(self,event):
+        if (event.key() == QtCore.Qt.Key_Return):
+            self.enterPressed.emit()
+        return super(CarcassoneInputWidget,self).keyPressEvent(event)
     
 class CarcassonePlayerWidget(QtGui.QWidget):
     
