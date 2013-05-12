@@ -98,9 +98,6 @@ class NewGameWidget(Tab):
         self.playersAvailableList = PlayerList(self.playersGroupBox)
         self.playersGroupBoxLayout.addWidget(self.playersAvailableList)
 
-        for nick in db.getPlayerNicks():
-            self.playersAvailableList.model().appendRow(QtGui.QStandardItem(nick))
-
         self.playersButtonsLayout = QtGui.QHBoxLayout()
         self.playersGroupBoxLayout.addLayout(self.playersButtonsLayout)
 
@@ -113,6 +110,13 @@ class NewGameWidget(Tab):
         self.playersGroupBoxLayout.addWidget(self.inGameLabel)
         self.playersInGameList = PlayerList(self.playersGroupBox)
         self.playersGroupBoxLayout.addWidget(self.playersInGameList)
+        
+        self.playersAvailableList.doubleclickeditem.connect(self.playersInGameList.addItem)
+        self.playersInGameList.doubleclickeditem.connect(self.playersAvailableList.addItem)
+        
+        for p in db.getPlayers():
+            if p['favourite']: self.playersInGameList.addItem(p['nick'])
+            else: self.playersAvailableList.addItem(p['nick'])
         
         #Start button
         self.startGameButton = QtGui.QPushButton(self)
@@ -153,6 +157,9 @@ class NewGameWidget(Tab):
 
 
 class PlayerList(QtGui.QListView):
+    
+    doubleclickeditem = QtCore.Signal(str)
+    
     def __init__(self,parent):
         super(PlayerList, self).__init__(parent)
         self.setDragEnabled(True)
@@ -160,15 +167,24 @@ class PlayerList(QtGui.QListView):
         self.setModel(PlayerListModel())
 
     def dropEvent(self, e):
-        if e.source()==self:
-            e.ignore()
-        else:
-            e.setDropAction(QtCore.Qt.MoveAction)
-            QtGui.QListView.dropEvent(self,e)
+        e.setDropAction(QtCore.Qt.MoveAction)
+        QtGui.QListView.dropEvent(self,e)
             
+    def addItem(self,text):
+        item = QtGui.QStandardItem(text)
+        item.setEditable(False)
+        self.model().appendRow(item)
+            
+    def mouseDoubleClickEvent(self,event):
+        item = self.indexAt(event.pos())
+        try: player = str(item.data().toString())
+        except AttributeError: player = str(item.data())
+        self.doubleclickeditem.emit(player)
+        self.model().removeRows(item.row(),1)
+        return QtGui.QListView.mouseDoubleClickEvent(self,event)
 
 class PlayerListModel(QtGui.QStandardItemModel):
-
+    
     def __init__(self, parent = None):
         super(PlayerListModel, self).__init__( parent)
 
