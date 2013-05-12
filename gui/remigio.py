@@ -30,6 +30,7 @@ class RemigioWidget(GameWidget):
         super(RemigioWidget,self).initUI()
  
         self.gameInput = RemigioInputWidget(self.engine,RemigioWidget.bgcolors, self)
+        self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
         
         self.configLayout = QtGui.QGridLayout()
