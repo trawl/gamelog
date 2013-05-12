@@ -88,6 +88,10 @@ class GameLogDB:
         cur = db.execute("Select nick from Player order by nick")
         return [ row['nick'] for row in cur ]
     
+    def getPlayers(self):
+        cur = db.execute("Select * from Player order by nick")
+        return cur
+    
     def addPlayer(self,nick,fullname):
         db.execute("INSERT INTO Player(nick,fullName,dateCreation) VALUES('{}','{}','{}')".format(nick,fullname,datetime.datetime.now()))
          
@@ -202,6 +206,7 @@ CREATE TABLE `Player` (
   `nick` VARCHAR(45) NOT NULL ,
   `fullName` VARCHAR(255) NULL ,
   `dateCreation` DATETIME NULL ,
+  "favourite" BOOL NOT NULL  DEFAULT (0) ,
   PRIMARY KEY (`nick`) );
 DROP TABLE IF EXISTS "Round";
 CREATE TABLE `Round` (
