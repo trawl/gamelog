@@ -50,6 +50,7 @@ class Phase10Widget(GameWidget):
         
         self.gameInput = Phase10InputWidget(self.engine,self.matchGroup)
         self.phasesInOrderCheckBox.toggled.connect(self.gameInput.switchPhasesInOrder)
+        self.gameInput.enterPressed.connect(self.commitRound)
         self.container.addItem(self.gameInput,'')
 #        self.container.addTab(self.gameInput,'')
         

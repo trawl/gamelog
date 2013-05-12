@@ -28,6 +28,7 @@ class RatukiWidget(GameWidget):
         super(RatukiWidget,self).initUI()
  
         self.gameInput = RatukiInputWidget(self.engine, self)
+        self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
         
         self.configLayout = QtGui.QGridLayout()

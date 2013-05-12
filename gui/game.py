@@ -222,6 +222,8 @@ class GameWidget(Tab):
      
 class GameInputWidget(QtGui.QWidget):
     
+    enterPressed = QtCore.Signal()
+    
     def __init__(self,engine,parent=None):
         super(GameInputWidget,self).__init__(parent)
         self.engine = engine
@@ -248,6 +250,11 @@ class GameInputWidget(QtGui.QWidget):
         if self.winnerSelected != "":
             self.playerInputList[self.winnerSelected].reset()
         self.winnerSelected = winner
+        
+    def keyPressEvent(self,event):
+        if (event.key() == QtCore.Qt.Key_Return):
+            self.enterPressed.emit()
+        return super(GameInputWidget,self).keyPressEvent(event)
         
         
 class ScoreSpinBox(QtGui.QSpinBox):
