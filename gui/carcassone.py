@@ -35,6 +35,7 @@ class CarcassoneWidget(GameWidget):
  
         self.gameInput = CarcassoneInputWidget(self.engine,self.bgcolors,self)
         self.gameInput.enterPressed.connect(self.commitRound)
+        self.focussc = QtGui.QShortcut(QtGui.QKeySequence("Ctrl+A"), self, self.gameInput.setFocus)
         self.roundLayout.addWidget(self.gameInput)
         
         self.gameInput.placeCommitButton(self.commitRoundButton)
@@ -57,7 +58,6 @@ class CarcassoneWidget(GameWidget):
             self.playerGroupBox[player] = pw
  
         self.playersLayout.addStretch()
-        
         self.retranslateUI()
         
     def retranslateUI(self):
@@ -151,11 +151,13 @@ class CarcassoneInputWidget(QtGui.QWidget):
         self.playerButtons=[b]
         b.hide()
         for i, player in enumerate(self.engine.getListPlayers(),1):
-            b = QtGui.QRadioButton(player,self.playerGroup)
-            self.playerGroupLayout.addWidget(b,(i-1)/2,(i-1)%2)
+            b = QtGui.QRadioButton('{}. {}'.format(i,player),self.playerGroup)
+            if len(self.engine.getListPlayers())>2:
+                self.playerGroupLayout.addWidget(b,(i-1)%2,(i-1)/2)
+            else:
+                self.playerGroupLayout.addWidget(b,0,(i-1)%2)
             self.playerButtonGroup.addButton(b,i)
             self.playerButtons.append(b)
-                   
         
         self.kindGroup = QtGui.QGroupBox(self)
         self.widgetLayout.addWidget(self.kindGroup)
@@ -167,21 +169,25 @@ class CarcassoneInputWidget(QtGui.QWidget):
         self.kindButtonGroup.addButton(b,0)
         self.kindButtons=[b]
         b.hide()
-
-        for i, kind in enumerate(self.engine.getEntryKinds(),1):
-            b = QtGui.QRadioButton(QtGui.QApplication.translate("CarcassoneInputWidget",kind),self.kindGroup)
-            self.kindGroupLayout.addWidget(b,(i-1)/2,(i-1)%2)
-            self.kindButtonGroup.addButton(b,i)
-            self.kindButtons.append(b)
-            
-        self.scoreGroup = QtGui.QGroupBox(self)
-        self.widgetLayout.addWidget(self.scoreGroup)
-        self.scoreGroupLayout = QtGui.QHBoxLayout(self.scoreGroup)     
         
         self.scoreSpinBox = ScoreSpinBox(self)
         self.scoreSpinBox.setAlignment(QtCore.Qt.AlignCenter)
         self.scoreSpinBox.setMaximumWidth(60)
         self.scoreSpinBox.setRange(0,300)
+
+        for i, kind in enumerate(self.engine.getEntryKinds(),1):
+            b = QtGui.QRadioButton('{}. {}'.format(i,QtGui.QApplication.translate("CarcassoneInputWidget",kind)),self.kindGroup)
+            self.kindGroupLayout.addWidget(b,(i-1)%2,(i-1)/2)
+            self.kindButtonGroup.addButton(b,i)
+            b.clicked.connect(self.scoreSpinBox.setFocus)
+            self.kindButtons.append(b)
+            
+        self.kindButtons[3].toggled.connect(self.setCloisterPoints)
+        
+        self.scoreGroup = QtGui.QGroupBox(self)
+        self.widgetLayout.addWidget(self.scoreGroup)
+        self.scoreGroupLayout = QtGui.QHBoxLayout(self.scoreGroup)     
+        
         self.scoreGroupLayout.addWidget(self.scoreSpinBox)
 
         self.reset()
@@ -195,7 +201,11 @@ class CarcassoneInputWidget(QtGui.QWidget):
     def placeCommitButton(self,cb):
         self.scoreGroupLayout.addWidget(cb)
             
-    def getPlayer(self): return str(self.playerButtonGroup.checkedButton().text())
+    def getPlayer(self): 
+        pid = self.playerButtonGroup.checkedId()
+        if not pid: return ""
+        player = self.engine.getListPlayers()[pid-1]
+        return str(player)
     
     def getKind(self): 
         cid = self.kindButtonGroup.checkedId()
@@ -209,11 +219,36 @@ class CarcassoneInputWidget(QtGui.QWidget):
         self.playerButtons[0].setChecked(True)
         self.kindButtons[0].setChecked(True)
         self.scoreSpinBox.setValue(0)
+        self.setFocus()
         
     def keyPressEvent(self,event):
+        numberkeys = [QtCore.Qt.Key_1,QtCore.Qt.Key_2,QtCore.Qt.Key_3,
+                      QtCore.Qt.Key_4,QtCore.Qt.Key_5,QtCore.Qt.Key_6,
+                      QtCore.Qt.Key_7,QtCore.Qt.Key_8,QtCore.Qt.Key_9]
+        try: number = numberkeys.index(event.key()) + 1
+        except ValueError: number = 0
         if (event.key() == QtCore.Qt.Key_Return):
             self.enterPressed.emit()
+        elif number:
+            if not self.getPlayer():
+                if number <= len(self.engine.getPlayers()):
+                    self.playerButtons[number].setChecked(True)
+            elif not self.getKind():
+                if number <= len(self.engine.getEntryKinds()):
+                    self.kindButtons[number].setChecked(True)
+                    self.scoreSpinBox.setFocus()
+            
         return super(CarcassoneInputWidget,self).keyPressEvent(event)
+    
+    def setCloisterPoints(self,doit):
+        if doit: 
+            self.scoreSpinBox.setValue(9)
+            self.scoreSpinBox.setMaximum(9)
+            self.scoreSpinBox.lineEdit().selectAll()
+        else: 
+            self.scoreSpinBox.setValue(0)
+            self.scoreSpinBox.setMaximum(300)
+            
     
 class CarcassonePlayerWidget(QtGui.QWidget):
     
