@@ -157,6 +157,7 @@ CREATE TABLE `Match` (
   `started` DATETIME NULL ,
   `finished` DATETIME NULL ,
   `state` INTEGER NULL DEFAULT 0,
+  `elapsed` INTEGER DEFAULT 0,
   CONSTRAINT `fk_Match_Game`
     FOREIGN KEY (`Game_name` )
     REFERENCES `Game` (`name` )
