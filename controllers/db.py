@@ -117,7 +117,7 @@ INSERT INTO "Game" VALUES('Phase10',6,'Standard Edition','Todos las sabemos ya')
 INSERT INTO "Game" VALUES('Phase10Master',6,'Master Edition','El dani las tiene');
 INSERT INTO "Game" VALUES('Remigio',12,'Classic Remigio','Home rules');
 INSERT INTO "Game" VALUES('Ratuki',5,'Ratuki Slap game','Home rules');
-INSERT INTO "Game" VALUES('Carcassone',6,'Carcassone board game','Home rules');
+INSERT INTO "Game" VALUES('Carcassonne',6,'Carcassonne board game','Home rules');
 DROP TABLE IF EXISTS "GameExtras";
 CREATE TABLE `GameExtras` (
   `Game_name` VARCHAR(45) NOT NULL ,
@@ -149,7 +149,7 @@ INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 07','2s4');
 INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 08','1cr4 1s3');
 INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 09','1s5 1s3');
 INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 10','1s5 1cr3');
-INSERT INTO "GameExtras" VALUES ('Carcassone','Kinds','City,Road,Cloister,Field');
+INSERT INTO "GameExtras" VALUES ('Carcassonne','Kinds','City,Road,Cloister,Field,Goods');
 DROP TABLE IF EXISTS "Match";
 CREATE TABLE `Match` (
   `idMatch` INTEGER  PRIMARY KEY ,

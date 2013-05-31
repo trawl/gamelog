@@ -4,10 +4,10 @@
 from controllers.db import db
 from model.base import GenericEntryMatch,GenericEntry
 
-class CarcassoneMatch(GenericEntryMatch):
+class CarcassonneMatch(GenericEntryMatch):
     def __init__(self,players=[]):
-        super(CarcassoneMatch,self).__init__(players)
-        self.game = 'Carcassone'
+        super(CarcassonneMatch,self).__init__(players)
+        self.game = 'Carcassonne'
         cur = db.execute("SELECT value FROM GameExtras WHERE Game_name = '{}' and key='Kinds';".format(self.game))
         row = cur.fetchone()
         self.entry_kinds = [ str(kind) for kind in row['value'].split(',') ]
@@ -19,10 +19,10 @@ class CarcassoneMatch(GenericEntryMatch):
         if key == 'kind': extra[key] = value
         return extra
     
-    def createEntry(self,numround): return CarcassoneEntry(numround)
+    def createEntry(self,numround): return CarcassonneEntry(numround)
         
     def flushToDB(self):
-        super(CarcassoneMatch,self).flushToDB()
+        super(CarcassonneMatch,self).flushToDB()
         for entry in self.entries:
             db.execute("INSERT OR REPLACE INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'kind','{}');".format(self.idMatch,entry.getPlayer(),entry.getNumEntry(),entry.getKind()))
     
@@ -103,9 +103,9 @@ class CarcassoneMatch(GenericEntryMatch):
 
             
             
-class CarcassoneEntry(GenericEntry):
+class CarcassonneEntry(GenericEntry):
     def __init__( self,numround):
-        super(CarcassoneEntry,self).__init__(numround)
+        super(CarcassonneEntry,self).__init__(numround)
         self.kind = None
  
     def addExtraInfo(self,player,extras):
