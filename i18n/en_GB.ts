@@ -56,6 +56,11 @@
         <source>Field</source>
         <translation>Field</translation>
     </message>
+    <message>
+        <location filename="gui/carcassone.py" line="170"/>
+        <source>Goods</source>
+        <translation>Goods</translation>
+    </message>
 </context>
 <context>
     <name>CarcassoneWidget</name>
