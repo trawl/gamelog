@@ -6,7 +6,7 @@ SOURCES = \
 	gui/phase10.py \
 	gui/remigio.py \
 	gui/ratuki.py \
-	gui/carcassone.py \
+	gui/carcassonne.py \
 	gui/languagechooser.py
    
 TRANSLATIONS = \

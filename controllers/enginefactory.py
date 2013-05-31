@@ -4,7 +4,7 @@
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
 from controllers.remigioengine import RemigioEngine
 from controllers.ratukiengine import RatukiEngine
-from controllers.carcassoneengine import CarcassoneEngine
+from controllers.carcassonneengine import CarcassonneEngine
 
 class GameEngineFactory:
     
@@ -14,6 +14,6 @@ class GameEngineFactory:
         if gname == 'Phase10Master': return Phase10MasterEngine()
         if gname == 'Remigio': return RemigioEngine()
         if gname == 'Ratuki': return RatukiEngine()
-        if gname == 'Carcassone': return CarcassoneEngine()
+        if gname == 'Carcassonne': return CarcassonneEngine()
         
         return None

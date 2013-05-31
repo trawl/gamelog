@@ -3,10 +3,10 @@
 
 from controllers.baseengine import EntryGameEngine,readInput
 
-class CarcassoneEngine(EntryGameEngine):
+class CarcassonneEngine(EntryGameEngine):
     def __init__(self):
         EntryGameEngine.__init__(self)
-        self.game = 'Carcassone'
+        self.game = 'Carcassonne'
             
     def runStubEntryPlayer(self,player):
         score = readInput("{} score: ".format(player),int,lambda x: x>0,"Sorry, invalid score number.")
@@ -17,7 +17,7 @@ class CarcassoneEngine(EntryGameEngine):
 
 
 if __name__ == "__main__":
-    re = CarcassoneEngine()
+    re = CarcassonneEngine()
     re.gameStub()
 
     

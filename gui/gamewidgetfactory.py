@@ -3,7 +3,7 @@
 from gui.phase10 import Phase10Widget
 from gui.remigio import RemigioWidget
 from gui.ratuki import RatukiWidget
-from gui.carcassone import CarcassoneWidget
+from gui.carcassonne import CarcassonneWidget
 
 class GameWidgetFactory:
     
@@ -15,8 +15,8 @@ class GameWidgetFactory:
             return RemigioWidget(gname,players,None,parent)      
         if gname == 'Ratuki':
             return RatukiWidget(gname,players,None,parent)
-        if gname == 'Carcassone':
-            return CarcassoneWidget(gname,players,None,parent)
+        if gname == 'Carcassonne':
+            return CarcassonneWidget(gname,players,None,parent)
         return None
     
     @classmethod
@@ -27,6 +27,6 @@ class GameWidgetFactory:
             return RemigioWidget(gname,None,engine,parent)
         if gname == 'Ratuki':
             return RatukiWidget(gname,None,engine,parent)
-        if gname == 'Carcassone':
-            return CarcassoneWidget(gname,None,engine,parent)
+        if gname == 'Carcassonne':
+            return CarcassonneWidget(gname,None,engine,parent)
         return None
