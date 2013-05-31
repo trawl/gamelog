@@ -18,7 +18,7 @@ from gui.game import GameWidget,ScoreSpinBox,GameRoundPlot
 
 class CarcassoneWidget(GameWidget):
 
-    bgcolors = [0xFFCC99,0xCCCCCC,0xFFFF99,0xCCFF99]
+    bgcolors = [0xFFCC99,0xCCCCCC,0xFFFF99,0xCCFF99,0xCCFFCC]
 
     def createEngine(self):
         if self.game != 'Carcassone':
@@ -183,6 +183,7 @@ class CarcassoneInputWidget(QtGui.QWidget):
             self.kindButtons.append(b)
             
         self.kindButtons[3].toggled.connect(self.setCloisterPoints)
+        self.kindButtons[5].toggled.connect(self.setGoodsPoints)
         
         self.scoreGroup = QtGui.QGroupBox(self)
         self.widgetLayout.addWidget(self.scoreGroup)
@@ -248,6 +249,15 @@ class CarcassoneInputWidget(QtGui.QWidget):
         else: 
             self.scoreSpinBox.setValue(0)
             self.scoreSpinBox.setMaximum(300)
+            
+    def setGoodsPoints(self,doit):
+        if doit: 
+            self.scoreSpinBox.setValue(10)
+            self.scoreSpinBox.setReadOnly(True)
+
+        else: 
+            self.scoreSpinBox.setReadOnly(False)
+            self.scoreSpinBox.setValue(0)
             
     
 class CarcassonePlayerWidget(QtGui.QWidget):
