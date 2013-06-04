@@ -166,6 +166,9 @@ class PlayerList(QtGui.QListView):
         self.setAcceptDrops(True)
         self.setModel(PlayerListModel())
 
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.openMenu)
+
     def dropEvent(self, e):
         e.setDropAction(QtCore.Qt.MoveAction)
         QtGui.QListView.dropEvent(self,e)
@@ -182,6 +185,23 @@ class PlayerList(QtGui.QListView):
         self.doubleclickeditem.emit(player)
         self.model().removeRows(item.row(),1)
         return QtGui.QListView.mouseDoubleClickEvent(self,event)
+    
+    def openMenu(self,position):
+        item = self.indexAt(position)
+        try: player = str(item.data().toString())
+        except AttributeError: player = str(item.data())
+        if player:
+            menu = QtGui.QMenu()
+            isfav =  db.isPlayerFavourite(player)
+            if isfav:
+                favouriteAction = QtGui.QAction(QtGui.QApplication.translate("PlayerList","Unset Favourite"), self)
+            else:
+                favouriteAction = QtGui.QAction(QtGui.QApplication.translate("PlayerList","Set Favourite"), self)
+            menu.addAction(favouriteAction)
+            action = menu.exec_(self.mapToGlobal(position))
+            if action == favouriteAction:
+                db.setPlayerFavourite(player,isfav)
+        
 
 class PlayerListModel(QtGui.QStandardItemModel):
     

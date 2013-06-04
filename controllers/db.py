@@ -94,7 +94,17 @@ class GameLogDB:
     
     def addPlayer(self,nick,fullname):
         db.execute("INSERT INTO Player(nick,fullName,dateCreation) VALUES('{}','{}','{}')".format(nick,fullname,datetime.datetime.now()))
-         
+
+    def isPlayerFavourite(self,nick):
+        cur = db.execute("Select nick from Player where nick='{}' and favourite=1".format(nick))
+        if not cur.fetchone(): return False
+        else: return True
+    
+    def setPlayerFavourite(self,nick,isfav):  
+        if isfav: flag = 0
+        else: flag = 1
+        db.execute("UPDATE Player set favourite={} where nick='{}'".format(flag,nick))
+           
     def _printError(self,message):
         # Python 2 syntax
         print >> sys.stderr, message
