@@ -101,8 +101,8 @@ class GameLogDB:
         else: return True
     
     def setPlayerFavourite(self,nick,isfav):  
-        if isfav: flag = 0
-        else: flag = 1
+        if isfav: flag = 1
+        else: flag = 0
         db.execute("UPDATE Player set favourite={} where nick='{}'".format(flag,nick))
            
     def _printError(self,message):
