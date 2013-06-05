@@ -93,11 +93,17 @@ class NewGameWidget(Tab):
     def populatePlayersGroupBox(self):
 
         self.playersGroupBoxLayout = QtGui.QVBoxLayout(self.playersGroupBox)
-        self.availablePlayersLabel = QtGui.QLabel(self.playersGroupBox)
-        self.playersGroupBoxLayout.addWidget(self.availablePlayersLabel)
-        self.playersAvailableList = PlayerList(self.playersGroupBox)
-        self.playersGroupBoxLayout.addWidget(self.playersAvailableList)
-
+        #Start button
+        self.startGameButton = QtGui.QPushButton(self)
+        self.startGameButton.clicked.connect(self.createNewGame)
+        self.playersGroupBoxLayout.addWidget(self.startGameButton)
+        
+        self.inGameLabel = QtGui.QLabel(self.playersGroupBox)
+        self.playersGroupBoxLayout.addWidget(self.inGameLabel)
+        self.playersInGameList = PlayerList(self.playersGroupBox)
+        self.playersInGameList.setMaximumHeight(130)
+        self.playersGroupBoxLayout.addWidget(self.playersInGameList)
+        
         self.playersButtonsLayout = QtGui.QHBoxLayout()
         self.playersGroupBoxLayout.addLayout(self.playersButtonsLayout)
 
@@ -105,11 +111,13 @@ class NewGameWidget(Tab):
         self.newPlayerButton.clicked.connect(self.createNewPlayer)
         self.playersButtonsLayout.addWidget( self.newPlayerButton)
 
-
-        self.inGameLabel = QtGui.QLabel(self.playersGroupBox)
-        self.playersGroupBoxLayout.addWidget(self.inGameLabel)
-        self.playersInGameList = PlayerList(self.playersGroupBox)
-        self.playersGroupBoxLayout.addWidget(self.playersInGameList)
+        self.availablePlayersLabel = QtGui.QLabel(self.playersGroupBox)
+        self.playersGroupBoxLayout.addWidget(self.availablePlayersLabel)
+        self.playersAvailableList = PlayerList(self.playersGroupBox)
+        self.playersAvailableList.setMaximumHeight(150)
+        self.playersGroupBoxLayout.addWidget(self.playersAvailableList)
+        
+        self.playersGroupBoxLayout.addStretch()
         
         self.playersAvailableList.doubleclickeditem.connect(self.playersInGameList.addItem)
         self.playersInGameList.doubleclickeditem.connect(self.playersAvailableList.addItem)
@@ -118,10 +126,6 @@ class NewGameWidget(Tab):
             if p['favourite']: self.playersInGameList.addItem(p['nick'])
             else: self.playersAvailableList.addItem(p['nick'])
         
-        #Start button
-        self.startGameButton = QtGui.QPushButton(self)
-        self.startGameButton.clicked.connect(self.createNewGame)
-        self.playersGroupBoxLayout.addWidget(self.startGameButton)
 
     def createNewGame(self):
         game = str(self.gameComboBox.currentText())
