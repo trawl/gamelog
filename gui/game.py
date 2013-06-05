@@ -81,7 +81,7 @@ class GameWidget(Tab):
         self.matchGroupLayout.addWidget(self.clock)
         
         dpolicy = self.engine.getDealingPolicy()
-        if (dpolicy != self.engine.NoDealer):
+        if dpolicy not in (self.engine.NoDealer,self.engine.StarterDealer):
             self.dealerPolicyCheckBox = QtGui.QCheckBox(self.matchGroup)
             if self.engine.getDealingPolicy() == self.engine.WinnerDealer:
                 self.dealerPolicyCheckBox.setChecked(True)
@@ -100,7 +100,7 @@ class GameWidget(Tab):
         self.cancelMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Cancel Match"))
         self.commitRoundButton.setText(QtGui.QApplication.translate("GameWidget","Commit &Round"))
         self.matchGroup.setTitle(QtGui.QApplication.translate("GameWidget","Match"))
-        if (self.engine.getDealingPolicy() != self.engine.NoDealer): 
+        if self.engine.getDealingPolicy() not in (self.engine.NoDealer,self.engine.StarterDealer): 
             self.dealerPolicyCheckBox.setText(QtGui.QApplication.translate("GameWidget","Winner deals"))
         self.updateGameStatusLabel()
     
