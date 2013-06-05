@@ -147,7 +147,7 @@ class NewGameWidget(Tab):
     
     def addPlayer(self,player):
         player = str(player)
-        self.playersAvailableList.model().appendRow(QtGui.QStandardItem(player))
+        self.playersAvailableList.model().addPlayer(player)
         
     def showEvent(self, event):
         if hasattr(self, 'gameStatsBox') and hasattr(self,'gameComboBox') and self.gameComboBox.currentText(): 
@@ -173,11 +173,8 @@ class PlayerList(QtGui.QListView):
         e.setDropAction(QtCore.Qt.MoveAction)
         QtGui.QListView.dropEvent(self,e)
             
-    def addItem(self,text):
-        item = QtGui.QStandardItem(text)
-        item.setEditable(False)
-        self.model().appendRow(item)
-            
+    def addItem(self,text): self.model().addPlayer(text)
+
     def mouseDoubleClickEvent(self,event):
         item = self.indexAt(event.pos())
         try: player = str(item.data().toString())
@@ -188,6 +185,7 @@ class PlayerList(QtGui.QListView):
     
     def openMenu(self,position):
         item = self.indexAt(position)
+        if item.row()<0: return
         try: player = str(item.data().toString())
         except AttributeError: player = str(item.data())
         if player:
@@ -200,7 +198,9 @@ class PlayerList(QtGui.QListView):
             menu.addAction(favouriteAction)
             action = menu.exec_(self.mapToGlobal(position))
             if action == favouriteAction:
+                isfav = not isfav
                 db.setPlayerFavourite(player,isfav)
+                self.model().addIcon(self.model().itemFromIndex(item),isfav)
         
 
 class PlayerListModel(QtGui.QStandardItemModel):
@@ -221,8 +221,8 @@ class PlayerListModel(QtGui.QStandardItemModel):
             except AttributeError:
                 text = str(data_items[0][QtCore.Qt.DisplayRole])
 
-            self.appendRow(QtGui.QStandardItem(text))
-
+#            self.appendRow(QtGui.QStandardItem(text))
+            self.addPlayer(text,row)
             return True
         else:
             return QtGui.QStandardItemModel.dropMimeData(self, data, action, row, column, parent)
@@ -245,6 +245,21 @@ class PlayerListModel(QtGui.QStandardItemModel):
                 item[QtCore.Qt.ItemDataRole(key)] = value
             data.append(item)
         return data
+    
+    def addPlayer(self,player,row=None):
+        item = QtGui.QStandardItem(player)
+        item.setEditable(False)
+        item.setDropEnabled(False)
+        self.addIcon(item,db.isPlayerFavourite(player))
+        if row is not None and row>=0:
+            self.insertRow(row,item)
+        else:        
+            self.appendRow(item)
+        
+    def addIcon(self,item,isfav):
+        if isfav: icon = QtGui.QIcon('icons/fav.png')
+        else: icon = QtGui.QIcon('icons/player.png')
+        item.setIcon(icon)
 
     def retrievePlayers(self):
         players = list()
