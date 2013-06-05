@@ -192,9 +192,9 @@ class PlayerList(QtGui.QListView):
             menu = QtGui.QMenu()
             isfav =  db.isPlayerFavourite(player)
             if isfav:
-                favouriteAction = QtGui.QAction(QtGui.QApplication.translate("PlayerList","Unset Favourite"), self)
+                favouriteAction = QtGui.QAction(QtGui.QIcon('icons/player.png'),QtGui.QApplication.translate("PlayerList","Unset Favourite"), self)
             else:
-                favouriteAction = QtGui.QAction(QtGui.QApplication.translate("PlayerList","Set Favourite"), self)
+                favouriteAction = QtGui.QAction( QtGui.QIcon('icons/fav.png'),QtGui.QApplication.translate("PlayerList","Set Favourite"), self)
             menu.addAction(favouriteAction)
             action = menu.exec_(self.mapToGlobal(position))
             if action == favouriteAction:
@@ -250,6 +250,9 @@ class PlayerListModel(QtGui.QStandardItemModel):
         item = QtGui.QStandardItem(player)
         item.setEditable(False)
         item.setDropEnabled(False)
+        font = item.font()
+        font.setPixelSize(14)
+        item.setFont(font)
         self.addIcon(item,db.isPlayerFavourite(player))
         if row is not None and row>=0:
             self.insertRow(row,item)
