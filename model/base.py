@@ -33,6 +33,8 @@ class GenericMatch(object):
         self.totalScores = dict()
         self.idMatch = -1
         self.state = self.CANCELLED
+        self.dealer = None
+        self.dealingp = 0
         
     def resumeMatch(self,idMatch):
         if self.start is not None: return False
@@ -77,6 +79,18 @@ class GenericMatch(object):
     def updateWinner(self):
         self.computeWinner()
         if self.winner: self.flushState(self.FINISHED)
+        
+    def getDealer(self): return self.dealer
+
+    def setDealer(self,player):
+        if player not in self.players: return
+        self.dealer = player
+
+    def getDealingPolicy(self): return self.dealingp
+        
+    def setDealingPolicy(self,policy):
+        if not policy in [0,1,2,3]: return
+        self.dealingp = policy
     
     def cancel(self):
         if not self.isCancelled() and not self.winner:
@@ -222,17 +236,6 @@ class GenericRoundMatch(GenericMatch):
         
     def getRounds(self): return self.rounds
 
-    def getDealer(self): return self.dealer
-
-    def setDealer(self,player):
-        if player not in self.players: return
-        self.dealer = player
-
-    def getDealingPolicy(self): return self.dealingp
-        
-    def setDealingPolicy(self,policy):
-        if not policy in [0,1,2]: return
-        self.dealingp = policy
  
     # To be implemented in subclasses
     def playerAddRound(self,player,rnd): pass
@@ -306,6 +309,14 @@ class GenericEntryMatch(GenericMatch):
             entry = self.createEntry(int(row['idRound']))
             entry.addInfo(str(row['nick']), int(row['score']))
             self.entries.append(entry) 
+        
+        cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='Dealer';".format(idMatch))
+        row = cur.fetchone()
+        if row: self.dealer = str(row['value'])
+
+        cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='DealingPolicy';".format(idMatch))
+        row = cur.fetchone()
+        if row: self.dealingp = int(row['value'])
             
         cur = db.execute("SELECT idRound,nick,key,value FROM RoundStatistics WHERE idMatch ={} ORDER BY idRound,nick,key,value;".format(idMatch))
         
@@ -337,6 +348,9 @@ class GenericEntryMatch(GenericMatch):
         super(GenericEntryMatch,self).flushToDB()
         for entry in self.getEntries():
             db.execute("INSERT OR REPLACE INTO Round (idMatch,nick,idRound,score) VALUES ({},'{}',{},{});".format(self.idMatch,str(entry.getPlayer()),entry.getNumEntry(),entry.getScore()))
+        
+        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'Dealer','{}');".format(self.idMatch,self.getDealer()))
+        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'DealingPolicy','{}');".format(self.idMatch,self.getDealingPolicy()))
 
     def addEntry(self,entry):
         self.entries.append(entry)

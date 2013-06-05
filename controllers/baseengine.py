@@ -12,6 +12,7 @@ class GameEngine(object):
     NoDealer = 0
     RRDealer = 1
     WinnerDealer = 2
+    StarterDealer = 3
     
     def __init__(self):
         self.players = dict()
@@ -80,8 +81,15 @@ class GameEngine(object):
     def getGameSeconds(self): return self.match.getGameSeconds()
     
     def cancelMatch(self): self.match.cancel()
+        
+    def getDealingPolicy(self): return self.match.getDealingPolicy()
     
-    def getDealingPolicy(self): return self.NoDealer
+    def setDealingPolicy(self, policy): self.match.setDealingPolicy(policy)
+    
+    def getDealer(self): return self.match.getDealer()
+    
+    def updateDealer(self): pass
+    
 
 class RoundGameEngine(GameEngine):
     
@@ -108,12 +116,6 @@ class RoundGameEngine(GameEngine):
     def getRounds(self): return self.match.getRounds()
 
     def getNumRound(self): return len(self.match.rounds)+1
-        
-    def setDealingPolicy(self, policy): self.match.setDealingPolicy(policy)
-        
-    def getDealingPolicy(self): return self.match.getDealingPolicy()
-    
-    def getDealer(self): return self.match.getDealer()
     
     def updateDealer(self):
         if self.match.getWinner(): return
@@ -238,6 +240,11 @@ class EntryGameEngine(GameEngine):
     def __init__(self):
         super(EntryGameEngine,self).__init__()
         self.nentry = 1
+        
+    def begin(self):
+        super(EntryGameEngine,self).begin()
+        if self.getDealingPolicy() != self.NoDealer :
+            self.match.setDealer(random.choice(self.porder))
         
     def resume(self,idMatch):
         if not super(EntryGameEngine,self).resume(idMatch): return False

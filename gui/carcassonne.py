@@ -51,8 +51,11 @@ class CarcassonneWidget(GameWidget):
         self.playersLayout = QtGui.QVBoxLayout(self.playerGroup)
         self.playersLayout.addStretch()
         self.playerGroupBox = {}
+        dealer = self.engine.getDealer()
         for player in self.players:
             pw = CarcassonnePlayerWidget(player,self.playerGroup)
+            
+            if self.engine.getNumEntry() == 1 and player == dealer: pw.setStarter()
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
@@ -90,7 +93,6 @@ class CarcassonneWidget(GameWidget):
         player = self.gameInput.getPlayer()
         kind = self.gameInput.getKind()
         score = self.gameInput.getScore()
-        
         if player == "":
             QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("CarcassonneWidget","You must select a player")))
             return
@@ -111,8 +113,10 @@ class CarcassonneWidget(GameWidget):
         if ret == QtGui.QMessageBox.No: return
 
         # Once here, we can commit round
+        self.playerGroupBox[self.engine.getDealer()].unsetStarter()
         self.engine.addEntry(player,score, {'kind': kind})
         self.engine.printStats()
+        
         self.updatePanel()
 
     
@@ -283,13 +287,18 @@ class CarcassonnePlayerWidget(QtGui.QWidget):
 #        self.scoreLCD.setMaximumHeight(100)
         self.nameLabel = QtGui.QLabel(self)
         self.nameLabel.setText(self.player)
-        self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: black}")
+        self.unsetStarter()
         self.mainLayout.addWidget(self.nameLabel)
         
     def updateDisplay(self,points):
         if points >= 1000: self.scoreLCD.setNumDigits(4)
         self.scoreLCD.display(points)
         
+    def setStarter(self):
+        self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: red }")
+        
+    def unsetStarter(self):
+        self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: black }")
             
 class CarcassonneEntriesDetail(QtGui.QGroupBox):
     
