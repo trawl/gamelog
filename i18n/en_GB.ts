@@ -4,17 +4,17 @@
 <context>
     <name>CarcassonneEntriesDetail</name>
     <message>
-        <location filename="gui/carcassonne.py" line="319"/>
+        <location filename="gui/carcassonne.py" line="334"/>
         <source>Details</source>
         <translation>Details</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="320"/>
+        <location filename="gui/carcassonne.py" line="335"/>
         <source>Table</source>
         <translation>Table</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="321"/>
+        <location filename="gui/carcassonne.py" line="336"/>
         <source>Plot</source>
         <translation>Plot</translation>
     </message>
@@ -22,80 +22,80 @@
 <context>
     <name>CarcassonneInputWidget</name>
     <message>
-        <location filename="gui/carcassonne.py" line="198"/>
+        <location filename="gui/carcassonne.py" line="208"/>
         <source>Select Player</source>
         <translation>Select Player</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="199"/>
+        <location filename="gui/carcassonne.py" line="209"/>
         <source>Select kind of entry</source>
         <translation>Kind of entry</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="200"/>
+        <location filename="gui/carcassonne.py" line="210"/>
         <source>Points</source>
         <translation>Points</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="166"/>
+        <location filename="gui/carcassonne.py" line="137"/>
         <source>City</source>
-        <translation type="obsolete">City</translation>
+        <translation>City</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="167"/>
+        <location filename="gui/carcassonne.py" line="138"/>
         <source>Road</source>
-        <translation type="obsolete">Road</translation>
+        <translation>Road</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="168"/>
+        <location filename="gui/carcassonne.py" line="139"/>
         <source>Cloister</source>
-        <translation type="obsolete">Cloister</translation>
+        <translation>Cloister</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="169"/>
+        <location filename="gui/carcassonne.py" line="140"/>
         <source>Field</source>
-        <translation type="obsolete">Field</translation>
+        <translation>Field</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="170"/>
+        <location filename="gui/carcassonne.py" line="141"/>
         <source>Goods</source>
-        <translation type="obsolete">Goods</translation>
+        <translation>Goods</translation>
     </message>
 </context>
 <context>
     <name>CarcassonneWidget</name>
     <message>
-        <location filename="gui/carcassonne.py" line="66"/>
+        <location filename="gui/carcassonne.py" line="69"/>
         <source>Score</source>
         <translation>Score</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="95"/>
+        <location filename="gui/carcassonne.py" line="97"/>
         <source>You must select a player</source>
         <translation>You must select a player</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="99"/>
+        <location filename="gui/carcassonne.py" line="101"/>
         <source>You must select a kind</source>
         <translation>You must select a kind of entry</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="107"/>
+        <location filename="gui/carcassonne.py" line="109"/>
         <source>Commit Entry</source>
         <translation>Commit Entry</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="107"/>
+        <location filename="gui/carcassonne.py" line="109"/>
         <source>Are you sure you want to commit this entry?</source>
         <translation>Are you sure you want to commit this entry?</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="120"/>
+        <location filename="gui/carcassonne.py" line="124"/>
         <source>Finish game</source>
         <translation>Finish game</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="120"/>
+        <location filename="gui/carcassonne.py" line="124"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>Are you sure you want to finish the current game?</translation>
     </message>
@@ -161,7 +161,7 @@
         <translation>No winner selected</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="103"/>
+        <location filename="gui/carcassonne.py" line="105"/>
         <source>{0} score is not valid</source>
         <translation>{0} score is not valid</translation>
     </message>
@@ -186,7 +186,7 @@
         <translation>Do you want to save the current {} match?</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="65"/>
+        <location filename="gui/carcassonne.py" line="68"/>
         <source>&amp;Finish Game</source>
         <translation>&amp;Finish Game</translation>
     </message>
@@ -295,22 +295,22 @@
         <translation>players</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="131"/>
+        <location filename="gui/newgame.py" line="135"/>
         <source>At least 2 players are needed to play</source>
         <translation>At least 2 players are needed to play</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="140"/>
+        <location filename="gui/newgame.py" line="144"/>
         <source>New Match</source>
         <translation>New Match</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="133"/>
+        <location filename="gui/newgame.py" line="137"/>
         <source>The maximum number of players is</source>
         <translation>The maximum number of players is</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="140"/>
+        <location filename="gui/newgame.py" line="144"/>
         <source>Widget not implemented</source>
         <translation>Widget not implemented</translation>
     </message>
@@ -489,12 +489,12 @@
 <context>
     <name>PlayerList</name>
     <message>
-        <location filename="gui/newgame.py" line="197"/>
+        <location filename="gui/newgame.py" line="199"/>
         <source>Unset Favourite</source>
         <translation>Unset Favourite</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="199"/>
+        <location filename="gui/newgame.py" line="201"/>
         <source>Set Favourite</source>
         <translation>Set favourite</translation>
     </message>
@@ -525,72 +525,72 @@
 <context>
     <name>QuickStatsBox</name>
     <message>
-        <location filename="gui/newgame.py" line="375"/>
+        <location filename="gui/newgame.py" line="397"/>
         <source>Last winner</source>
         <translation>Last winner</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="376"/>
+        <location filename="gui/newgame.py" line="398"/>
         <source>Statistics</source>
         <translation>Statistics</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="377"/>
+        <location filename="gui/newgame.py" line="399"/>
         <source>Matches</source>
         <translation>Matches</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="389"/>
+        <location filename="gui/newgame.py" line="411"/>
         <source>No statistics found</source>
         <translation>No statistics found</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="397"/>
+        <location filename="gui/newgame.py" line="419"/>
         <source>Longest</source>
         <translation>Longest</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="397"/>
+        <location filename="gui/newgame.py" line="419"/>
         <source>Shortest</source>
         <translation>Shortest</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="401"/>
+        <location filename="gui/newgame.py" line="423"/>
         <source>Average</source>
         <translation>Average</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="401"/>
+        <location filename="gui/newgame.py" line="423"/>
         <source>Played</source>
         <translation>Played</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="401"/>
+        <location filename="gui/newgame.py" line="423"/>
         <source>Victories</source>
         <translation>Victories</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="401"/>
+        <location filename="gui/newgame.py" line="423"/>
         <source>Ratio (%)</source>
         <translation>Ratio(%)</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="401"/>
+        <location filename="gui/newgame.py" line="423"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="401"/>
+        <location filename="gui/newgame.py" line="423"/>
         <source>Highest</source>
         <translation>Highest</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="401"/>
+        <location filename="gui/newgame.py" line="423"/>
         <source>Lowest</source>
         <translation>Lowest</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="378"/>
+        <location filename="gui/newgame.py" line="400"/>
         <source>Players</source>
         <translation>Players</translation>
     </message>
@@ -675,42 +675,42 @@
 <context>
     <name>ResumeBox</name>
     <message>
-        <location filename="gui/newgame.py" line="287"/>
+        <location filename="gui/newgame.py" line="309"/>
         <source>Saved Games</source>
         <translation>Saved Games</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="288"/>
+        <location filename="gui/newgame.py" line="310"/>
         <source>Resume</source>
         <translation>Resume</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="290"/>
+        <location filename="gui/newgame.py" line="312"/>
         <source>No matches to be resumed</source>
         <translation>No matches to be resumed</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="289"/>
+        <location filename="gui/newgame.py" line="311"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="337"/>
+        <location filename="gui/newgame.py" line="359"/>
         <source>Cancel Saved Game</source>
         <translation>Cancel Saved Game</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="337"/>
+        <location filename="gui/newgame.py" line="359"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>Are you sure you want to cancel saved game?</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="312"/>
+        <location filename="gui/newgame.py" line="334"/>
         <source>Saved on {}. Time played: {}</source>
         <translation>Saved on {}. Time played: {}</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="317"/>
+        <location filename="gui/newgame.py" line="339"/>
         <source>Players: {}</source>
         <translation>Players: {}</translation>
     </message>
