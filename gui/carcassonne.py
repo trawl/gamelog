@@ -134,6 +134,12 @@ class CarcassonneInputWidget(QtGui.QWidget):
     
     enterPressed = QtCore.Signal()
     
+    QtGui.QApplication.translate("CarcassonneInputWidget",'City')
+    QtGui.QApplication.translate("CarcassonneInputWidget",'Road')
+    QtGui.QApplication.translate("CarcassonneInputWidget",'Cloister')
+    QtGui.QApplication.translate("CarcassonneInputWidget",'Field')
+    QtGui.QApplication.translate("CarcassonneInputWidget",'Goods')
+    
     def __init__(self,engine, bgcolors, parent=None):
         super(CarcassonneInputWidget,self).__init__(parent)
         self.engine = engine
