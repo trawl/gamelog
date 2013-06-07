@@ -101,7 +101,7 @@ class NewGameWidget(Tab):
         self.inGameLabel = QtGui.QLabel(self.playersGroupBox)
         self.playersGroupBoxLayout.addWidget(self.inGameLabel)
         self.playersInGameList = PlayerList(self.playersGroupBox)
-        self.playersInGameList.setMaximumHeight(130)
+        self.playersInGameList.setMaximumHeight(150)
         self.playersGroupBoxLayout.addWidget(self.playersInGameList)
         
         self.playersButtonsLayout = QtGui.QHBoxLayout()
@@ -114,10 +114,10 @@ class NewGameWidget(Tab):
         self.availablePlayersLabel = QtGui.QLabel(self.playersGroupBox)
         self.playersGroupBoxLayout.addWidget(self.availablePlayersLabel)
         self.playersAvailableList = PlayerList(self.playersGroupBox)
-        self.playersAvailableList.setMaximumHeight(150)
+#        self.playersAvailableList.setMaximumHeight(150)
         self.playersGroupBoxLayout.addWidget(self.playersAvailableList)
         
-        self.playersGroupBoxLayout.addStretch()
+#        self.playersGroupBoxLayout.addStretch()
         
         self.playersAvailableList.doubleclickeditem.connect(self.playersInGameList.addItem)
         self.playersInGameList.doubleclickeditem.connect(self.playersAvailableList.addItem)
