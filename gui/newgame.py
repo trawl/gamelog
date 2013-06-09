@@ -55,6 +55,7 @@ class NewGameWidget(Tab):
         self.newPlayerButton.setText(QtGui.QApplication.translate("NewGameWidget","New Player"))
         self.inGameLabel.setText(QtGui.QApplication.translate("NewGameWidget","Selected Players"))
         self.startGameButton.setText(QtGui.QApplication.translate("NewGameWidget","Play!"))
+        self.resumeGroup.retranslateUI()
         self.gameStatsBox.retranslateUI()
         
     def populateGamesGroupBox(self):
