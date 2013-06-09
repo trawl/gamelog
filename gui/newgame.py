@@ -51,9 +51,9 @@ class NewGameWidget(Tab):
         self.gameGroupBox.setTitle(QtGui.QApplication.translate("NewGameWidget","Games"))
         self.updateGameInfo()
         self.playersGroupBox.setTitle(QtGui.QApplication.translate("NewGameWidget","Players"))
-        self.availablePlayersLabel.setText(QtGui.QApplication.translate("NewGameWidget","Available Players"))
+        self.availablePlayersGroup.setTitle(QtGui.QApplication.translate("NewGameWidget","Available Players"))
         self.newPlayerButton.setText(QtGui.QApplication.translate("NewGameWidget","New Player"))
-        self.inGameLabel.setText(QtGui.QApplication.translate("NewGameWidget","Selected Players"))
+        self.inGameGroup.setTitle(QtGui.QApplication.translate("NewGameWidget","Selected Players"))
         self.startGameButton.setText(QtGui.QApplication.translate("NewGameWidget","Play!"))
         self.resumeGroup.retranslateUI()
         self.gameStatsBox.retranslateUI()
@@ -71,7 +71,7 @@ class NewGameWidget(Tab):
 #        self.gameGroupBoxLayout.addWidget(self.gameRulesBrowser)
         self.gameStatsBox = QuickStatsBox(self)
         self.gameGroupBoxLayout.addWidget(self.gameStatsBox)
-        self.gameGroupBoxLayout.addStretch()
+#        self.gameGroupBoxLayout.addStretch()
 
         self.games = db.getAvailableGames()
         for game in sorted(self.games.keys()):
@@ -99,11 +99,12 @@ class NewGameWidget(Tab):
         self.startGameButton.clicked.connect(self.createNewGame)
         self.playersGroupBoxLayout.addWidget(self.startGameButton)
         
-        self.inGameLabel = QtGui.QLabel(self.playersGroupBox)
-        self.playersGroupBoxLayout.addWidget(self.inGameLabel)
-        self.playersInGameList = PlayerList(self.playersGroupBox)
-        self.playersInGameList.setMaximumHeight(150)
-        self.playersGroupBoxLayout.addWidget(self.playersInGameList)
+        self.inGameGroup = QtGui.QGroupBox(self)
+        self.playersGroupBoxLayout.addWidget(self.inGameGroup)
+        self.inGameGroupLayout = QtGui.QVBoxLayout(self.inGameGroup)
+        self.playersInGameList = PlayerList(self.inGameGroup)
+        self.inGameGroup.setMaximumHeight(150)
+        self.inGameGroupLayout.addWidget(self.playersInGameList)
         
         self.playersButtonsLayout = QtGui.QHBoxLayout()
         self.playersGroupBoxLayout.addLayout(self.playersButtonsLayout)
@@ -112,13 +113,14 @@ class NewGameWidget(Tab):
         self.newPlayerButton.clicked.connect(self.createNewPlayer)
         self.playersButtonsLayout.addWidget( self.newPlayerButton)
 
-        self.availablePlayersLabel = QtGui.QLabel(self.playersGroupBox)
-        self.playersGroupBoxLayout.addWidget(self.availablePlayersLabel)
+
+        self.availablePlayersGroup = QtGui.QGroupBox(self)
+        self.playersGroupBoxLayout.addWidget(self.availablePlayersGroup)
+        self.availablePlayersGroupLayout = QtGui.QVBoxLayout(self.availablePlayersGroup)
         self.playersAvailableList = PlayerList(self.playersGroupBox)
-#        self.playersAvailableList.setMaximumHeight(150)
-        self.playersGroupBoxLayout.addWidget(self.playersAvailableList)
+        self.availablePlayersGroupLayout.addWidget(self.playersAvailableList)
         
-#        self.playersGroupBoxLayout.addStretch()
+#        self.availablePlayersGroupLayout.addStretch()
         
         self.playersAvailableList.doubleclickeditem.connect(self.playersInGameList.addItem)
         self.playersInGameList.doubleclickeditem.connect(self.playersAvailableList.addItem)
@@ -392,6 +394,7 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.widgetLayout.addWidget(self.playerStatsTitleLabel)
         self.playerStatsTable = QtGui.QTableWidget(self)
         self.widgetLayout.addWidget(self.playerStatsTable)
+        self.widgetLayout.addStretch()
         self.retranslateUI()
         
     def retranslateUI(self):
