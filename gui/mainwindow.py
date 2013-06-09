@@ -48,6 +48,12 @@ class MainWindow(QtGui.QMainWindow):
         self.exitAction.triggered.connect(self.close)
         self.fileMenu.addAction(self.exitAction)
         
+        self.helpMenu = self.menubar.addMenu('')
+        self.aboutAction = QtGui.QAction(self)
+        self.aboutAction.triggered.connect(self.about)
+        self.helpMenu.addAction(self.aboutAction)
+        
+        
         #Central stuff!!
         self.centralwidget = QtGui.QWidget(None)
         self.setCentralWidget(self.centralwidget)
@@ -76,6 +82,9 @@ class MainWindow(QtGui.QMainWindow):
         self.exitAction.setText(QtGui.QApplication.translate("MainWindow",'&Quit'))
         self.exitAction.setShortcut(QtGui.QApplication.translate("MainWindow",'Ctrl+Q'))
         self.exitAction.setStatusTip(QtGui.QApplication.translate("MainWindow",'Quit GameLog'))
+        
+        self.helpMenu.setTitle(QtGui.QApplication.translate("MainWindow",'&Help'))
+        self.aboutAction.setText(QtGui.QApplication.translate("MainWindow",'&About Gamelog...'))
         
         self.newGameTab.retranslateUI()
         for game in self.openedGames: game.retranslateUI()
@@ -140,6 +149,10 @@ class MainWindow(QtGui.QMainWindow):
         lc.newQM.connect(self.loadTranslator)
         lc.exec_()
         
+    def about(self):
+        self.abdialog = AboutDialog(self)
+        self.abdialog.exec_()
+        
     def loadTranslator(self,tfile):
         translator = QtCore.QTranslator()
         ret = translator.load(tfile)
@@ -156,4 +169,29 @@ class MainWindow(QtGui.QMainWindow):
         return super(MainWindow,self).changeEvent(event)
         
         
-        
+class AboutDialog(QtGui.QDialog):
+    
+    def __init__(self,parent=None):
+        super(AboutDialog,self).__init__(parent)
+        self.setFixedSize(QtCore.QSize(250,100))
+        self.setWindowTitle(QtGui.QApplication.translate("AboutDialog",'About Gamelog'))
+        self.widgetlayout = QtGui.QHBoxLayout(self)
+        self.iconlabel = QtGui.QLabel(self)
+        self.iconlabel.setMaximumSize(75, 75)
+        self.iconlabel.setScaledContents(True)
+        self.iconlabel.setPixmap(QtGui.QPixmap('icons/cards.png'))
+        self.widgetlayout.addWidget(self.iconlabel)
+        self.contentlayout = QtGui.QVBoxLayout()
+        self.widgetlayout.addLayout(self.contentlayout)
+        self.title = QtGui.QLabel("Gamelog")
+        self.title.setStyleSheet("QLabel{font-size:18px; font-weight:bold}")
+        self.title.setAlignment(QtCore.Qt.AlignCenter)
+        self.contentlayout.addWidget(self.title)
+        self.content = QtGui.QLabel(QtGui.QApplication.translate("AboutDialog",'Gamelog is a utility to keep track of the score in board games.'))
+        self.content.setWordWrap(True)
+        self.content.setAlignment(QtCore.Qt.AlignTop)
+        self.contentlayout.addWidget(self.content)    
+        self.content = QtGui.QLabel('Xavi Abellan 2012')
+        self.content.setWordWrap(True)
+        self.content.setAlignment(QtCore.Qt.AlignCenter)
+        self.contentlayout.addWidget(self.content) 
