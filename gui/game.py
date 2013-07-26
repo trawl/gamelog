@@ -270,6 +270,8 @@ class ScoreSpinBox(QtGui.QSpinBox):
 
 class GameRoundPlot(QtGui.QWidget):
 
+    plotCompleted = QtCore.Signal()
+
     def __init__(self,engine,parent=None):
         super(GameRoundPlot, self).__init__(parent)
         self.plotlibavailable = 'matplotlib' in sys.modules
@@ -300,6 +302,7 @@ class GameRoundPlot(QtGui.QWidget):
         self.widgetLayout.addWidget(self.canvas)
         self.plotinited = True
         self.initPlotThread.terminate()
+        self.plotCompleted.emit()
             
     def retranslateUI(self):
         if not self.isPlotLibAvailable():
