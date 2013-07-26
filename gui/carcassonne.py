@@ -43,6 +43,7 @@ class CarcassonneWidget(GameWidget):
         self.detailGroup = CarcassonneEntriesDetail(self.engine, self.bgcolors,self)
         self.detailGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout.addWidget(self.detailGroup,1,0)        
+        self.detailGroup.plot.plotCompleted.connect(self.gameInput.setFocus)
         
         self.playerGroup = QtGui.QGroupBox(self)
         self.widgetLayout.addWidget(self.playerGroup,1,1)
@@ -62,6 +63,7 @@ class CarcassonneWidget(GameWidget):
  
         self.playersLayout.addStretch()
         self.retranslateUI()
+        self.gameInput.setFocus()
         
     def retranslateUI(self):
         super(CarcassonneWidget,self).retranslateUI()
@@ -326,6 +328,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         
         self.plot = CarcassonneEntriesPlot(self.engine,self)
+        
         self.container.addItem(self.plot,'')
         
 #        self.retranslateUI()
