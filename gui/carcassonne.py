@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from gui.gamestats import QuickStatsBox
 
 try:
     from PySide import QtCore,QtGui
@@ -319,9 +320,11 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
     def initUI(self):
         self.widgetLayout = QtGui.QVBoxLayout(self)
         self.container = QtGui.QToolBox(self)
+        self.container = QtGui.QTabWidget(self)
         self.widgetLayout.addWidget(self.container)
         self.table = QtGui.QTableWidget(0,len(self.engine.getPlayers()))
-        self.container.addItem(self.table,'')
+#        self.container.addItem(self.table,'')
+        self.container.addTab(self.table,'')
 #        self.widgetLayout.addWidget(self.table)
         players = self.engine.getListPlayers()
         self.table.setHorizontalHeaderLabels(players)
@@ -329,15 +332,35 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         
         self.plot = CarcassonneEntriesPlot(self.engine,self)
         
-        self.container.addItem(self.plot,'')
+#        self.container.addItem(self.plot,'')
+        self.container.addTab(self.plot,'')
+
+#        self.statsArea = QtGui.QScrollArea(self)
+        self.statsFrame = QtGui.QWidget(self)
+#        self.statsArea.setWidget(self.statsFrame)
+        
+#        self.container.addItem(self.statsFrame,'')
+        self.container.addTab(self.statsFrame,'')
+
+        self.statsLayout= QtGui.QVBoxLayout(self.statsFrame)
+        self.gamestats = QuickStatsBox(self.statsFrame)
+        self.statsLayout.addWidget(self.gamestats)
+        self.gamestats.update(self.engine.getGame())
+
         
 #        self.retranslateUI()
         
     def retranslateUI(self):
         self.setTitle(QtGui.QApplication.translate("CarcassonneEntriesDetail",'Details'))
-        self.container.setItemText(0,QtGui.QApplication.translate("CarcassonneEntriesDetail","Table"))
-        self.container.setItemText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
+        self.container.setTabText(0,QtGui.QApplication.translate("CarcassonneEntriesDetail","Table"))
+        self.container.setTabText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
+        self.container.setTabText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
+#        self.container.setItemText(0,QtGui.QApplication.translate("CarcassonneEntriesDetail","Table"))
+#        self.container.setItemText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
+#        self.container.setItemText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
+        self.gamestats.retranslateUI()
         self.recomputeTable()
+        
 
 
     def updatePlot(self):
