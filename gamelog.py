@@ -20,6 +20,7 @@ if __name__ == "__main__":
     translator = QtCore.QTranslator()
     translator.load('i18n/es_ES')
     app = QtGui.QApplication(sys.argv)
+#    app.setStyle(QtGui.QStyleFactory.create("plastique"))
     app.installTranslator(translator)
     mw = MainWindow()
     sys.exit(app.exec_())

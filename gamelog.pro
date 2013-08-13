@@ -7,7 +7,8 @@ SOURCES = \
 	gui/remigio.py \
 	gui/ratuki.py \
 	gui/carcassonne.py \
-	gui/languagechooser.py
+	gui/languagechooser.py \ 
+	gui/gamestats.py
    
 TRANSLATIONS = \
 	i18n/es_ES.ts \
