@@ -3,6 +3,7 @@
 
 # Python generic imports
 import sys
+import os
 import ctypes
 
 try:
@@ -16,6 +17,12 @@ from gui.mainwindow import MainWindow
 if __name__ == "__main__":
     try: ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('GameLog')
     except: pass
+        #Disable output on windows when using pythonw to avoid filling buffers
+    if os.path.basename((sys.executable)) == "pythonw.exe":
+        f=open(os.devnull,'w')
+        sys.stdout=f
+        sys.stderr=f    
+    
     #Default to Spanish language    
     translator = QtCore.QTranslator()
     translator.load('i18n/es_ES')
