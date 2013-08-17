@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from gui.gamestats import QuickStatsBox
 
+# from gui.gamestatsfactory import QSBoxFactory
 try:
     from PySide import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
@@ -15,6 +15,7 @@ except ImportError: pass
 
 from controllers.carcassonneengine import CarcassonneEngine
 from gui.game import GameWidget,ScoreSpinBox,GameRoundPlot
+from gui.gamestats import QuickStatsBox,StatsTable
 
 
 class CarcassonneWidget(GameWidget):
@@ -343,9 +344,9 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         self.container.addTab(self.statsFrame,'')
 
         self.statsLayout= QtGui.QVBoxLayout(self.statsFrame)
-        self.gamestats = QuickStatsBox(self.statsFrame)
+        self.gamestats = CarcassonneQSBox(self.statsFrame)
         self.statsLayout.addWidget(self.gamestats)
-        self.gamestats.update(self.engine.getGame())
+
 
         
 #        self.retranslateUI()
@@ -441,3 +442,41 @@ class CarcassonneEntriesPlot(GameRoundPlot):
 #        legend.legendPatch.set_alpha(0.0)
         try: self.canvas.draw()
         except RuntimeError: pass
+
+
+class CarcassonneQSBox(QuickStatsBox):
+    
+    def __init__(self,parent = None):
+        self.game = "Carcassonne"
+        super(CarcassonneQSBox,self).__init__(self.game,parent)
+          
+    def initUI(self):
+        self.recordsLabel = QtGui.QLabel(self)
+        self.recordsTable = StatsTable(self)
+        super(CarcassonneQSBox, self).initUI()
+        index=self.widgetLayout.count()-1
+        self.widgetLayout.addWidget(self.recordsLabel)
+        self.widgetLayout.addWidget(self.recordsTable)
+        self.widgetLayout.insertWidget(index,self.recordsLabel)
+        self.widgetLayout.insertWidget(index+1,self.recordsTable)
+#         self.addStretch()
+
+        
+    def retranslateUI(self):
+        self.recordsLabel.setText(QtGui.QApplication.translate("CarcassonneQSBox","Records"))
+        super(CarcassonneQSBox, self).retranslateUI()
+        
+    def update(self,game=None):
+        super(CarcassonneQSBox, self).update(game)
+        singlerecordstats = self.stats.getSingleKindRecords()
+
+        if not singlerecordstats: self.recordsLabel.hide()
+        else: self.recordsLabel.show()
+            
+        for row in singlerecordstats:
+            row['record'] = str(QtGui.QApplication.translate("CarcassonneInputWidget",row['record']))
+
+        keys = ['points','nick']
+        headers = [QtGui.QApplication.translate("CarcassonneQSBox",'Record'),QtGui.QApplication.translate("CarcassonneQSBox",'Player')]
+        self.updateTable(self.recordsTable, singlerecordstats, keys, 'record', headers)
+        

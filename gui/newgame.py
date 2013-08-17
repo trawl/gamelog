@@ -15,7 +15,7 @@ from controllers.resumeengine import ResumeEngine
 from gui.tab import Tab
 from gui.gamewidgetfactory import GameWidgetFactory
 from gui.newplayer import NewPlayerDialog
-from gui.gamestats import QuickStatsBox
+from gui.gamestatsfactory import QSBoxFactory
 
 
 class NewGameWidget(Tab):
@@ -69,8 +69,7 @@ class NewGameWidget(Tab):
         self.gameGroupBoxLayout.addWidget(self.gameDescriptionLabel)
         self.gameGroupBoxLayout.addWidget(self.resumeGroup)
 #        self.gameGroupBoxLayout.addWidget(self.gameRulesBrowser)
-        self.gameStatsBox = QuickStatsBox(self)
-        self.gameGroupBoxLayout.addWidget(self.gameStatsBox)
+
 #        self.gameGroupBoxLayout.addStretch()
 
         self.games = db.getAvailableGames()
@@ -79,6 +78,10 @@ class NewGameWidget(Tab):
         lastgame = db.getLastGame()
         if lastgame:    
             self.gameComboBox.setCurrentIndex(self.gameComboBox.findText(lastgame))
+            
+        self.gameStatsBox = QSBoxFactory.createQSBox(self.gameComboBox.currentText(),self)
+        self.gameGroupBoxLayout.addWidget(self.gameStatsBox)            
+            
         self.updateGameInfo()
         
         self.gameComboBox.currentIndexChanged.connect(self.updateGameInfo)
@@ -88,7 +91,13 @@ class NewGameWidget(Tab):
         description = "2 - {} {}\n\n{}".format(self.games[game]['maxPlayers'],QtGui.QApplication.translate("NewGameWidget",'players'),self.games[game]['description'])
         self.gameDescriptionLabel.setText(description)
 #        self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
-        self.gameStatsBox.update(game)
+#         self.gameStatsBox.update(game)
+        self.gameGroupBoxLayout.removeWidget(self.gameStatsBox)
+        self.gameStatsBox.deleteLater()
+        
+        self.gameStatsBox = QSBoxFactory.createQSBox(game,self)
+        self.gameGroupBoxLayout.addWidget(self.gameStatsBox)  
+        
         self.resumeGroup.changeGame(game)
 
     def populatePlayersGroupBox(self):

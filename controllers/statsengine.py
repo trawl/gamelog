@@ -4,7 +4,7 @@
 from controllers.db import db,GameLogDB
 #import datetime
 
-class StatsEngine:
+class StatsEngine(object):
     
     _lastwinnerquery="""
     SELECT Game_name AS game, 
