@@ -8,17 +8,15 @@ except ImportError as error:
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
 
-import datetime
-from controllers.db import db
-from controllers.statsengine import StatsEngine
+from controllers.enginefactory import StatsEngineFactory
 from gui.tab import Tab
 
 class QuickStatsBox(QtGui.QGroupBox):
     
-    def __init__(self,parent):
+    def __init__(self,game,parent):
         super(QuickStatsBox, self).__init__(parent)
-        self.stats = StatsEngine()
-        self.game = None
+        self.stats = StatsEngineFactory.getStatsEngine(game)
+        self.game = game
         self.initUI()
 
         sp = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
@@ -28,16 +26,19 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.widgetLayout = QtGui.QVBoxLayout(self)
         self.gameStatsLabel = QtGui.QLabel(self)
         self.widgetLayout.addWidget(self.gameStatsLabel)
+        
         self.matchStatsTitleLabel = QtGui.QLabel(self)
         self.widgetLayout.addWidget(self.matchStatsTitleLabel)
-
-        self.matchStatsTable = QtGui.QTableWidget(self)
-        self.matchStatsTable.setMinimumSize(0, 10)
+        self.matchStatsTable = StatsTable(self)
         self.widgetLayout.addWidget(self.matchStatsTable)
+        
         self.playerStatsTitleLabel = QtGui.QLabel(self)
         self.widgetLayout.addWidget(self.playerStatsTitleLabel)
-        self.playerStatsTable = QtGui.QTableWidget(self)
+        self.playerStatsTable = StatsTable(self)
         self.widgetLayout.addWidget(self.playerStatsTable)
+        
+#         self.stretch = QtGui.QSpacerItem(0,0)
+#         self.widgetLayout.addSpacerItem(self.stretch)
         self.widgetLayout.addStretch()
         self.retranslateUI()
         
@@ -71,19 +72,18 @@ class QuickStatsBox(QtGui.QGroupBox):
         keys = ['played','victories','victoryp','maxscore','minscore','avgscore','sumscore']
         headers = [QtGui.QApplication.translate("QuickStatsBox",'Played'),QtGui.QApplication.translate("QuickStatsBox",'Victories'),QtGui.QApplication.translate("QuickStatsBox",'Ratio (%)'),QtGui.QApplication.translate("QuickStatsBox",'Highest'),QtGui.QApplication.translate("QuickStatsBox",'Lowest'),QtGui.QApplication.translate("QuickStatsBox",'Average'),QtGui.QApplication.translate("QuickStatsBox",'Total')]
         self.updateTable(self.playerStatsTable, playerstats, keys, 'nick', headers)
-                            
+                           
 
     def updateTable(self,table,contents,keyorder,rowheaderkey,cheaders):
         table.clear()
         if len(contents) and len(contents[0])>1:
             table.show()
-            displayed = contents[:4]
+            displayed = contents#[:10]
             table.setRowCount(len(displayed))
-            table.setColumnCount(len(displayed[0])-2)
+            table.setColumnCount(len(cheaders))
             table.setHorizontalHeaderLabels(cheaders)
-            table.setVerticalHeaderLabels([ str(row[rowheaderkey]) for row in displayed])
+            table.setVerticalHeaderLabels([ unicode(row[rowheaderkey]) for row in displayed])
             
-
             for i, row in enumerate(displayed):
                 keys = keyorder
                 for j, key in enumerate(keys):
@@ -92,12 +92,19 @@ class QuickStatsBox(QtGui.QGroupBox):
                     item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
                     table.setItem(i,j,item)
                     
-            table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-            size = table.rowHeight(0)*(len(displayed)+1)+(len(displayed)+1)*2
-            table.setFixedHeight(size)      
+            table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)            
+            table.setMaximumHeight(table.sizeHint().height())
+
         else:
             table.hide()
 
+class StatsTable(QtGui.QTableWidget):
+    def sizeHint(self):
+        s = QtCore.QSize()
+        s.setWidth(super(StatsTable,self).sizeHint().height())
+        s.setHeight(self.rowHeight(0)*(self.rowCount()+1)+2)
+        return s
+        
 
 class GameStatsWidget(Tab):
     def __init__(self, parent=None):

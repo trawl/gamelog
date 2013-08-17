@@ -4,7 +4,8 @@
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
 from controllers.remigioengine import RemigioEngine
 from controllers.ratukiengine import RatukiEngine
-from controllers.carcassonneengine import CarcassonneEngine
+from controllers.carcassonneengine import CarcassonneEngine,CarcassonneStatsEngine
+from controllers.statsengine import StatsEngine
 
 class GameEngineFactory:
     
@@ -17,3 +18,10 @@ class GameEngineFactory:
         if gname == 'Carcassonne': return CarcassonneEngine()
         
         return None
+ 
+ 
+class StatsEngineFactory:    
+    @classmethod
+    def getStatsEngine(cls,gname):
+        if gname == 'Carcassonne': return CarcassonneStatsEngine()
+        return StatsEngine()
