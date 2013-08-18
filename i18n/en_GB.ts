@@ -581,52 +581,52 @@
         <translation>Matches</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="61"/>
+        <location filename="gui/gamestats.py" line="62"/>
         <source>No statistics found</source>
         <translation>No statistics found</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="69"/>
+        <location filename="gui/gamestats.py" line="70"/>
         <source>Longest</source>
         <translation>Longest</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="69"/>
+        <location filename="gui/gamestats.py" line="70"/>
         <source>Shortest</source>
         <translation>Shortest</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Average</source>
         <translation>Average</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Played</source>
         <translation>Played</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Victories</source>
         <translation>Victories</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Ratio (%)</source>
         <translation>Ratio(%)</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Highest</source>
         <translation>Highest</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Lowest</source>
         <translation>Lowest</translation>
     </message>
@@ -638,7 +638,12 @@
     <message>
         <location filename="gui/gamestats.py" line="54"/>
         <source>Statistics of</source>
-        <translation>Statistics of</translation>
+        <translation type="obsolete">Statistics of</translation>
+    </message>
+    <message>
+        <location filename="gui/gamestats.py" line="54"/>
+        <source>Statistics</source>
+        <translation>Statistics</translation>
     </message>
 </context>
 <context>

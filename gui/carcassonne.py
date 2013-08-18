@@ -190,7 +190,7 @@ class CarcassonneInputWidget(QtGui.QWidget):
         self.scoreSpinBox.setRange(0,300)
 
         for i, kind in enumerate(self.engine.getEntryKinds(),1):
-            b = QtGui.QRadioButton(unicode('{}. {}'.format(i,QtGui.QApplication.translate("CarcassonneInputWidget",kind))),self.kindGroup)
+            b = QtGui.QRadioButton(unicode(unicode('{}. {}').format(i,QtGui.QApplication.translate("CarcassonneInputWidget",unicode(kind)))),self.kindGroup)
             self.kindGroupLayout.addWidget(b,(i-1)%2,(i-1)/2)
             self.kindButtonGroup.addButton(b,i)
             b.clicked.connect(self.scoreSpinBox.setFocus)
@@ -213,8 +213,8 @@ class CarcassonneInputWidget(QtGui.QWidget):
         self.kindGroup.setTitle(QtGui.QApplication.translate("CarcassonneInputWidget","Select kind of entry"))
         self.scoreGroup.setTitle(QtGui.QApplication.translate("CarcassonneInputWidget","Points"))
         for i, kind in enumerate(self.engine.getEntryKinds(),1):
-            self.kindButtons[i].setText(unicode('{}. {}'.format(i,QtGui.QApplication.translate("CarcassonneInputWidget",kind))))
-        
+            text=unicode(QtGui.QApplication.translate("CarcassonneInputWidget",kind))
+            self.kindButtons[i].setText(unicode('{}. {}').format(i,text))
         
     def placeCommitButton(self,cb):
         self.scoreGroupLayout.addWidget(cb)
@@ -474,7 +474,9 @@ class CarcassonneQSBox(QuickStatsBox):
         else: self.recordsLabel.show()
             
         for row in singlerecordstats:
-            row['record'] = str(QtGui.QApplication.translate("CarcassonneInputWidget",row['record']))
+#             row['record'] = str(QtGui.QApplication.translate("CarcassonneInputWidget",row['record']))
+            row['record'] = unicode(QtGui.QApplication.translate("CarcassonneInputWidget",unicode(row['record'])))
+
 
         keys = ['points','nick']
         headers = [QtGui.QApplication.translate("CarcassonneQSBox",'Record'),QtGui.QApplication.translate("CarcassonneQSBox",'Player')]

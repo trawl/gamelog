@@ -44,14 +44,14 @@ class QuickStatsBox(QtGui.QGroupBox):
         
     def retranslateUI(self):
         self.gameStatsText = unicode(QtGui.QApplication.translate("QuickStatsBox",'Last winner') + ": {} ({})")
-        self.setTitle(unicode("{} {}".format(QtGui.QApplication.translate("QuickStatsBox",'Statistics of'),self.game)))
+#         self.setTitle(QtGui.QApplication.translate("QuickStatsBox",'Statistics'))
         self.matchStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Matches"))
         self.playerStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Players"))
         self.update()
         
     def update(self,game=None):
         if game is not None: self.game = game
-        self.setTitle(unicode("{} {}".format(QtGui.QApplication.translate("QuickStatsBox",'Statistics of'),self.game)))
+#         self.setTitle(QtGui.QApplication.translate("QuickStatsBox",'Statistics'))
         self.stats.update()
         gamestats = self.stats.getGameStats(self.game)
         matchstats = self.stats.getMatchGameStats(self.game)

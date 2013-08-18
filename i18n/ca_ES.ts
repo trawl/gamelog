@@ -52,7 +52,7 @@
     <message>
         <location filename="gui/carcassonne.py" line="214"/>
         <source>Points</source>
-        <translation>Points</translation>
+        <translation>Punts</translation>
     </message>
     <message>
         <location filename="gui/carcassonne.py" line="141"/>
@@ -581,52 +581,52 @@
         <translation>Partides</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="61"/>
+        <location filename="gui/gamestats.py" line="62"/>
         <source>No statistics found</source>
         <translation>No s&apos;han trobat estadístiques</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="69"/>
+        <location filename="gui/gamestats.py" line="70"/>
         <source>Longest</source>
         <translation>Més llarga</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="69"/>
+        <location filename="gui/gamestats.py" line="70"/>
         <source>Shortest</source>
         <translation>Més curta</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Average</source>
         <translation>Mitja</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Played</source>
         <translation>Jugades</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Victories</source>
         <translation>Guanyades</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Ratio (%)</source>
         <translation>Ratio (%)</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Highest</source>
         <translation>Més Alta</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="74"/>
         <source>Lowest</source>
         <translation>Més Baixa</translation>
     </message>
@@ -638,7 +638,12 @@
     <message>
         <location filename="gui/gamestats.py" line="54"/>
         <source>Statistics of</source>
-        <translation>Estadístiques de</translation>
+        <translation type="obsolete">Estadístiques de</translation>
+    </message>
+    <message>
+        <location filename="gui/gamestats.py" line="54"/>
+        <source>Statistics</source>
+        <translation>Estadístiques</translation>
     </message>
 </context>
 <context>
