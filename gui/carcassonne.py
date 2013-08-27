@@ -86,7 +86,9 @@ class CarcassonneWidget(GameWidget):
             score = self.engine.getScoreFromPlayer(player)
             self.playerGroupBox[player].updateDisplay(score)
 
-        if self.engine.getWinner(): self.finishButton.setDisabled(True)
+        if self.engine.getWinner(): 
+            self.finishButton.setDisabled(True)
+            self.detailGroup.updateStats()
         else: self.detailGroup.updateRound()
         
     def checkPlayerScore(self,player,score): 
@@ -404,6 +406,9 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         self.insertEntry(e)
         self.plot.updatePlot()
         
+    def updateStats(self):
+        self.gamestats.update()
+        
         
 class CarcassonneEntriesPlot(GameRoundPlot):
     
@@ -475,10 +480,9 @@ class CarcassonneQSBox(QuickStatsBox):
             
         for row in singlerecordstats:
 #             row['record'] = str(QtGui.QApplication.translate("CarcassonneInputWidget",row['record']))
-            row['record'] = unicode(QtGui.QApplication.translate("CarcassonneInputWidget",unicode(row['record'])))
+            row['record'] = unicode(QtGui.QApplication.translate("CarcassonneInputWidget",str(row['record'])))
 
-
-        keys = ['points','nick']
-        headers = [QtGui.QApplication.translate("CarcassonneQSBox",'Record'),QtGui.QApplication.translate("CarcassonneQSBox",'Player')]
+        keys = ['points','nick','date']
+        headers = [QtGui.QApplication.translate("CarcassonneQSBox",'Record'),QtGui.QApplication.translate("CarcassonneQSBox",'Player'),QtGui.QApplication.translate("CarcassonneQSBox",'Date')]
         self.updateTable(self.recordsTable, singlerecordstats, keys, 'record', headers)
         

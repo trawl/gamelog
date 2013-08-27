@@ -26,18 +26,18 @@ if __name__ == "__main__":
 class CarcassonneStatsEngine(StatsEngine):
     
     _singleKindRecordQuery="""
-    SELECT value as "record" ,MAX(Round.score) as "points",RoundStatistics.nick 
-    FROM Match,RoundStatistics,Round 
+    SELECT value as "record" ,Round.score as "points",RoundStatistics.nick, DATE(Match.finished) as date
+    FROM Match,Round,RoundStatistics
     WHERE Match.idMatch = Round.idMatch 
         and Round.idMatch = RoundStatistics.idMatch 
         and Round.idRound = RoundStatistics.idRound 
         and Round.nick = RoundStatistics.nick  
         and Game_name="Carcassonne" 
         and key="kind" 
-        and  value in ("City","Road","Field") 
+        and value = '{}' 
         and Round.score>0 
-    group by value 
-    order by value
+    order by points desc
+    limit 1
     """
     
     def __init__(self):
@@ -46,7 +46,9 @@ class CarcassonneStatsEngine(StatsEngine):
         
     def update(self):
         super(CarcassonneStatsEngine, self).update()
-        self.singleKindRecord = db.queryDict(self._singleKindRecordQuery)
+        self.singleKindRecord = []
+        for kind in ("City","Road","Field"):
+            self.singleKindRecord += db.queryDict(self._singleKindRecordQuery.format(kind))
     
     def getSingleKindRecords(self):
         return self.singleKindRecord
