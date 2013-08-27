@@ -52,7 +52,7 @@ class StatsEngine(object):
     FROM Match JOIN MatchPlayer USING (idMatch)
     WHERE state=1
     GROUP BY game, nick
-    ORDER BY game, victoryp DESC;
+    ORDER BY game, victoryp DESC, played DESC;
     """      
     
     def __init__(self):
