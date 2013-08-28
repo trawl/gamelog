@@ -122,7 +122,6 @@ class CarcassonneWidget(GameWidget):
         self.engine.printStats()
         
         self.updatePanel()
-
     
     def finish(self): 
         ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("CarcassonneWidget",'Finish game'),
@@ -137,6 +136,7 @@ class CarcassonneWidget(GameWidget):
         for player in self.players:
             score = self.engine.getScoreFromPlayer(player)
             self.playerGroupBox[player].updateDisplay(score)
+
         
 class CarcassonneInputWidget(QtGui.QWidget):
     
@@ -313,6 +313,7 @@ class CarcassonnePlayerWidget(QtGui.QWidget):
         
     def unsetStarter(self):
         self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: black }")
+
             
 class CarcassonneEntriesDetail(QtGui.QGroupBox):
     
@@ -333,18 +334,14 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         self.tableContainer = QtGui.QFrame(self)
         self.tableContainerLayout = QtGui.QVBoxLayout(self.tableContainer)
         self.container.addTab(self.tableContainer,'')
+        
         self.table = QtGui.QTableWidget(0,len(self.engine.getPlayers()))
         self.tableContainerLayout.addWidget(self.table,stretch=1)
-    
-#        self.container.addItem(self.table,'')
-#        self.widgetLayout.addWidget(self.table)
         players = self.engine.getListPlayers()
         self.table.setHorizontalHeaderLabels(players)
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        
         self.table.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.table.customContextMenuRequested.connect(self.openTableMenu)
-
         
         self.totalsLabel = QtGui.QLabel("",self)
         self.tableContainerLayout.addWidget(self.totalsLabel)
@@ -353,30 +350,19 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         self.tableContainerLayout.addWidget(self.totals)
         self.totals.setHorizontalHeaderLabels(players)
         self.totals.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-#        self.totals.setVerticalHeaderLabels([unicode(QtGui.QApplication.translate("CarcassonneInputWidget",str(kind))) for kind in self.engine.getEntryKinds()])
         self.totals.setMaximumHeight(self.totals.sizeHint().height())
         
-        
-        self.plot = CarcassonneEntriesPlot(self.engine,self)
-        
+        self.plot = CarcassonneEntriesPlot(self.engine,self)      
 #        self.container.addItem(self.plot,'')
         self.container.addTab(self.plot,'')
 
-#        self.statsArea = QtGui.QScrollArea(self)
         self.statsFrame = QtGui.QWidget(self)
-#        self.statsArea.setWidget(self.statsFrame)
-        
-#        self.container.addItem(self.statsFrame,'')
         self.container.addTab(self.statsFrame,'')
 
         self.statsLayout= QtGui.QVBoxLayout(self.statsFrame)
         self.gamestats = CarcassonneQSBox(self.statsFrame)
         self.statsLayout.addWidget(self.gamestats)
 
-
-        
-#        self.retranslateUI()
-        
     def retranslateUI(self):
         self.setTitle(QtGui.QApplication.translate("CarcassonneEntriesDetail",'Details'))
         self.container.setTabText(0,QtGui.QApplication.translate("CarcassonneEntriesDetail","Table"))
@@ -389,8 +375,6 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
 #        self.container.setItemText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
         self.gamestats.retranslateUI()
         self.recomputeTable()
-        
-
 
     def updatePlot(self):
         self.plot.updatePlot()
@@ -439,10 +423,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
             item.setText(text)
             self.table.setItem(i,j,item)
         self.table.scrollToBottom()
-        
-        self.recomputeMaxTotals()
-
-                
+        self.recomputeMaxTotals()            
         
     def updateRound(self):
         entries = self.engine.getEntries()
@@ -492,6 +473,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
             self.entriesChanged.emit()
             self.table.removeRow(item.row())
             self.plot.updatePlot()
+       
         
 class CarcassonneEntriesPlot(GameRoundPlot):
     
@@ -547,8 +529,6 @@ class CarcassonneQSBox(QuickStatsBox):
         self.widgetLayout.addWidget(self.recordsTable)
         self.widgetLayout.insertWidget(index,self.recordsLabel)
         self.widgetLayout.insertWidget(index+1,self.recordsTable)
-#         self.addStretch()
-
         
     def retranslateUI(self):
         self.recordsLabel.setText(QtGui.QApplication.translate("CarcassonneQSBox","Records"))
@@ -562,7 +542,6 @@ class CarcassonneQSBox(QuickStatsBox):
         else: self.recordsLabel.show()
             
         for row in singlerecordstats:
-#             row['record'] = str(QtGui.QApplication.translate("CarcassonneInputWidget",row['record']))
             row['record'] = unicode(QtGui.QApplication.translate("CarcassonneInputWidget",str(row['record'])))
 
         keys = ['points','nick','date']
