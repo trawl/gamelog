@@ -428,6 +428,19 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
             self.table.setItem(i,j,item)
         self.table.scrollToBottom()
         
+        for row in range(len(self.engine.getEntryKinds())):
+            maxvalue = 1
+            for col in range(len(self.engine.getListPlayers())):
+                total = int(self.totals.item(row,col).text())
+                if total>maxvalue:
+                    maxvalue = total
+            for col in range(len(self.engine.getListPlayers())):
+                item = self.totals.item(row,col)
+                font = item.font()
+                font.setBold(int(item.text())==maxvalue)
+                item.setFont(font)
+                
+        
     def updateRound(self):
         entries = self.engine.getEntries()
         if not len(entries): return
