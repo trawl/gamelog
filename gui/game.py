@@ -32,7 +32,7 @@ class GameWidget(Tab):
         self.game = game
         if engine is not None:
             self.engine = engine
-            self.players = self.engine.getPlayers()
+            self.players = self.engine.getListPlayers()
         else:
             self.players = players
             self.createEngine()  
