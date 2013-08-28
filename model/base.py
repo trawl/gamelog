@@ -283,6 +283,8 @@ class GenericEntry(object):
         self.extras = dict()
         
     def getNumEntry(self): return self.numentry
+    
+    def setNumEntry(self,nentry): self.numentry = nentry
         
     def getScore(self): return self.score
     
@@ -371,8 +373,12 @@ class GenericEntryMatch(GenericMatch):
     def deleteEntry(self,nentry):
         try: entry = self.entries[nentry-1]
         except KeyError: return
+        print("Deleting entry {} {}-{}".format(entry.getNumEntry(),entry.getPlayer(),entry.getScore()))
         self.totalScores[entry.getPlayer()] -= entry.getScore()
         del self.entries[nentry-1]
+        for i, entry in enumerate(self.entries,start=1):
+            entry.setNumEntry(i)
+        print(self.entries)
         
     def getEntries(self): return self.entries
     

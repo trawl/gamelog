@@ -56,7 +56,7 @@ class CarcassonneWidget(GameWidget):
         self.playersLayout.addStretch()
         self.playerGroupBox = {}
         dealer = self.engine.getDealer()
-        for player in self.players:
+        for player in self.engine.getListPlayers():
             pw = CarcassonnePlayerWidget(player,self.playerGroup)
             
             if self.engine.getNumEntry() == 1 and player == dealer: pw.setStarter()
@@ -356,15 +356,6 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
 #        self.totals.setVerticalHeaderLabels([unicode(QtGui.QApplication.translate("CarcassonneInputWidget",str(kind))) for kind in self.engine.getEntryKinds()])
         self.totals.setMaximumHeight(self.totals.sizeHint().height())
         
-        for row in range(len(self.engine.getEntryKinds())):
-            background=self.bgcolors[row]
-            for col in range(len(players)):
-                item = QtGui.QTableWidgetItem()
-                item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
-                item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
-                item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
-                item.setText("0")
-                self.totals.setItem(row,col,item)
         
         self.plot = CarcassonneEntriesPlot(self.engine,self)
         
@@ -403,10 +394,23 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
 
     def updatePlot(self):
         self.plot.updatePlot()
+        
+    def resetTotals(self):
+        self.totals.clearContents()
+        for row in range(len(self.engine.getEntryKinds())):
+            background=self.bgcolors[row]
+            for col in range(len(self.engine.getListPlayers())):
+                item = QtGui.QTableWidgetItem()
+                item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
+                item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
+                item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+                item.setText("0")
+                self.totals.setItem(row,col,item)
 
     def recomputeTable(self):
         self.table.clearContents()
         self.table.setRowCount(0)
+        self.resetTotals()
         for r in self.engine.getEntries(): self.insertEntry(r)
         self.updatePlot()
     
@@ -424,7 +428,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
 
             if player == entry.getPlayer():
-                text = "{} ({})".format(entry.getScore(),kind)
+                text = unicode("{} ({})".format(entry.getScore(),kind))
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)
@@ -469,7 +473,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         if nentry<=0 or self.engine.getWinner(): return
         
         menu = QtGui.QMenu()
-        deleteEntryAction = QtGui.QAction(QtGui.QIcon('icons/player.png'),QtGui.QApplication.translate("CarcassonneEntriesDetail","Delete Entry"), self)
+        deleteEntryAction = QtGui.QAction(QtGui.QIcon('icons/delete.png'),QtGui.QApplication.translate("CarcassonneEntriesDetail","Delete Entry"), self)
         menu.addAction(deleteEntryAction)
         action = menu.exec_(self.table.mapToGlobal(position))
         if action == deleteEntryAction:
@@ -481,10 +485,9 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
             kind = entry.getKind()
             player = entry.getPlayer()
             score = entry.getScore()
-            item = self.totals.item(self.engine.getEntryKinds().index(kind),self.engine.getListPlayers().index(player))
-            item.setText(str(int(item.text())-score))       
-            self.recomputeMaxTotals(
-                                    )
+            total = self.totals.item(self.engine.getEntryKinds().index(kind),self.engine.getListPlayers().index(player))
+            total.setText(str(int(total.text())-score))       
+            self.recomputeMaxTotals()
             self.engine.deleteEntry(nentry)
             self.entriesChanged.emit()
             self.table.removeRow(item.row())
