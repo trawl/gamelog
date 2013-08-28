@@ -256,6 +256,15 @@ class EntryGameEngine(GameEngine):
         entry.addInfo(player,score,extras)
         self.match.addEntry(entry)
         self.nentry += 1
+        
+    def editEntry(self,nentry,player,score, extras=None): 
+        entry = self.match.createEntry(self.nentry)
+        entry.addInfo(player,score,extras)
+        self.match.updateEntry(entry)
+    
+    def deleteEntry(self,nentry):
+        self.match.deleteEntry(nentry)
+        self.nentry -= 1
 
     def getEntries(self): return self.match.getEntries()
 

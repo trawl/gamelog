@@ -346,6 +346,10 @@ class GenericEntryMatch(GenericMatch):
            
     def flushToDB(self):
         super(GenericEntryMatch,self).flushToDB()
+        
+        #Remove previous saved game information to make sure we don't leave any leftovers after editing rounds...
+        db.execute("DELETE FROM Round where idMatch={};".format(self.idMatch))
+        db.execute("DELETE FROM RoundStatistics where idMatch={};".format(self.idMatch))
         for entry in self.getEntries():
             db.execute("INSERT OR REPLACE INTO Round (idMatch,nick,idRound,score) VALUES ({},'{}',{},{});".format(self.idMatch,str(entry.getPlayer()),entry.getNumEntry(),entry.getScore()))
         
@@ -356,7 +360,20 @@ class GenericEntryMatch(GenericMatch):
         self.entries.append(entry)
         self.totalScores[entry.getPlayer()] += entry.getScore()
         self.playerAddEntry(entry.getPlayer(),entry)
+        
+    def updateEntry(self,entry):
+        try: oldentry = self.entries[entry.getNumEntry()-1]
+        except KeyError: return
+        self.totalScores[oldentry.getPlayer()] -= oldentry.getScore()
+        self.totalScores[entry.getPlayer()] += entry.getScore()
+        self.entries[entry.getNumEntry()-1] = entry
             
+    def deleteEntry(self,nentry):
+        try: entry = self.entries[nentry-1]
+        except KeyError: return
+        self.totalScores[entry.getPlayer()] -= entry.getScore()
+        del self.entries[nentry-1]
+        
     def getEntries(self): return self.entries
     
     def computeWinner(self):

@@ -17,70 +17,80 @@
 <context>
     <name>CarcassonneEntriesDetail</name>
     <message>
-        <location filename="gui/carcassonne.py" line="382"/>
+        <location filename="gui/carcassonne.py" line="390"/>
         <source>Details</source>
         <translation>Detalls</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="383"/>
+        <location filename="gui/carcassonne.py" line="391"/>
         <source>Table</source>
         <translation>Taula</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="384"/>
+        <location filename="gui/carcassonne.py" line="392"/>
         <source>Plot</source>
         <translation>Gràfic</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="385"/>
+        <location filename="gui/carcassonne.py" line="393"/>
         <source>Statistics</source>
         <translation>Estadístiques</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="386"/>
+        <location filename="gui/carcassonne.py" line="394"/>
         <source>Totals</source>
         <translation>Totals</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassonne.py" line="476"/>
+        <source>Delete Entry</source>
+        <translation>Eliminar Entrada</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassonne.py" line="477"/>
+        <source>Are you sure you want to delete this entry?</source>
+        <translation>Estàs segur que vols eliminar aquesta entrda?</translation>
     </message>
 </context>
 <context>
     <name>CarcassonneInputWidget</name>
     <message>
-        <location filename="gui/carcassonne.py" line="214"/>
+        <location filename="gui/carcassonne.py" line="216"/>
         <source>Select Player</source>
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="215"/>
+        <location filename="gui/carcassonne.py" line="217"/>
         <source>Select kind of entry</source>
         <translation>Tipus d&apos;entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="216"/>
+        <location filename="gui/carcassonne.py" line="218"/>
         <source>Points</source>
         <translation>Punts</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="144"/>
+        <location filename="gui/carcassonne.py" line="146"/>
         <source>City</source>
         <translation>Ciutat</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="145"/>
+        <location filename="gui/carcassonne.py" line="147"/>
         <source>Road</source>
         <translation>Camí</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="146"/>
+        <location filename="gui/carcassonne.py" line="148"/>
         <source>Cloister</source>
         <translation>Monestir</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="147"/>
+        <location filename="gui/carcassonne.py" line="149"/>
         <source>Field</source>
         <translation>Camp</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="149"/>
+        <location filename="gui/carcassonne.py" line="151"/>
         <source>Goods</source>
         <translation>Béns</translation>
     </message>
@@ -88,22 +98,22 @@
 <context>
     <name>CarcassonneQSBox</name>
     <message>
-        <location filename="gui/carcassonne.py" line="500"/>
+        <location filename="gui/carcassonne.py" line="551"/>
         <source>Records</source>
         <translation>Records</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="515"/>
+        <location filename="gui/carcassonne.py" line="566"/>
         <source>Record</source>
         <translation>Record</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="515"/>
+        <location filename="gui/carcassonne.py" line="566"/>
         <source>Player</source>
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="516"/>
+        <location filename="gui/carcassonne.py" line="567"/>
         <source>Date</source>
         <translation>Data</translation>
     </message>
@@ -111,37 +121,37 @@
 <context>
     <name>CarcassonneWidget</name>
     <message>
-        <location filename="gui/carcassonne.py" line="73"/>
+        <location filename="gui/carcassonne.py" line="74"/>
         <source>Score</source>
         <translation>Marcador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="103"/>
+        <location filename="gui/carcassonne.py" line="101"/>
         <source>You must select a player</source>
         <translation>Heu de sel·leccionar un jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="107"/>
+        <location filename="gui/carcassonne.py" line="105"/>
         <source>You must select a kind</source>
         <translation>Heu de sel·leccionar un tipus d&apos;entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="115"/>
+        <location filename="gui/carcassonne.py" line="113"/>
         <source>Commit Entry</source>
         <translation>Confirmar Entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="116"/>
+        <location filename="gui/carcassonne.py" line="114"/>
         <source>Are you sure you want to commit this entry?</source>
         <translation>Estàs segur que vols confirmar aquesta entrda?</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="130"/>
+        <location filename="gui/carcassonne.py" line="128"/>
         <source>Finish game</source>
         <translation>Finalitzar Partida</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="131"/>
+        <location filename="gui/carcassonne.py" line="129"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>Estàs segur de volerfinalitzar la partida actual?</translation>
     </message>
@@ -207,7 +217,7 @@
         <translation>Cal sel·leccionar un guanyador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="111"/>
+        <location filename="gui/carcassonne.py" line="109"/>
         <source>{0} score is not valid</source>
         <translation>La puntuació de {0} no és vàlida</translation>
     </message>
@@ -232,7 +242,7 @@
         <translation>Vols desar la partida de {} actual?</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="72"/>
+        <location filename="gui/carcassonne.py" line="73"/>
         <source>&amp;Finish Game</source>
         <translation>&amp;Finalitzar Partida</translation>
     </message>

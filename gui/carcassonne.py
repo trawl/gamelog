@@ -46,6 +46,7 @@ class CarcassonneWidget(GameWidget):
         self.detailGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout.addWidget(self.detailGroup,1,0)        
         self.detailGroup.plot.plotCompleted.connect(self.gameInput.setFocus)
+        self.detailGroup.entriesChanged.connect(self.updateScores)
         
         self.playerGroup = QtGui.QGroupBox(self)
         self.widgetLayout.addWidget(self.playerGroup,1,1)
@@ -82,10 +83,7 @@ class CarcassonneWidget(GameWidget):
 
     def updatePanel(self):
         super(CarcassonneWidget,self).updatePanel()
-        for player in self.players:
-            score = self.engine.getScoreFromPlayer(player)
-            self.playerGroupBox[player].updateDisplay(score)
-
+        self.updateScores()
         if self.engine.getWinner(): 
             self.finishButton.setDisabled(True)
             self.detailGroup.updateStats()
@@ -135,6 +133,10 @@ class CarcassonneWidget(GameWidget):
         self.engine.finishGame()
         self.updatePanel()
         
+    def updateScores(self):
+        for player in self.players:
+            score = self.engine.getScoreFromPlayer(player)
+            self.playerGroupBox[player].updateDisplay(score)
         
 class CarcassonneInputWidget(QtGui.QWidget):
     
@@ -314,6 +316,8 @@ class CarcassonnePlayerWidget(QtGui.QWidget):
             
 class CarcassonneEntriesDetail(QtGui.QGroupBox):
     
+    entriesChanged = QtCore.Signal()
+    
     def __init__(self, engine, bgcolors,parent=None):
         super(CarcassonneEntriesDetail, self).__init__(parent)
         self.engine = engine
@@ -337,6 +341,10 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         players = self.engine.getListPlayers()
         self.table.setHorizontalHeaderLabels(players)
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        
+        self.table.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.table.customContextMenuRequested.connect(self.openTableMenu)
+
         
         self.totalsLabel = QtGui.QLabel("",self)
         self.tableContainerLayout.addWidget(self.totalsLabel)
@@ -428,17 +436,8 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
             self.table.setItem(i,j,item)
         self.table.scrollToBottom()
         
-        for row in range(len(self.engine.getEntryKinds())):
-            maxvalue = 1
-            for col in range(len(self.engine.getListPlayers())):
-                total = int(self.totals.item(row,col).text())
-                if total>maxvalue:
-                    maxvalue = total
-            for col in range(len(self.engine.getListPlayers())):
-                item = self.totals.item(row,col)
-                font = item.font()
-                font.setBold(int(item.text())==maxvalue)
-                item.setFont(font)
+        self.recomputeMaxTotals()
+
                 
         
     def updateRound(self):
@@ -451,6 +450,45 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
     def updateStats(self):
         self.gamestats.update()
         
+    def recomputeMaxTotals(self):
+        for row in range(len(self.engine.getEntryKinds())):
+            maxvalue = 1
+            for col in range(len(self.engine.getListPlayers())):
+                total = int(self.totals.item(row,col).text())
+                if total>maxvalue:
+                    maxvalue = total
+            for col in range(len(self.engine.getListPlayers())):
+                item = self.totals.item(row,col)
+                font = item.font()
+                font.setBold(int(item.text())==maxvalue)
+                item.setFont(font)
+    
+    def openTableMenu(self,position):
+        item = self.table.indexAt(position)
+        nentry = item.row() + 1
+        if nentry<=0 or self.engine.getWinner(): return
+        
+        menu = QtGui.QMenu()
+        deleteEntryAction = QtGui.QAction(QtGui.QIcon('icons/player.png'),QtGui.QApplication.translate("CarcassonneEntriesDetail","Delete Entry"), self)
+        menu.addAction(deleteEntryAction)
+        action = menu.exec_(self.table.mapToGlobal(position))
+        if action == deleteEntryAction:
+            ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("CarcassonneEntriesDetail",'Delete Entry'),
+            QtGui.QApplication.translate("CarcassonneEntriesDetail","Are you sure you want to delete this entry?"), QtGui.QMessageBox.Yes | 
+            QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
+            if ret == QtGui.QMessageBox.No: return
+            entry = self.engine.getEntries()[nentry-1]
+            kind = entry.getKind()
+            player = entry.getPlayer()
+            score = entry.getScore()
+            item = self.totals.item(self.engine.getEntryKinds().index(kind),self.engine.getListPlayers().index(player))
+            item.setText(str(int(item.text())-score))       
+            self.recomputeMaxTotals(
+                                    )
+            self.engine.deleteEntry(nentry)
+            self.entriesChanged.emit()
+            self.table.removeRow(item.row())
+            self.plot.updatePlot()
         
 class CarcassonneEntriesPlot(GameRoundPlot):
     
