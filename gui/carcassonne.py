@@ -428,7 +428,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
 
             if player == entry.getPlayer():
-                text = unicode("{} ({})".format(entry.getScore(),kind))
+                text = unicode(unicode("{} ({})").format(entry.getScore(),kind))
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)
