@@ -17,65 +17,70 @@
 <context>
     <name>CarcassonneEntriesDetail</name>
     <message>
-        <location filename="gui/carcassonne.py" line="355"/>
+        <location filename="gui/carcassonne.py" line="382"/>
         <source>Details</source>
         <translation>Detalles</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="356"/>
+        <location filename="gui/carcassonne.py" line="383"/>
         <source>Table</source>
         <translation>Tabla</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="357"/>
+        <location filename="gui/carcassonne.py" line="384"/>
         <source>Plot</source>
         <translation>Gráfico</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="358"/>
+        <location filename="gui/carcassonne.py" line="385"/>
         <source>Statistics</source>
         <translation>Estadísticas</translation>
+    </message>
+    <message>
+        <location filename="gui/carcassonne.py" line="386"/>
+        <source>Totals</source>
+        <translation>Totales</translation>
     </message>
 </context>
 <context>
     <name>CarcassonneInputWidget</name>
     <message>
-        <location filename="gui/carcassonne.py" line="212"/>
+        <location filename="gui/carcassonne.py" line="214"/>
         <source>Select Player</source>
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="213"/>
+        <location filename="gui/carcassonne.py" line="215"/>
         <source>Select kind of entry</source>
         <translation>Tipo de entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="214"/>
+        <location filename="gui/carcassonne.py" line="216"/>
         <source>Points</source>
         <translation>Puntos</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="142"/>
+        <location filename="gui/carcassonne.py" line="144"/>
         <source>City</source>
         <translation>Ciudad</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="143"/>
+        <location filename="gui/carcassonne.py" line="145"/>
         <source>Road</source>
         <translation>Camino</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="144"/>
+        <location filename="gui/carcassonne.py" line="146"/>
         <source>Cloister</source>
         <translation>Monasterio</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="145"/>
+        <location filename="gui/carcassonne.py" line="147"/>
         <source>Field</source>
         <translation>Campo</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="147"/>
+        <location filename="gui/carcassonne.py" line="149"/>
         <source>Goods</source>
         <translation>Bienes</translation>
     </message>
@@ -83,22 +88,22 @@
 <context>
     <name>CarcassonneQSBox</name>
     <message>
-        <location filename="gui/carcassonne.py" line="466"/>
+        <location filename="gui/carcassonne.py" line="500"/>
         <source>Records</source>
         <translation>Records</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="481"/>
+        <location filename="gui/carcassonne.py" line="515"/>
         <source>Record</source>
         <translation>Records</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="481"/>
+        <location filename="gui/carcassonne.py" line="515"/>
         <source>Player</source>
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="482"/>
+        <location filename="gui/carcassonne.py" line="516"/>
         <source>Date</source>
         <translation>Fecha</translation>
     </message>
@@ -111,32 +116,32 @@
         <translation>Marcador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="101"/>
+        <location filename="gui/carcassonne.py" line="103"/>
         <source>You must select a player</source>
         <translation>Debe seleccionar un jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="105"/>
+        <location filename="gui/carcassonne.py" line="107"/>
         <source>You must select a kind</source>
         <translation>Debe seleccionar un tipo de entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="113"/>
+        <location filename="gui/carcassonne.py" line="115"/>
         <source>Commit Entry</source>
         <translation>Confirmar Entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="114"/>
+        <location filename="gui/carcassonne.py" line="116"/>
         <source>Are you sure you want to commit this entry?</source>
         <translation>¿Está seguro de que quiere confirmar esta entrada?</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="128"/>
+        <location filename="gui/carcassonne.py" line="130"/>
         <source>Finish game</source>
         <translation>Finalizar Partida</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="129"/>
+        <location filename="gui/carcassonne.py" line="131"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>¿Estás seguro que quieres finalizar la partida actual?</translation>
     </message>
@@ -202,7 +207,7 @@
         <translation>No se ha seleccionado ningún ganador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="109"/>
+        <location filename="gui/carcassonne.py" line="111"/>
         <source>{0} score is not valid</source>
         <translation>La puntación de {0} no es válida</translation>
     </message>

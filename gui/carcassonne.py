@@ -322,16 +322,41 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
 
     def initUI(self):
         self.widgetLayout = QtGui.QVBoxLayout(self)
-        self.container = QtGui.QToolBox(self)
+#        self.container = QtGui.QToolBox(self)
         self.container = QtGui.QTabWidget(self)
         self.widgetLayout.addWidget(self.container)
+        
+        self.tableContainer = QtGui.QFrame(self)
+        self.tableContainerLayout = QtGui.QVBoxLayout(self.tableContainer)
+        self.container.addTab(self.tableContainer,'')
         self.table = QtGui.QTableWidget(0,len(self.engine.getPlayers()))
+        self.tableContainerLayout.addWidget(self.table,stretch=1)
+    
 #        self.container.addItem(self.table,'')
-        self.container.addTab(self.table,'')
 #        self.widgetLayout.addWidget(self.table)
         players = self.engine.getListPlayers()
         self.table.setHorizontalHeaderLabels(players)
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        
+        self.totalsLabel = QtGui.QLabel("",self)
+        self.tableContainerLayout.addWidget(self.totalsLabel)
+        
+        self.totals = StatsTable(len(self.engine.getEntryKinds()),len(self.engine.getPlayers()))
+        self.tableContainerLayout.addWidget(self.totals)
+        self.totals.setHorizontalHeaderLabels(players)
+        self.totals.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+#        self.totals.setVerticalHeaderLabels([unicode(QtGui.QApplication.translate("CarcassonneInputWidget",str(kind))) for kind in self.engine.getEntryKinds()])
+        self.totals.setMaximumHeight(self.totals.sizeHint().height())
+        
+        for row in range(len(self.engine.getEntryKinds())):
+            background=self.bgcolors[row]
+            for col in range(len(players)):
+                item = QtGui.QTableWidgetItem()
+                item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
+                item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
+                item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+                item.setText("0")
+                self.totals.setItem(row,col,item)
         
         self.plot = CarcassonneEntriesPlot(self.engine,self)
         
@@ -358,6 +383,8 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         self.container.setTabText(0,QtGui.QApplication.translate("CarcassonneEntriesDetail","Table"))
         self.container.setTabText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
         self.container.setTabText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
+        self.totalsLabel.setText(QtGui.QApplication.translate("CarcassonneEntriesDetail","Totals"))
+        self.totals.setVerticalHeaderLabels([unicode(QtGui.QApplication.translate("CarcassonneInputWidget",str(kind))) for kind in self.engine.getEntryKinds()])
 #        self.container.setItemText(0,QtGui.QApplication.translate("CarcassonneEntriesDetail","Table"))
 #        self.container.setItemText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
 #        self.container.setItemText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
@@ -392,7 +419,9 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
                 text = "{} ({})".format(entry.getScore(),kind)
                 font = item.font()
                 font.setBold(True)
-                item.setFont(font)       
+                item.setFont(font)
+                totalItem = self.totals.item(kinds.index(entry.getKind()),j)
+                totalItem.setText(str(int(totalItem.text())+entry.getScore()))       
             else:
                 text = ""
             item.setText(text)
