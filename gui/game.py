@@ -108,7 +108,7 @@ class GameWidget(Tab):
         self.gameStatusLabel.setStyleSheet("QLabel { font-size: 16px; font-weight:bold; color: red;}")    
         winner = self.engine.getWinner()
         if winner:
-            self.gameStatusLabel.setText(unicode(QtGui.QApplication.translate("GameWidget","{} won this match!")).format(winner))
+            self.gameStatusLabel.setText(QtGui.QApplication.translate("GameWidget","{} won this match!").format(winner))
         elif self.engine.isPaused():
             self.gameStatusLabel.setText(QtGui.QApplication.translate("GameWidget","Game is paused"))
         else:
@@ -117,7 +117,7 @@ class GameWidget(Tab):
     def cancelMatch(self):
         if not self.isFinished():
             ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("GameWidget",'Cancel Match'),
-            unicode(QtGui.QApplication.translate("GameWidget","Do you want to save the current {} match?")).format(self.game), QtGui.QMessageBox.Yes | 
+            QtGui.QApplication.translate("GameWidget","Do you want to save the current {} match?").format(self.game), QtGui.QMessageBox.Yes | 
             QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
             
             if ret == QtGui.QMessageBox.Cancel: return
@@ -147,14 +147,14 @@ class GameWidget(Tab):
         self.engine.openRound(nround)
         winner = self.gameInput.getWinner()
         if not winner:
-            QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("GameWidget","No winner selected")))
+            QtGui.QMessageBox.warning(self,self.game,QtGui.QApplication.translate("GameWidget","No winner selected"))
             return
         else:
             self.engine.setRoundWinner(winner)
         scores = self.gameInput.getScores()
         for player,score in scores.items():
             if not self.checkPlayerScore(player,score):
-                QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("GameWidget","{0} score is not valid")).format(player))
+                QtGui.QMessageBox.warning(self,self.game,QtGui.QApplication.translate("GameWidget","{0} score is not valid").format(player))
                 return
             extras = self.getPlayerExtraInfo(player)
             if extras is None: return
@@ -203,7 +203,7 @@ class GameWidget(Tab):
         else:
             try:
                 nround = self.engine.getNumRound()
-                self.roundGroup.setTitle(unicode(QtGui.QApplication.translate("GameWidget","Round {0}")).format(str(nround)))
+                self.roundGroup.setTitle(QtGui.QApplication.translate("GameWidget","Round {0}").format(str(nround)))
             except AttributeError: pass
             
     def getGameName(self): return self.game        

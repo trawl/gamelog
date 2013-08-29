@@ -91,9 +91,9 @@ class Phase10Widget(GameWidget):
         self.gameInput.retranslateUI()
         self.details.retranslateUI()
         self.plot.retranslateUI()
-        phaseword = unicode(QtGui.QApplication.translate("Phase10Widget","Phase"))
+        phaseword = QtGui.QApplication.translate("Phase10Widget","Phase")
         for number,(phase,label) in enumerate(zip(self.getPhases(),self.phaseLabels),start=1):
-            label.setText(unicode(u"{0} {1:02}: {2}".format(phaseword,number,phase)))
+            label.setText("{0} {1:02}: {2}".format(phaseword,number,phase))
             
 
     
@@ -128,30 +128,30 @@ class Phase10Widget(GameWidget):
     def getPhases(self):
         types = {'s': {
                        '2':[
-                            unicode(QtGui.QApplication.translate("Phase10Widget",'pair')),
-                            unicode(QtGui.QApplication.translate("Phase10Widget",'pairs'))
+                            QtGui.QApplication.translate("Phase10Widget",'pair'),
+                            QtGui.QApplication.translate("Phase10Widget",'pairs')
                             ], 
                        '3':[
-                            unicode(QtGui.QApplication.translate("Phase10Widget",'three of a kind','singular')),
-                            unicode(QtGui.QApplication.translate("Phase10Widget",'three of a kind','plural'))
+                            QtGui.QApplication.translate("Phase10Widget",'three of a kind','singular'),
+                            QtGui.QApplication.translate("Phase10Widget",'three of a kind','plural')
                             ], 
                        '4':[
-                            unicode(QtGui.QApplication.translate("Phase10Widget",'four of a kind','singular')),
-                            unicode(QtGui.QApplication.translate("Phase10Widget",'four of a kind','plural'))
+                            QtGui.QApplication.translate("Phase10Widget",'four of a kind','singular'),
+                            QtGui.QApplication.translate("Phase10Widget",'four of a kind','plural')
                             ],
                        '5':[
-                            unicode(QtGui.QApplication.translate("Phase10Widget",'five of a kind','singular')),
-                            unicode(QtGui.QApplication.translate("Phase10Widget",'five of a kind','plural'))
+                            QtGui.QApplication.translate("Phase10Widget",'five of a kind','singular'),
+                            QtGui.QApplication.translate("Phase10Widget",'five of a kind','plural')
                             ]
                         },
-                 'c': unicode(QtGui.QApplication.translate("Phase10Widget","cards of the same colour")), 
+                 'c': QtGui.QApplication.translate("Phase10Widget","cards of the same colour"), 
                  'r': [
-                       unicode(QtGui.QApplication.translate("Phase10Widget",'run of')),
-                       unicode(QtGui.QApplication.translate("Phase10Widget", 'runs of'))
+                       QtGui.QApplication.translate("Phase10Widget",'run of'),
+                       QtGui.QApplication.translate("Phase10Widget", 'runs of')
                        ], 
                  'cr': [
-                        unicode(QtGui.QApplication.translate("Phase10Widget",'colour run of')),
-                        unicode(QtGui.QApplication.translate("Phase10Widget",'colour runs of'))
+                        QtGui.QApplication.translate("Phase10Widget",'colour run of'),
+                        QtGui.QApplication.translate("Phase10Widget",'colour runs of')
                         ]
                  }
         phases = []
@@ -539,7 +539,7 @@ class Phase10RoundsDetail(QtGui.QWidget):
                 text = str(r.getPlayerScore(player))
             a_phase = r.getPlayerAimedPhase(player)
             c_phase = r.getPlayerCompletedPhase(player)
-            text += unicode(QtGui.QApplication.translate("Phase10PlayerWidget", " (Phase {})")).format(a_phase)
+            text += QtGui.QApplication.translate("Phase10PlayerWidget", " (Phase {})").format(a_phase)
             if c_phase != 0: background = 0xCCFF99 #green
             else: background = 0xFFCC99 #red
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))

@@ -98,15 +98,15 @@ class CarcassonneWidget(GameWidget):
         kind = self.gameInput.getKind()
         score = self.gameInput.getScore()
         if player == "":
-            QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("CarcassonneWidget","You must select a player")))
+            QtGui.QMessageBox.warning(self,self.game,QtGui.QApplication.translate("CarcassonneWidget","You must select a player"))
             return
         
         if kind == "":
-            QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("CarcassonneWidget","You must select a kind")))
+            QtGui.QMessageBox.warning(self,self.game,QtGui.QApplication.translate("CarcassonneWidget","You must select a kind"))
             return
         
         if not self.checkPlayerScore(player,score):
-            QtGui.QMessageBox.warning(self,self.game,unicode(QtGui.QApplication.translate("GameWidget","{0} score is not valid")).format(player))
+            QtGui.QMessageBox.warning(self,self.game,QtGui.QApplication.translate("GameWidget","{0} score is not valid").format(player))
             return
 
         #Everything ok so far, let's confirm
@@ -194,7 +194,7 @@ class CarcassonneInputWidget(QtGui.QWidget):
         self.scoreSpinBox.setRange(0,300)
 
         for i, kind in enumerate(self.engine.getEntryKinds(),1):
-            b = QtGui.QRadioButton(unicode(unicode('{}. {}').format(i,QtGui.QApplication.translate("CarcassonneInputWidget",unicode(kind)))),self.kindGroup)
+            b = QtGui.QRadioButton('{}. {}'.format(i,QtGui.QApplication.translate("CarcassonneInputWidget",kind)),self.kindGroup)
             self.kindGroupLayout.addWidget(b,(i-1)%2,(i-1)/2)
             self.kindButtonGroup.addButton(b,i)
             b.clicked.connect(self.scoreSpinBox.setFocus)
@@ -217,8 +217,8 @@ class CarcassonneInputWidget(QtGui.QWidget):
         self.kindGroup.setTitle(QtGui.QApplication.translate("CarcassonneInputWidget","Select kind of entry"))
         self.scoreGroup.setTitle(QtGui.QApplication.translate("CarcassonneInputWidget","Points"))
         for i, kind in enumerate(self.engine.getEntryKinds(),1):
-            text=unicode(QtGui.QApplication.translate("CarcassonneInputWidget",kind))
-            self.kindButtons[i].setText(unicode('{}. {}').format(i,text))
+            text=QtGui.QApplication.translate("CarcassonneInputWidget",kind)
+            self.kindButtons[i].setText('{}. {}'.format(i,text))
         
     def placeCommitButton(self,cb):
         self.scoreGroupLayout.addWidget(cb)
@@ -369,7 +369,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         self.container.setTabText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
         self.container.setTabText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
         self.totalsLabel.setText(QtGui.QApplication.translate("CarcassonneEntriesDetail","Totals"))
-        self.totals.setVerticalHeaderLabels([unicode(QtGui.QApplication.translate("CarcassonneInputWidget",str(kind))) for kind in self.engine.getEntryKinds()])
+        self.totals.setVerticalHeaderLabels([QtGui.QApplication.translate("CarcassonneInputWidget",kind) for kind in self.engine.getEntryKinds()])
 #        self.container.setItemText(0,QtGui.QApplication.translate("CarcassonneEntriesDetail","Table"))
 #        self.container.setItemText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
 #        self.container.setItemText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
@@ -412,7 +412,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
 
             if player == entry.getPlayer():
-                text = unicode(unicode("{} ({})").format(entry.getScore(),kind))
+                text = "{} ({})".format(entry.getScore(),kind)
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)
@@ -542,7 +542,7 @@ class CarcassonneQSBox(QuickStatsBox):
         else: self.recordsLabel.show()
             
         for row in singlerecordstats:
-            row['record'] = unicode(QtGui.QApplication.translate("CarcassonneInputWidget",str(row['record'])))
+            row['record'] = QtGui.QApplication.translate("CarcassonneInputWidget",row['record'])
 
         keys = ['points','nick','date']
         headers = [QtGui.QApplication.translate("CarcassonneQSBox",'Record'),QtGui.QApplication.translate("CarcassonneQSBox",'Player'),QtGui.QApplication.translate("CarcassonneQSBox",'Date')]

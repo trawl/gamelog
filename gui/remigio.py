@@ -322,7 +322,7 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
             item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
             if player == winner:
-                text = unicode(QtGui.QApplication.translate("RemigioRoundsDetail","Winner ({}x)")).format(closeType)
+                text = QtGui.QApplication.translate("RemigioRoundsDetail","Winner ({}x)").format(closeType)
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)

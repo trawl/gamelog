@@ -146,7 +146,7 @@ class NewGameWidget(Tab):
         if len(players)<2:
             QtGui.QMessageBox.warning(self,QtGui.QApplication.translate("NewGameWidget","New Match"),QtGui.QApplication.translate("NewGameWidget","At least 2 players are needed to play"))
         elif len(players)>maxPlayers:
-            QtGui.QMessageBox.warning(self,QtGui.QApplication.translate("NewGameWidget","New Match"),unicode("{} {}".format(QtGui.QApplication.translate("NewGameWidget",'The maximum number of players is'), maxPlayers)))
+            QtGui.QMessageBox.warning(self,QtGui.QApplication.translate("NewGameWidget","New Match"),"{} {}".format(QtGui.QApplication.translate("NewGameWidget",'The maximum number of players is'), maxPlayers))
         else:
             matchTab = GameWidgetFactory.createGameWidget(game,players,self.parent)
             if matchTab:
@@ -343,12 +343,12 @@ class ResumeBox(QtGui.QGroupBox):
                 hours, remainder = divmod(int(candidate['elapsed']), 3600)
                 minutes, seconds = divmod(remainder,60)
                 strelapsed =  "{0:02}:{1:02}:{2:02}".format(hours,minutes,seconds)
-                msg = unicode(QtGui.QApplication.translate("ResumeBox",'Saved on {}. Time played: {}')).format(strtime,strelapsed)
+                msg = QtGui.QApplication.translate("ResumeBox",'Saved on {}. Time played: {}').format(strtime,strelapsed)
                 item = QtGui.QListWidgetItem(msg,self.savedlist)
                 playerlist =""
                 for player in candidate['players']:
                     playerlist += "\n  " + player
-                item.setToolTip(unicode(QtGui.QApplication.translate("ResumeBox","Players: {}")).format(playerlist))
+                item.setToolTip(QtGui.QApplication.translate("ResumeBox","Players: {}").format(playerlist))
                 self.savedlist.addItem(item)
             self.savedlist.show()
             self.resumebutton.show()

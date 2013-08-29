@@ -17,7 +17,7 @@ class LanguageChooser(QtGui.QDialog):
         self.initUI()
         
     def initUI(self):
-        self.setWindowTitle(unicode(QtGui.QApplication.translate("LanguageChooser","Language")))
+        self.setWindowTitle(QtGui.QApplication.translate("LanguageChooser","Language"))
         self.widgetLayout = QtGui.QVBoxLayout(self)
         self.infoLabel = QtGui.QLabel(self)
         self.infoLabel.setText(QtGui.QApplication.translate("LanguageChooser","Select the desired language:"))
@@ -38,7 +38,7 @@ class LanguageChooser(QtGui.QDialog):
         ci = self.languageListWidget.currentItem()
         if ci:
             selected = ci.text()
-            fname = self.supportedLanguages[unicode(selected)]
+            fname = self.supportedLanguages[selected]
             self.newQM.emit(fname)
         self.close()
 
