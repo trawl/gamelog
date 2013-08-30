@@ -173,7 +173,7 @@ class AboutDialog(QtGui.QDialog):
     
     def __init__(self,parent=None):
         super(AboutDialog,self).__init__(parent)
-        self.setFixedSize(QtCore.QSize(250,100))
+        self.setFixedSize(QtCore.QSize(250,150))
         self.setWindowTitle(QtGui.QApplication.translate("AboutDialog",'About Gamelog'))
         self.widgetlayout = QtGui.QHBoxLayout(self)
         self.iconlabel = QtGui.QLabel(self)
@@ -185,7 +185,7 @@ class AboutDialog(QtGui.QDialog):
         self.widgetlayout.addLayout(self.contentlayout)
         self.title = QtGui.QLabel("Gamelog")
         self.title.setStyleSheet("QLabel{font-size:18px; font-weight:bold}")
-        self.title.setAlignment(QtCore.Qt.AlignCenter)
+        self.title.setAlignment(QtCore.Qt.AlignLeft)
         self.contentlayout.addWidget(self.title)
         self.content = QtGui.QLabel(QtGui.QApplication.translate("AboutDialog",'Gamelog is a utility to keep track of the score in board games.'))
         self.content.setWordWrap(True)
@@ -193,5 +193,5 @@ class AboutDialog(QtGui.QDialog):
         self.contentlayout.addWidget(self.content)    
         self.content = QtGui.QLabel('Xavi Abellan 2012')
         self.content.setWordWrap(True)
-        self.content.setAlignment(QtCore.Qt.AlignCenter)
+        self.content.setAlignment(QtCore.Qt.AlignLeft)
         self.contentlayout.addWidget(self.content) 
