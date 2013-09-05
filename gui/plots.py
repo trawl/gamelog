@@ -114,12 +114,13 @@ class LinePlot(QtGui.QGraphicsItem):
         QtGui.QGraphicsRectItem(self.hmargin,self.vmargin,self.awidth,self.aheight,self)
         self.computeAxesBoundaries()
         self.drawVRefs()
+        self.drawHRefs()
         
     def drawVRefs(self):
         minsep=40
         factor=1
         unitincrement=self.aheight/float(self.yvmax-self.yvmin)
-        ymaxint=int(self.yvmax)
+        ymaxint=self.yvmax
         yminint=int(self.yvmin)
         pstart=self.value2point(self.xvmin, yminint)
         pxstart=pstart.x()
@@ -132,13 +133,39 @@ class LinePlot(QtGui.QGraphicsItem):
             if(unitincrement*provfactor>minsep): factor=provfactor
             else: factor=5*factor
                 
-        print("DRAWVREFS: unitinc is {}/{}".format(unitincrement,minsep))
+        print("DRAWVREFS: unitinc is {}/{}, factor is {}".format(unitincrement,minsep,factor))
         while(py>pyend):
             print("ploting line for value {}".format(yminint))
             colour = QtGui.QColor(0,0,0,200)
             PlotLine(pxstart,py,pxend,py,0.5,colour,self)
             py-=unitincrement*factor
             yminint +=factor
+
+    def drawHRefs(self):
+        minsep=20
+        factor=1
+        unitincrement=self.awidth/float(self.xvmax-self.xvmin)
+        xmaxint=self.xvmax
+        xminint=int(self.xvmin)
+        pstart=self.value2point(xminint, self.yvmin)
+        px=pstart.x()
+        pystart=pstart.y()
+        pend = self.value2point(xmaxint, self.yvmin)
+        pxend = pend.x()
+        pyend = pend.y()-5
+        while (unitincrement*factor<minsep):
+            provfactor=2*factor
+            if(unitincrement*provfactor>minsep): factor=provfactor
+            else: factor=5*factor
+                
+        print("DRAWHREFS: unitinc is {}/{}, factor is {}".format(unitincrement,minsep,factor))
+        while(px<=pxend):
+            print("ploting mark for value {}".format(xminint))
+            colour = QtGui.QColor(0,0,0,255)
+            PlotLine(px,pystart,px,pyend,1.5,colour,self)
+            px+=unitincrement*factor
+            xminint +=factor           
+            
     
     def updatePlot(self):
         self.clearPlot()
