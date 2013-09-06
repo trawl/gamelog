@@ -13,63 +13,187 @@ colours=[QtGui.QColor(237,44,48),
 class PlotView(QtGui.QGraphicsView):
     def __init__(self):
         QtGui.QGraphicsView.__init__(self)
-        
         self.scene = QtGui.QGraphicsScene(self)
         self.scene.setSceneRect(QtCore.QRectF(0, 0, 440, 340))
         self.setScene(self.scene)
-        
         self.setBackgroundBrush(QtGui.QBrush(QtGui.QColor(0,0,0,0)))
-
-        self.lp = LinePlot(None,self.scene)
-#        self.lp.setAxesBoundaries(0, 6, 0, 20)
-        data=[0,1,2,4,8,16]
-        self.lp.plot(data,"test1")
-        data=[0,1,2,3,4,5]
-        self.lp.plot(data,"test2")
-#        self.scene.addItem(self.lp)
+        self.setMinimumSize(100, 100)
+        
+    def addLinePlot(self):
+        self.plot = LinePlot(None,self.scene)
+        
+    def addSeries(self,series,label):
+        self.plot.plot(series,label)
+        
+    def addLimit(self,value):
+        self.plot.addLimitLine(value)
         
     def resizeEvent(self, event):
-#        self.fitInView(self.scene.sceneRect(), mode=QtCore.Qt.KeepAspectRatio)
         self.scene.setSceneRect(QtCore.QRectF(0, 0, event.size().width(), event.size().height()))
-        self.lp.updatePlot()
+        if self.plot: self.plot.updatePlot()
         
         
 class LinePlot(QtGui.QGraphicsItem):
     
     def __init__(self,parent=None, scene=None):
         super(LinePlot,self).__init__(parent, scene)
-        self.hmargin = 20
-        self.vmargin = 20
+        self.hmargin = 40
+        self.vmargin = 40
         self.awidth = 400
         self.aheight = 300
-        
         self.xvmin = 0
         self.xvmax = 0
         self.yvmin = 0
         self.yvmax = 0
-        
         self.seriesLabels=[]
         self.seriesData=[]
-        
+        self.limitvalue=None
         self.changed=False
-
-    def setAxesBoundaries(self,xmin,xmax,ymin,ymax):
-        self.xvmin=xmin
-        self.xvmax=xmax
-        self.yvmin=ymin
-        self.yvmax=ymax
-        self.changed = True
+                        
+    def boundingRect(self):
+        return QtCore.QRectF(0,0,self.awidth+self.hmargin*2,self.aheight+self.vmargin*2)
     
     def plot(self,data,label="",linewidth=2.5, linestyle="-",marker='o'):
         self.seriesLabels.append(label)
         self.seriesData.append(data)
         self.changed = True
+                    
+    def addLimitLine(self,value):
+        self.limitvalue = value
+        self.updatePlot()
         
-    def value2point(self,vx,vy):
-        px=self.hmargin+vx*self.awidth/float(self.xvmax-self.xvmin)
-        py=self.vmargin+self.aheight-vy*self.aheight/float(self.yvmax-self.yvmin)
-        return QtCore.QPointF(px,py)
-    
+    def paint(self, painter,options,widget): 
+        if self.changed:
+            self.updatePlot()
+            self.changed=False
+
+    def updatePlot(self):
+        self.clearPlot()
+        self.decorateAxes()
+        self.paintLimitLine()
+        self.paintSeries()      
+                
+    def clearPlot(self):
+        for item in self.childItems():
+            self.scene().removeItem(item)
+            del item
+        self.changed=True
+        
+    def decorateAxes(self):
+        QtGui.QGraphicsRectItem(self.hmargin,self.vmargin,self.awidth,self.aheight,self)
+        self.computeAxesBoundaries()
+        self.drawVRefs()
+        self.drawHRefs()
+
+    def computeAxesBoundaries(self):
+        self.awidth = self.scene().sceneRect().width()-self.hmargin*2
+        self.aheight = self.scene().sceneRect().height()-self.vmargin*2
+        xmax = max([len(ser)-1 for ser in self.seriesData])
+        marginp = 0.05
+        gxmargin=self.awidth*marginp*xmax/(self.awidth-self.awidth*marginp)
+        self.xvmax=xmax+gxmargin
+        
+        ymax = -sys.maxint - 1
+        ymin = sys.maxint
+        for ser in self.seriesData:
+            for vy in ser:
+                if(vy>ymax): ymax=vy
+                if (vy<ymin): ymin=vy
+        if self.limitvalue is not None:
+            ymax=max([ymax,self.limitvalue])
+            ymin=min([ymin,self.limitvalue])
+            
+        if ymin==0:
+            gymargin=self.aheight*marginp * (ymax-ymin)/(self.aheight-self.aheight*marginp)
+            self.yvmin=ymin
+        else:
+            gymargin=self.aheight*marginp * (ymax-ymin)/(self.aheight-2*self.aheight*marginp)
+            self.yvmin=ymin-gymargin
+
+        self.yvmax=ymax+gymargin
+        
+    def drawVRefs(self):
+        if self.yvmax< self.yvmin: return
+        minsep=30
+        factor=1
+        unitincrement=self.aheight/float(self.yvmax-self.yvmin)
+        while (unitincrement*factor<minsep):
+            provfactor=2*factor
+            if(unitincrement*provfactor>minsep): 
+                factor=provfactor
+                break
+            provfactor=5*factor
+            if(unitincrement*provfactor>minsep): 
+                factor=provfactor
+                break
+            factor=10*factor
+        if (self.yvmin<=0):        vy=int(self.yvmin/factor)*factor
+        else:   vy=(int(self.yvmin/factor)+1)*factor
+        pstart=self.value2point(self.xvmin, vy)
+        pxstart=pstart.x()
+        py=pstart.y()
+        pend = self.value2point(self.xvmax, self.yvmax)
+        pxend = pend.x()
+        pyend= pend.y()
+            
+        while(py>pyend):
+            colour = QtGui.QColor(0,0,0,200)
+            PlotLine(pxstart-2,py,pxend,py,0.5,colour,self)
+            nlabel=QtGui.QGraphicsSimpleTextItem("{}".format(vy),self)
+            nlabelrect = nlabel.boundingRect()
+            nlabel.setPos(pxstart - nlabelrect.width() - 5,py-nlabelrect.height()/2)
+            py-=unitincrement*factor
+            vy +=factor
+
+    def drawHRefs(self):
+        minsep=30
+        factor=1
+        unitincrement=self.awidth/float(self.xvmax-self.xvmin)
+        xmaxint=self.xvmax
+        vx=int(self.xvmin)
+        pstart=self.value2point(vx, self.yvmin)
+        px=pstart.x()
+        pystart=pstart.y()
+        pend = self.value2point(xmaxint, self.yvmin)
+        pxend = pend.x()
+        pyend = pend.y()-2
+        
+        while (unitincrement*factor<minsep):
+            provfactor=2*factor
+            if(unitincrement*provfactor>minsep): 
+                factor=provfactor
+                break
+            provfactor=5*factor
+            if(unitincrement*provfactor>minsep): 
+                factor=provfactor
+                break
+            factor=10*factor
+            
+#        px+=unitincrement*factor
+#        vx +=factor        
+                
+        while(px<=pxend):
+            colour = QtGui.QColor(0,0,0,255)
+            PlotLine(px+0.5,pystart+2,px+0.5,pyend,1.5,colour,self)
+            nlabel=QtGui.QGraphicsSimpleTextItem("{}".format(vx),self)
+            nlabelrect = nlabel.boundingRect()
+            nlabel.setPos(px + 0.5 - nlabelrect.width()/2, pystart+3)
+            px+=unitincrement*factor
+            vx +=factor        
+
+    def paintLimitLine(self):
+        if self.limitvalue is None: return
+        pstart=self.value2point(self.xvmin, self.limitvalue)
+        pxstart=pstart.x()+2
+        pystart=pstart.y()
+        pend = self.value2point(self.xvmax, self.limitvalue)
+        pxend = pend.x()
+        pyend= pend.y()
+        limitline = PlotLine(pxstart,pystart,pxend,pyend,3,QtCore.Qt.red,self)
+        pen = limitline.pen()
+        pen.setStyle(QtCore.Qt.DotLine)
+        limitline.setPen(pen)
+        
     def paintSeries(self):
         for i,ser in enumerate(self.seriesData):
             pp = None
@@ -78,105 +202,12 @@ class LinePlot(QtGui.QGraphicsItem):
                 point = self.value2point(vx, vy)
                 PlotDot(point.x(),point.y(),5,colour,self)
                 if vx>0: PlotLine(pp.x(),pp.y(),point.x(),point.y(),2.5,colour,self)
-                pp = point
+                pp = point        
                 
-    def clearPlot(self):
-        for item in self.childItems():
-            self.scene().removeItem(item)
-            del item
-        self.changed=True
-        
-    def boundingRect(self):
-        return QtCore.QRectF(0,0,self.awidth+self.hmargin*2,self.aheight+self.vmargin*2)
-
-    def computeAxesBoundaries(self):
-        self.awidth = self.scene().sceneRect().width()-self.hmargin*2
-        self.aheight = self.scene().sceneRect().height()-self.vmargin*2
-        xmax = max([len(ser) for ser in self.seriesData])
-        if xmax == 0:self.xvmax=1
-        else: self.xvmax = (xmax-1)*1.1 
-        ymax = -sys.maxint - 1
-        ymin = sys.maxint
-        
-        for ser in self.seriesData:
-            for vy in ser:
-                if(vy>ymax): ymax=vy
-                elif (vy<ymin): ymin=vy
-                
-        if ymin<0: self.yvmin=ymin*1.1
-        elif ymin>0: self.yvmin=ymin*0.9
-        else: self.ymin= ymin
-        
-        if ymax>=0: self.yvmax=ymax*1.1
-        else: self.yvmax=ymax*0.9
-    
-    def decorateAxes(self):
-        QtGui.QGraphicsRectItem(self.hmargin,self.vmargin,self.awidth,self.aheight,self)
-        self.computeAxesBoundaries()
-        self.drawVRefs()
-        self.drawHRefs()
-        
-    def drawVRefs(self):
-        minsep=40
-        factor=1
-        unitincrement=self.aheight/float(self.yvmax-self.yvmin)
-        ymaxint=self.yvmax
-        yminint=int(self.yvmin)
-        pstart=self.value2point(self.xvmin, yminint)
-        pxstart=pstart.x()
-        py=pstart.y()
-        pend = self.value2point(self.xvmax, ymaxint)
-        pxend = pend.x()
-        pyend= pend.y()
-        while (unitincrement*factor<minsep):
-            provfactor=2*factor
-            if(unitincrement*provfactor>minsep): factor=provfactor
-            else: factor=5*factor
-                
-        print("DRAWVREFS: unitinc is {}/{}, factor is {}".format(unitincrement,minsep,factor))
-        while(py>pyend):
-            print("ploting line for value {}".format(yminint))
-            colour = QtGui.QColor(0,0,0,200)
-            PlotLine(pxstart,py,pxend,py,0.5,colour,self)
-            py-=unitincrement*factor
-            yminint +=factor
-
-    def drawHRefs(self):
-        minsep=20
-        factor=1
-        unitincrement=self.awidth/float(self.xvmax-self.xvmin)
-        xmaxint=self.xvmax
-        xminint=int(self.xvmin)
-        pstart=self.value2point(xminint, self.yvmin)
-        px=pstart.x()
-        pystart=pstart.y()
-        pend = self.value2point(xmaxint, self.yvmin)
-        pxend = pend.x()
-        pyend = pend.y()-5
-        while (unitincrement*factor<minsep):
-            provfactor=2*factor
-            if(unitincrement*provfactor>minsep): factor=provfactor
-            else: factor=5*factor
-                
-        print("DRAWHREFS: unitinc is {}/{}, factor is {}".format(unitincrement,minsep,factor))
-        while(px<=pxend):
-            print("ploting mark for value {}".format(xminint))
-            colour = QtGui.QColor(0,0,0,255)
-            PlotLine(px,pystart,px,pyend,1.5,colour,self)
-            px+=unitincrement*factor
-            xminint +=factor           
-            
-    
-    def updatePlot(self):
-        self.clearPlot()
-        self.decorateAxes()
-        self.paintSeries()
-    
-    def paint(self, painter,options,widget): 
-        if self.changed:
-            self.updatePlot()
-            self.changed=False
-
+    def value2point(self,vx,vy):
+        px=self.hmargin+vx*self.awidth/float(self.xvmax-self.xvmin)
+        py=self.vmargin+self.aheight-(vy-self.yvmin)*self.aheight/float(self.yvmax-self.yvmin)
+        return QtCore.QPointF(px,py)
 
 class PlotLine(QtGui.QGraphicsLineItem):
     def __init__(self,x1,y1,x2,y2,linewidth=None,colour=None,parent=None,scene=None):
@@ -213,5 +244,11 @@ class PlotDot(QtGui.QGraphicsEllipseItem):
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     view = PlotView()
+    view.addLinePlot()
+    data=[0,1,2,4,8,16,8,4,2,1,0]
+    view.addSeries(data,"test1")
+    data=[0,-1,-2,-4,-8,-16,-8,-4,-2,-1,0]
+    view.addSeries(data,"test2")
+    view.addLimit(0)
     view.show()
     sys.exit(app.exec_())
