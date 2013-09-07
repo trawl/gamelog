@@ -9,12 +9,10 @@ except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
-    
-try: import matplotlib
-except ImportError: pass
 
 from controllers.carcassonneengine import CarcassonneEngine
-from gui.game import GameWidget,ScoreSpinBox,GameRoundPlot
+from gui.game import GameWidget,ScoreSpinBox,GameRoundPlot,GamePlayerWidget,\
+    PlayerColours
 from gui.gamestats import QuickStatsBox,StatsTable
 
 
@@ -56,10 +54,10 @@ class CarcassonneWidget(GameWidget):
         self.playersLayout.addStretch()
         self.playerGroupBox = {}
         dealer = self.engine.getDealer()
-        for player in self.engine.getListPlayers():
-            pw = CarcassonnePlayerWidget(player,self.playerGroup)
+        for i, player in enumerate(self.engine.getListPlayers()):
+            pw = GamePlayerWidget(player, PlayerColours[i],self.playerGroup)
             
-            if self.engine.getNumEntry() == 1 and player == dealer: pw.setStarter()
+            if self.engine.getNumEntry() == 1 and player == dealer: pw.setDealer()
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
@@ -117,7 +115,7 @@ class CarcassonneWidget(GameWidget):
         if ret == QtGui.QMessageBox.No: return
 
         # Once here, we can commit round
-        self.playerGroupBox[self.engine.getDealer()].unsetStarter()
+        self.playerGroupBox[self.engine.getDealer()].unsetDealer()
         self.engine.addEntry(player,score, {'kind': kind})
         self.engine.printStats()
         
@@ -194,7 +192,7 @@ class CarcassonneInputWidget(QtGui.QWidget):
         self.scoreSpinBox.setRange(0,300)
 
         for i, kind in enumerate(self.engine.getEntryKinds(),1):
-            b = QtGui.QRadioButton('{}. {}'.format(i,QtGui.QApplication.translate("CarcassonneInputWidget",kind)),self.kindGroup)
+            b = QtGui.QRadioButton(unicode('{}. {}'.format(i,QtGui.QApplication.translate("CarcassonneInputWidget",str(kind)))),self.kindGroup)
             self.kindGroupLayout.addWidget(b,(i-1)%2,(i-1)/2)
             self.kindButtonGroup.addButton(b,i)
             b.clicked.connect(self.scoreSpinBox.setFocus)
@@ -217,8 +215,8 @@ class CarcassonneInputWidget(QtGui.QWidget):
         self.kindGroup.setTitle(QtGui.QApplication.translate("CarcassonneInputWidget","Select kind of entry"))
         self.scoreGroup.setTitle(QtGui.QApplication.translate("CarcassonneInputWidget","Points"))
         for i, kind in enumerate(self.engine.getEntryKinds(),1):
-            text=QtGui.QApplication.translate("CarcassonneInputWidget",kind)
-            self.kindButtons[i].setText('{}. {}'.format(i,text))
+            text=unicode(QtGui.QApplication.translate("CarcassonneInputWidget",unicode(kind)))
+            self.kindButtons[i].setText(unicode('{}. {}'.format(i,text)))
         
     def placeCommitButton(self,cb):
         self.scoreGroupLayout.addWidget(cb)
@@ -280,40 +278,6 @@ class CarcassonneInputWidget(QtGui.QWidget):
             self.scoreSpinBox.setReadOnly(False)
             self.scoreSpinBox.setValue(0)
             
-    
-class CarcassonnePlayerWidget(QtGui.QWidget):
-    
-    def __init__(self,nick,parent = None):
-        super(CarcassonnePlayerWidget,self).__init__(parent)
-        self.player = nick
-        self.initUI()
-        
-    def initUI(self):
-#        self.setMinimumWidth(300)
-        self.mainLayout = QtGui.QHBoxLayout(self)
-        self.scoreLCD = QtGui.QLCDNumber(self)
-        self.scoreLCD.setSegmentStyle(QtGui.QLCDNumber.Flat)
-        self.mainLayout.addWidget(self.scoreLCD)
-        self.scoreLCD.setNumDigits(3)
-        self.scoreLCD.setFixedSize(100,50)
-#        self.scoreLCD.setMinimumHeight(30)
-        self.scoreLCD.display(0)
-#        self.scoreLCD.setMaximumHeight(100)
-        self.nameLabel = QtGui.QLabel(self)
-        self.nameLabel.setText(self.player)
-        self.unsetStarter()
-        self.mainLayout.addWidget(self.nameLabel)
-        
-    def updateDisplay(self,points):
-        if points >= 1000: self.scoreLCD.setNumDigits(4)
-        self.scoreLCD.display(points)
-        
-    def setStarter(self):
-        self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: red }")
-        
-    def unsetStarter(self):
-        self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: black }")
-
             
 class CarcassonneEntriesDetail(QtGui.QGroupBox):
     
@@ -479,12 +443,11 @@ class CarcassonneEntriesPlot(GameRoundPlot):
     
     def initPlot(self):
         super(CarcassonneEntriesPlot,self).initPlot()
-        self.axes = self.figure.add_subplot(111)
         self.updatePlot()
         
     def updatePlot(self):
+        if not self.isPlotInited(): return
         super(CarcassonneEntriesPlot,self).updatePlot()
-        if not self.isPlotLibAvailable() or not self.isPlotInited(): return
         scores = {}
         for player in self.engine.getPlayers():
             scores[player] = [0]
@@ -495,23 +458,12 @@ class CarcassonneEntriesPlot(GameRoundPlot):
                 else: entryscore = 0
                 accumscore = scores[player][-1] + entryscore
                 scores[player].append(accumscore)
-        self.axes.cla()
-        self.axes.set_axis_bgcolor('none')
-        maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
-        self.axes.axis([0, self.engine.getNumEntry(),0,maxscore+10])
-        self.axes.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-        for player in self.engine.getListPlayers():
-            self.axes.plot(scores[player],linewidth=2.5, linestyle="-",marker='o',label=player)
         
-        box = self.axes.get_position()
-        if not self.axiswidth: self.axiswidth = box.width
+        self.canvas.clearPlotContents()
         
-        self.axes.set_position([box.x0, box.y0,  self.axiswidth * 0.9, box.height])
-        legend = self.axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-        legend.legendPatch.set_facecolor('none')
-#        legend.legendPatch.set_alpha(0.0)
-        try: self.canvas.draw()
-        except RuntimeError: pass
+        for player in self.engine.getListPlayers():        
+            self.canvas.addSeries(scores[player],player)
+        
 
 
 class CarcassonneQSBox(QuickStatsBox):
@@ -542,7 +494,7 @@ class CarcassonneQSBox(QuickStatsBox):
         else: self.recordsLabel.show()
             
         for row in singlerecordstats:
-            row['record'] = QtGui.QApplication.translate("CarcassonneInputWidget",row['record'])
+            row['record'] = unicode(QtGui.QApplication.translate("CarcassonneInputWidget",str(row['record'])))
 
         keys = ['points','nick','date']
         headers = [QtGui.QApplication.translate("CarcassonneQSBox",'Record'),QtGui.QApplication.translate("CarcassonneQSBox",'Player'),QtGui.QApplication.translate("CarcassonneQSBox",'Date')]

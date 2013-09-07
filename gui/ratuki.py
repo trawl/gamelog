@@ -8,12 +8,9 @@ except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
-    
-try: import matplotlib
-except ImportError: pass
 
 from controllers.ratukiengine import RatukiEngine
-from gui.game import GameWidget,GameInputWidget,ScoreSpinBox,GameRoundPlot
+from gui.game import GameWidget,GameInputWidget,ScoreSpinBox,GameRoundPlot,GamePlayerWidget,PlayerColours
 
 
 class RatukiWidget(GameWidget):
@@ -58,8 +55,8 @@ class RatukiWidget(GameWidget):
         self.playersLayout = QtGui.QVBoxLayout(self.playerGroup)
         self.playersLayout.addStretch()
         self.playerGroupBox = {}
-        for player in self.players:
-            pw = RatukiPlayerWidget(player,self.playerGroup)
+        for i,player in enumerate(self.players):
+            pw = GamePlayerWidget(player,PlayerColours[i],self.playerGroup)
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer(): pw.setDealer()
             self.playersLayout.addWidget(pw)
@@ -180,42 +177,7 @@ class RatukiPlayerInputWidget(QtGui.QFrame):
     def getPlayer(self): return self.player      
     
     def getScore(self): return self.scoreSpinBox.value()
-            
-    
-class RatukiPlayerWidget(QtGui.QWidget):
-    
-    def __init__(self,nick,parent = None):
-        super(RatukiPlayerWidget,self).__init__(parent)
-        self.player = nick
-        self.initUI()
-        
-    def initUI(self):
-#        self.setMinimumWidth(300)
-        self.mainLayout = QtGui.QHBoxLayout(self)
-        self.scoreLCD = QtGui.QLCDNumber(self)
-        self.scoreLCD.setSegmentStyle(QtGui.QLCDNumber.Flat)
-        self.mainLayout.addWidget(self.scoreLCD)
-        self.scoreLCD.setNumDigits(3)
-        self.scoreLCD.setFixedSize(100,50)
-#        self.scoreLCD.setMinimumHeight(30)
-        self.scoreLCD.display(0)
-#        self.scoreLCD.setMaximumHeight(100)
-        self.nameLabel = QtGui.QLabel(self)
-        self.nameLabel.setText(self.player)
-        self.mainLayout.addWidget(self.nameLabel)
-        self.unsetDealer()
-        
-    def updateDisplay(self,points):
-        if points >= 1000: self.scoreLCD.setNumDigits(4)
-        self.scoreLCD.display(points)
-        
-    def setDealer(self):
-        if self.isEnabled():
-            self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: red }")
-        
-    def unsetDealer(self):
-        self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: black}")
-     
+
             
 class RatukiRoundsDetail(QtGui.QGroupBox):
     
@@ -287,12 +249,11 @@ class RatukiRoundPlot(GameRoundPlot):
     
     def initPlot(self):
         super(RatukiRoundPlot,self).initPlot()
-        self.axes = self.figure.add_subplot(111)
         self.updatePlot()
         
     def updatePlot(self):
         super(RatukiRoundPlot,self).updatePlot()
-        if not self.isPlotLibAvailable() or not self.isPlotInited(): return
+        if not self.isPlotInited(): return
         scores = {}
         for player in self.engine.getPlayers():
             scores[player] = [0]
@@ -302,23 +263,11 @@ class RatukiRoundPlot(GameRoundPlot):
                 rndscore = rnd.getPlayerScore(player)
                 accumscore = scores[player][-1] + rndscore
                 scores[player].append(accumscore)
-        self.axes.cla()
-        self.axes.set_axis_bgcolor('none')
-        maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
-        minscore = min([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
-        self.axes.axis([0, self.engine.getNumRound(),min(0,minscore)-10,max(self.engine.getTop(),maxscore)+10])
-        self.axes.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-        self.axes.axhline(y=self.engine.getTop(),linewidth=3, linestyle="--", color='r')
-        self.axes.axhline(y=0,linewidth=1, linestyle="-", color='black')
-        for player in self.engine.getListPlayers():
-            self.axes.plot(scores[player],linewidth=2.5, linestyle="-",marker='o',label=player)
-        
-        box = self.axes.get_position()
-        if not self.axiswidth: self.axiswidth = box.width
-        
-        self.axes.set_position([box.x0, box.y0,  self.axiswidth * 0.9, box.height])
-        legend = self.axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-        legend.legendPatch.set_facecolor('none')
-#        legend.legendPatch.set_alpha(0.0)
-        try: self.canvas.draw()
-        except RuntimeError: pass
+
+
+        self.canvas.clearPlotContents()
+        self.canvas.addLimit(self.engine.getTop())
+        for player in self.engine.getListPlayers():        
+            self.canvas.addSeries(scores[player],player)
+            
+            

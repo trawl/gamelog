@@ -9,11 +9,8 @@ except ImportError as error:
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
     
-try: import matplotlib
-except ImportError: pass
-
 from controllers.remigioengine import RemigioEngine
-from gui.game import GameWidget,GameInputWidget,ScoreSpinBox,GameRoundPlot
+from gui.game import GameWidget,GameInputWidget,ScoreSpinBox,GameRoundPlot,GamePlayerWidget,PlayerColours
 
 
 class RemigioWidget(GameWidget):
@@ -60,8 +57,8 @@ class RemigioWidget(GameWidget):
         self.playersLayout = QtGui.QVBoxLayout(self.playerGroup)
         self.playersLayout.addStretch()
         self.playerGroupBox = {}
-        for player in self.players:
-            pw = RemigioPlayerWidget(player,self.playerGroup)
+        for i,player in enumerate(self.players):
+            pw = RemigioPlayerWidget(player,PlayerColours[i%len(PlayerColours)],self.playerGroup)
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer(): pw.setDealer()
             if self.engine.isPlayerOff(player): pw.koPlayer()
@@ -231,43 +228,11 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         self.setDisabled(True)
             
     
-class RemigioPlayerWidget(QtGui.QWidget):
-    
-    def __init__(self,nick,parent = None):
-        super(RemigioPlayerWidget,self).__init__(parent)
-        self.player = nick
-        self.initUI()
-        
-    def initUI(self):
-#        self.setMinimumWidth(300)
-        self.mainLayout = QtGui.QHBoxLayout(self)
-        self.scoreLCD = QtGui.QLCDNumber(self)
-        self.scoreLCD.setSegmentStyle(QtGui.QLCDNumber.Flat)
-        self.mainLayout.addWidget(self.scoreLCD)
-        self.scoreLCD.setNumDigits(3)
-        self.scoreLCD.setFixedSize(100,50)
-#        self.scoreLCD.setMinimumHeight(30)
-        self.scoreLCD.display(0)
-#        self.scoreLCD.setMaximumHeight(100)
-        self.nameLabel = QtGui.QLabel(self)
-        self.nameLabel.setText(self.player)
-        self.mainLayout.addWidget(self.nameLabel)
-        self.unsetDealer()
-        
-    def updateDisplay(self,points):
-        if points >= 1000: self.scoreLCD.setNumDigits(4)
-        self.scoreLCD.display(points)
-        
-    def setDealer(self):
-        if self.isEnabled():
-            self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: red }")
-        
-    def unsetDealer(self):
-        self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: black}")
+class RemigioPlayerWidget(GamePlayerWidget):
         
     def koPlayer(self):
         self.setDisabled(True)
-        self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: grey}")
+#         self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: grey}")
      
             
 class RemigioRoundsDetail(QtGui.QGroupBox):
@@ -322,11 +287,11 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
             item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
             if player == winner:
-                text = QtGui.QApplication.translate("RemigioRoundsDetail","Winner ({}x)").format(closeType)
+                text = unicode(QtGui.QApplication.translate("RemigioRoundsDetail","Winner ({}x)")).format(closeType)
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)
-            elif self.engine.isPlayerOff(player) or r.getPlayerScore < 0:
+            elif self.engine.isPlayerOff(player) or r.getPlayerScore(player) < 0:
                 text = ""
                 item.setBackground(QtGui.QBrush(QtCore.Qt.gray))          
             else:
@@ -347,12 +312,11 @@ class RemigioRoundPlot(GameRoundPlot):
     
     def initPlot(self):
         super(RemigioRoundPlot,self).initPlot()
-        self.axes = self.figure.add_subplot(111)
         self.updatePlot()
         
     def updatePlot(self):
         super(RemigioRoundPlot,self).updatePlot()
-        if not self.isPlotLibAvailable() or not self.isPlotInited(): return
+        if not self.isPlotInited(): return
         scores = {}
         for player in self.engine.getPlayers():
             scores[player] = [0]
@@ -364,21 +328,9 @@ class RemigioRoundPlot(GameRoundPlot):
                 if rndscore >= 0 :
                     accumscore = scores[player][-1] + rndscore
                     scores[player].append(accumscore)
-        self.axes.cla()
-        self.axes.set_axis_bgcolor('none')
-        maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
-        self.axes.axis([0, self.engine.getNumRound(),0,max(self.engine.getTop(),maxscore)+10])
-        self.axes.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-        self.axes.axhline(y=self.engine.getTop(),linewidth=3, linestyle="--", color='r')
-        for player in self.engine.getListPlayers():
-            self.axes.plot(scores[player],linewidth=2.5, linestyle="-",marker='o',label=player)
-        
-        box = self.axes.get_position()
-        if not self.axiswidth: self.axiswidth = box.width
-        
-        self.axes.set_position([box.x0, box.y0,  self.axiswidth * 0.9, box.height])
-        legend = self.axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-        legend.legendPatch.set_facecolor('none')
-#        legend.legendPatch.set_alpha(0.0)
-        try: self.canvas.draw()
-        except RuntimeError: pass
+                    
+        self.canvas.clearPlotContents()
+        self.canvas.addLimit(self.engine.getTop())
+        for player in self.engine.getListPlayers():        
+            self.canvas.addSeries(scores[player],player)
+

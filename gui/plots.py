@@ -11,19 +11,26 @@ colours=[QtGui.QColor(237,44,48),
          ]
 
 class PlotView(QtGui.QGraphicsView):
-    def __init__(self):
-        QtGui.QGraphicsView.__init__(self)
+    def __init__(self,clrs=colours,parent=None):
+        QtGui.QGraphicsView.__init__(self,parent)
         self.scene = QtGui.QGraphicsScene(self)
         self.scene.setSceneRect(QtCore.QRectF(0, 0, 440, 340))
         self.setScene(self.scene)
         self.setBackgroundBrush(QtGui.QBrush(QtGui.QColor(0,0,0,0)))
         self.setMinimumSize(100, 100)
+        self.colours=clrs
+        
+    def setBackground(self,colour):
+        self.setBackgroundBrush(QtGui.QBrush(colour))
         
     def addLinePlot(self):
-        self.plot = LinePlot(None,self.scene)
+        self.plot = LinePlot(self.colours,None,self.scene)
         
     def addSeries(self,series,label):
         self.plot.plot(series,label)
+        
+    def clearPlotContents(self):
+        self.plot.clearPlotContents()
         
     def addLimit(self,value):
         self.plot.addLimitLine(value)
@@ -35,7 +42,7 @@ class PlotView(QtGui.QGraphicsView):
         
 class LinePlot(QtGui.QGraphicsItem):
     
-    def __init__(self,parent=None, scene=None):
+    def __init__(self,clrs=None,parent=None, scene=None):
         super(LinePlot,self).__init__(parent, scene)
         self.hmargin = 40
         self.vmargin = 40
@@ -49,6 +56,7 @@ class LinePlot(QtGui.QGraphicsItem):
         self.seriesData=[]
         self.limitvalue=None
         self.changed=False
+        self.colours=clrs
                         
     def boundingRect(self):
         return QtCore.QRectF(0,0,self.awidth+self.hmargin*2,self.aheight+self.vmargin*2)
@@ -72,6 +80,11 @@ class LinePlot(QtGui.QGraphicsItem):
         self.decorateAxes()
         self.paintLimitLine()
         self.paintSeries()      
+        
+    def clearPlotContents(self):
+        self.seriesLabels = []
+        self.seriesData = []
+        self.limitvalue = None
                 
     def clearPlot(self):
         for item in self.childItems():
@@ -88,13 +101,13 @@ class LinePlot(QtGui.QGraphicsItem):
     def computeAxesBoundaries(self):
         self.awidth = self.scene().sceneRect().width()-self.hmargin*2
         self.aheight = self.scene().sceneRect().height()-self.vmargin*2
-        xmax = max([len(ser)-1 for ser in self.seriesData])
+        xmax = max([len(ser)-1 for ser in self.seriesData] + [1])
         marginp = 0.05
         gxmargin=self.awidth*marginp*xmax/(self.awidth-self.awidth*marginp)
         self.xvmax=xmax+gxmargin
         
-        ymax = -sys.maxint - 1
-        ymin = sys.maxint
+        ymax = 10
+        ymin = 0
         for ser in self.seriesData:
             for vy in ser:
                 if(vy>ymax): ymax=vy
@@ -116,7 +129,11 @@ class LinePlot(QtGui.QGraphicsItem):
         if self.yvmax< self.yvmin: return
         minsep=30
         factor=1
-        unitincrement=self.aheight/float(self.yvmax-self.yvmin)
+        try:
+            unitincrement=self.aheight/float(self.yvmax-self.yvmin)
+        except ZeroDivisionError:
+            print("Division by zero in drawVRefs. Limits are {}-{}".format(self.yvmin,self.yvmax))
+            
         while (unitincrement*factor<minsep):
             provfactor=2*factor
             if(unitincrement*provfactor>minsep): 
@@ -138,7 +155,10 @@ class LinePlot(QtGui.QGraphicsItem):
             
         while(py>pyend):
             colour = QtGui.QColor(0,0,0,200)
-            PlotLine(pxstart-2,py,pxend,py,0.5,colour,self)
+            if vy==0:
+                PlotLine(pxstart-2,py,pxend,py,1.5,QtCore.Qt.black,self)
+            else:
+                PlotLine(pxstart-2,py,pxend,py,0.5,colour,self)
             nlabel=QtGui.QGraphicsSimpleTextItem("{}".format(vy),self)
             nlabelrect = nlabel.boundingRect()
             nlabel.setPos(pxstart - nlabelrect.width() - 5,py-nlabelrect.height()/2)
@@ -197,7 +217,7 @@ class LinePlot(QtGui.QGraphicsItem):
     def paintSeries(self):
         for i,ser in enumerate(self.seriesData):
             pp = None
-            colour = colours[i%len(self.seriesData)]
+            colour = self.colours[i]
             for vx,vy in enumerate(ser):
                 point = self.value2point(vx, vy)
                 PlotDot(point.x(),point.y(),5,colour,self)
@@ -249,6 +269,6 @@ if __name__ == '__main__':
     view.addSeries(data,"test1")
     data=[0,-1,-2,-4,-8,-16,-8,-4,-2,-1,0]
     view.addSeries(data,"test2")
-    view.addLimit(0)
+    view.addLimit(9)
     view.show()
     sys.exit(app.exec_())
