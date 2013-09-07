@@ -231,7 +231,9 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
 class RemigioPlayerWidget(GamePlayerWidget):
         
     def koPlayer(self):
-        self.setDisabled(True)
+        self.iconlabel.setPixmap(QtGui.QPixmap('icons/skull.png'))
+        self.iconlabel.setFixedSize(30,30)
+        self.iconlabel.show()
 #         self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: grey}")
      
             
@@ -294,7 +296,7 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
             item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
             if player == winner:
-                text = unicode(QtGui.QApplication.translate("RemigioRoundsDetail","Winner ({}x)")).format(closeType)
+                text = QtGui.QApplication.translate("RemigioRoundsDetail","Winner ({}x)").format(closeType)
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)

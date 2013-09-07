@@ -43,7 +43,7 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.retranslateUI()
         
     def retranslateUI(self):
-        self.gameStatsText = unicode(QtGui.QApplication.translate("QuickStatsBox",'Last winner') + ": {} ({})")
+        self.gameStatsText = QtGui.QApplication.translate("QuickStatsBox",'Last winner') + ": {} ({})"
 #         self.setTitle(QtGui.QApplication.translate("QuickStatsBox",'Statistics'))
         self.matchStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Matches"))
         self.playerStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Players"))
@@ -82,13 +82,13 @@ class QuickStatsBox(QtGui.QGroupBox):
             table.setRowCount(len(displayed))
             table.setColumnCount(len(cheaders))
             table.setHorizontalHeaderLabels(cheaders)
-            vheaders = [unicode(row[rowheaderkey]) for row in displayed]
+            vheaders = [str(row[rowheaderkey]) for row in displayed]
             table.setVerticalHeaderLabels(vheaders)
             
             for i, row in enumerate(displayed):
                 keys = keyorder
                 for j, key in enumerate(keys):
-                    item = QtGui.QTableWidgetItem(unicode(row[key]))
+                    item = QtGui.QTableWidgetItem(str(row[key]))
                     item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignHCenter)
                     item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
                     table.setItem(i,j,item)

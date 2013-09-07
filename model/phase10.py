@@ -37,7 +37,10 @@ class Phase10Match(GenericRoundMatch):
                     wcscores[self.totalScores[p]]=list()
                 wcscores[self.totalScores[p]].append(p)
 
-            minScore=sys.maxint
+            try:
+                minScore=sys.maxint
+            except AttributeError:
+                minScore=sys.maxsize
             # Here we have the players with all phases completed and with the lowest score
             # in case of draw, the player with less points in the last round is the winner
             candidates = wcscores[sorted(wcscores)[0]];

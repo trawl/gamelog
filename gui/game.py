@@ -106,7 +106,7 @@ class GameWidget(Tab):
         self.gameStatusLabel.setStyleSheet("QLabel { font-size: 16px; font-weight:bold; color: red;}")    
         winner = self.engine.getWinner()
         if winner:
-            self.gameStatusLabel.setText(unicode(QtGui.QApplication.translate("GameWidget","{} won this match!")).format(winner))
+            self.gameStatusLabel.setText(QtGui.QApplication.translate("GameWidget","{} won this match!").format(winner))
         elif self.engine.isPaused():
             self.gameStatusLabel.setText(QtGui.QApplication.translate("GameWidget","Game is paused"))
         else:
@@ -115,7 +115,7 @@ class GameWidget(Tab):
     def cancelMatch(self):
         if not self.isFinished():
             ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("GameWidget",'Cancel Match'),
-            unicode(QtGui.QApplication.translate("GameWidget","Do you want to save the current {} match?")).format(self.game), QtGui.QMessageBox.Yes | 
+            QtGui.QApplication.translate("GameWidget","Do you want to save the current {} match?").format(self.game), QtGui.QMessageBox.Yes | 
             QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
             
             if ret == QtGui.QMessageBox.Cancel: return
