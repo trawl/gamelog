@@ -24,7 +24,7 @@ class Phase10Match(GenericRoundMatch):
     def computeWinner(self):
         
         playersIn10 = list();
-        for p,pc in self.phasesCleared.iteritems():
+        for p,pc in self.phasesCleared.items():
             if (len(pc)==10):
                 playersIn10.append(p)
         if (playersIn10):

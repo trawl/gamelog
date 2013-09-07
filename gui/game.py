@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import sys
 import time
 
 try:
@@ -11,19 +9,19 @@ except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
-    
-try:
-    import matplotlib
-    matplotlib.use('Qt4Agg')
-    if 'PySide' in sys.modules: matplotlib.rcParams['backend.qt4']='PySide'
-    from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-    from matplotlib.figure import Figure
-
-except ImportError: pass
-    
+       
 from gui.tab import Tab
 from gui.clock import GameClock
+from gui.plots import PlotView
         
+PlayerColours=[QtGui.QColor(237,44,48),
+         QtGui.QColor(23,89,169),
+         QtGui.QColor(0,140,70),
+         QtGui.QColor(243,124,33),
+         QtGui.QColor(101,43,145),
+         QtGui.QColor(161,29,33),
+         QtGui.QColor(179,56,148)
+         ]
 
 class GameWidget(Tab):
 
@@ -108,7 +106,7 @@ class GameWidget(Tab):
         self.gameStatusLabel.setStyleSheet("QLabel { font-size: 16px; font-weight:bold; color: red;}")    
         winner = self.engine.getWinner()
         if winner:
-            self.gameStatusLabel.setText(QtGui.QApplication.translate("GameWidget","{} won this match!").format(winner))
+            self.gameStatusLabel.setText(unicode(QtGui.QApplication.translate("GameWidget","{} won this match!")).format(winner))
         elif self.engine.isPaused():
             self.gameStatusLabel.setText(QtGui.QApplication.translate("GameWidget","Game is paused"))
         else:
@@ -117,7 +115,7 @@ class GameWidget(Tab):
     def cancelMatch(self):
         if not self.isFinished():
             ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("GameWidget",'Cancel Match'),
-            QtGui.QApplication.translate("GameWidget","Do you want to save the current {} match?").format(self.game), QtGui.QMessageBox.Yes | 
+            unicode(QtGui.QApplication.translate("GameWidget","Do you want to save the current {} match?")).format(self.game), QtGui.QMessageBox.Yes | 
             QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
             
             if ret == QtGui.QMessageBox.Cancel: return
@@ -267,6 +265,54 @@ class ScoreSpinBox(QtGui.QSpinBox):
         if value == self.minimum(): return ""
         else: return super(ScoreSpinBox,self).textFromValue(value)        
 
+class GamePlayerWidget(QtGui.QWidget):
+    
+    def __init__(self,nick,colour=None,parent = None):
+        super(GamePlayerWidget,self).__init__(parent)
+        self.player = nick
+        self.colour=colour
+        self.initUI()
+        
+    def initUI(self):
+#        self.setMinimumWidth(300)
+        self.mainLayout = QtGui.QHBoxLayout(self)
+#         self.mainLayout.addStretch()
+        self.scoreLCD = QtGui.QLCDNumber(self)
+        self.scoreLCD.setSegmentStyle(QtGui.QLCDNumber.Flat)
+        self.mainLayout.addWidget(self.scoreLCD)
+        self.scoreLCD.setNumDigits(3)
+        self.scoreLCD.setFixedSize(100,50)
+#        self.scoreLCD.setMinimumHeight(30)
+#        self.scoreLCD.setMaximumHeight(100)
+        self.scoreLCD.display(0)
+        self.scoreLCD.setStyleSheet("QLCDNumber {{ color:rgb({},{},{});}}".format(self.colour.red(),self.colour.green(),self.colour.blue()))
+        
+        self.nameLabel = QtGui.QLabel(self)
+        self.nameLabel.setText(self.player)
+        sh = "QLabel {{ font-size: 18px; font-weight: bold; color:rgb({},{},{});}}".format(self.colour.red(),self.colour.green(),self.colour.blue())
+        self.nameLabel.setStyleSheet(sh)
+        
+        self.mainLayout.addWidget(self.nameLabel)
+        self.iconlabel = QtGui.QLabel(self)
+        self.iconlabel.setFixedSize(25, 25)
+        self.iconlabel.setScaledContents(True)
+        self.iconlabel.setPixmap(QtGui.QPixmap('icons/cards.png'))
+#         self.mainLayout.addWidget(self.iconlabel)
+#         self.mainLayout.addStretch()
+        self.unsetDealer()
+        
+    def updateDisplay(self,points):
+        if points >= 1000: self.scoreLCD.setNumDigits(4)
+        self.scoreLCD.display(points)
+
+    def setDealer(self):
+        if self.isEnabled():
+            self.iconlabel.show()
+#             self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: red }")
+        
+    def unsetDealer(self):
+        self.iconlabel.hide()
+
 
 class GameRoundPlot(QtGui.QWidget):
 
@@ -274,8 +320,6 @@ class GameRoundPlot(QtGui.QWidget):
 
     def __init__(self,engine,parent=None):
         super(GameRoundPlot, self).__init__(parent)
-        self.plotlibavailable = 'matplotlib' in sys.modules
-#        self.plotlibavailable = False
         self.plotinited = False
         self.engine = engine
         self.parent = parent
@@ -283,33 +327,23 @@ class GameRoundPlot(QtGui.QWidget):
         self.initUI()
         
     def initUI(self):
-        self.widgetLayout = QtGui.QVBoxLayout(self)
+        self.widgetLayout = QtGui.QHBoxLayout(self)
         self.canvas = None
-        if not self.isPlotLibAvailable():
-            self.label = QtGui.QLabel(self)
-            self.label.setAlignment(QtCore.Qt.AlignCenter)
-            self.widgetLayout.addWidget(self.label)
-        else: 
-#            self.initPlot()
-            self.initPlotThread = PlotThread()
-            self.initPlotThread.initplot.connect(self.initPlot)
-            self.initPlotThread.start()
+        self.initPlotThread = PlotThread()
+        self.initPlotThread.initplot.connect(self.initPlot)
+        self.initPlotThread.start()
 
     def initPlot(self):
-        (r,g,b,_) = self.palette().color(self.backgroundRole()).getRgbF()
-        self.figure = Figure(figsize=(200,200), dpi=72,facecolor=(r,g,b), edgecolor=(0,0,0))
-        self.canvas = FigureCanvas(self.figure)
+        self.canvas = PlotView(PlayerColours,self)
+        self.canvas.setBackground(self.palette().color(self.backgroundRole()))
+        self.canvas.addLinePlot()
         self.widgetLayout.addWidget(self.canvas)
         self.plotinited = True
         self.initPlotThread.terminate()
         self.plotCompleted.emit()
             
     def retranslateUI(self):
-        if not self.isPlotLibAvailable():
-            self.label.setText(QtGui.QApplication.translate("GameRoundPlot","No plotting available"))
-        else: self.retranslatePlot()
-            
-    def isPlotLibAvailable(self): return self.plotlibavailable
+        self.retranslatePlot()
     
     def isPlotInited(self): return self.plotinited
         

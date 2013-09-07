@@ -14,7 +14,7 @@ class Phase10Engine(RoundGameEngine):
         return [row['value'] for row in cur ]
 
     def getRemainingPhasesFromPlayer(self, player):
-        remaining = range (1,11)
+        remaining = list(range(1,11))
         if (player in self.match.phasesCleared):
             for phase in self.match.phasesCleared[player]:
                 remaining.remove(phase)

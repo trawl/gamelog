@@ -3,6 +3,7 @@
 
 import re
 import sys
+from gui.plots import PlotView
 
 try:
     from PySide import QtCore,QtGui
@@ -16,7 +17,7 @@ try: import matplotlib
 except ImportError: pass
 
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
-from gui.game import GameWidget,GameInputWidget, ScoreSpinBox,GameRoundPlot
+from gui.game import GameWidget,GameInputWidget, ScoreSpinBox,GameRoundPlot,PlayerColours
 
 class Phase10Widget(GameWidget):
 
@@ -93,7 +94,7 @@ class Phase10Widget(GameWidget):
         self.plot.retranslateUI()
         phaseword = QtGui.QApplication.translate("Phase10Widget","Phase")
         for number,(phase,label) in enumerate(zip(self.getPhases(),self.phaseLabels),start=1):
-            label.setText("{0} {1:02}: {2}".format(phaseword,number,phase))
+            label.setText(unicode("{0} {1:02}: {2}".format(phaseword,number,phase)))
             
 
     
@@ -128,30 +129,30 @@ class Phase10Widget(GameWidget):
     def getPhases(self):
         types = {'s': {
                        '2':[
-                            QtGui.QApplication.translate("Phase10Widget",'pair'),
-                            QtGui.QApplication.translate("Phase10Widget",'pairs')
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'pair')),
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'pairs'))
                             ], 
                        '3':[
-                            QtGui.QApplication.translate("Phase10Widget",'three of a kind','singular'),
-                            QtGui.QApplication.translate("Phase10Widget",'three of a kind','plural')
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'three of a kind','singular')),
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'three of a kind','plural'))
                             ], 
                        '4':[
-                            QtGui.QApplication.translate("Phase10Widget",'four of a kind','singular'),
-                            QtGui.QApplication.translate("Phase10Widget",'four of a kind','plural')
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'four of a kind','singular')),
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'four of a kind','plural'))
                             ],
                        '5':[
-                            QtGui.QApplication.translate("Phase10Widget",'five of a kind','singular'),
-                            QtGui.QApplication.translate("Phase10Widget",'five of a kind','plural')
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'five of a kind','singular')),
+                            unicode(QtGui.QApplication.translate("Phase10Widget",'five of a kind','plural'))
                             ]
                         },
-                 'c': QtGui.QApplication.translate("Phase10Widget","cards of the same colour"), 
+                 'c': unicode(QtGui.QApplication.translate("Phase10Widget","cards of the same colour")), 
                  'r': [
-                       QtGui.QApplication.translate("Phase10Widget",'run of'),
-                       QtGui.QApplication.translate("Phase10Widget", 'runs of')
+                       unicode(QtGui.QApplication.translate("Phase10Widget",'run of')),
+                       unicode(QtGui.QApplication.translate("Phase10Widget", 'runs of'))
                        ], 
                  'cr': [
-                        QtGui.QApplication.translate("Phase10Widget",'colour run of'),
-                        QtGui.QApplication.translate("Phase10Widget",'colour runs of')
+                        unicode(QtGui.QApplication.translate("Phase10Widget",'colour run of')),
+                        unicode(QtGui.QApplication.translate("Phase10Widget",'colour runs of'))
                         ]
                  }
         phases = []
@@ -167,11 +168,11 @@ class Phase10Widget(GameWidget):
                     if not first: phase += " + "
                     first = False
                     if tcode == 's':
-                        phase += u"{} {}".format(n,types[tcode][cards][plural])
+                        phase += unicode(u"{} {}".format(n,types[tcode][cards][plural]))
                     elif tcode == 'c':
-                        phase += u"{} {}".format(cards,types[tcode])
+                        phase += unicode(u"{} {}".format(cards,types[tcode]))
                     elif tcode in ['r', 'cr']:
-                        phase += u"{} {} {}".format(n,types[tcode][plural],cards)
+                        phase += unicode(u"{} {} {}".format(n,types[tcode][plural],cards))
             phases.append(phase)
         return phases
 
@@ -310,17 +311,31 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
     
     def __init__(self, nick, engine, bgroup = None, parent=None):
         super(Phase10PlayerWidget,self).__init__(parent)
-        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-        self.setTitle(nick)
         self.nick = nick
         self.bgroup = bgroup
         self.engine = engine
+        self.pcolour = PlayerColours[self.engine.getListPlayers().index(nick)]
         self.current_phase = min(self.engine.getRemainingPhasesFromPlayer(self.nick))
         self.phases_in_order = self.engine.getPhasesInOrderFlag()
         self.initUI()
 
     def initUI(self):
+        
+        self.setStyleSheet("QGroupBox {{ font-size: 18px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
+        self.setTitle(self.nick)
+        
+        self.iconlabel = QtGui.QLabel(self)
+        self.iconlabel.setFixedSize(50,50)#FixedSize(25, 25)
+        self.iconlabel.setScaledContents(True)
+        self.dealerpixmap=QtGui.QPixmap('icons/cards.png')
+        self.iconlabel.setPixmap(self.dealerpixmap)
+        self.iconlabel.setDisabled(True)
+#         self.iconlabel.hide()
+
+#         self.iconlabel.move(10,self.height()/2+self.height()/2)
+        
         self.widgetLayout = QtGui.QHBoxLayout(self)
+        self.widgetLayout.addWidget(self.iconlabel)
         self.leftLayout = QtGui.QHBoxLayout()
         self.middleLayout = QtGui.QGridLayout()
         self.middleLayout.setSpacing(5)
@@ -339,6 +354,13 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.scoreLCD.setMinimumWidth(100)
         self.scoreLCD.setMaximumHeight(125)
         self.scoreLCD.display(self.engine.getScoreFromPlayer(self.nick))
+        
+        self.scoreLCD.setStyleSheet("QLCDNumber {{ color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
+        
+        pal = self.scoreLCD.palette()
+        pal.setColor(QtGui.QPalette.Foreground,self.pcolour)
+        self.scoreLCD.setPalette(pal)
+        
         
         #Middle part - Phase list
         self.phaseLabels=list()
@@ -445,10 +467,15 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         return QtGui.QGroupBox.mousePressEvent(self, event)
             
     def setDealer(self):
-        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: red }")
+        self.iconlabel.setEnabled(True)
+#         self.iconlabel.show()
+#         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: red }")
         
     def unsetDealer(self):
-        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: black }")
+        self.iconlabel.setDisabled(True)
+#         self.iconlabel.addPixmap(self.dealerpixmap,QtGui.QIcon.Disabled)
+#         self.iconlabel.hide()
+#         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: black }")
         
     def isWinner(self):
         return self.roundWinnerRadioButton.isChecked()
@@ -539,7 +566,7 @@ class Phase10RoundsDetail(QtGui.QWidget):
                 text = str(r.getPlayerScore(player))
             a_phase = r.getPlayerAimedPhase(player)
             c_phase = r.getPlayerCompletedPhase(player)
-            text += QtGui.QApplication.translate("Phase10PlayerWidget", " (Phase {})").format(a_phase)
+            text += unicode(QtGui.QApplication.translate("Phase10PlayerWidget", " (Phase {})")).format(a_phase)
             if c_phase != 0: background = 0xCCFF99 #green
             else: background = 0xFFCC99 #red
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
@@ -558,19 +585,34 @@ class Phase10RoundPlot(GameRoundPlot):
     
     def initPlot(self):
         super(Phase10RoundPlot,self).initPlot()
+        self.setStyleSheet("QLabel {font-size: 18px; }")
         if self.isPlotInited():
-            self.phaseaxis = self.figure.add_subplot(121)
-            self.scoreaxis = self.figure.add_subplot(122)
+            QtGui.QWidget().setLayout(self.layout())
+            self.widgetLayout = QtGui.QGridLayout()
+            self.setLayout(self.widgetLayout)
+            self.phasesLabel = QtGui.QLabel("",self)
+            self.widgetLayout.addWidget(self.phasesLabel,0,0)
+            self.scoreLabel = QtGui.QLabel("",self)
+            self.widgetLayout.addWidget(self.scoreLabel,0,1)
+            self.canvas = PlotView(PlayerColours,self)
+            self.canvas.setBackground(self.palette().color(self.backgroundRole()))
+            self.canvas.addLinePlot()
+            self.widgetLayout.addWidget(self.canvas,1,0)
+            self.scorecanvas = PlotView(PlayerColours,self)
+            self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
+            self.scorecanvas.addLinePlot()
+            self.widgetLayout.addWidget(self.scorecanvas,1,1)
             self.updatePlot()
+            self.retranslatePlot()
         
     def retranslatePlot(self):
-        if not self.isPlotLibAvailable() or not self.isPlotInited(): return
-        self.phaseaxis.set_title(QtGui.QApplication.translate("Phase10RoundPlot",'Phases') )
-        self.scoreaxis.set_title(QtGui.QApplication.translate("Phase10RoundPlot",'Scores') )
+        if not self.isPlotInited(): return
+        self.phasesLabel.setText(QtGui.QApplication.translate("Phase10RoundPlot",'Phases') )
+        self.scoreLabel.setText(QtGui.QApplication.translate("Phase10RoundPlot",'Scores') )
         
     def updatePlot(self):
         super(Phase10RoundPlot,self).updatePlot()
-        if not self.isPlotLibAvailable() or not self.isPlotInited(): return
+        if not self.isPlotInited(): return
         scores = {}
         phases = {}
         for player in self.engine.getPlayers():
@@ -588,34 +630,12 @@ class Phase10RoundPlot(GameRoundPlot):
                 if c_phase > 0: phases[player].append(phases[player][-1]+1)
                 else: phases[player].append(phases[player][-1])
                 
-        self.phaseaxis.cla()
-        self.scoreaxis.cla()
+        self.canvas.clearPlotContents()
+        self.scorecanvas.clearPlotContents()
         
-        self.phaseaxis.set_axis_bgcolor('none')
-        self.scoreaxis.set_axis_bgcolor('none')
-        
-        self.phaseaxis.axis([0, self.engine.getNumRound(),0,10])
-        maxscore = max([self.engine.getScoreFromPlayer(player) for player in self.engine.getListPlayers()])
-        self.scoreaxis.axis([0, self.engine.getNumRound(),0,max(50,maxscore)+10])
-        self.phaseaxis.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-        self.scoreaxis.get_xaxis().set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-        lines = []
-        for player in self.engine.getListPlayers():
-            lines.append(self.phaseaxis.plot(phases[player],linewidth=2.5, linestyle="-",marker='o',label=player))
-            self.scoreaxis.plot(scores[player],linewidth=2.5, linestyle="-",marker='o',label=player)
-        
-        if not self.axiswidth:
-            phasebox = self.phaseaxis.get_position()
-            scorebox = self.scoreaxis.get_position()
-            if not self.axiswidth: self.axiswidth = scorebox.height
-            self.phaseaxis.set_position([phasebox.x0, phasebox.y0+self.axiswidth*0.2,  phasebox.width, self.axiswidth*0.8])
-            self.scoreaxis.set_position([scorebox.x0, scorebox.y0+self.axiswidth*0.2,  scorebox.width, self.axiswidth*0.8])
-
-        legend = self.phaseaxis.legend(loc='upper center',ncol=len(self.engine.getListPlayers()),bbox_to_anchor=(1.025, -0.125))
-#        legend.legendPatch.set_alpha(0.0)
-        legend.legendPatch.set_facecolor('none')
-        self.retranslatePlot()
-        try: self.canvas.draw()
-        except RuntimeError: pass    
+        for player in self.engine.getListPlayers():        
+            self.canvas.addSeries(phases[player],player)
+            self.scorecanvas.addSeries(scores[player],player)
+            
         
         
