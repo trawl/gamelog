@@ -297,6 +297,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         
         self.tableContainer = QtGui.QFrame(self)
         self.tableContainerLayout = QtGui.QVBoxLayout(self.tableContainer)
+        self.tableContainer.setAutoFillBackground(True)
         self.container.addTab(self.tableContainer,'')
         
         self.table = QtGui.QTableWidget(0,len(self.engine.getPlayers()))
@@ -317,10 +318,12 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         self.totals.setMaximumHeight(self.totals.sizeHint().height())
         
         self.plot = CarcassonneEntriesPlot(self.engine,self)      
+        self.plot.setAutoFillBackground(True)
 #        self.container.addItem(self.plot,'')
         self.container.addTab(self.plot,'')
 
         self.statsFrame = QtGui.QWidget(self)
+        self.statsFrame.setAutoFillBackground(True)
         self.container.addTab(self.statsFrame,'')
 
         self.statsLayout= QtGui.QVBoxLayout(self.statsFrame)
