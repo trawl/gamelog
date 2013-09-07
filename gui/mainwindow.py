@@ -102,11 +102,11 @@ class MainWindow(QtGui.QMainWindow):
         if numgames > 0:
             if (numgames == 1):
                 reply = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("MainWindow",'Exit'),
-                                                   unicode(QtGui.QApplication.translate("MainWindow","You have an opened {} match. Do you want to save it before exiting?")).format(realopened[0].getGameName()), QtGui.QMessageBox.Yes | 
+                                                   QtGui.QApplication.translate("MainWindow","You have an opened {} match. Do you want to save it before exiting?").format(realopened[0].getGameName()), QtGui.QMessageBox.Yes | 
                                                    QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
             else:
                 reply = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("MainWindow",'Exit'),
-                                                   unicode(QtGui.QApplication.translate("MainWindow","You have {} opened matches. Do you want to save them before exiting?")).format(numgames), QtGui.QMessageBox.Yes | 
+                                                   QtGui.QApplication.translate("MainWindow","You have {} opened matches. Do you want to save them before exiting?").format(numgames), QtGui.QMessageBox.Yes | 
                                                    QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
             
             if reply == QtGui.QMessageBox.Cancel: return False

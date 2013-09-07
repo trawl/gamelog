@@ -37,7 +37,7 @@ class LanguageChooser(QtGui.QDialog):
 
         ci = self.languageListWidget.currentItem()
         if ci:
-            selected = unicode(ci.text())
+            selected = ci.text()
             fname = self.supportedLanguages[selected]
             self.newQM.emit(fname)
         self.close()
