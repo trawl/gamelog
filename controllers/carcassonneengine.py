@@ -26,7 +26,7 @@ if __name__ == "__main__":
 class CarcassonneStatsEngine(StatsEngine):
     
     _singleKindRecordQuery="""
-    SELECT value as "record" ,Round.score as "points",RoundStatistics.nick, DATE(Match.finished) as date
+    SELECT value as "record" ,Round.score as "points",RoundStatistics.nick as "player", DATE(Match.finished) as date
     FROM Match,Round,RoundStatistics
     WHERE Match.idMatch = Round.idMatch 
         and Round.idMatch = RoundStatistics.idMatch 
@@ -40,6 +40,24 @@ class CarcassonneStatsEngine(StatsEngine):
     limit 1
     """
     
+    _matchKindRecordQuery="""
+        SELECT Match.idMatch as "match", value as "record" ,SUM(Round.score) as "points",RoundStatistics.nick as "player", DATE(Match.finished) as date
+    FROM Match,Round,RoundStatistics
+    WHERE Match.idMatch = Round.idMatch 
+        and Round.idMatch = RoundStatistics.idMatch 
+        and Round.idRound = RoundStatistics.idRound 
+        and Round.nick = RoundStatistics.nick  
+        and Game_name="Carcassonne" 
+        and key="kind" 
+        and value = '{}' 
+        and Round.score>0 
+   GROUP BY "match","record","player"
+   ORDER BY points desc
+   LIMIT 1
+   """
+    
+    
+    
     def __init__(self):
         super(CarcassonneStatsEngine, self).__init__()
         self.singleKindRecord=None
@@ -47,9 +65,14 @@ class CarcassonneStatsEngine(StatsEngine):
     def update(self):
         super(CarcassonneStatsEngine, self).update()
         self.singleKindRecord = []
+        self.matchKindRecord = []
         for kind in ("City","Road","Field"):
             self.singleKindRecord += db.queryDict(self._singleKindRecordQuery.format(kind))
+            
+        for kind in ("City","Road","Cloister","Field"):
+            self.matchKindRecord += db.queryDict(self._matchKindRecordQuery.format(kind))
     
-    def getSingleKindRecords(self):
-        return self.singleKindRecord
+    def getSingleKindRecords(self): return self.singleKindRecord
+    
+    def getMatchKindRecords(self): return self.matchKindRecord
     
