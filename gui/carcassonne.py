@@ -476,30 +476,41 @@ class CarcassonneQSBox(QuickStatsBox):
         super(CarcassonneQSBox,self).__init__(self.game,parent)
           
     def initUI(self):
-        self.recordsLabel = QtGui.QLabel(self)
-        self.recordsTable = StatsTable(self)
+        self.singleRecordsLabel = QtGui.QLabel(self)
+        self.singleRecordsTable = StatsTable(self)
+        self.matchRecordsLabel = QtGui.QLabel(self)
+        self.matchRecordsTable = StatsTable(self)        
+        
         super(CarcassonneQSBox, self).initUI()
         index=self.widgetLayout.count()-1
-        self.widgetLayout.addWidget(self.recordsLabel)
-        self.widgetLayout.addWidget(self.recordsTable)
-        self.widgetLayout.insertWidget(index,self.recordsLabel)
-        self.widgetLayout.insertWidget(index+1,self.recordsTable)
+#         self.widgetLayout.addWidget(self.singleRecordsLabel)
+#         self.widgetLayout.addWidget(self.singleRecordsTable)
+        self.widgetLayout.insertWidget(index,self.singleRecordsLabel)
+        self.widgetLayout.insertWidget(index+1,self.singleRecordsTable)
+        self.widgetLayout.insertWidget(index+2,self.matchRecordsLabel)
+        self.widgetLayout.insertWidget(index+3,self.matchRecordsTable)
         
     def retranslateUI(self):
-        self.recordsLabel.setText(QtGui.QApplication.translate("CarcassonneQSBox","Records"))
+        self.singleRecordsLabel.setText(QtGui.QApplication.translate("CarcassonneQSBox","Records"))
+        self.matchRecordsLabel.setText(QtGui.QApplication.translate("CarcassonneQSBox","Match Records"))
         super(CarcassonneQSBox, self).retranslateUI()
         
     def update(self,game=None):
         super(CarcassonneQSBox, self).update(game)
-        singlerecordstats = self.stats.getSingleKindRecords()
+        singleRecordStats = self.stats.getSingleKindRecords()
+        matchRecordStats = self.stats.getMatchKindRecords()
 
-        if not singlerecordstats: self.recordsLabel.hide()
-        else: self.recordsLabel.show()
+        if not singleRecordStats: self.singleRecordsLabel.hide()
+        else: self.singleRecordsLabel.show()
             
-        for row in singlerecordstats:
+        for row in singleRecordStats:
+            row['record'] = QtGui.QApplication.translate("CarcassonneInputWidget",row['record'])
+            
+        for row in matchRecordStats:
             row['record'] = QtGui.QApplication.translate("CarcassonneInputWidget",row['record'])
 
-        keys = ['points','nick','date']
+        keys = ['points','player','date']
         headers = [QtGui.QApplication.translate("CarcassonneQSBox",'Record'),QtGui.QApplication.translate("CarcassonneQSBox",'Player'),QtGui.QApplication.translate("CarcassonneQSBox",'Date')]
-        self.updateTable(self.recordsTable, singlerecordstats, keys, 'record', headers)
+        self.updateTable(self.singleRecordsTable, singleRecordStats, keys, 'record', headers)
+        self.updateTable(self.matchRecordsTable, matchRecordStats, keys, 'record', headers)
         

@@ -95,6 +95,7 @@ class QuickStatsBox(QtGui.QGroupBox):
                     
             table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)            
             table.setMaximumHeight(table.sizeHint().height())
+            table.setMinimumHeight(table.rowHeight(0)*2)
 
         else:
             table.hide()
