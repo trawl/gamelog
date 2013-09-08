@@ -315,9 +315,6 @@ class GamePlayerWidget(QtGui.QWidget):
 
 
 class GameRoundPlot(QtGui.QWidget):
-
-    plotCompleted = QtCore.Signal()
-
     def __init__(self,engine,parent=None):
         super(GameRoundPlot, self).__init__(parent)
         self.plotinited = False
@@ -328,22 +325,13 @@ class GameRoundPlot(QtGui.QWidget):
         
     def initUI(self):
         self.widgetLayout = QtGui.QHBoxLayout(self)
-        self.canvas = None
-        self.initPlotThread = PlotThread()
-        self.initPlotThread.initplot.connect(self.initPlot)
-        self.initPlotThread.start()
-
-    def initPlot(self):
         self.canvas = PlotView(PlayerColours,self)
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
         self.canvas.addLinePlot()
         self.widgetLayout.addWidget(self.canvas)
         self.plotinited = True
-        self.initPlotThread.terminate()
-        self.plotCompleted.emit()
             
-    def retranslateUI(self):
-        self.retranslatePlot()
+    def retranslateUI(self): self.retranslatePlot()
     
     def isPlotInited(self): return self.plotinited
         
@@ -351,17 +339,3 @@ class GameRoundPlot(QtGui.QWidget):
     
     def retranslatePlot(self): pass
         
-        
-class PlotThread(QtCore.QThread):
-    
-    initplot = QtCore.Signal()
-    
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def __del__(self):
-        self.wait()
-    
-    def run(self):
-        time.sleep(0.5)
-        self.initplot.emit()

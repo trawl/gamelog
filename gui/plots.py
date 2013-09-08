@@ -230,6 +230,7 @@ class LinePlot(QtGui.QGraphicsItem):
         py=self.vmargin+self.aheight-(vy-self.yvmin)*self.aheight/float(self.yvmax-self.yvmin)
         return QtCore.QPointF(px,py)
 
+
 class PlotLine(QtGui.QGraphicsLineItem):
     def __init__(self,x1,y1,x2,y2,linewidth=None,colour=None,parent=None,scene=None):
         super(PlotLine,self).__init__(x1,y1,x2,y2,parent,scene)
