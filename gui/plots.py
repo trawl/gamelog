@@ -209,7 +209,7 @@ class LinePlot(QtGui.QGraphicsItem):
         pend = self.value2point(self.xvmax, self.limitvalue)
         pxend = pend.x()
         pyend= pend.y()
-        limitline = PlotLine(pxstart,pystart,pxend,pyend,3,QtCore.Qt.red,self)
+        limitline = PlotLine(pxstart,pystart,pxend,pyend,4,QtCore.Qt.red,self)
         pen = limitline.pen()
         pen.setStyle(QtCore.Qt.DotLine)
         limitline.setPen(pen)
@@ -220,8 +220,9 @@ class LinePlot(QtGui.QGraphicsItem):
             colour = self.colours[i]
             for vx,vy in enumerate(ser):
                 point = self.value2point(vx, vy)
-                PlotDot(point.x(),point.y(),5,colour,self)
-                if vx>0: PlotLine(pp.x(),pp.y(),point.x(),point.y(),2.5,colour,self)
+                dot = PlotDot(point.x(),point.y(),10,colour,self)
+                dot.setMetaData({'label':self.seriesLabels[i],'x':vx,'y':vy})
+                if vx>0: PlotLine(pp.x(),pp.y(),point.x(),point.y(),3,colour,self)
                 pp = point        
                 
     def value2point(self,vx,vy):
@@ -236,7 +237,7 @@ class PlotLine(QtGui.QGraphicsLineItem):
         if linewidth: pen.setWidthF(linewidth)
         if colour: pen.setColor(colour)
         self.setPen(pen)
-    
+        
     def paint(self, painter,options,widget): 
         painter.setRenderHint(QtGui.QPainter.Antialiasing,True);
         super(PlotLine,self).paint(painter,options,widget)
@@ -255,6 +256,17 @@ class PlotDot(QtGui.QGraphicsEllipseItem):
             pen.setColor(colour)
             self.setPen(pen)
         self.setBrush(brush)
+#         self.setAcceptHoverEvents(True)
+        
+    def setMetaData(self,md):
+        try:
+            tt = "{}: ({},{})".format(md["label"],md["x"],md["y"])
+            self.setToolTip(tt)
+        except KeyError: pass
+                
+    def hoverEnterEvent(self, *args, **kwargs):
+        if self.metadata is not None:
+            print("hoovering...")
     
     def paint(self, painter,options,widget): 
         painter.setRenderHint(QtGui.QPainter.Antialiasing,True);
