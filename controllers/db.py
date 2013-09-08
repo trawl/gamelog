@@ -26,6 +26,8 @@ class GameLogDB:
             self._checkDB()
         except Exception as e:
             self._printError("Error creating DB: {}".format(e.args[0]))
+            
+        db.execute("PRAGMA synchronous=OFF")
 
     def isConnected(self):
         return self.con is not None

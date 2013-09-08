@@ -352,6 +352,7 @@ class GenericEntryMatch(GenericMatch):
         #Remove previous saved game information to make sure we don't leave any leftovers after editing rounds...
         db.execute("DELETE FROM Round where idMatch={};".format(self.idMatch))
         db.execute("DELETE FROM RoundStatistics where idMatch={};".format(self.idMatch))
+        db.execute("BEGIN")
         for entry in self.getEntries():
             db.execute("INSERT OR REPLACE INTO Round (idMatch,nick,idRound,score) VALUES ({},'{}',{},{});".format(self.idMatch,str(entry.getPlayer()),entry.getNumEntry(),entry.getScore()))
         

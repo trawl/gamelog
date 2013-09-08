@@ -43,7 +43,6 @@ class CarcassonneWidget(GameWidget):
         self.detailGroup = CarcassonneEntriesDetail(self.engine, self.bgcolors,self)
         self.detailGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout.addWidget(self.detailGroup,1,0)        
-        self.detailGroup.plot.plotCompleted.connect(self.gameInput.setFocus)
         self.detailGroup.entriesChanged.connect(self.updateScores)
         
         self.playerGroup = QtGui.QGroupBox(self)
