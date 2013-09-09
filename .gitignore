@@ -4,3 +4,4 @@ db/
 .pydevproject
 __pycache__
 *.py[cod]
+.settings
