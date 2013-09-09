@@ -43,7 +43,7 @@ class Phase10Engine(RoundGameEngine):
         print("Phases:")
         print("====================")
         for n,phase in enumerate(self.getPhases(),start=1):
-            print(u"  Phase {0:02}: {1}".format(n,phase))
+            print("  Phase {0:02}: {1}".format(n,phase))
         print("====================")
         print("  Quick desc: s=set, r=run, c=colour, cr=colour run")
         print("  Example: 2s4 = 2 sets of 4 cards")

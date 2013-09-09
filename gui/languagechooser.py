@@ -13,7 +13,7 @@ except ImportError as error:
 class LanguageChooser(QtGui.QDialog):
     
     newQM = QtCore.Signal(str)
-    supportedLanguages = {u'Español':'i18n/es_ES',u'English':'i18n/en_GB',u'Català':'i18n/ca_ES'}
+    supportedLanguages = {'Español':'i18n/es_ES','English':'i18n/en_GB','Català':'i18n/ca_ES'}
     
     def __init__(self,parent=None):
         super(LanguageChooser,self).__init__(parent)
