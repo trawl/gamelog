@@ -293,10 +293,10 @@ class GamePlayerWidget(QtGui.QWidget):
         
         self.mainLayout.addWidget(self.nameLabel)
         self.iconlabel = QtGui.QLabel(self)
-        self.iconlabel.setFixedSize(25, 25)
+        self.iconlabel.setFixedSize(50, 50)
         self.iconlabel.setScaledContents(True)
         self.iconlabel.setPixmap(QtGui.QPixmap('icons/cards.png'))
-#         self.mainLayout.addWidget(self.iconlabel)
+        self.mainLayout.insertWidget(0,self.iconlabel)
 #         self.mainLayout.addStretch()
         self.unsetDealer()
         
@@ -306,11 +306,13 @@ class GamePlayerWidget(QtGui.QWidget):
 
     def setDealer(self):
         if self.isEnabled():
-            self.iconlabel.show()
+#            self.iconlabel.show()
+            self.iconlabel.setEnabled(True)
 #             self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: red }")
         
     def unsetDealer(self):
-        self.iconlabel.hide()
+        self.iconlabel.setDisabled(True)
+#        self.iconlabel.hide()
 
 
 class GameRoundPlot(QtGui.QWidget):
