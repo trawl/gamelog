@@ -231,9 +231,10 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
 class RemigioPlayerWidget(GamePlayerWidget):
         
     def koPlayer(self):
+        self.iconlabel.setEnabled(True)
         self.iconlabel.setPixmap(QtGui.QPixmap('icons/skull.png'))
-        self.iconlabel.setFixedSize(30,30)
-        self.iconlabel.show()
+#        self.iconlabel.setFixedSize(50,50)
+#        self.iconlabel.show()
 #         self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: grey}")
      
             
