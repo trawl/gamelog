@@ -1,5 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import sys
-from PyQt4 import QtGui, QtCore
+
+try:
+    from PyQt4 import QtCore,QtGui
+    QtCore.Signal = QtCore.pyqtSignal
+    QtCore.Slot = QtCore.pyqtSlot
+except ImportError as error:
+    from PySide import QtCore,QtGui
+    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
 
 colours=[QtGui.QColor(237,44,48),
          QtGui.QColor(23,89,169),

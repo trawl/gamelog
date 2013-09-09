@@ -3,18 +3,18 @@
 
 import re
 import sys
-from gui.plots import PlotView
 
 try:
-    from PySide import QtCore,QtGui
-    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
-except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
+except ImportError as error:
+    from PySide import QtCore,QtGui
+    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
 
 from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
 from gui.game import GameWidget,GameInputWidget, ScoreSpinBox,GameRoundPlot,PlayerColours
+from gui.plots import PlotView
 
 class Phase10Widget(GameWidget):
 
@@ -583,30 +583,30 @@ class Phase10RoundsDetail(QtGui.QWidget):
         
 class Phase10RoundPlot(GameRoundPlot):
     
-    def initPlot(self):
-        super(Phase10RoundPlot,self).initPlot()
+    def initUI(self):
+        super(Phase10RoundPlot,self).initUI()
         self.setStyleSheet("QLabel {font-size: 18px; }")
-        if self.isPlotInited():
-            QtGui.QWidget().setLayout(self.layout())
-            self.widgetLayout = QtGui.QGridLayout()
-            self.setLayout(self.widgetLayout)
-            self.phasesLabel = QtGui.QLabel("",self)
-            self.widgetLayout.addWidget(self.phasesLabel,0,0)
-            self.scoreLabel = QtGui.QLabel("",self)
-            self.widgetLayout.addWidget(self.scoreLabel,0,1)
-            self.canvas = PlotView(PlayerColours,self)
-            self.canvas.setBackground(self.palette().color(self.backgroundRole()))
-            self.canvas.addLinePlot()
-            self.widgetLayout.addWidget(self.canvas,1,0)
-            self.scorecanvas = PlotView(PlayerColours,self)
-            self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
-            self.scorecanvas.addLinePlot()
-            self.widgetLayout.addWidget(self.scorecanvas,1,1)
-            self.updatePlot()
-            self.retranslatePlot()
+        QtGui.QWidget().setLayout(self.layout())
+        self.widgetLayout = QtGui.QGridLayout()
+        self.setLayout(self.widgetLayout)
+        self.phasesLabel = QtGui.QLabel("",self)
+        self.widgetLayout.addWidget(self.phasesLabel,0,0)
+        self.scoreLabel = QtGui.QLabel("",self)
+        self.widgetLayout.addWidget(self.scoreLabel,0,1)
+        self.canvas = PlotView(PlayerColours,self)
+        self.canvas.setBackground(self.palette().color(self.backgroundRole()))
+        self.canvas.addLinePlot()
+        self.widgetLayout.addWidget(self.canvas,1,0)
+        self.scorecanvas = PlotView(PlayerColours,self)
+        self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
+        self.scorecanvas.addLinePlot()
+        self.widgetLayout.addWidget(self.scorecanvas,1,1)
+        self.retranslatePlot()
+        self.updatePlot()
+    
         
     def retranslatePlot(self):
-        if not self.isPlotInited(): return
+        super(Phase10RoundPlot,self).retranslatePlot()
         self.phasesLabel.setText(QtGui.QApplication.translate("Phase10RoundPlot",'Phases') )
         self.scoreLabel.setText(QtGui.QApplication.translate("Phase10RoundPlot",'Scores') )
         
