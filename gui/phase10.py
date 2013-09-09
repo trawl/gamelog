@@ -158,7 +158,7 @@ class Phase10Widget(GameWidget):
         phases = []
         for code in self.engine.getPhases():
             first = True
-            phase = u""
+            phase = ""
             for part in code.split():
                 m = re.match(r'(\d)([src]|cr)(\d)',part)
                 if m:
