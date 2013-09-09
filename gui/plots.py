@@ -126,7 +126,7 @@ class LinePlot(QtGui.QGraphicsItem):
         self.yvmax=ymax+gymargin
         
     def drawVRefs(self):
-        if self.yvmax< self.yvmin: return
+        if self.yvmax< self.yvmin or self.aheight<=0: return
         minsep=30
         factor=1
         try:
@@ -166,6 +166,7 @@ class LinePlot(QtGui.QGraphicsItem):
             vy +=factor
 
     def drawHRefs(self):
+        if self.xvmax< self.xvmin or self.awidth<=0: return
         minsep=30
         factor=1
         unitincrement=self.awidth/float(self.xvmax-self.xvmin)
