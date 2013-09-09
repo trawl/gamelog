@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# from gui.gamestatsfactory import QSBoxFactory
 try:
-    from PySide import QtCore,QtGui
-    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
-except ImportError as error:
     from PyQt4 import QtCore,QtGui
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
+except ImportError as error:
+    from PySide import QtCore,QtGui
+    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
 
 from controllers.carcassonneengine import CarcassonneEngine
-from gui.game import GameWidget,ScoreSpinBox,GameRoundPlot,GamePlayerWidget,\
-    PlayerColours
-from gui.gamestats import QuickStatsBox,StatsTable
+from gui.game import GameWidget, ScoreSpinBox, GameRoundPlot, GamePlayerWidget, PlayerColours
+from gui.gamestats import QuickStatsBox, StatsTable
 
 
 class CarcassonneWidget(GameWidget):

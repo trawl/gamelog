@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 try:
-    from PySide import QtGui,QtCore
+    from PyQt4 import QtCore,QtGui
+    QtCore.Signal = QtCore.pyqtSignal
+    QtCore.Slot = QtCore.pyqtSlot
 except ImportError as error:
-    from PyQt4 import QtGui,QtCore
+    from PySide import QtCore,QtGui
+    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
     
     
 class LanguageChooser(QtGui.QDialog):
