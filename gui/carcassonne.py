@@ -490,7 +490,7 @@ class CarcassonneQSBox(QuickStatsBox):
         self.widgetLayout.insertWidget(index+3,self.matchRecordsTable)
         
     def retranslateUI(self):
-        self.singleRecordsLabel.setText(QtGui.QApplication.translate("CarcassonneQSBox","Records"))
+        self.singleRecordsLabel.setText(QtGui.QApplication.translate("CarcassonneQSBox","Individual Records"))
         self.matchRecordsLabel.setText(QtGui.QApplication.translate("CarcassonneQSBox","Match Records"))
         super(CarcassonneQSBox, self).retranslateUI()
         
