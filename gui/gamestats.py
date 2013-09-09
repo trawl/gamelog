@@ -20,11 +20,18 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.game = game
         self.initUI()
 
-        sp = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
+        sp = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.Expanding)
         self.setSizePolicy(sp)
         
     def initUI(self):
-        self.widgetLayout = QtGui.QVBoxLayout(self)
+        self.superlayout = QtGui.QVBoxLayout(self)
+        self.scrollarea = QtGui.QScrollArea()
+        self.scrollarea.setWidgetResizable(True)
+        self.superlayout.addWidget(self.scrollarea)
+        self.container = QtGui.QWidget(self)
+        self.widgetLayout = QtGui.QVBoxLayout(self.container)
+        self.scrollarea.setWidget(self.container)
+        
         self.gameStatsLabel = QtGui.QLabel(self)
         self.widgetLayout.addWidget(self.gameStatsLabel)
         
@@ -93,18 +100,22 @@ class QuickStatsBox(QtGui.QGroupBox):
                     item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignHCenter)
                     item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
                     table.setItem(i,j,item)
-                    
-            table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)            
-            table.setMaximumHeight(table.sizeHint().height())
-            table.setMinimumHeight(table.rowHeight(0)*2)
+            
+            table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)           
+#            table.setMaximumHeight(table.sizeHint().height())
+#            table.setMinimumHeight(table.rowHeight(0)*2)
+            table.setFixedHeight(table.sizeHint().height())
+            table.setMinimumWidth(table.sizeHint().width())
 
         else:
             table.hide()
+            
 
 class StatsTable(QtGui.QTableWidget):
     def sizeHint(self):
         s = QtCore.QSize()
-        s.setWidth(super(StatsTable,self).sizeHint().height())
+        s.setWidth(super(StatsTable,self).sizeHint().width())
+        s.setWidth(75*(self.columnCount()+1)+2*self.columnCount())
         s.setHeight(self.rowHeight(0)*(self.rowCount()+1)+2)
         return s
         
