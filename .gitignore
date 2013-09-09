@@ -2,3 +2,4 @@ db/
 .directory
 .project
 .pydevproject
+__pycache__
