@@ -61,7 +61,7 @@ class CarcassonneWidget(GameWidget):
  
         self.playersLayout.addStretch()
         self.retranslateUI()
-        self.gameInput.setFocus()
+        QtCore.QTimer.singleShot(1000, self.gameInput.setFocus)
         
     def retranslateUI(self):
         super(CarcassonneWidget,self).retranslateUI()
