@@ -61,7 +61,9 @@ class RemigioWidget(GameWidget):
             pw = RemigioPlayerWidget(player,PlayerColours[i%len(PlayerColours)],self.playerGroup)
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer(): pw.setDealer()
-            if self.engine.isPlayerOff(player): pw.koPlayer()
+            if self.engine.isPlayerOff(player): 
+                print("Should set {} to ko...".format(player))
+                pw.koPlayer()
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
  
@@ -227,12 +229,14 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
                 
     def isKo(self): return self.ko
     
-    def setKo(self): self.ko = True
+    def setKo(self): 
+        self.ko = True
+        self.setDisabled(True)
             
     
-class RemigioPlayerWidget(GamePlayerWidget):
-        
-    def koPlayer(self): self.iconlabel.setPixmap(QtGui.QPixmap('icons/skull.png'))
+class RemigioPlayerWidget(GamePlayerWidget):  
+    def koPlayer(self): 
+        self.iconlabel.setPixmap(QtGui.QPixmap('icons/skull.png'))
      
             
 class RemigioRoundsDetail(QtGui.QGroupBox):

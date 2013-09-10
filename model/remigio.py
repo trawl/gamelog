@@ -35,13 +35,13 @@ class RemigioMatch(GenericRoundMatch):
             
     def resumeMatch(self,idMatch):
         if not super(RemigioMatch,self).resumeMatch(idMatch): return False
-        
-        for player in self.getPlayers(): self.playerStart(player)
                        
         cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='Top';".format(idMatch))
         row = cur.fetchone()
         if row: self.top = int(row['value'])
-                
+        
+        for player in self.getPlayers(): self.playerStart(player)
+        
         return True
     
     def resumeExtraInfo(self,player,key,value): 
