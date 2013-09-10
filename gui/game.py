@@ -264,12 +264,12 @@ class ScoreSpinBox(QtGui.QSpinBox):
         if value == self.minimum(): return ""
         else: return super(ScoreSpinBox,self).textFromValue(value)        
 
-class GamePlayerWidget(QtGui.QWidget):
+class GamePlayerWidget(QtGui.QGroupBox):
     
     def __init__(self,nick,colour=None,parent = None):
         super(GamePlayerWidget,self).__init__(parent)
         self.player = nick
-        self.colour=colour
+        self.pcolour=colour
         self.initUI()
         
     def initUI(self):
@@ -284,18 +284,20 @@ class GamePlayerWidget(QtGui.QWidget):
 #        self.scoreLCD.setMinimumHeight(30)
 #        self.scoreLCD.setMaximumHeight(100)
         self.scoreLCD.display(0)
-        self.scoreLCD.setStyleSheet("QLCDNumber {{ color:rgb({},{},{});}}".format(self.colour.red(),self.colour.green(),self.colour.blue()))
+        self.scoreLCD.setStyleSheet("QLCDNumber {{ color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
         
         self.nameLabel = QtGui.QLabel(self)
         self.nameLabel.setText(self.player)
-        sh = "QLabel {{ font-size: 18px; font-weight: bold; color:rgb({},{},{});}}".format(self.colour.red(),self.colour.green(),self.colour.blue())
+        sh = "QLabel {{ font-size: 18px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
         self.nameLabel.setStyleSheet(sh)
-        
         self.mainLayout.addWidget(self.nameLabel)
+        
+        self.dealerpixmap=QtGui.QPixmap('icons/cards.png')
+        self.nondealerpixmap=QtGui.QPixmap()
+        
         self.iconlabel = QtGui.QLabel(self)
-        self.iconlabel.setFixedSize(50, 50)
+        self.iconlabel.setFixedSize(40,40)
         self.iconlabel.setScaledContents(True)
-        self.iconlabel.setPixmap(QtGui.QPixmap('icons/cards.png'))
         self.mainLayout.insertWidget(0,self.iconlabel)
 #         self.mainLayout.addStretch()
         self.unsetDealer()
@@ -305,13 +307,15 @@ class GamePlayerWidget(QtGui.QWidget):
         self.scoreLCD.display(points)
 
     def setDealer(self):
-        if self.isEnabled():
+        self.iconlabel.setPixmap(self.dealerpixmap)
+#        if self.isEnabled():
 #            self.iconlabel.show()
-            self.iconlabel.setEnabled(True)
+#            self.iconlabel.setEnabled(True)
 #             self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: red }")
         
     def unsetDealer(self):
-        self.iconlabel.setDisabled(True)
+        self.iconlabel.setPixmap(self.nondealerpixmap)
+#        self.iconlabel.setDisabled(True)
 #        self.iconlabel.hide()
 
 

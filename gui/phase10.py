@@ -12,8 +12,8 @@ except ImportError as error:
     from PySide import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
 
-from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
-from gui.game import GameWidget,GameInputWidget, ScoreSpinBox,GameRoundPlot,PlayerColours
+from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
+from gui.game import GameWidget, GameInputWidget, GamePlayerWidget, ScoreSpinBox, GameRoundPlot, PlayerColours
 from gui.plots import PlotView
 
 class Phase10Widget(GameWidget):
@@ -296,71 +296,45 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
         self.valueChanged.emit(self.value())
         super(Phase10ScoreSpinBox,self).setEnabled(enable)
 
-    def setValidDisplay(self): 
-        self.setStyleSheet("QSpinBox {}")
-#        self.lineEdit().setStyleSheet("QLineEdit {}")
+    def setValidDisplay(self): self.setStyleSheet("QSpinBox {}")
     
-    def setInvalidDisplay(self): 
-        self.setStyleSheet("QSpinBox {background-color: #FF5E5E}")
-#        self.lineEdit().setStyleSheet("QLineEdit { background-color: #FF5E5E;}")
+    def setInvalidDisplay(self): self.setStyleSheet("QSpinBox {background-color: #FF5E5E}")
 
 
-class Phase10PlayerWidget(QtGui.QGroupBox):
+class Phase10PlayerWidget(GamePlayerWidget):
     
     winnerSet = QtCore.Signal(str)
     
     def __init__(self, nick, engine, bgroup = None, parent=None):
-        super(Phase10PlayerWidget,self).__init__(parent)
-        self.nick = nick
-        self.bgroup = bgroup
         self.engine = engine
-        self.pcolour = PlayerColours[self.engine.getListPlayers().index(nick)]
-        self.current_phase = min(self.engine.getRemainingPhasesFromPlayer(self.nick))
+        self.current_phase = min(self.engine.getRemainingPhasesFromPlayer(nick))
         self.phases_in_order = self.engine.getPhasesInOrderFlag()
-        self.initUI()
-
+        self.bgroup = bgroup
+        super(Phase10PlayerWidget,self).__init__(nick,PlayerColours[self.engine.getListPlayers().index(nick)],parent)
+        
     def initUI(self):
-        
         self.setStyleSheet("QGroupBox {{ font-size: 18px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
-        self.setTitle(self.nick)
-        
-        self.iconlabel = QtGui.QLabel(self)
-        self.iconlabel.setFixedSize(50,50)#FixedSize(25, 25)
-        self.iconlabel.setScaledContents(True)
-        self.dealerpixmap=QtGui.QPixmap('icons/cards.png')
-        self.iconlabel.setPixmap(self.dealerpixmap)
-        self.iconlabel.setDisabled(True)
-#         self.iconlabel.hide()
+        self.setTitle(self.player)
+        super(Phase10PlayerWidget,self).initUI()
 
-#         self.iconlabel.move(10,self.height()/2+self.height()/2)
+        trashWidget = QtGui.QWidget()
+        trashWidget.setLayout(self.mainLayout)
         
-        self.widgetLayout = QtGui.QHBoxLayout(self)
-        self.widgetLayout.addWidget(self.iconlabel)
+        self.mainLayout = QtGui.QHBoxLayout(self)
         self.leftLayout = QtGui.QHBoxLayout()
         self.middleLayout = QtGui.QGridLayout()
         self.middleLayout.setSpacing(5)
         self.rightLayout = QtGui.QGridLayout()
-        self.widgetLayout.addStretch()
-        self.widgetLayout.addLayout(self.leftLayout)
-        self.widgetLayout.addLayout(self.middleLayout)
-        self.widgetLayout.addLayout(self.rightLayout)
-        self.widgetLayout.addStretch()      
+        self.mainLayout.addStretch()
+        self.mainLayout.addLayout(self.leftLayout)
+        self.mainLayout.addLayout(self.middleLayout)
+        self.mainLayout.addLayout(self.rightLayout)
+        self.mainLayout.addStretch()      
         
         #Left part - score
-        self.scoreLCD = QtGui.QLCDNumber(self)
-        self.scoreLCD.setSegmentStyle(QtGui.QLCDNumber.Flat)
+        self.leftLayout.addWidget(self.iconlabel)
         self.leftLayout.addWidget(self.scoreLCD)
-        self.scoreLCD.setNumDigits(3)
-        self.scoreLCD.setMinimumWidth(100)
-        self.scoreLCD.setMaximumHeight(125)
-        self.scoreLCD.display(self.engine.getScoreFromPlayer(self.nick))
-        
-        self.scoreLCD.setStyleSheet("QLCDNumber {{ color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
-        
-        pal = self.scoreLCD.palette()
-        pal.setColor(QtGui.QPalette.Foreground,self.pcolour)
-        self.scoreLCD.setPalette(pal)
-        
+        self.scoreLCD.display(self.engine.getScoreFromPlayer(self.player))
         
         #Middle part - Phase list
         self.phaseLabels=list()
@@ -368,7 +342,7 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
             label = Phase10Label(phase,self)
             if phase == self.current_phase:
                 label.setCurrent()
-            elif self.engine.hasPhaseCompleted(self.nick, phase):
+            elif self.engine.hasPhaseCompleted(self.player, phase):
                 label.setPassed()
             self.phaseLabels.append(label)
             self.middleLayout.addWidget(label,(phase-1)/5,(phase-1)%5,1,1)
@@ -391,14 +365,13 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         self.roundWinnerRadioButton.toggled.connect(self.roundPhaseClearedCheckbox.setChecked)
         self.roundWinnerRadioButton.toggled.connect(self.winnerSetAction)
         
-        self.retranslateUI()
+        self.retranslateUI()       
         
     def retranslateUI(self):
         self.roundWinnerRadioButton.setText(QtGui.QApplication.translate("Phase10PlayerWidget","Winner"))
         self.roundPhaseClearedCheckbox.setText(QtGui.QApplication.translate("Phase10PlayerWidget","Completed"))
                     
     def updateDisplay(self,points,completed_phases,remaining_phases):
-        
         if len(remaining_phases)==0:
             self.current_phase=0
         else: self.current_phase = min(remaining_phases)
@@ -465,29 +438,15 @@ class Phase10PlayerWidget(QtGui.QGroupBox):
         elif type(child) == Phase10Label and not self.phases_in_order:
             self.updatePhaseSelected(child)
         return QtGui.QGroupBox.mousePressEvent(self, event)
-            
-    def setDealer(self):
-        self.iconlabel.setEnabled(True)
-#         self.iconlabel.show()
-#         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: red }")
-        
-    def unsetDealer(self):
-        self.iconlabel.setDisabled(True)
-#         self.iconlabel.addPixmap(self.dealerpixmap,QtGui.QIcon.Disabled)
-#         self.iconlabel.hide()
-#         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; color: black }")
-        
-    def isWinner(self):
-        return self.roundWinnerRadioButton.isChecked()
+#        
+    def isWinner(self): return self.roundWinnerRadioButton.isChecked()
  
-    def getRoundPhase(self):
-        return self.current_phase
+    def getRoundPhase(self): return self.current_phase
     
-    def isRoundCleared(self):
-        return self.roundPhaseClearedCheckbox.isChecked()
+    def isRoundCleared(self): return self.roundPhaseClearedCheckbox.isChecked()
     
     def winnerSetAction(self,isset):
-        if isset: self.winnerSet.emit(self.nick)
+        if isset: self.winnerSet.emit(self.player)
         
     def reset(self): pass
         

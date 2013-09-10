@@ -139,8 +139,7 @@ class RemigioInputWidget(GameInputWidget):
             if not piw.isKo(): scores[player] = piw.getScore()
         return scores
             
-    def koPlayer(self,player):
-        self.playerInputList[player].setKo()
+    def koPlayer(self,player): self.playerInputList[player].setKo()
         
         
 class RemigioPlayerInputWidget(QtGui.QFrame):
@@ -201,8 +200,7 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         
     def mousePressEvent(self, event):
         if self.isWinner(): self.increaseCloseType()
-        else: 
-            self.scoreSpinBox.setFocus()
+        else: self.scoreSpinBox.setFocus()
             
     def mouseDoubleClickEvent(self, event):
         if not self.isWinner(): 
@@ -210,32 +208,25 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
             self.increaseCloseType()
         else:
             super(RemigioPlayerInputWidget,self).mouseDoubleClickEvent(event)
+            
+    def getScore(self):
+        if self.isWinner(): return 0
+        else: return self.scoreSpinBox.value()
 
     def isWinner(self): return self.closeType > 0
     
     def getCloseType(self): return self.closeType
     
     def getPlayer(self): return self.player      
-    
-    def getScore(self):
-        if self.isWinner(): return 0
-        else: return self.scoreSpinBox.value()
                 
     def isKo(self): return self.ko
     
-    def setKo(self): 
-        self.ko = True
-        self.setDisabled(True)
+    def setKo(self): self.ko = True
             
     
 class RemigioPlayerWidget(GamePlayerWidget):
         
-    def koPlayer(self):
-        self.iconlabel.setEnabled(True)
-        self.iconlabel.setPixmap(QtGui.QPixmap('icons/skull.png'))
-#        self.iconlabel.setFixedSize(50,50)
-#        self.iconlabel.show()
-#         self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: grey}")
+    def koPlayer(self): self.iconlabel.setPixmap(QtGui.QPixmap('icons/skull.png'))
      
             
 class RemigioRoundsDetail(QtGui.QGroupBox):
