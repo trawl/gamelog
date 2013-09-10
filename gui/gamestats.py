@@ -27,6 +27,7 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.superlayout = QtGui.QVBoxLayout(self)
         self.scrollarea = QtGui.QScrollArea()
         self.scrollarea.setWidgetResizable(True)
+        self.scrollarea.setFrameShape(QtGui.QFrame.NoFrame)
         self.superlayout.addWidget(self.scrollarea)
         self.container = QtGui.QWidget(self)
         self.widgetLayout = QtGui.QVBoxLayout(self.container)
