@@ -131,6 +131,12 @@ class CarcassonneWidget(GameWidget):
         for player in self.players:
             score = self.engine.getScoreFromPlayer(player)
             self.playerGroupBox[player].updateDisplay(score)
+            
+    def setWinner(self):
+        super(CarcassonneWidget,self).setWinner()
+        winner = self.engine.getWinner()
+        if winner in self.players:
+            self.playerGroupBox[winner].setWinner()
 
         
 class CarcassonneInputWidget(QtGui.QWidget):
