@@ -426,7 +426,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
                               
     def updateRoundPhaseCleared(self,value):
         score = value
-        if score < 0:
+        if score < 0 or self.roundScore.text()=="":
             if not self.roundWinnerRadioButton.isChecked():
                 self.roundPhaseClearedCheckbox.setChecked(False)
             return
