@@ -128,6 +128,7 @@ class Phase10Widget(GameWidget):
     
     def setWinner(self):
         super(Phase10Widget,self).setWinner()
+        self.gameInput.setEnabled(True)
         self.gameInput.setWinner() 
         
     def getPhases(self):
@@ -249,6 +250,7 @@ class Phase10InputWidget(GameInputWidget):
         winner = self.engine.getWinner()
         if winner in self.engine.getListPlayers():
             self.playerInputList[winner].setWinner()
+            for pi in self.playerInputList.values(): pi.finish()
             
     
 class Phase10ScoreSpinBox(ScoreSpinBox):
@@ -459,11 +461,14 @@ class Phase10PlayerWidget(GamePlayerWidget):
         
     def reset(self): pass
     
-#    def setWinner(self):
-#        super(Phase10PlayerWidget,self).setWinner()
-#        self.roundWinnerRadioButton.setDisabled(True)
-#        self.roundPhaseClearedCheckbox.setDisabled(True)
-#        self.roundScore.setDisabled(True)
+    def finish(self):
+        self.roundWinnerRadioButton.toggled.disconnect(self.roundScore.setDisabled)
+        self.roundWinnerRadioButton.toggled.disconnect(self.roundPhaseClearedCheckbox.setDisabled)
+        self.roundWinnerRadioButton.toggled.disconnect(self.roundPhaseClearedCheckbox.setChecked)
+        self.roundWinnerRadioButton.toggled.disconnect(self.roundWinnerSetAction)
+        self.roundWinnerRadioButton.setDisabled(True)
+        self.roundPhaseClearedCheckbox.setDisabled(True)
+        self.roundScore.setDisabled(True)
         
 
 class Phase10Label(QtGui.QLabel):
