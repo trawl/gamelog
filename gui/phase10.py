@@ -425,8 +425,12 @@ class Phase10PlayerWidget(GamePlayerWidget):
             phaselabel.setCurrent()
                               
     def updateRoundPhaseCleared(self,value):
-        score = value
-        if score < 0 or self.roundScore.text()=="":
+        try: score = int(self.roundScore.text())
+        except: 
+            self.roundPhaseClearedCheckbox.setChecked(False)
+            return
+        
+        if score < 0:
             if not self.roundWinnerRadioButton.isChecked():
                 self.roundPhaseClearedCheckbox.setChecked(False)
             return
