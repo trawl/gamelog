@@ -190,13 +190,7 @@ class GameWidget(Tab):
         try: self.dealerPolicyCheckBox.setEnabled(False)
         except AttributeError: pass
         if self.engine.getWinner():
-            self.finished = True
-            self.pauseMatchButton.setDisabled(True)
-            self.clock.stopTimer()
-            self.commitRoundButton.setDisabled(True)
-            self.updateGameStatusLabel()    
-            self.gameInput.setDisabled(True)
-            
+            self.setWinner()
         else:
             try:
                 nround = self.engine.getNumRound()
@@ -215,6 +209,15 @@ class GameWidget(Tab):
     def unsetDealer(self): pass
     
     def setDealer(self): pass
+    
+    def setWinner(self):
+        self.finished = True
+        self.pauseMatchButton.setDisabled(True)
+        self.clock.stopTimer()
+        self.commitRoundButton.setDisabled(True)
+        self.updateGameStatusLabel()    
+        self.gameInput.setDisabled(True)
+        
     
      
 class GameInputWidget(QtGui.QWidget):
@@ -263,6 +266,11 @@ class ScoreSpinBox(QtGui.QSpinBox):
     def textFromValue(self,value):
         if value == self.minimum(): return ""
         else: return super(ScoreSpinBox,self).textFromValue(value)        
+        
+class IconLabel(QtGui.QLabel):
+    def setDisabled(self,b): pass
+    def setEnabled(self,b): pass
+    
 
 class GamePlayerWidget(QtGui.QGroupBox):
     
@@ -292,10 +300,11 @@ class GamePlayerWidget(QtGui.QGroupBox):
         self.nameLabel.setStyleSheet(sh)
         self.mainLayout.addWidget(self.nameLabel)
         
-        self.dealerpixmap=QtGui.QPixmap('icons/cards.png')
-        self.nondealerpixmap=QtGui.QPixmap()
+        self.dealerPixmap = QtGui.QPixmap('icons/cards.png')
+        self.nonDealerPixmap = QtGui.QPixmap()
+        self.winnerPixmap = QtGui.QPixmap('icons/winner.png')
         
-        self.iconlabel = QtGui.QLabel(self)
+        self.iconlabel = IconLabel(self)
         self.iconlabel.setFixedSize(40,40)
         self.iconlabel.setScaledContents(True)
         self.mainLayout.insertWidget(0,self.iconlabel)
@@ -306,17 +315,11 @@ class GamePlayerWidget(QtGui.QGroupBox):
         if points >= 1000: self.scoreLCD.setNumDigits(4)
         self.scoreLCD.display(points)
 
-    def setDealer(self):
-        self.iconlabel.setPixmap(self.dealerpixmap)
-#        if self.isEnabled():
-#            self.iconlabel.show()
-#            self.iconlabel.setEnabled(True)
-#             self.nameLabel.setStyleSheet("QLabel { font-size: 18px; font-weight: bold; color: red }")
-        
-    def unsetDealer(self):
-        self.iconlabel.setPixmap(self.nondealerpixmap)
-#        self.iconlabel.setDisabled(True)
-#        self.iconlabel.hide()
+    def setDealer(self): self.iconlabel.setPixmap(self.dealerPixmap)
+
+    def unsetDealer(self): self.iconlabel.setPixmap(self.nonDealerPixmap)
+    
+    def setWinner(self): self.iconlabel.setPixmap(self.winnerPixmap)
 
 
 class GameRoundPlot(QtGui.QWidget):

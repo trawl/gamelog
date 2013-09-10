@@ -125,6 +125,10 @@ class Phase10Widget(GameWidget):
     def unsetDealer(self): self.gameInput.unsetDealer()
     
     def setDealer(self): self.gameInput.setDealer() 
+    
+    def setWinner(self):
+        super(Phase10Widget,self).setWinner()
+        self.gameInput.setWinner() 
         
     def getPhases(self):
         types = {'s': {
@@ -207,7 +211,7 @@ class Phase10InputWidget(GameInputWidget):
 
         for np, player in enumerate(players):
             self.playerInputList[player] = Phase10PlayerWidget(player,self.engine,self.winnerButtonGroup,self)
-            self.playerInputList[player].winnerSet.connect(self.changedWinner)
+            self.playerInputList[player].roundWinnerSet.connect(self.changedWinner)
             if players_grid: 
                 self.widgetLayout.addWidget(self.playerInputList[player],np/2,np%2)
             else: 
@@ -241,6 +245,11 @@ class Phase10InputWidget(GameInputWidget):
     
     def setDealer(self): self.playerInputList[self.engine.getDealer()].setDealer() 
     
+    def setWinner(self):
+        winner = self.engine.getWinner()
+        if winner in self.engine.getListPlayers():
+            self.playerInputList[winner].setWinner()
+            
     
 class Phase10ScoreSpinBox(ScoreSpinBox):
     
@@ -303,7 +312,7 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
 
 class Phase10PlayerWidget(GamePlayerWidget):
     
-    winnerSet = QtCore.Signal(str)
+    roundWinnerSet = QtCore.Signal(str)
     
     def __init__(self, nick, engine, bgroup = None, parent=None):
         self.engine = engine
@@ -363,7 +372,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.roundWinnerRadioButton.toggled.connect(self.roundScore.setDisabled)
         self.roundWinnerRadioButton.toggled.connect(self.roundPhaseClearedCheckbox.setDisabled)
         self.roundWinnerRadioButton.toggled.connect(self.roundPhaseClearedCheckbox.setChecked)
-        self.roundWinnerRadioButton.toggled.connect(self.winnerSetAction)
+        self.roundWinnerRadioButton.toggled.connect(self.roundWinnerSetAction)
         
         self.retranslateUI()       
         
@@ -392,7 +401,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
                 if not label.isRemaining(): label.setRemaining()
             
     def getScore(self):
-        if self.isWinner(): return 0
+        if self.isRoundWinner(): return 0
         try: return int(self.roundScore.value())
         except: return -1
     
@@ -439,16 +448,22 @@ class Phase10PlayerWidget(GamePlayerWidget):
             self.updatePhaseSelected(child)
         return QtGui.QGroupBox.mousePressEvent(self, event)
 #        
-    def isWinner(self): return self.roundWinnerRadioButton.isChecked()
+    def isRoundWinner(self): return self.roundWinnerRadioButton.isChecked()
  
     def getRoundPhase(self): return self.current_phase
     
     def isRoundCleared(self): return self.roundPhaseClearedCheckbox.isChecked()
     
-    def winnerSetAction(self,isset):
-        if isset: self.winnerSet.emit(self.player)
+    def roundWinnerSetAction(self,isset):
+        if isset: self.roundWinnerSet.emit(self.player)
         
     def reset(self): pass
+    
+#    def setWinner(self):
+#        super(Phase10PlayerWidget,self).setWinner()
+#        self.roundWinnerRadioButton.setDisabled(True)
+#        self.roundPhaseClearedCheckbox.setDisabled(True)
+#        self.roundScore.setDisabled(True)
         
 
 class Phase10Label(QtGui.QLabel):

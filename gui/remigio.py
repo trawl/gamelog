@@ -111,6 +111,12 @@ class RemigioWidget(GameWidget):
             self.engine.setTop(newtop)
             self.detailGroup.updatePlot()
         except ValueError: pass
+    
+    def setWinner(self):
+        super(RemigioWidget,self).setWinner()
+        winner = self.engine.getWinner()
+        if winner in self.players:
+            self.playerGroupBox[winner].setWinner()
         
         
 class RemigioInputWidget(GameInputWidget):

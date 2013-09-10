@@ -95,6 +95,12 @@ class RatukiWidget(GameWidget):
             self.detailGroup.updatePlot()
         except ValueError: pass
         
+    def setWinner(self):
+        super(RatukiWidget,self).setWinner()
+        winner = self.engine.getWinner()
+        if winner in self.players:
+            self.playerGroupBox[winner].setWinner()
+        
         
 class RatukiInputWidget(GameInputWidget):
     
