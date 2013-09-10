@@ -32,6 +32,7 @@ class CarcassonneStatsEngine(StatsEngine):
         and Round.idMatch = RoundStatistics.idMatch 
         and Round.idRound = RoundStatistics.idRound 
         and Round.nick = RoundStatistics.nick  
+        and Match.state = 1
         and Game_name="Carcassonne" 
         and key="kind" 
         and value = '{}' 
@@ -47,6 +48,7 @@ class CarcassonneStatsEngine(StatsEngine):
         and Round.idMatch = RoundStatistics.idMatch 
         and Round.idRound = RoundStatistics.idRound 
         and Round.nick = RoundStatistics.nick  
+        and Match.state = 1
         and Game_name="Carcassonne" 
         and key="kind" 
         and value = '{}' 
