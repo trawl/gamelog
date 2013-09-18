@@ -109,9 +109,9 @@ class GameLogDB:
            
     def _printError(self,message):
         # Python 2 syntax
-        print >> sys.stderr, message
+#         print >> sys.stderr, message
         # Python 3 syntax
-#        print(message,file=sys.stderr)
+        print(message,file=sys.stderr)
            
            
 db = GameLogDB()
