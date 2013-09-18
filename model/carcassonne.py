@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from controllers.db import db
-from model.base import GenericEntryMatch,GenericEntry
+from model.base import GenericRoundMatch,GenericEntry
 
-class CarcassonneMatch(GenericEntryMatch):
+class CarcassonneMatch(GenericRoundMatch):
     def __init__(self,players=[]):
         super(CarcassonneMatch,self).__init__(players)
         self.game = 'Carcassonne'
@@ -20,11 +20,17 @@ class CarcassonneMatch(GenericEntryMatch):
         if key == 'kind': extra[key] = value
         return extra
     
-    def createEntry(self,numround): return CarcassonneEntry(numround)
+    def createRound(self,numround): return CarcassonneEntry(numround)
+    
+    def addRound(self,rnd):
+        self.rounds.append(rnd)
+        for player,score in rnd.getScore().items():
+            self.totalScores[player]+=score
+            self.playerAddRound(player,rnd)
         
     def flushToDB(self):
         super(CarcassonneMatch,self).flushToDB()
-        for entry in self.entries:
+        for entry in self.rounds:
             db.execute("INSERT OR REPLACE INTO RoundStatistics (idMatch,nick,idRound,key,value) VALUES ({},'{}',{},'kind','{}');".format(self.idMatch,entry.getPlayer(),entry.getNumEntry(),entry.getKind()))
     
     def computeWinner(self):
@@ -40,7 +46,7 @@ class CarcassonneMatch(GenericEntryMatch):
             for player in candidates:
                 details[kind][player] = 0
         for entry in self.getEntries():
-            details[entry.getKind()][entry.getPlayer()] += entry.getScore()
+            details[entry.getKind()][entry.getPlayer()] += entry.getPlayerScore()
                 
         # Check who has more points in cities
         maxscore = max(details['City'].values())

@@ -231,9 +231,23 @@ class GenericRoundMatch(GenericMatch):
         for player,score in rnd.getScore().items():
             self.totalScores[player]+=score
             self.playerAddRound(player,rnd)
-            
         self.updateWinner()
         
+    def updateRound(self,rnd):
+        try: oldrnd = self.entries[rnd.getNumrnd()-1]
+        except KeyError: return
+        self.totalScores[oldrnd.getPlayer()] -= oldrnd.getScore()
+        self.totalScores[rnd.getPlayer()] += rnd.getScore()
+        self.entries[rnd.getNumrnd()-1] = rnd
+            
+    def deleteRound(self,nrnd):
+        try: rnd = self.entries[nrnd-1]
+        except KeyError: return
+        self.totalScores[rnd.getPlayer()] -= rnd.getScore()
+        del self.entries[nrnd-1]
+        for i, rnd in enumerate(self.entries,start=1):
+            rnd.setNumrnd(i)
+       
     def getRounds(self): return self.rounds
 
  
@@ -275,28 +289,19 @@ class GenericRound(object):
     def addExtraInfo(self,player,extras): pass
     
 
-class GenericEntry(object):
-    def __init__(self,nentry):
-        self.numentry = nentry
-        self.player = None
-        self.score = 0
-        self.extras = dict()
+class GenericEntry(GenericRound):
         
-    def getNumEntry(self): return self.numentry
+    def getNumEntry(self): return self.getNumRound()
     
-    def setNumEntry(self,nentry): self.numentry = nentry
+    def setNumEntry(self,numround): self.numround = numround
         
-    def getScore(self): return self.score
+    def getPlayerScore(self): 
+        if len(self.score)==0: return -1
+        for score in self.score.values(): return score
     
-    def getPlayer(self):  return self.player
-    
-    def addInfo(self,player,score,extras=None):
-        self.player = player
-        self.score = score
-        if extras: self.addExtraInfo(player,extras)
-           
-    # To be implemented in subclasses    
-    def addExtraInfo(self,player,extras): pass
+    def getPlayer(self):
+        if len(self.score)==0: return -1
+        for player in self.score.keys(): return player
         
     
 class GenericEntryMatch(GenericMatch):
