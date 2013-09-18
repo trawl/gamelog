@@ -92,11 +92,6 @@ class GameEngine(object):
     
 
 class RoundGameEngine(GameEngine):
-    
-    def __init__(self):
-        super(RoundGameEngine,self).__init__()
-        self.round = None
-        
 
     def begin(self):
         super(RoundGameEngine,self).begin()
@@ -112,6 +107,9 @@ class RoundGameEngine(GameEngine):
     def commitRound(self):
         self.match.addRound(self.round)
         self.updateDealer()
+    
+    def deleteRound(self,nrnd):
+        self.match.deleteRound(nrnd)
 
     def getRounds(self): return self.match.getRounds()
 
@@ -143,7 +141,7 @@ class RoundGameEngine(GameEngine):
                 if n == self.getDealer(): print(" * {} (Dealer)".format(n))
                 else: print(" * {}".format(n))
             print("")
-            policies = ["None","Round Robin","Winner"]
+            policies = ["None","Round Robin","Winner","Starter"]
             print("DealingPolicy: {}".format(policies[self.getDealingPolicy()]))
             self.printExtraStats()
             print("Game started at {}".format(self.match.getStartTime()))
@@ -235,138 +233,16 @@ class RoundGameEngine(GameEngine):
     def extraStubConfig(self): pass
 
 
-class EntryGameEngine(GameEngine):
+class EntryGameEngine(RoundGameEngine):
     
-    def __init__(self):
-        super(EntryGameEngine,self).__init__()
-        self.nentry = 1
-        
-    def begin(self):
-        super(EntryGameEngine,self).begin()
-        if self.getDealingPolicy() != self.NoDealer :
-            self.match.setDealer(random.choice(self.porder))
-        
-    def resume(self,idMatch):
-        if not super(EntryGameEngine,self).resume(idMatch): return False
-        self.nentry = len(self.match.getEntries()) + 1
-        return True
-        
     def addEntry(self,player,score, extras=None): 
-        entry = self.match.createEntry(self.nentry)
-        entry.addInfo(player,score,extras)
-        self.match.addEntry(entry)
-        self.nentry += 1
-        
-    def editEntry(self,nentry,player,score, extras=None): 
-        entry = self.match.createEntry(self.nentry)
-        entry.addInfo(player,score,extras)
-        self.match.updateEntry(entry)
-    
-    def deleteEntry(self,nentry):
-        self.match.deleteEntry(nentry)
-        self.nentry -= 1
-
-    def getEntries(self): return self.match.getEntries()
-
-    def getNumEntry(self): return self.nentry
+        self.openRound(self.getNumRound())
+        self.addRoundInfo(player,score,extras)
+        self.commitRound()
         
     def finishGame(self): 
         self.match.updateWinner()
         self.printStats()
-
-    def printStats(self):
-        lastentry = self.getNumEntry()-1
-        if lastentry == 0:
-            print("===========================")
-            print("|{0:^25}|".format(self.game))
-            print("===========================")
-            print("")
-            print("Players:")
-            for n in self.porder: print(" * {}".format(n))
-            print("")
-            self.printExtraStats()
-            print("Game started at {}".format(self.match.getStartTime()))
-            print("***************************")
-        else:
-            print("")
-            print("===========================")
-            print("|        Entry {0:<3}        |".format(lastentry))
-            print("===========================")
-            print("")
-            print("Time played: {}".format(self.match.getGameTime()))
-            self.printExtraStats()
-            print("***************************")
-            for n in self.porder:
-                print("")
-                print(n)
-                    
-                print("Current score: {}".format(self.getScoreFromPlayer(n)))
-                self.printExtraPlayerStats(n)
-                print("***************************")
-                
-            if self.getWinner():
-                print("")
-                print("!!!!!!!!! Winner: !!!!!!!!!")
-                print("{0:^27}".format(self.getWinner()))
-                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                print("")
-                print("{} match finished at {}".format(self.game,datetime.datetime.now()))
-                print("Time played {}".format(self.match.getGameTime()))                   
-                print("")
-#
-# Helper functions for cli test
-#
-    def gameStub(self):
-    
-        print("Welcome to {} Engine Stub".format(self.getGame()))
-        
-        if not db.isConnected(): db.connectDB("../db/gamelog.db")
-    
-        playersOrder = []
-        validPlayers = db.getPlayerNicks()
-        maxPlayers =  self.getGameMaxPlayers()
-        
-        nplayers = readInput("Number of players: ",int,lambda x: x>=2 and x<=maxPlayers,"Sorry, number of players must be between 2 and {}.".format(self.getGameMaxPlayers()))
-    
-        for i in range (1,nplayers+1):
-            print ("Player {} Info:".format(i))
-            nick = readInput("Nick: ",str,lambda x: x in validPlayers,"Sorry, player not found in DB")
-            self.addPlayer(nick)
-            playersOrder.append(nick)
-            
-        self.begin()    
-        self.extraStubConfig()
-        self.runStubRoundLoop()
-
-    def runStubRoundLoop(self):
-        self.printStats()
-        while not self.getWinner():
-            while True:
-                entry_player = readInput("Enter player entry (or p to pause, f to finish the game, s to save and exit, c to cancel without saving): ".format(self.getNumEntry()),str,lambda x: x in self.getListPlayers() or x in ('p','s','c','f'),"Sorry, player not found in current match.")
-                if entry_player == 'p':
-                    self.pause()
-                    readInput("Press Enter to unpause...")
-                    self.unpause()
-                elif entry_player == 'f':
-                    self.finishGame()
-                    self.printStats()
-                    exit()
-                elif entry_player == 's':
-                    self.save()
-                    exit()
-                elif entry_player == 'c':
-                    self.cancelMatch()
-                    exit()
-                else: break
-            self.runStubEntryPlayer(entry_player)
-            self.printStats()
-            
-    # To be implemented in subclasses
-    def printExtraStats(self): pass        
-    def printExtraPlayerStats(self,player): pass
-    def runStubEntryPlayer(self,player): pass
-    def extraStubConfig(self): pass
-
     
 #
 # Helper functions for cli test
@@ -376,7 +252,7 @@ def readInput(prompt,cast=str,validator=lambda x : True,errormsg="Sorry, invalid
     validInput = False
     while not validInput:
         try:
-            ret = cast(raw_input(prompt))
+            ret = cast(input(prompt))
         except ValueError:
             print(errormsg)
             continue

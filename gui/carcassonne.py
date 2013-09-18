@@ -54,7 +54,7 @@ class CarcassonneWidget(GameWidget):
         for i, player in enumerate(self.engine.getListPlayers()):
             pw = GamePlayerWidget(player, PlayerColours[i],self.playerGroup)
             
-            if self.engine.getNumEntry() == 1 and player == dealer: pw.setDealer()
+            if self.engine.getNumRound() == 1 and player == dealer: pw.setDealer()
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
@@ -365,7 +365,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         self.table.clearContents()
         self.table.setRowCount(0)
         self.resetTotals()
-        for r in self.engine.getEntries(): self.insertEntry(r)
+        for r in self.engine.getRounds(): self.insertEntry(r)
         self.updatePlot()
     
     def insertEntry(self,entry):
@@ -373,7 +373,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         kinds = self.engine.getEntryKinds()
         background = self.bgcolors[kinds.index(kind)]
         kind = QtGui.QApplication.translate("CarcassonneInputWidget",kind)
-        i = entry.getNumEntry() - 1
+        i = entry.getNumRound() - 1
         self.table.insertRow(i)
         for j, player in enumerate(self.engine.getListPlayers()):
             item = QtGui.QTableWidgetItem()
@@ -382,12 +382,12 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
 
             if player == entry.getPlayer():
-                text = "{} ({})".format(entry.getScore(),kind)
+                text = "{} ({})".format(entry.getPlayerScore(),kind)
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)
                 totalItem = self.totals.item(kinds.index(entry.getKind()),j)
-                totalItem.setText(str(int(totalItem.text())+entry.getScore()))       
+                totalItem.setText(str(int(totalItem.text())+entry.getPlayerScore()))       
             else:
                 text = ""
             item.setText(text)
@@ -396,7 +396,7 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
         self.recomputeMaxTotals()            
         
     def updateRound(self):
-        entries = self.engine.getEntries()
+        entries = self.engine.getRounds()
         if not len(entries): return
         e = entries[-1]
         self.insertEntry(e)
@@ -432,10 +432,10 @@ class CarcassonneEntriesDetail(QtGui.QGroupBox):
             QtGui.QApplication.translate("CarcassonneEntriesDetail","Are you sure you want to delete this entry?"), QtGui.QMessageBox.Yes | 
             QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
             if ret == QtGui.QMessageBox.No: return
-            entry = self.engine.getEntries()[nentry-1]
+            entry = self.engine.getRounds()[nentry-1]
             kind = entry.getKind()
             player = entry.getPlayer()
-            score = entry.getScore()
+            score = entry.getPlayerScore()
             total = self.totals.item(self.engine.getEntryKinds().index(kind),self.engine.getListPlayers().index(player))
             total.setText(str(int(total.text())-score))       
             self.recomputeMaxTotals()
@@ -458,9 +458,9 @@ class CarcassonneEntriesPlot(GameRoundPlot):
         for player in self.engine.getPlayers():
             scores[player] = [0]
             
-        for entry in self.engine.getEntries():
+        for entry in self.engine.getRounds():
             for player in self.engine.getPlayers():
-                if player == entry.getPlayer(): entryscore = entry.getScore()
+                if player == entry.getPlayer(): entryscore = entry.getPlayerScore()
                 else: entryscore = 0
                 accumscore = scores[player][-1] + entryscore
                 scores[player].append(accumscore)
