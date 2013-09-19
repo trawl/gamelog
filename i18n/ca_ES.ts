@@ -4,12 +4,12 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="gui/mainwindow.py" line="177"/>
+        <location filename="gui/mainwindow.py" line="178"/>
         <source>About Gamelog</source>
         <translation>Quant a Gamelog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="190"/>
+        <location filename="gui/mainwindow.py" line="191"/>
         <source>Gamelog is a utility to keep track of the score in board games.</source>
         <translation>Gamelog és un programa per registrar els putns en jocs de taula.</translation>
     </message>
@@ -17,37 +17,37 @@
 <context>
     <name>CarcassonneEntriesDetail</name>
     <message>
-        <location filename="gui/carcassonne.py" line="333"/>
+        <location filename="gui/carcassonne.py" line="337"/>
         <source>Details</source>
         <translation>Detalls</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="334"/>
+        <location filename="gui/carcassonne.py" line="338"/>
         <source>Table</source>
         <translation>Taula</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="335"/>
+        <location filename="gui/carcassonne.py" line="339"/>
         <source>Plot</source>
         <translation>Gràfic</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="336"/>
+        <location filename="gui/carcassonne.py" line="340"/>
         <source>Statistics</source>
         <translation>Estadístiques</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="337"/>
+        <location filename="gui/carcassonne.py" line="341"/>
         <source>Totals</source>
         <translation>Totals</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="427"/>
+        <location filename="gui/carcassonne.py" line="431"/>
         <source>Delete Entry</source>
         <translation>Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="428"/>
+        <location filename="gui/carcassonne.py" line="431"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>Estàs segur que vols eliminar aquesta entrda?</translation>
     </message>
@@ -55,42 +55,42 @@
 <context>
     <name>CarcassonneInputWidget</name>
     <message>
-        <location filename="gui/carcassonne.py" line="213"/>
+        <location filename="gui/carcassonne.py" line="217"/>
         <source>Select Player</source>
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="214"/>
+        <location filename="gui/carcassonne.py" line="218"/>
         <source>Select kind of entry</source>
         <translation>Tipus d&apos;entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="215"/>
+        <location filename="gui/carcassonne.py" line="219"/>
         <source>Points</source>
         <translation>Punts</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="143"/>
+        <location filename="gui/carcassonne.py" line="146"/>
         <source>City</source>
         <translation>Ciutat</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="144"/>
+        <location filename="gui/carcassonne.py" line="147"/>
         <source>Road</source>
         <translation>Camí</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="145"/>
+        <location filename="gui/carcassonne.py" line="148"/>
         <source>Cloister</source>
         <translation>Monestir</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="146"/>
+        <location filename="gui/carcassonne.py" line="149"/>
         <source>Field</source>
         <translation>Camp</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="148"/>
+        <location filename="gui/carcassonne.py" line="150"/>
         <source>Goods</source>
         <translation>Béns</translation>
     </message>
@@ -98,27 +98,27 @@
 <context>
     <name>CarcassonneQSBox</name>
     <message>
-        <location filename="gui/carcassonne.py" line="512"/>
+        <location filename="gui/carcassonne.py" line="516"/>
         <source>Record</source>
         <translation>Record</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="512"/>
+        <location filename="gui/carcassonne.py" line="516"/>
         <source>Player</source>
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="513"/>
+        <location filename="gui/carcassonne.py" line="516"/>
         <source>Date</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="494"/>
+        <location filename="gui/carcassonne.py" line="498"/>
         <source>Match Records</source>
         <translation>Records de Partida</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="493"/>
+        <location filename="gui/carcassonne.py" line="497"/>
         <source>Individual Records</source>
         <translation>Records Individuals</translation>
     </message>
@@ -126,39 +126,75 @@
 <context>
     <name>CarcassonneWidget</name>
     <message>
-        <location filename="gui/carcassonne.py" line="71"/>
+        <location filename="gui/carcassonne.py" line="69"/>
         <source>Score</source>
         <translation>Marcador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="98"/>
+        <location filename="gui/carcassonne.py" line="96"/>
         <source>You must select a player</source>
         <translation>Heu de sel·leccionar un jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="102"/>
+        <location filename="gui/carcassonne.py" line="100"/>
         <source>You must select a kind</source>
         <translation>Heu de sel·leccionar un tipus d&apos;entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="110"/>
+        <location filename="gui/carcassonne.py" line="108"/>
         <source>Commit Entry</source>
         <translation>Confirmar Entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="111"/>
+        <location filename="gui/carcassonne.py" line="108"/>
         <source>Are you sure you want to commit this entry?</source>
         <translation>Estàs segur que vols confirmar aquesta entrda?</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="124"/>
+        <location filename="gui/carcassonne.py" line="122"/>
         <source>Finish game</source>
         <translation>Finalitzar Partida</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="125"/>
+        <location filename="gui/carcassonne.py" line="122"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>Estàs segur de volerfinalitzar la partida actual?</translation>
+    </message>
+</context>
+<context>
+    <name>GameRoundTable</name>
+    <message>
+        <location filename="gui/game.py" line="434"/>
+        <source>Delete Entry</source>
+        <translation>Eliminar Entrada</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="434"/>
+        <source>Are you sure you want to delete this entry?</source>
+        <translation>Estàs segur que vols eliminar aquesta entrda?</translation>
+    </message>
+</context>
+<context>
+    <name>GameRoundsDetail</name>
+    <message>
+        <location filename="gui/game.py" line="366"/>
+        <source>Details</source>
+        <translation>Detalls</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="367"/>
+        <source>Table</source>
+        <translation>Taula</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="368"/>
+        <source>Plot</source>
+        <translation>Gràfic</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="369"/>
+        <source>Statistics</source>
+        <translation>Estadístiques</translation>
     </message>
 </context>
 <context>
@@ -214,7 +250,7 @@
         <translation>Cal sel·leccionar un guanyador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="106"/>
+        <location filename="gui/carcassonne.py" line="104"/>
         <source>{0} score is not valid</source>
         <translation>La puntuació de {0} no és vàlida</translation>
     </message>
@@ -224,22 +260,22 @@
         <translation>Tancar Ronda</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="163"/>
+        <location filename="gui/game.py" line="162"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>Estàs segur de voler tancar la ronda actual?</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="204"/>
+        <location filename="gui/game.py" line="198"/>
         <source>Round {0}</source>
         <translation>Ronda {0}</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="118"/>
+        <location filename="gui/game.py" line="117"/>
         <source>Do you want to save the current {} match?</source>
         <translation>Vols desar la partida de {} actual?</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="70"/>
+        <location filename="gui/carcassonne.py" line="68"/>
         <source>&amp;Finish Game</source>
         <translation>&amp;Finalitzar Partida</translation>
     </message>
@@ -247,12 +283,12 @@
 <context>
     <name>LanguageChooser</name>
     <message>
-        <location filename="gui/languagechooser.py" line="23"/>
+        <location filename="gui/languagechooser.py" line="26"/>
         <source>Select the desired language:</source>
         <translation>Sel·lecciona l&apos;idioma:</translation>
     </message>
     <message>
-        <location filename="gui/languagechooser.py" line="20"/>
+        <location filename="gui/languagechooser.py" line="23"/>
         <source>Language</source>
         <translation>Idioma</translation>
     </message>
@@ -260,32 +296,32 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="gui/mainwindow.py" line="79"/>
+        <location filename="gui/mainwindow.py" line="80"/>
         <source>GameLog</source>
         <translation>GameLog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="80"/>
+        <location filename="gui/mainwindow.py" line="81"/>
         <source>&amp;File</source>
         <translation>&amp;Arxiu</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="82"/>
+        <location filename="gui/mainwindow.py" line="83"/>
         <source>&amp;Quit</source>
         <translation>&amp;Sortir</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="83"/>
+        <location filename="gui/mainwindow.py" line="84"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="84"/>
+        <location filename="gui/mainwindow.py" line="85"/>
         <source>Quit GameLog</source>
         <translation>Sortir de GameLog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="120"/>
+        <location filename="gui/mainwindow.py" line="121"/>
         <source>Exit</source>
         <translation>Sortir</translation>
     </message>
@@ -295,7 +331,7 @@
         <translation>Estàs segur de voler sortir de GameLog?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="81"/>
+        <location filename="gui/mainwindow.py" line="82"/>
         <source>&amp;Language...</source>
         <translation>&amp;Idioma...</translation>
     </message>
@@ -310,12 +346,12 @@
         <translation>Hi ha una partida de {} oberta. Vols desar-la abans de sortir?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="86"/>
+        <location filename="gui/mainwindow.py" line="87"/>
         <source>&amp;Help</source>
         <translation>&amp;Ajuda</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="87"/>
+        <location filename="gui/mainwindow.py" line="88"/>
         <source>&amp;About Gamelog...</source>
         <translation>&amp;Quant a Gamelog...</translation>
     </message>
@@ -323,57 +359,57 @@
 <context>
     <name>NewGameWidget</name>
     <message>
-        <location filename="gui/newgame.py" line="51"/>
+        <location filename="gui/newgame.py" line="52"/>
         <source>Games</source>
         <translation>Jocs</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="53"/>
+        <location filename="gui/newgame.py" line="54"/>
         <source>Players</source>
         <translation>Jugadors</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="54"/>
+        <location filename="gui/newgame.py" line="55"/>
         <source>Available Players</source>
         <translation>Jugadors Disponibles</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="55"/>
+        <location filename="gui/newgame.py" line="56"/>
         <source>New Player</source>
         <translation>Nou Jugador</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="56"/>
+        <location filename="gui/newgame.py" line="57"/>
         <source>Selected Players</source>
         <translation>Jugadors Sel·leccionats</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="57"/>
+        <location filename="gui/newgame.py" line="58"/>
         <source>Play!</source>
         <translation>A Jugar!</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="91"/>
+        <location filename="gui/newgame.py" line="92"/>
         <source>players</source>
         <translation>jugadors</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="147"/>
+        <location filename="gui/newgame.py" line="148"/>
         <source>At least 2 players are needed to play</source>
         <translation>Calen almenys 2 jugadors per jugar</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="156"/>
+        <location filename="gui/newgame.py" line="157"/>
         <source>New Match</source>
         <translation>Nova Partida</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="149"/>
+        <location filename="gui/newgame.py" line="150"/>
         <source>The maximum number of players is</source>
         <translation>El màxim nombre de jugadors és</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="156"/>
+        <location filename="gui/newgame.py" line="157"/>
         <source>Widget not implemented</source>
         <translation>Widget no implementat</translation>
     </message>
@@ -409,17 +445,17 @@
 <context>
     <name>Phase10PlayerWidget</name>
     <message>
-        <location filename="gui/phase10.py" line="397"/>
+        <location filename="gui/phase10.py" line="382"/>
         <source>Winner</source>
         <translation>Guanyador</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="398"/>
+        <location filename="gui/phase10.py" line="383"/>
         <source>Completed</source>
         <translation>Exposada</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="569"/>
+        <location filename="gui/phase10.py" line="552"/>
         <source> (Phase {})</source>
         <translation> (Fase {})</translation>
     </message>
@@ -427,12 +463,12 @@
 <context>
     <name>Phase10RoundPlot</name>
     <message>
-        <location filename="gui/phase10.py" line="610"/>
+        <location filename="gui/phase10.py" line="593"/>
         <source>Phases</source>
         <translation>Fases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="611"/>
+        <location filename="gui/phase10.py" line="594"/>
         <source>Scores</source>
         <translation>Puntuació</translation>
     </message>
@@ -440,7 +476,7 @@
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="gui/phase10.py" line="562"/>
+        <location filename="gui/phase10.py" line="544"/>
         <source>Winner</source>
         <translation>Guanyador</translation>
     </message>
@@ -458,77 +494,77 @@
         <translation>Fases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="96"/>
+        <location filename="gui/phase10.py" line="95"/>
         <source>Phase</source>
         <translation>Fase</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="148"/>
+        <location filename="gui/phase10.py" line="153"/>
         <source>cards of the same colour</source>
         <translation>cartes del mateix color</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="150"/>
+        <location filename="gui/phase10.py" line="155"/>
         <source>run of</source>
         <translation>escala de</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="152"/>
+        <location filename="gui/phase10.py" line="156"/>
         <source>runs of</source>
         <translation>escales de</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="154"/>
+        <location filename="gui/phase10.py" line="159"/>
         <source>colour run of</source>
         <translation>escala de color de</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="158"/>
+        <location filename="gui/phase10.py" line="160"/>
         <source>colour runs of</source>
         <translation>escales de color de</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="132"/>
+        <location filename="gui/phase10.py" line="137"/>
         <source>pair</source>
         <translation>parella</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="134"/>
+        <location filename="gui/phase10.py" line="138"/>
         <source>pairs</source>
         <translation>parelles</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="136"/>
+        <location filename="gui/phase10.py" line="141"/>
         <source>three of a kind</source>
         <comment>singular</comment>
         <translation>trio</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="138"/>
+        <location filename="gui/phase10.py" line="142"/>
         <source>three of a kind</source>
         <comment>plural</comment>
         <translation>trios</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="140"/>
+        <location filename="gui/phase10.py" line="145"/>
         <source>four of a kind</source>
         <comment>singular</comment>
         <translation>cuartet</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="142"/>
+        <location filename="gui/phase10.py" line="146"/>
         <source>four of a kind</source>
         <comment>plural</comment>
         <translation>cuartets</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="144"/>
+        <location filename="gui/phase10.py" line="149"/>
         <source>five of a kind</source>
         <comment>singular</comment>
         <translation>quintet</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="147"/>
+        <location filename="gui/phase10.py" line="150"/>
         <source>five of a kind</source>
         <comment>plural</comment>
         <translation>quintets</translation>
@@ -552,12 +588,12 @@
 <context>
     <name>PlayerList</name>
     <message>
-        <location filename="gui/newgame.py" line="211"/>
+        <location filename="gui/newgame.py" line="212"/>
         <source>Unset Favourite</source>
         <translation>Desactivar favorit</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="213"/>
+        <location filename="gui/newgame.py" line="214"/>
         <source>Set Favourite</source>
         <translation>Activar favorit</translation>
     </message>
@@ -580,7 +616,7 @@
         <translation>Accepta</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="23"/>
+        <location filename="gui/mainwindow.py" line="22"/>
         <source>Cancel</source>
         <translation>Cancel·la</translation>
     </message>
@@ -588,67 +624,67 @@
 <context>
     <name>QuickStatsBox</name>
     <message>
-        <location filename="gui/gamestats.py" line="46"/>
+        <location filename="gui/gamestats.py" line="55"/>
         <source>Last winner</source>
         <translation>Últim guanyador</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="48"/>
+        <location filename="gui/gamestats.py" line="57"/>
         <source>Matches</source>
         <translation>Partides</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="61"/>
+        <location filename="gui/gamestats.py" line="70"/>
         <source>No statistics found</source>
         <translation>No s&apos;han trobat estadístiques</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="69"/>
+        <location filename="gui/gamestats.py" line="78"/>
         <source>Longest</source>
         <translation>Més llarga</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="69"/>
+        <location filename="gui/gamestats.py" line="78"/>
         <source>Shortest</source>
         <translation>Més curta</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="82"/>
         <source>Average</source>
         <translation>Mitja</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="82"/>
         <source>Played</source>
         <translation>Jugades</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="82"/>
         <source>Victories</source>
         <translation>Guanyades</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="82"/>
         <source>Ratio (%)</source>
         <translation>Ratio (%)</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="74"/>
+        <location filename="gui/gamestats.py" line="82"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="82"/>
         <source>Highest</source>
         <translation>Més Alta</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="73"/>
+        <location filename="gui/gamestats.py" line="82"/>
         <source>Lowest</source>
         <translation>Més Baixa</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="49"/>
+        <location filename="gui/gamestats.py" line="58"/>
         <source>Players</source>
         <translation>Jugadors</translation>
     </message>
@@ -656,22 +692,22 @@
 <context>
     <name>RatukiRoundsDetail</name>
     <message>
-        <location filename="gui/ratuki.py" line="212"/>
+        <location filename="gui/ratuki.py" line="218"/>
         <source>Details</source>
         <translation>Detalls</translation>
     </message>
     <message>
-        <location filename="gui/ratuki.py" line="215"/>
+        <location filename="gui/ratuki.py" line="221"/>
         <source>Table</source>
         <translation>Taula</translation>
     </message>
     <message>
-        <location filename="gui/ratuki.py" line="216"/>
+        <location filename="gui/ratuki.py" line="222"/>
         <source>Plot</source>
         <translation>Gràfic</translation>
     </message>
     <message>
-        <location filename="gui/ratuki.py" line="243"/>
+        <location filename="gui/ratuki.py" line="248"/>
         <source> (Winner)</source>
         <translation> (Guanyador)</translation>
     </message>
@@ -690,42 +726,50 @@
     </message>
 </context>
 <context>
+    <name>RemigioRoundTable</name>
+    <message>
+        <location filename="gui/remigio.py" line="290"/>
+        <source>Winner ({}x)</source>
+        <translation>Guanyador ({}x)</translation>
+    </message>
+</context>
+<context>
     <name>RemigioRoundsDetail</name>
     <message>
         <location filename="gui/remigio.py" line="270"/>
         <source>Details</source>
-        <translation>Detalls</translation>
+        <translation type="obsolete">Detalls</translation>
     </message>
     <message>
         <location filename="gui/remigio.py" line="299"/>
         <source>Winner ({}x)</source>
-        <translation>Guanyador ({}x)</translation>
+        <translation type="obsolete">Guanyador ({}x)</translation>
     </message>
     <message>
         <location filename="gui/remigio.py" line="273"/>
         <source>Table</source>
-        <translation>Taula</translation>
+        <translation type="obsolete">Taula</translation>
     </message>
     <message>
         <location filename="gui/remigio.py" line="274"/>
         <source>Plot</source>
-        <translation>Gràfic</translation>
+        <translation type="obsolete">Gràfic</translation>
     </message>
 </context>
 <context>
     <name>RemigioWidget</name>
     <message>
-        <location filename="gui/remigio.py" line="83"/>
+        <location filename="gui/remigio.py" line="86"/>
         <source>Warning: real points are computed automatically depending on the close type</source>
         <translation>Atenció: el programa calcula els punts reals segons el tipus de tancament</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="74"/>
+        <location filename="gui/remigio.py" line="77"/>
         <source>Score Limit</source>
         <translation>Límit de punts</translation>
     </message>
     <message>
-        <location filename="gui/remigio.py" line="75"/>
+        <location filename="gui/remigio.py" line="78"/>
         <source>Score</source>
         <translation>Marcador</translation>
     </message>
@@ -733,27 +777,27 @@
 <context>
     <name>ResumeBox</name>
     <message>
-        <location filename="gui/newgame.py" line="321"/>
+        <location filename="gui/newgame.py" line="322"/>
         <source>Saved Games</source>
         <translation>Partides Desades</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="322"/>
+        <location filename="gui/newgame.py" line="323"/>
         <source>Resume</source>
         <translation>Restaura</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="324"/>
+        <location filename="gui/newgame.py" line="325"/>
         <source>No matches to be resumed</source>
         <translation>No hi ha cap partida desada</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="323"/>
+        <location filename="gui/newgame.py" line="324"/>
         <source>Cancel</source>
         <translation>Cancel·la</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="371"/>
+        <location filename="gui/newgame.py" line="372"/>
         <source>Cancel Saved Game</source>
         <translation>Cancel·la Partida Desada</translation>
     </message>
@@ -763,12 +807,12 @@
         <translation>Estàs segur que vols cancel·lar la partida desada?</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="346"/>
+        <location filename="gui/newgame.py" line="347"/>
         <source>Saved on {}. Time played: {}</source>
         <translation>Desat el {}- Temps jugat: {}</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="351"/>
+        <location filename="gui/newgame.py" line="352"/>
         <source>Players: {}</source>
         <translation>Jugadors: {}</translation>
     </message>
