@@ -110,6 +110,7 @@ class RoundGameEngine(GameEngine):
     
     def deleteRound(self,nrnd):
         self.match.deleteRound(nrnd)
+        self.printStats()
 
     def getRounds(self): return self.match.getRounds()
 
@@ -243,6 +244,29 @@ class EntryGameEngine(RoundGameEngine):
     def finishGame(self): 
         self.match.updateWinner()
         self.printStats()
+        
+    def runStubRoundLoop(self):
+        self.printStats()
+        while not self.getWinner():
+            while True:
+                entry_player = readInput("Enter player entry (or p to pause, f to finish the game, s to save and exit, c to cancel without saving): ".format(self.getNumEntry()),str,lambda x: x in self.getListPlayers() or x in ('p','s','c','f'),"Sorry, player not found in current match.")
+                if entry_player == 'p':
+                    self.pause()
+                    readInput("Press Enter to unpause...")
+                    self.unpause()
+                elif entry_player == 'f':
+                    self.finishGame()
+                    self.printStats()
+                    exit()
+                elif entry_player == 's':
+                    self.save()
+                    exit()
+                elif entry_player == 'c':
+                    self.cancelMatch()
+                    exit()
+                else: break
+            self.runRoundPlayer(entry_player)
+            self.printStats()
     
 #
 # Helper functions for cli test

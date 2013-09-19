@@ -12,6 +12,7 @@ except ImportError as error:
 from gui.tab import Tab
 from gui.clock import GameClock
 from gui.plots import PlotView
+from gui.gamestats import QuickStatsBox
         
 PlayerColours=[QtGui.QColor(237,44,48),
          QtGui.QColor(23,89,169),
@@ -322,14 +323,17 @@ class GamePlayerWidget(QtGui.QGroupBox):
     def setWinner(self): self.iconlabel.setPixmap(self.winnerPixmap)
 
 
-class GameDetail(QtGui.QGroupBox):
+class GameRoundsDetail(QtGui.QGroupBox):
+    
+    edited = QtCore.Signal()
     
     def __init__(self, engine, parent=None):
-        super(GameDetail, self).__init__(parent)
+        super(GameRoundsDetail, self).__init__(parent)
         self.engine = engine
         self.initUI()
 
     def initUI(self):
+        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout = QtGui.QVBoxLayout(self)
 #        self.container = QtGui.QToolBox(self)
         self.container = QtGui.QTabWidget(self)
@@ -340,24 +344,12 @@ class GameDetail(QtGui.QGroupBox):
         self.tableContainer.setAutoFillBackground(True)
         self.container.addTab(self.tableContainer,'')
         
-        self.table = QtGui.QTableWidget(0,len(self.engine.getPlayers()))
+        self.table = self.createRoundTable(self.engine, self)
         self.tableContainerLayout.addWidget(self.table,stretch=1)
-        players = self.engine.getListPlayers()
-        self.table.setHorizontalHeaderLabels(players)
-        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        self.table.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.table.customContextMenuRequested.connect(self.openTableMenu)
+        self.table.edited.connect(self.recomputeDetails)
+        self.table.edited.connect(self.edited.emit)
         
-        self.totalsLabel = QtGui.QLabel("",self)
-        self.tableContainerLayout.addWidget(self.totalsLabel)
-        
-        self.totals = StatsTable(len(self.engine.getEntryKinds()),len(self.engine.getPlayers()))
-        self.tableContainerLayout.addWidget(self.totals)
-        self.totals.setHorizontalHeaderLabels(players)
-        self.totals.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        self.totals.setMaximumHeight(self.totals.sizeHint().height())
-        
-        self.plot = CarcassonneEntriesPlot(self.engine,self)      
+        self.plot = self.createRoundPlot(self.engine,self)      
         self.plot.setAutoFillBackground(True)
 #        self.container.addItem(self.plot,'')
         self.container.addTab(self.plot,'')
@@ -367,97 +359,67 @@ class GameDetail(QtGui.QGroupBox):
         self.container.addTab(self.statsFrame,'')
 
         self.statsLayout= QtGui.QVBoxLayout(self.statsFrame)
-        self.gamestats = CarcassonneQSBox(self.statsFrame)
+        self.gamestats = self.createQSBox(self.statsFrame)
         self.statsLayout.addWidget(self.gamestats)
 
     def retranslateUI(self):
-        self.setTitle(QtGui.QApplication.translate("CarcassonneEntriesDetail",'Details'))
-        self.container.setTabText(0,QtGui.QApplication.translate("CarcassonneEntriesDetail","Table"))
-        self.container.setTabText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
-        self.container.setTabText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
-        self.totalsLabel.setText(QtGui.QApplication.translate("CarcassonneEntriesDetail","Totals"))
-        self.totals.setVerticalHeaderLabels([QtGui.QApplication.translate("CarcassonneInputWidget",kind) for kind in self.engine.getEntryKinds()])
+        self.setTitle(QtGui.QApplication.translate("GameRoundsDetail",'Details'))
+        self.container.setTabText(0,QtGui.QApplication.translate("GameRoundsDetail","Table"))
+        self.container.setTabText(1,QtGui.QApplication.translate("GameRoundsDetail","Plot"))
+        self.container.setTabText(2,QtGui.QApplication.translate("GameRoundsDetail","Statistics"))
 #        self.container.setItemText(0,QtGui.QApplication.translate("CarcassonneEntriesDetail","Table"))
 #        self.container.setItemText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
 #        self.container.setItemText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
         self.gamestats.retranslateUI()
-        self.recomputeTable()
+        self.recomputeDetails()
 
     def updatePlot(self):
         self.plot.updatePlot()
-        
-    def resetTotals(self):
-        self.totals.clearContents()
-        for row in range(len(self.engine.getEntryKinds())):
-            background=self.bgcolors[row]
-            for col in range(len(self.engine.getListPlayers())):
-                item = QtGui.QTableWidgetItem()
-                item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
-                item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
-                item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
-                item.setText("0")
-                self.totals.setItem(row,col,item)
 
-    def recomputeTable(self):
-        self.table.clearContents()
-        self.table.setRowCount(0)
-        self.resetTotals()
-        for r in self.engine.getEntries(): self.insertEntry(r)
-        self.updatePlot()
-    
-    def insertEntry(self,entry):
-        kind = entry.getKind()
-        kinds = self.engine.getEntryKinds()
-        background = self.bgcolors[kinds.index(kind)]
-        kind = QtGui.QApplication.translate("CarcassonneInputWidget",kind)
-        i = entry.getNumEntry() - 1
-        self.table.insertRow(i)
-        for j, player in enumerate(self.engine.getListPlayers()):
-            item = QtGui.QTableWidgetItem()
-            item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
-            item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
-            item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
-
-            if player == entry.getPlayer():
-                text = "{} ({})".format(entry.getScore(),kind)
-                font = item.font()
-                font.setBold(True)
-                item.setFont(font)
-                totalItem = self.totals.item(kinds.index(entry.getKind()),j)
-                totalItem.setText(str(int(totalItem.text())+entry.getScore()))       
-            else:
-                text = ""
-            item.setText(text)
-            self.table.setItem(i,j,item)
-        self.table.scrollToBottom()
-        self.recomputeMaxTotals()            
+    def recomputeDetails(self):
+        self.table.resetClear()
+        for r in self.engine.getRounds(): self.table.insertRound(r)
+        self.updatePlot()       
         
     def updateRound(self):
-        entries = self.engine.getEntries()
-        if not len(entries): return
-        e = entries[-1]
-        self.insertEntry(e)
-        self.plot.updatePlot()
+        self.recomputeDetails()
+#         rounds = self.engine.getRounds()
+#         if not len(rounds): return
+#         r = rounds[-1]
+#         self.table.insertRound(r)
+#         self.plot.updatePlot()
         
     def updateStats(self):
         self.gamestats.update()
     
     def deleteRound(self,nround):
         self.plot.updatePlot()
+        
+    # Implement in subclasses if necessary
+    def createRoundTable(self, engine, parent=None) : return GameRoundTable(self)
+    def createRoundPlot(self, engine, parent=None): return GameRoundPlot(self)
+    def createQSBox(self, parent=None): return QuickStatsBox(self.engine.getGame(), self)
+
 
 class GameRoundTable(QtGui.QTableWidget):
     
-    edited = QtCore.Signal(int)
+    edited = QtCore.Signal()
     
     def __init__(self,engine,parent=None):
         super(GameRoundTable, self).__init__(parent)
         self.engine = engine
+        self.setColumnCount(len(self.engine.getListPlayers()))
+        self.initUI()
         
     def initUI(self):
         self.setHorizontalHeaderLabels(self.engine.getListPlayers())
         self.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.openTableMenu)    
+        
+    def resetClear(self):
+        self.clearContents()
+        self.setRowCount(0)
         
     def openTableMenu(self,position):
         item = self.indexAt(position)
@@ -467,15 +429,18 @@ class GameRoundTable(QtGui.QTableWidget):
         menu = QtGui.QMenu()
         deleteEntryAction = QtGui.QAction(QtGui.QIcon('icons/delete.png'),QtGui.QApplication.translate("GameRoundTable","Delete Entry"), self)
         menu.addAction(deleteEntryAction)
-        action = menu.exec_(self.table.mapToGlobal(position))
+        action = menu.exec_(self.mapToGlobal(position))
         if action == deleteEntryAction:
             ret = QtGui.QMessageBox.question(self, QtGui.QApplication.translate("GameRoundTable",'Delete Entry'),
             QtGui.QApplication.translate("GameRoundTable","Are you sure you want to delete this entry?"), QtGui.QMessageBox.Yes | 
             QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
             if ret == QtGui.QMessageBox.No: return
-            self.engine.deleteEntry(nentry)
-            self.table.removeRow(item.row())
-            self.edited.emit(nentry)
+            self.engine.deleteRound(nentry)
+            self.removeRow(item.row())
+            self.edited.emit()
+            
+    #ReImplement in subclasses
+    def insertRound(self,rnd): pass
 
 
 class GameRoundPlot(QtGui.QWidget):

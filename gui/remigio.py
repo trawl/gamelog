@@ -10,7 +10,7 @@ except ImportError as error:
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
     
 from controllers.remigioengine import RemigioEngine
-from gui.game import GameWidget,GameInputWidget,ScoreSpinBox,GameRoundPlot,GamePlayerWidget,PlayerColours
+from gui.game import GameWidget,GameInputWidget,ScoreSpinBox,GameRoundsDetail,GameRoundTable,GameRoundPlot,GamePlayerWidget,PlayerColours
 
 
 class RemigioWidget(GameWidget):
@@ -47,7 +47,8 @@ class RemigioWidget(GameWidget):
         self.configLayout.addWidget(self.topPointsLabel,0,1)
         
         self.detailGroup = RemigioRoundsDetail(self.engine, RemigioWidget.bgcolors, self)
-        self.detailGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
+        self.detailGroup.edited.connect(self.updatePanel)
+#         self.detailGroup = GameRoundsDetail(self.engine, self)
         self.widgetLayout.addWidget(self.detailGroup,1,0)        
         
         self.playerGroup = QtGui.QGroupBox(self)
@@ -97,15 +98,21 @@ class RemigioWidget(GameWidget):
     def updatePanel(self):
         self.topPointsLineEdit.setReadOnly(True)
         self.dealerPolicyCheckBox.setEnabled(False)
+        self.updateScores()
+        
+        self.detailGroup.updateRound()
+        super(RemigioWidget,self).updatePanel()
+        
+    def updateScores(self):
         for player in self.players:
             score = self.engine.getScoreFromPlayer(player)
             self.playerGroupBox[player].updateDisplay(score)
             if self.engine.isPlayerOff(player):
                 self.playerGroupBox[player].koPlayer()
                 self.gameInput.koPlayer(player)
-        
-        self.detailGroup.updateRound()
-        super(RemigioWidget,self).updatePanel()
+            else:
+                self.playerGroupBox[player].unKoPlayer()
+                self.gameInput.unKoPlayer(player)
         
     def changeTop(self,newtop):
         try:
@@ -148,6 +155,8 @@ class RemigioInputWidget(GameInputWidget):
         return scores
             
     def koPlayer(self,player): self.playerInputList[player].setKo()
+    
+    def unKoPlayer(self,player): self.playerInputList[player].unsetKo()
         
         
 class RemigioPlayerInputWidget(QtGui.QFrame):
@@ -232,21 +241,74 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
     def setKo(self): 
         self.ko = True
         self.setDisabled(True)
+        
+    def unsetKo(self):
+        self.ko = False
+        self.setDisabled(False)
             
     
-class RemigioPlayerWidget(GamePlayerWidget):  
+class RemigioPlayerWidget(GamePlayerWidget):
+    
     def koPlayer(self): 
         self.iconlabel.setPixmap(QtGui.QPixmap('icons/skull.png'))
-     
-            
-class RemigioRoundsDetail(QtGui.QGroupBox):
+        
+    def unKoPlayer(self): 
+        self.iconlabel.setPixmap(self.nonDealerPixmap)
+
+
+class RemigioRoundsDetail(GameRoundsDetail):
     
     def __init__(self, engine, bgcolors, parent=None):
-        super(RemigioRoundsDetail, self).__init__(parent)
+        self.bgcolors = bgcolors
+        super(RemigioRoundsDetail, self).__init__(engine,parent)
+        
+    def createRoundTable(self, engine, parent=None):
+        return RemigioRoundTable(self.engine,self.bgcolors, parent)
+      
+    def createRoundPlot(self, engine, parent=None): 
+        return RemigioRoundPlot(self.engine,self)
+    
+    
+class RemigioRoundTable(GameRoundTable):
+    
+    def __init__(self, engine, bgcolors, parent=None):
+        self.bgcolors = bgcolors
+        super(RemigioRoundTable, self).__init__(engine,parent)
+      
+    def insertRound(self,r):
+        closeType = r.getCloseType()
+        winner = r.getWinner()
+        background = self.bgcolors[closeType]
+        i = r.getNumRound() - 1
+        self.insertRow(i)
+        for j, player in enumerate(self.engine.getListPlayers()):
+            item = QtGui.QTableWidgetItem()
+            item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
+            item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
+            item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+            if player == winner:
+                text = QtGui.QApplication.translate("RemigioRoundTable","Winner ({}x)").format(closeType)
+                font = item.font()
+                font.setBold(True)
+                item.setFont(font)
+            elif self.engine.isPlayerOff(player) or r.getPlayerScore(player) < 0:
+                text = ""
+                item.setBackground(QtGui.QBrush(QtCore.Qt.gray))          
+            else:
+                text = str(r.getPlayerScore(player))
+            item.setText(text)
+            self.setItem(i,j,item)
+        self.scrollToBottom()
+        
+            
+class RemigioRoundsDetail2(QtGui.QGroupBox):
+     
+    def __init__(self, engine, bgcolors, parent=None):
+        super(RemigioRoundsDetail2, self).__init__(parent)
         self.bgcolors = bgcolors
         self.engine = engine
         self.initUI()
-
+ 
     def initUI(self):
         self.widgetLayout = QtGui.QVBoxLayout(self)
 #         self.container = QtGui.QToolBox(self)
@@ -260,14 +322,14 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
         players = self.engine.getListPlayers()
         self.table.setHorizontalHeaderLabels(players)
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        
+         
         self.plot = RemigioRoundPlot(self.engine,self)
         self.plot.setAutoFillBackground(True)
 #         self.container.addItem(self.plot,'')
         self.container.addTab(self.plot,'')
-        
+         
 #        self.retranslateUI()
-        
+         
     def retranslateUI(self):
         self.setTitle(QtGui.QApplication.translate("RemigioRoundsDetail",'Details'))
 #         self.container.setItemText(0,QtGui.QApplication.translate("RemigioRoundsDetail","Table"))
@@ -275,17 +337,17 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
         self.container.setTabText(0,QtGui.QApplication.translate("RemigioRoundsDetail","Table"))
         self.container.setTabText(1,QtGui.QApplication.translate("RemigioRoundsDetail","Plot"))
         self.recomputeTable()
-
-
+ 
+ 
     def updatePlot(self):
         self.plot.updatePlot()
-
+ 
     def recomputeTable(self):
         self.table.clearContents()
         self.table.setRowCount(0)
         for r in self.engine.getRounds(): self.insertRound(r)
         self.updatePlot()
-    
+     
     def insertRound(self,r):
         closeType = r.getCloseType()
         winner = r.getWinner()
@@ -310,7 +372,7 @@ class RemigioRoundsDetail(QtGui.QGroupBox):
             item.setText(text)
             self.table.setItem(i,j,item)
         self.table.scrollToBottom()
-        
+         
     def updateRound(self):
         rounds = self.engine.getRounds()
         if not len(rounds): return

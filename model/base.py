@@ -165,6 +165,7 @@ class GenericRoundMatch(GenericMatch):
         self.rounds = list()
         self.dealer = None
         self.dealingp = 1
+        self.updatewinnereveryround=True
         
     def resumeMatch(self,idMatch):
         if not super(GenericRoundMatch,self).resumeMatch(idMatch): return False
@@ -231,22 +232,24 @@ class GenericRoundMatch(GenericMatch):
         for player,score in rnd.getScore().items():
             self.totalScores[player]+=score
             self.playerAddRound(player,rnd)
-        self.updateWinner()
+        if self.updatewinnereveryround: self.updateWinner()
         
     def updateRound(self,rnd):
-        try: oldrnd = self.entries[rnd.getNumrnd()-1]
+        try: oldrnd = self.rounds[rnd.getNumRound()-1]
         except KeyError: return
-        self.totalScores[oldrnd.getPlayer()] -= oldrnd.getScore()
-        self.totalScores[rnd.getPlayer()] += rnd.getScore()
-        self.entries[rnd.getNumrnd()-1] = rnd
+        for player,score in oldrnd.getScore():
+            self.totalScores[player] -= score
+            self.totalScores[player] -= rnd.getPlayerScore(player)
+        self.rounds[rnd.getNumRound()-1] = rnd
             
     def deleteRound(self,nrnd):
-        try: rnd = self.entries[nrnd-1]
+        try: rnd = self.rounds[nrnd-1]
         except KeyError: return
-        self.totalScores[rnd.getPlayer()] -= rnd.getScore()
-        del self.entries[nrnd-1]
-        for i, rnd in enumerate(self.entries,start=1):
-            rnd.setNumrnd(i)
+        for player,score in rnd.getScore().items():
+            self.totalScores[player] -= score
+        del self.rounds[nrnd-1]
+        for i, rnd in enumerate(self.rounds,start=1):
+            rnd.setNumRound(i)
        
     def getRounds(self): return self.rounds
 
@@ -266,6 +269,8 @@ class GenericRound(object):
         self.winner = None
         
     def getNumRound(self): return self.numround
+    
+    def setNumRound(self,numround): self.numround = numround
         
     def setWinner(self,player): self.winner = player
         
@@ -290,10 +295,11 @@ class GenericRound(object):
     
 
 class GenericEntry(GenericRound):
-        
-    def getNumEntry(self): return self.getNumRound()
     
-    def setNumEntry(self,numround): self.numround = numround
+    def __init__(self,numround):
+        super(GenericEntry,self).__init__(numround)
+        self.getNumEntry = self.getNumRound
+        self.setNumEntry = self.setNumRound
         
     def getPlayerScore(self): 
         if len(self.score)==0: return -1
@@ -303,99 +309,5 @@ class GenericEntry(GenericRound):
         if len(self.score)==0: return -1
         for player in self.score.keys(): return player
         
-    
-class GenericEntryMatch(GenericMatch):
-    def __init__(self,players=[]):
-        super(GenericEntryMatch,self).__init__(players)
-        self.entries = list()
-        
-    def resumeMatch(self,idMatch):
-        if not super(GenericEntryMatch,self).resumeMatch(idMatch): return False
-        cur = db.execute("SELECT idRound,nick,score FROM Round WHERE idMatch ={} ORDER BY idRound;".format(idMatch))
-        for row in cur:
-            entry = self.createEntry(int(row['idRound']))
-            entry.addInfo(str(row['nick']), int(row['score']))
-            self.entries.append(entry) 
-        
-        cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='Dealer';".format(idMatch))
-        row = cur.fetchone()
-        if row: self.dealer = str(row['value'])
 
-        cur = db.execute("SELECT value FROM MatchExtras WHERE idMatch ={} and key='DealingPolicy';".format(idMatch))
-        row = cur.fetchone()
-        if row: self.dealingp = int(row['value'])
-            
-        cur = db.execute("SELECT idRound,nick,key,value FROM RoundStatistics WHERE idMatch ={} ORDER BY idRound,nick,key,value;".format(idMatch))
-        
-        currentr = 0
-        currentp = ""
-        extras = {}
-        for row in cur:
-            if row['idRound'] != currentr:
-                if len(extras):
-                    for player,extra in extras.items(): 
-                        self.entries[currentr-1].addExtraInfo(player,extra)
-                extras = {}
-                currentp = ""
-                currentr += 1
-                
-            if str(row['nick']) != currentp:
-                currentp = str(row['nick'])
-                extras[currentp] = {}
-            
-            extras[currentp].update(self.resumeExtraInfo(currentp,str(row['key']),str(row['value'])))
-                
-        if len(extras):
-            for player,extra in extras.items(): 
-                self.entries[currentr-1].addExtraInfo(player,extra)
-        
-        return True
-           
-    def flushToDB(self):
-        super(GenericEntryMatch,self).flushToDB()
-        
-        #Remove previous saved game information to make sure we don't leave any leftovers after editing rounds...
-        db.execute("DELETE FROM Round where idMatch={};".format(self.idMatch))
-        db.execute("DELETE FROM RoundStatistics where idMatch={};".format(self.idMatch))
-        db.execute("BEGIN")
-        for entry in self.getEntries():
-            db.execute("INSERT OR REPLACE INTO Round (idMatch,nick,idRound,score) VALUES ({},'{}',{},{});".format(self.idMatch,str(entry.getPlayer()),entry.getNumEntry(),entry.getScore()))
-        
-        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'Dealer','{}');".format(self.idMatch,self.getDealer()))
-        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'DealingPolicy','{}');".format(self.idMatch,self.getDealingPolicy()))
-
-    def addEntry(self,entry):
-        self.entries.append(entry)
-        self.totalScores[entry.getPlayer()] += entry.getScore()
-        self.playerAddEntry(entry.getPlayer(),entry)
-        
-    def updateEntry(self,entry):
-        try: oldentry = self.entries[entry.getNumEntry()-1]
-        except KeyError: return
-        self.totalScores[oldentry.getPlayer()] -= oldentry.getScore()
-        self.totalScores[entry.getPlayer()] += entry.getScore()
-        self.entries[entry.getNumEntry()-1] = entry
-            
-    def deleteEntry(self,nentry):
-        try: entry = self.entries[nentry-1]
-        except KeyError: return
-        self.totalScores[entry.getPlayer()] -= entry.getScore()
-        del self.entries[nentry-1]
-        for i, entry in enumerate(self.entries,start=1):
-            entry.setNumEntry(i)
-        
-    def getEntries(self): return self.entries
-    
-    def computeWinner(self):
-        maxscore=0
-        for player,score in self.totalScores.items():
-            if score > maxscore: 
-                self.winner = player
-                maxscore = score
-            
-
-    # To be implemented in subclasses
-    def playerAddEntry(self,player,entry): pass
-    def resumeExtraInfo(self,player,key,value): return {}
-    def createEntry(self,numentry): return GenericEntry(numentry)    
     
