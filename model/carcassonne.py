@@ -12,6 +12,7 @@ class CarcassonneMatch(GenericRoundMatch):
         row = cur.fetchone()
         self.entry_kinds = [ str(kind) for kind in row['value'].split(',') ]
         self.dealingp = 3
+        self.updatewinnereveryround = False
     
     def getEntryKinds(self): return self.entry_kinds    
     
@@ -45,70 +46,30 @@ class CarcassonneMatch(GenericRoundMatch):
             details[kind] = {}
             for player in candidates:
                 details[kind][player] = 0
-        for entry in self.getEntries():
+        for entry in self.getRounds():
             details[entry.getKind()][entry.getPlayer()] += entry.getPlayerScore()
+            
+        # Draw
+        for kind in self.getEntryKinds():
+            maxscore = max(details[kind].values())
+            removed = []
+            for player,score in details[kind].items():
+                if score != maxscore: 
+                    candidates.remove(player)
+                    removed.append(player)
                 
-        # Check who has more points in cities
-        maxscore = max(details['City'].values())
-        removed = []
-        for player,score in details['City'].items():
-            if score != maxscore: 
-                candidates.remove(player)
-                removed.append(player)
+            if len(candidates)==1:
+                self.winner = candidates.pop()
+                return    
             
-        if len(candidates)==1:
-            self.winner = candidates.pop()
-            return    
+            for k in details.keys():
+                for player in removed:
+                    del details[k][player]
         
-        for kind in details.keys():
-            for player in removed:
-                del details[kind][player]
-        
-        # Check who has more points in Roads
-        maxscore = max(details['Road'].values())
-        removed = []
-        for player,score in details['Road'].items():
-            if score != maxscore: 
-                candidates.remove(player)
-                removed.append(player)
-            
-        if len(candidates)==1:
-            self.winner = candidates.pop()
-            return    
-        
-        for kind in details.keys():
-            for player in removed:
-                del details[kind][player]
-                
-        # Check who has more points in Cloisters
-        maxscore = max(details['Cloister'].values())
-        removed = []
-        for player,score in details['Cloister'].items():
-            if score != maxscore: 
-                candidates.remove(player)
-                removed.append(player)
-            
-        if len(candidates)==1:
-            self.winner = candidates.pop()
-            return    
-        
-        for kind in details.keys():
-            for player in removed:
-                del details[kind][player]
-                
-        # Check who has more points in Fields
-        maxscore = max(details['Field'].values())
-        removed = []
-        for player,score in details['Field'].items():
-            if score != maxscore: 
-                candidates.remove(player)
-                removed.append(player)
-            
-        #Choose the first one (bad luck for the second...)
+        # Ultimate draw, pick the first candidate then...            
         self.winner = candidates.pop()
         return    
 
-            
             
 class CarcassonneEntry(GenericEntry):
     def __init__( self,numround):

@@ -10,7 +10,7 @@ class CarcassonneEngine(EntryGameEngine):
         EntryGameEngine.__init__(self)
         self.game = 'Carcassonne'
             
-    def runStubEntryPlayer(self,player):
+    def runStubRoundPlayer(self,player,winner=None):
         score = readInput("{} score: ".format(player),int,lambda x: x>0,"Sorry, invalid score number.")
         kind = readInput("Kind: ",str,lambda x: x in self.match.getEntryKinds(),"Sorry, invalid kind [{}]".format(",".join(self.match.getEntryKinds())))
         self.addEntry(player,score,{'kind':kind})   

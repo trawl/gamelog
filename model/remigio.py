@@ -22,6 +22,13 @@ class RemigioMatch(GenericRoundMatch):
             for player in rnd.getScore().keys():
                 rnd.setPlayerScore(player,closeType*rnd.getPlayerScore(player))
         GenericRoundMatch.addRound(self,rnd)
+            
+    def deleteRound(self,nrnd):
+        super(RemigioMatch,self).deleteRound(nrnd)
+        for player in self.playersoff[:]:
+            if self.totalScores[player] < self.top:
+                self.activeplayers.append(player)
+                self.playersoff.remove(player)
         
     def computeWinner(self):
         
