@@ -220,7 +220,6 @@ class GameWidget(Tab):
         self.gameInput.setDisabled(True)
         
     
-     
 class GameInputWidget(QtGui.QWidget):
     
     enterPressed = QtCore.Signal()
@@ -346,7 +345,7 @@ class GameRoundsDetail(QtGui.QGroupBox):
         
         self.table = self.createRoundTable(self.engine, self)
         self.tableContainerLayout.addWidget(self.table,stretch=1)
-        self.table.edited.connect(self.recomputeDetails)
+        self.table.edited.connect(self.updateRound)
         self.table.edited.connect(self.edited.emit)
         
         self.plot = self.createRoundPlot(self.engine,self)      
@@ -371,23 +370,15 @@ class GameRoundsDetail(QtGui.QGroupBox):
 #        self.container.setItemText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
 #        self.container.setItemText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
         self.gamestats.retranslateUI()
-        self.recomputeDetails()
+        self.updateRound()
 
     def updatePlot(self):
         self.plot.updatePlot()
-
-    def recomputeDetails(self):
-        self.table.resetClear()
-        for r in self.engine.getRounds(): self.table.insertRound(r)
-        self.updatePlot()       
         
     def updateRound(self):
-        self.recomputeDetails()
-#         rounds = self.engine.getRounds()
-#         if not len(rounds): return
-#         r = rounds[-1]
-#         self.table.insertRound(r)
-#         self.plot.updatePlot()
+        self.table.resetClear()
+        for r in self.engine.getRounds(): self.table.insertRound(r)
+        self.updatePlot()      
         
     def updateStats(self):
         self.gamestats.update()
