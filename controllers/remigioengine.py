@@ -11,7 +11,17 @@ class RemigioEngine(RoundGameEngine):
     def getActivePlayers(self): return self.match.getActivePlayers()
     
     def isPlayerOff(self,player): return self.match.isPlayerOff(player)
-
+    
+    def wasPlayerOff(self,player,nround):
+        totalscore=0
+        isoff = False
+        for rnd in self.getRounds():
+            totalscore+=rnd.getPlayerScore(player)
+            isoff = totalscore >= self.getTop()
+            if nround==rnd.getNumRound(): break
+            
+        return isoff
+        
     def getTop(self): return self.match.getTop()
     
     def setTop(self,top): self.match.setTop(top)       

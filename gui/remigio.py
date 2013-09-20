@@ -99,7 +99,7 @@ class RemigioWidget(GameWidget):
         self.topPointsLineEdit.setReadOnly(True)
         self.dealerPolicyCheckBox.setEnabled(False)
         self.updateScores()
-        
+        if self.engine.getWinner(): self.detailGroup.updateStats()
         self.detailGroup.updateRound()
         super(RemigioWidget,self).updatePanel()
         
@@ -291,8 +291,9 @@ class RemigioRoundTable(GameRoundTable):
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)
-            elif self.engine.isPlayerOff(player) or r.getPlayerScore(player) < 0:
-                text = ""
+            elif self.engine.wasPlayerOff(player,r.getNumRound()) or r.getPlayerScore(player) < 0:
+                if r.getPlayerScore(player) < 0: text = ""
+                else: text = str(r.getPlayerScore(player))
                 item.setBackground(QtGui.QBrush(QtCore.Qt.gray))          
             else:
                 text = str(r.getPlayerScore(player))

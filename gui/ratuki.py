@@ -10,7 +10,7 @@ except ImportError as error:
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
 
 from controllers.ratukiengine import RatukiEngine
-from gui.game import GameWidget,GameInputWidget,ScoreSpinBox,GameRoundPlot,GamePlayerWidget,PlayerColours
+from gui.game import GameWidget,GameInputWidget,ScoreSpinBox,GameRoundsDetail,GameRoundTable,GameRoundPlot,GamePlayerWidget,PlayerColours
 
 
 class RatukiWidget(GameWidget):
@@ -45,7 +45,7 @@ class RatukiWidget(GameWidget):
         self.configLayout.addWidget(self.topPointsLabel,0,1)
         
         self.detailGroup = RatukiRoundsDetail(self.engine, self)
-        self.detailGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
+        self.detailGroup.edited.connect(self.updatePanel)
         self.widgetLayout.addWidget(self.detailGroup,1,0)        
         
         self.playerGroup = QtGui.QGroupBox(self)
@@ -85,6 +85,7 @@ class RatukiWidget(GameWidget):
             score = self.engine.getScoreFromPlayer(player)
             self.playerGroupBox[player].updateDisplay(score)
         
+        if self.engine.getWinner(): self.detailGroup.updateStats()
         self.detailGroup.updateRound()
         super(RatukiWidget,self).updatePanel()
         
@@ -184,58 +185,30 @@ class RatukiPlayerInputWidget(QtGui.QFrame):
     
     def getScore(self): return self.scoreSpinBox.value()
 
-            
-class RatukiRoundsDetail(QtGui.QGroupBox):
+
+class RatukiRoundsDetail(GameRoundsDetail):
     
     def __init__(self, engine, parent=None):
-        super(RatukiRoundsDetail, self).__init__(parent)
-        self.engine = engine
         self.bgcolors = [0xCCFF99,0xFFCC99]
-        self.initUI()
-
-    def initUI(self):
-        self.widgetLayout = QtGui.QVBoxLayout(self)
-#         self.container = QtGui.QToolBox(self)
-        self.container = QtGui.QTabWidget(self)
-        self.widgetLayout.addWidget(self.container)
-        self.table = QtGui.QTableWidget(0,len(self.engine.getPlayers()))
-        self.table.setAutoFillBackground(True)
-#         self.container.addItem(self.table,'')
-        self.container.addTab(self.table,'')
-#        self.widgetLayout.addWidget(self.table)
-        players = self.engine.getListPlayers()
-        self.table.setHorizontalHeaderLabels(players)
-        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        super(RatukiRoundsDetail, self).__init__(engine,parent)
         
-        self.plot = RatukiRoundPlot(self.engine,self)
-        self.plot.setAutoFillBackground(True)
-#         self.container.addItem(self.plot,'')
-        self.container.addTab(self.plot,'')
-        
-#        self.retranslateUI()
-        
-    def retranslateUI(self):
-        self.setTitle(QtGui.QApplication.translate("RatukiRoundsDetail",'Details'))
-#         self.container.setItemText(0,QtGui.QApplication.translate("RatukiRoundsDetail","Table"))
-#         self.container.setItemText(1,QtGui.QApplication.translate("RatukiRoundsDetail","Plot"))
-        self.container.setTabText(0,QtGui.QApplication.translate("RatukiRoundsDetail","Table"))
-        self.container.setTabText(1,QtGui.QApplication.translate("RatukiRoundsDetail","Plot"))
-        self.recomputeTable()
-
-
-    def updatePlot(self):
-        self.plot.updatePlot()
-
-    def recomputeTable(self):
-        self.table.clearContents()
-        self.table.setRowCount(0)
-        for r in self.engine.getRounds(): self.insertRound(r)
-        self.updatePlot()
+    def createRoundTable(self, engine, parent=None):
+        return RatukiRoundTable(self.engine,self.bgcolors, parent)
+      
+    def createRoundPlot(self, engine, parent=None): 
+        return RatukiRoundPlot(self.engine,self)
     
+    
+class RatukiRoundTable(GameRoundTable):
+    
+    def __init__(self, engine, bgcolors, parent=None):
+        self.bgcolors = bgcolors
+        super(RatukiRoundTable, self).__init__(engine,parent)
+
     def insertRound(self,r):
         winner = r.getWinner()
         i = r.getNumRound() - 1
-        self.table.insertRow(i)
+        self.insertRow(i)
         for j, player in enumerate(self.engine.getListPlayers()):
             item = QtGui.QTableWidgetItem()
             item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
@@ -245,17 +218,10 @@ class RatukiRoundsDetail(QtGui.QGroupBox):
             else: background = self.bgcolors[1]
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
             text = str(score)
-            if player == winner: text += QtGui.QApplication.translate("RatukiRoundsDetail"," (Winner)")
+            if player == winner: text += QtGui.QApplication.translate("RatukiRoundTable"," (Winner)")
             item.setText(text)
-            self.table.setItem(i,j,item)
-        self.table.scrollToBottom()
-        
-    def updateRound(self):
-        rounds = self.engine.getRounds()
-        if not len(rounds): return
-        r = rounds[-1]
-        self.insertRound(r)
-        self.plot.updatePlot()
+            self.setItem(i,j,item)
+        self.scrollToBottom()
         
         
 class RatukiRoundPlot(GameRoundPlot):

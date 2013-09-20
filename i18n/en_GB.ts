@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="en_GB">
+<!DOCTYPE TS><TS version="1.1" language="en_GB">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -47,7 +46,7 @@
         <translation>Delete Entry</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="431"/>
+        <location filename="gui/carcassonne.py" line="432"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>Are you sure you want to delete this entry?</translation>
     </message>
@@ -70,27 +69,27 @@
         <translation>Points</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="146"/>
+        <location filename="gui/carcassonne.py" line="147"/>
         <source>City</source>
         <translation>City</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="147"/>
+        <location filename="gui/carcassonne.py" line="148"/>
         <source>Road</source>
         <translation>Road</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="148"/>
+        <location filename="gui/carcassonne.py" line="149"/>
         <source>Cloister</source>
         <translation>Cloister</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="149"/>
+        <location filename="gui/carcassonne.py" line="150"/>
         <source>Field</source>
         <translation>Field</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="150"/>
+        <location filename="gui/carcassonne.py" line="152"/>
         <source>Goods</source>
         <translation>Goods</translation>
     </message>
@@ -108,7 +107,7 @@
         <translation>Player</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="516"/>
+        <location filename="gui/carcassonne.py" line="517"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
@@ -146,7 +145,7 @@
         <translation>Commit Entry</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="108"/>
+        <location filename="gui/carcassonne.py" line="109"/>
         <source>Are you sure you want to commit this entry?</source>
         <translation>Are you sure you want to commit this entry?</translation>
     </message>
@@ -156,7 +155,7 @@
         <translation>Finish game</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="122"/>
+        <location filename="gui/carcassonne.py" line="123"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>Are you sure you want to finish the current game?</translation>
     </message>
@@ -164,12 +163,12 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="gui/game.py" line="434"/>
+        <location filename="gui/game.py" line="425"/>
         <source>Delete Entry</source>
         <translation>Delete Entry</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="434"/>
+        <location filename="gui/game.py" line="426"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>
 Are you sure you want to delete this entry?</translation>
@@ -178,22 +177,22 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>GameRoundsDetail</name>
     <message>
-        <location filename="gui/game.py" line="366"/>
+        <location filename="gui/game.py" line="365"/>
         <source>Details</source>
         <translation>Details</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="367"/>
+        <location filename="gui/game.py" line="366"/>
         <source>Table</source>
         <translation>Table</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="368"/>
+        <location filename="gui/game.py" line="367"/>
         <source>Plot</source>
         <translation>Plot</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="369"/>
+        <location filename="gui/game.py" line="368"/>
         <source>Statistics</source>
         <translation>Statistics</translation>
     </message>
@@ -261,7 +260,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>Commit Round</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="162"/>
+        <location filename="gui/game.py" line="163"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>Are you sure you want to commit the current round?</translation>
     </message>
@@ -271,7 +270,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>Round {0}</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="117"/>
+        <location filename="gui/game.py" line="118"/>
         <source>Do you want to save the current {} match?</source>
         <translation>Do you want to save the current {} match?</translation>
     </message>
@@ -327,7 +326,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>Exit</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="121"/>
+        <location filename="gui/mainwindow.py" line="122"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Are you sure you want to exit GameLog?</translation>
     </message>
@@ -337,12 +336,12 @@ Are you sure you want to delete this entry?</translation>
         <translation>&amp;Language...</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="109"/>
+        <location filename="gui/mainwindow.py" line="110"/>
         <source>You have {} opened matches. Do you want to save them before exiting?</source>
         <translation>You have {} opened matches. Do you want to save them before exiting?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="105"/>
+        <location filename="gui/mainwindow.py" line="106"/>
         <source>You have an opened {} match. Do you want to save it before exiting?</source>
         <translation>You have an opened {} match. Do you want to save it before exiting?</translation>
     </message>
@@ -477,7 +476,7 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="gui/phase10.py" line="544"/>
+        <location filename="gui/phase10.py" line="545"/>
         <source>Winner</source>
         <translation>Winner</translation>
     </message>
@@ -495,7 +494,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>Phases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="95"/>
+        <location filename="gui/phase10.py" line="96"/>
         <source>Phase</source>
         <translation>Phase</translation>
     </message>
@@ -510,7 +509,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>run of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="156"/>
+        <location filename="gui/phase10.py" line="157"/>
         <source>runs of</source>
         <translation>runs of</translation>
     </message>
@@ -520,7 +519,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>colour run of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="160"/>
+        <location filename="gui/phase10.py" line="163"/>
         <source>colour runs of</source>
         <translation>colour runs of</translation>
     </message>
@@ -530,7 +529,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>pair</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="138"/>
+        <location filename="gui/phase10.py" line="139"/>
         <source>pairs</source>
         <translation>pairs</translation>
     </message>
@@ -541,7 +540,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>three of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="142"/>
+        <location filename="gui/phase10.py" line="143"/>
         <source>three of a kind</source>
         <comment>plural</comment>
         <translation>three of a kind</translation>
@@ -553,7 +552,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>four of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="146"/>
+        <location filename="gui/phase10.py" line="147"/>
         <source>four of a kind</source>
         <comment>plural</comment>
         <translation>four of a kind</translation>
@@ -565,7 +564,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>five of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="150"/>
+        <location filename="gui/phase10.py" line="152"/>
         <source>five of a kind</source>
         <comment>plural</comment>
         <translation>five of a kind</translation>
@@ -602,22 +601,22 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="gui/mainwindow.py" line="19"/>
+        <location filename="gui/mainwindow.py" line="20"/>
         <source>&amp;Yes</source>
         <translation>&amp;Yes</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="20"/>
+        <location filename="gui/mainwindow.py" line="21"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="21"/>
+        <location filename="gui/mainwindow.py" line="22"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="22"/>
+        <location filename="gui/mainwindow.py" line="24"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
@@ -670,7 +669,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>Ratio(%)</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="82"/>
+        <location filename="gui/gamestats.py" line="83"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
@@ -691,24 +690,9 @@ Are you sure you want to delete this entry?</translation>
     </message>
 </context>
 <context>
-    <name>RatukiRoundsDetail</name>
-    <message>
-        <location filename="gui/ratuki.py" line="218"/>
-        <source>Details</source>
-        <translation>Details</translation>
-    </message>
-    <message>
-        <location filename="gui/ratuki.py" line="221"/>
-        <source>Table</source>
-        <translation>Table</translation>
-    </message>
+    <name>RatukiRoundTable</name>
     <message>
         <location filename="gui/ratuki.py" line="222"/>
-        <source>Plot</source>
-        <translation>Plot</translation>
-    </message>
-    <message>
-        <location filename="gui/ratuki.py" line="248"/>
         <source> (Winner)</source>
         <translation> (Winner)</translation>
     </message>
@@ -732,29 +716,6 @@ Are you sure you want to delete this entry?</translation>
         <location filename="gui/remigio.py" line="290"/>
         <source>Winner ({}x)</source>
         <translation>Winner ({}x)</translation>
-    </message>
-</context>
-<context>
-    <name>RemigioRoundsDetail</name>
-    <message>
-        <location filename="gui/remigio.py" line="270"/>
-        <source>Details</source>
-        <translation type="obsolete">Details</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="299"/>
-        <source>Winner ({}x)</source>
-        <translation type="obsolete">Winner ({}x)</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="273"/>
-        <source>Table</source>
-        <translation type="obsolete">Table</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="274"/>
-        <source>Plot</source>
-        <translation type="obsolete">Plot</translation>
     </message>
 </context>
 <context>
@@ -803,7 +764,7 @@ Are you sure you want to delete this entry?</translation>
         <translation>Cancel Saved Game</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="372"/>
+        <location filename="gui/newgame.py" line="373"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>Are you sure you want to cancel saved game?</translation>
     </message>

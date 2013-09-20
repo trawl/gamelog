@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ca_ES">
+<!DOCTYPE TS><TS version="1.1" language="ca_ES">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -47,7 +46,7 @@
         <translation>Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="431"/>
+        <location filename="gui/carcassonne.py" line="432"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>Estàs segur que vols eliminar aquesta entrda?</translation>
     </message>
@@ -70,27 +69,27 @@
         <translation>Punts</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="146"/>
+        <location filename="gui/carcassonne.py" line="147"/>
         <source>City</source>
         <translation>Ciutat</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="147"/>
+        <location filename="gui/carcassonne.py" line="148"/>
         <source>Road</source>
         <translation>Camí</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="148"/>
+        <location filename="gui/carcassonne.py" line="149"/>
         <source>Cloister</source>
         <translation>Monestir</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="149"/>
+        <location filename="gui/carcassonne.py" line="150"/>
         <source>Field</source>
         <translation>Camp</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="150"/>
+        <location filename="gui/carcassonne.py" line="152"/>
         <source>Goods</source>
         <translation>Béns</translation>
     </message>
@@ -108,7 +107,7 @@
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="516"/>
+        <location filename="gui/carcassonne.py" line="517"/>
         <source>Date</source>
         <translation>Data</translation>
     </message>
@@ -146,7 +145,7 @@
         <translation>Confirmar Entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="108"/>
+        <location filename="gui/carcassonne.py" line="109"/>
         <source>Are you sure you want to commit this entry?</source>
         <translation>Estàs segur que vols confirmar aquesta entrda?</translation>
     </message>
@@ -156,7 +155,7 @@
         <translation>Finalitzar Partida</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="122"/>
+        <location filename="gui/carcassonne.py" line="123"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>Estàs segur de volerfinalitzar la partida actual?</translation>
     </message>
@@ -164,12 +163,12 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="gui/game.py" line="434"/>
+        <location filename="gui/game.py" line="425"/>
         <source>Delete Entry</source>
         <translation>Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="434"/>
+        <location filename="gui/game.py" line="426"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>Estàs segur que vols eliminar aquesta entrda?</translation>
     </message>
@@ -177,22 +176,22 @@
 <context>
     <name>GameRoundsDetail</name>
     <message>
-        <location filename="gui/game.py" line="366"/>
+        <location filename="gui/game.py" line="365"/>
         <source>Details</source>
         <translation>Detalls</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="367"/>
+        <location filename="gui/game.py" line="366"/>
         <source>Table</source>
         <translation>Taula</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="368"/>
+        <location filename="gui/game.py" line="367"/>
         <source>Plot</source>
         <translation>Gràfic</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="369"/>
+        <location filename="gui/game.py" line="368"/>
         <source>Statistics</source>
         <translation>Estadístiques</translation>
     </message>
@@ -260,7 +259,7 @@
         <translation>Tancar Ronda</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="162"/>
+        <location filename="gui/game.py" line="163"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>Estàs segur de voler tancar la ronda actual?</translation>
     </message>
@@ -270,7 +269,7 @@
         <translation>Ronda {0}</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="117"/>
+        <location filename="gui/game.py" line="118"/>
         <source>Do you want to save the current {} match?</source>
         <translation>Vols desar la partida de {} actual?</translation>
     </message>
@@ -326,7 +325,7 @@
         <translation>Sortir</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="121"/>
+        <location filename="gui/mainwindow.py" line="122"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Estàs segur de voler sortir de GameLog?</translation>
     </message>
@@ -336,12 +335,12 @@
         <translation>&amp;Idioma...</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="109"/>
+        <location filename="gui/mainwindow.py" line="110"/>
         <source>You have {} opened matches. Do you want to save them before exiting?</source>
         <translation>Hi ha {} partides obertes. Vols desar-les abans de sortir?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="105"/>
+        <location filename="gui/mainwindow.py" line="106"/>
         <source>You have an opened {} match. Do you want to save it before exiting?</source>
         <translation>Hi ha una partida de {} oberta. Vols desar-la abans de sortir?</translation>
     </message>
@@ -476,7 +475,7 @@
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="gui/phase10.py" line="544"/>
+        <location filename="gui/phase10.py" line="545"/>
         <source>Winner</source>
         <translation>Guanyador</translation>
     </message>
@@ -494,7 +493,7 @@
         <translation>Fases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="95"/>
+        <location filename="gui/phase10.py" line="96"/>
         <source>Phase</source>
         <translation>Fase</translation>
     </message>
@@ -509,7 +508,7 @@
         <translation>escala de</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="156"/>
+        <location filename="gui/phase10.py" line="157"/>
         <source>runs of</source>
         <translation>escales de</translation>
     </message>
@@ -519,7 +518,7 @@
         <translation>escala de color de</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="160"/>
+        <location filename="gui/phase10.py" line="163"/>
         <source>colour runs of</source>
         <translation>escales de color de</translation>
     </message>
@@ -529,7 +528,7 @@
         <translation>parella</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="138"/>
+        <location filename="gui/phase10.py" line="139"/>
         <source>pairs</source>
         <translation>parelles</translation>
     </message>
@@ -540,7 +539,7 @@
         <translation>trio</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="142"/>
+        <location filename="gui/phase10.py" line="143"/>
         <source>three of a kind</source>
         <comment>plural</comment>
         <translation>trios</translation>
@@ -552,7 +551,7 @@
         <translation>cuartet</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="146"/>
+        <location filename="gui/phase10.py" line="147"/>
         <source>four of a kind</source>
         <comment>plural</comment>
         <translation>cuartets</translation>
@@ -564,7 +563,7 @@
         <translation>quintet</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="150"/>
+        <location filename="gui/phase10.py" line="152"/>
         <source>five of a kind</source>
         <comment>plural</comment>
         <translation>quintets</translation>
@@ -601,22 +600,22 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="gui/mainwindow.py" line="19"/>
+        <location filename="gui/mainwindow.py" line="20"/>
         <source>&amp;Yes</source>
         <translation>&amp;Sí</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="20"/>
+        <location filename="gui/mainwindow.py" line="21"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="21"/>
+        <location filename="gui/mainwindow.py" line="22"/>
         <source>OK</source>
         <translation>Accepta</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="22"/>
+        <location filename="gui/mainwindow.py" line="24"/>
         <source>Cancel</source>
         <translation>Cancel·la</translation>
     </message>
@@ -669,7 +668,7 @@
         <translation>Ratio (%)</translation>
     </message>
     <message>
-        <location filename="gui/gamestats.py" line="82"/>
+        <location filename="gui/gamestats.py" line="83"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
@@ -690,24 +689,9 @@
     </message>
 </context>
 <context>
-    <name>RatukiRoundsDetail</name>
-    <message>
-        <location filename="gui/ratuki.py" line="218"/>
-        <source>Details</source>
-        <translation>Detalls</translation>
-    </message>
-    <message>
-        <location filename="gui/ratuki.py" line="221"/>
-        <source>Table</source>
-        <translation>Taula</translation>
-    </message>
+    <name>RatukiRoundTable</name>
     <message>
         <location filename="gui/ratuki.py" line="222"/>
-        <source>Plot</source>
-        <translation>Gràfic</translation>
-    </message>
-    <message>
-        <location filename="gui/ratuki.py" line="248"/>
         <source> (Winner)</source>
         <translation> (Guanyador)</translation>
     </message>
@@ -731,29 +715,6 @@
         <location filename="gui/remigio.py" line="290"/>
         <source>Winner ({}x)</source>
         <translation>Guanyador ({}x)</translation>
-    </message>
-</context>
-<context>
-    <name>RemigioRoundsDetail</name>
-    <message>
-        <location filename="gui/remigio.py" line="270"/>
-        <source>Details</source>
-        <translation type="obsolete">Detalls</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="299"/>
-        <source>Winner ({}x)</source>
-        <translation type="obsolete">Guanyador ({}x)</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="273"/>
-        <source>Table</source>
-        <translation type="obsolete">Taula</translation>
-    </message>
-    <message>
-        <location filename="gui/remigio.py" line="274"/>
-        <source>Plot</source>
-        <translation type="obsolete">Gràfic</translation>
     </message>
 </context>
 <context>
@@ -802,7 +763,7 @@
         <translation>Cancel·la Partida Desada</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="372"/>
+        <location filename="gui/newgame.py" line="373"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>Estàs segur que vols cancel·lar la partida desada?</translation>
     </message>
