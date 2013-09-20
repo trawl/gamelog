@@ -218,6 +218,10 @@ class GenericRoundMatch(GenericMatch):
     def flushToDB(self):
         super(GenericRoundMatch,self).flushToDB()
         
+        db.execute("BEGIN")
+        db.execute("DELETE FROM Round where idMatch={};".format(self.idMatch))
+        db.execute("DELETE FROM RoundStatistics where idMatch={};".format(self.idMatch))
+        
         db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'Dealer','{}');".format(self.idMatch,self.getDealer()))
         db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) VALUES ({},'DealingPolicy','{}');".format(self.idMatch,self.getDealingPolicy()))
         
@@ -226,7 +230,7 @@ class GenericRoundMatch(GenericMatch):
                 winner = 0 
                 if rnd.getWinner() == player: winner = 1
                 db.execute("INSERT OR REPLACE INTO Round (idMatch,nick,idRound,winner,score) VALUES ({},'{}',{},{},{});".format(self.idMatch,str(player),rnd.getNumRound(),winner,score))
-    
+        db.execute("COMMIT")
     def addRound(self,rnd):
         self.rounds.append(rnd)
         for player,score in rnd.getScore().items():
