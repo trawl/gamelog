@@ -21,6 +21,15 @@ class Phase10Match(GenericRoundMatch):
         if (rnd.completedPhase[player]):
             self.phasesCleared[player].append(rnd.completedPhase[player])        
 
+
+    def deleteRound(self,nrnd):
+        try: rnd = self.rounds[nrnd-1]
+        except KeyError: return
+        for player in self.getPlayers():
+            if (rnd.completedPhase[player]):
+                self.phasesCleared[player].remove(rnd.completedPhase[player])   
+        super(Phase10Match,self).deleteRound(nrnd)     
+
     def computeWinner(self):
         
         playersIn10 = list();
@@ -37,10 +46,10 @@ class Phase10Match(GenericRoundMatch):
                     wcscores[self.totalScores[p]]=list()
                 wcscores[self.totalScores[p]].append(p)
 
-            try:
-                minScore=sys.maxint
-            except AttributeError:
-                minScore=sys.maxsize
+#             try:
+#                 minScore=sys.maxint
+#             except AttributeError:
+            minScore=sys.maxsize
             # Here we have the players with all phases completed and with the lowest score
             # in case of draw, the player with less points in the last round is the winner
             candidates = wcscores[sorted(wcscores)[0]];
