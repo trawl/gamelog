@@ -13,7 +13,7 @@ except ImportError as error:
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
 
 from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
-from gui.game import GameWidget, GameInputWidget, GamePlayerWidget, ScoreSpinBox, GameRoundPlot, PlayerColours
+from gui.game import GameWidget, GameInputWidget, GamePlayerWidget, ScoreSpinBox, GameRoundsDetail, GameRoundTable, GameRoundPlot, PlayerColours
 from gui.plots import PlotView
 
 class Phase10Widget(GameWidget):
@@ -37,31 +37,40 @@ class Phase10Widget(GameWidget):
         self.phasesInOrderCheckBox.stateChanged.connect(self.phasesInOrderChanged)
         self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
 
-        self.maingroup = QtGui.QGroupBox(self)
-        self.widgetLayout.addWidget(self.maingroup,1,0)
-        self.maingroupLayout = QtGui.QVBoxLayout(self.maingroup)
-        
-#         self.container = QtGui.QToolBox(self)
-        self.container = QtGui.QTabWidget(self)
-#        self.container.setAutoFillBackground(True)
-        self.maingroupLayout.addWidget(self.container)
-        
-        self.gameInput = Phase10InputWidget(self.engine,self.matchGroup)
+        self.gameInput = Phase10InputWidget(self.engine,self)
         self.gameInput.setAutoFillBackground(True)
         self.phasesInOrderCheckBox.toggled.connect(self.gameInput.switchPhasesInOrder)
         self.gameInput.enterPressed.connect(self.commitRound)
-#         self.container.addItem(self.gameInput,'')
-        self.container.addTab(self.gameInput,'')
         
-        self.details = Phase10RoundsDetail(self.engine,self)
-        self.details.setAutoFillBackground(True)
-#         self.container.addItem(self.details,'')
-        self.container.addTab(self.details,'')
+        self.details = Phase10RoundsDetail(self.engine, self.gameInput, self)
+        self.details.edited.connect(self.updatePanel)
+        self.widgetLayout.addWidget(self.details,1,0)   
         
-        self.plot = Phase10RoundPlot(self.engine,self)
-        self.plot.setAutoFillBackground(True)
-#         self.container.addItem(self.plot,'')
-        self.container.addTab(self.plot,'')
+#         self.maingroup = QtGui.QGroupBox(self)
+#         self.widgetLayout.addWidget(self.maingroup,1,0)
+#         self.maingroupLayout = QtGui.QVBoxLayout(self.maingroup)
+#         
+# #         self.container = QtGui.QToolBox(self)
+#         self.container = QtGui.QTabWidget(self)
+# #        self.container.setAutoFillBackground(True)
+#         self.maingroupLayout.addWidget(self.container)
+#         
+#         self.gameInput = Phase10InputWidget(self.engine,self.matchGroup)
+#         self.gameInput.setAutoFillBackground(True)
+#         self.phasesInOrderCheckBox.toggled.connect(self.gameInput.switchPhasesInOrder)
+#         self.gameInput.enterPressed.connect(self.commitRound)
+# #         self.container.addItem(self.gameInput,'')
+#         self.container.addTab(self.gameInput,'')
+#         
+#         self.details = Phase10RoundsDetail(self.engine,self)
+#         self.details.setAutoFillBackground(True)
+# #         self.container.addItem(self.details,'')
+#         self.container.addTab(self.details,'')
+#         
+#         self.plot = Phase10RoundPlot(self.engine,self)
+#         self.plot.setAutoFillBackground(True)
+# #         self.container.addItem(self.plot,'')
+#         self.container.addTab(self.plot,'')
         
         self.extraGroup = QtGui.QGroupBox(self)
         self.extraGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
@@ -82,16 +91,16 @@ class Phase10Widget(GameWidget):
     def retranslateUI(self):
         super(Phase10Widget,self).retranslateUI()
         self.phasesInOrderCheckBox.setText(QtGui.QApplication.translate("Phase10Widget","Phases in order"))
-        self.extraGroup.setTitle(QtGui.QApplication.translate("Phase10Widget","Phases"))
-#         self.container.setItemText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
-#         self.container.setItemText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
-#         self.container.setItemText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
-        self.container.setTabText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
-        self.container.setTabText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
-        self.container.setTabText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
+#         self.extraGroup.setTitle(QtGui.QApplication.translate("Phase10Widget","Phases"))
+# #         self.container.setItemText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
+# #         self.container.setItemText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
+# #         self.container.setItemText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
+#         self.container.setTabText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
+#         self.container.setTabText(1,QtGui.QApplication.translate("Phase10Widget","Details"))
+#         self.container.setTabText(2,QtGui.QApplication.translate("Phase10Widget","Plot"))
         self.gameInput.retranslateUI()
         self.details.retranslateUI()
-        self.plot.retranslateUI()
+#         self.plot.retranslateUI()
         phaseword = QtGui.QApplication.translate("Phase10Widget","Phase")
         for number,(phase,label) in enumerate(zip(self.getPhases(),self.phaseLabels),start=1):
             label.setText("{0} {1:02}: {2}".format(phaseword,number,phase))
@@ -120,7 +129,8 @@ class Phase10Widget(GameWidget):
         self.dealerPolicyCheckBox.setEnabled(False)
         self.gameInput.updatePanel()
         self.details.updateRound()
-        self.plot.updatePlot()
+        if self.engine.getWinner(): self.details.updateStats()
+#         self.plot.updatePlot()
         
     def unsetDealer(self): self.gameInput.unsetDealer()
     
@@ -509,7 +519,66 @@ class Phase10Label(QtGui.QLabel):
         return self.number
 
 
-class Phase10RoundsDetail(QtGui.QWidget):
+class Phase10RoundsDetail(GameRoundsDetail):
+    
+    def __init__(self, engine, iw, parent=None):
+        self.iw = iw
+        super(Phase10RoundsDetail, self).__init__(engine,parent)
+        
+    def initUI(self):
+        super(Phase10RoundsDetail, self).initUI()
+        self.container.insertTab(0,self.iw,"")  
+        self.container.setCurrentIndex(0)
+        
+    def retranslateUI(self):
+        self.setTitle(QtGui.QApplication.translate("GameRoundsDetail",'Details'))
+        self.container.setTabText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
+        self.container.setTabText(1,QtGui.QApplication.translate("GameRoundsDetail","Table"))
+        self.container.setTabText(2,QtGui.QApplication.translate("GameRoundsDetail","Plot"))
+        self.container.setTabText(3,QtGui.QApplication.translate("GameRoundsDetail","Statistics"))
+#        self.container.setItemText(0,QtGui.QApplication.translate("CarcassonneEntriesDetail","Table"))
+#        self.container.setItemText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
+#        self.container.setItemText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
+        self.gamestats.retranslateUI()
+        self.updateRound()
+
+        
+    def createRoundTable(self, engine, parent=None):
+        return Phase10RoundTable(self.engine, parent)
+      
+    def createRoundPlot(self, engine, parent=None): 
+        return Phase10RoundPlot(self.engine,self)
+    
+    
+class Phase10RoundTable(GameRoundTable):
+
+    def insertRound(self,r):
+        winner = r.getWinner()
+        i = r.getNumRound() - 1
+        self.insertRow(i)
+        for j, player in enumerate(self.engine.getListPlayers()):
+            item = QtGui.QTableWidgetItem()
+            item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
+            item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
+            if player == winner:
+                text = QtGui.QApplication.translate("Phase10RoundTable","Winner")
+                font = item.font()
+                font.setBold(True)
+                item.setFont(font)   
+            else:
+                text = str(r.getPlayerScore(player))
+            a_phase = r.getPlayerAimedPhase(player)
+            c_phase = r.getPlayerCompletedPhase(player)
+            text += QtGui.QApplication.translate("Phase10PlayerWidget", " (Phase {})").format(a_phase)
+            if c_phase != 0: background = 0xCCFF99 #green
+            else: background = 0xFFCC99 #red
+            item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+            item.setText(text)
+            self.setItem(i,j,item)
+        self.scrollToBottom()
+        
+
+class Phase10RoundsDetailold(QtGui.QWidget):
     
     def __init__(self, engine, parent=None):
         super(Phase10RoundsDetail, self).__init__(parent)
