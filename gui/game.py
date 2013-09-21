@@ -370,6 +370,7 @@ class GameRoundsDetail(QtGui.QGroupBox):
 #        self.container.setItemText(1,QtGui.QApplication.translate("CarcassonneEntriesDetail","Plot"))
 #        self.container.setItemText(2,QtGui.QApplication.translate("CarcassonneEntriesDetail","Statistics"))
         self.gamestats.retranslateUI()
+        self.plot.retranslateUI()
         self.updateRound()
 
     def updatePlot(self):
