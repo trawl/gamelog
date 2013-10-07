@@ -164,7 +164,7 @@ class GenericRoundMatch(GenericMatch):
         super(GenericRoundMatch,self).__init__(players)
         self.rounds = list()
         self.dealer = None
-        self.dealingp = 1
+        self.dealingp = 2
         self.updatewinnereveryround=True
         
     def resumeMatch(self,idMatch):
