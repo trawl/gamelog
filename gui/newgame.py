@@ -257,7 +257,7 @@ class PlayerListModel(QtGui.QStandardItemModel):
                 try:
                     value = QtCore.QVariant()
                     ds >> value
-                except AttributeError:
+                except (AttributeError,TypeError):
                     value = ds.readQVariant()
                 item[QtCore.Qt.ItemDataRole(key)] = value
             data.append(item)
