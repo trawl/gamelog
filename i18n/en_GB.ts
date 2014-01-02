@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="en_GB">
+<!DOCTYPE TS><TS version="2.0" language="en_GB" sourcelanguage="">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -164,12 +163,12 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="gui/game.py" line="425"/>
+        <location filename="gui/game.py" line="426"/>
         <source>Delete Entry</source>
         <translation>Delete Entry</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="425"/>
+        <location filename="gui/game.py" line="426"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>
 Are you sure you want to delete this entry?</translation>
@@ -178,22 +177,22 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>GameRoundsDetail</name>
     <message>
-        <location filename="gui/phase10.py" line="534"/>
+        <location filename="gui/phase10.py" line="498"/>
         <source>Details</source>
         <translation>Details</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="536"/>
+        <location filename="gui/phase10.py" line="500"/>
         <source>Table</source>
         <translation>Table</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="537"/>
+        <location filename="gui/phase10.py" line="501"/>
         <source>Plot</source>
         <translation>Plot</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="538"/>
+        <location filename="gui/phase10.py" line="502"/>
         <source>Statistics</source>
         <translation>Statistics</translation>
     </message>
@@ -446,17 +445,17 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>Phase10PlayerWidget</name>
     <message>
-        <location filename="gui/phase10.py" line="392"/>
+        <location filename="gui/phase10.py" line="356"/>
         <source>Winner</source>
         <translation>Winner</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="393"/>
+        <location filename="gui/phase10.py" line="357"/>
         <source>Completed</source>
         <translation>Completed</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="621"/>
+        <location filename="gui/phase10.py" line="533"/>
         <source> (Phase {})</source>
         <translation> (Phase {})</translation>
     </message>
@@ -464,12 +463,12 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>Phase10RoundPlot</name>
     <message>
-        <location filename="gui/phase10.py" line="662"/>
+        <location filename="gui/phase10.py" line="568"/>
         <source>Phases</source>
         <translation>Phases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="663"/>
+        <location filename="gui/phase10.py" line="569"/>
         <source>Scores</source>
         <translation>Scores</translation>
     </message>
@@ -477,7 +476,7 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>Phase10RoundTable</name>
     <message>
-        <location filename="gui/phase10.py" line="564"/>
+        <location filename="gui/phase10.py" line="525"/>
         <source>Winner</source>
         <translation>Winner</translation>
     </message>
@@ -487,13 +486,13 @@ Are you sure you want to delete this entry?</translation>
     <message>
         <location filename="gui/phase10.py" line="613"/>
         <source>Winner</source>
-        <translation>Winner</translation>
+        <translation type="obsolete">Winner</translation>
     </message>
 </context>
 <context>
     <name>Phase10Widget</name>
     <message>
-        <location filename="gui/phase10.py" line="93"/>
+        <location filename="gui/phase10.py" line="67"/>
         <source>Phases in order</source>
         <translation>Phases in order</translation>
     </message>
@@ -503,83 +502,83 @@ Are you sure you want to delete this entry?</translation>
         <translation type="obsolete">Phases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="104"/>
+        <location filename="gui/phase10.py" line="70"/>
         <source>Phase</source>
         <translation>Phase</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="163"/>
+        <location filename="gui/phase10.py" line="127"/>
         <source>cards of the same colour</source>
         <translation>cards of the same colour</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="165"/>
+        <location filename="gui/phase10.py" line="129"/>
         <source>run of</source>
         <translation>run of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="166"/>
+        <location filename="gui/phase10.py" line="130"/>
         <source>runs of</source>
         <translation>runs of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="169"/>
+        <location filename="gui/phase10.py" line="133"/>
         <source>colour run of</source>
         <translation>colour run of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="170"/>
+        <location filename="gui/phase10.py" line="134"/>
         <source>colour runs of</source>
         <translation>colour runs of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="147"/>
+        <location filename="gui/phase10.py" line="111"/>
         <source>pair</source>
         <translation>pair</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="148"/>
+        <location filename="gui/phase10.py" line="112"/>
         <source>pairs</source>
         <translation>pairs</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="151"/>
+        <location filename="gui/phase10.py" line="115"/>
         <source>three of a kind</source>
         <comment>singular</comment>
         <translation>three of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="152"/>
+        <location filename="gui/phase10.py" line="116"/>
         <source>three of a kind</source>
         <comment>plural</comment>
         <translation>three of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="155"/>
+        <location filename="gui/phase10.py" line="119"/>
         <source>four of a kind</source>
         <comment>singular</comment>
         <translation>four of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="156"/>
+        <location filename="gui/phase10.py" line="120"/>
         <source>four of a kind</source>
         <comment>plural</comment>
         <translation>four of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="159"/>
+        <location filename="gui/phase10.py" line="123"/>
         <source>five of a kind</source>
         <comment>singular</comment>
         <translation>five of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="160"/>
+        <location filename="gui/phase10.py" line="124"/>
         <source>five of a kind</source>
         <comment>plural</comment>
         <translation>five of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="535"/>
+        <location filename="gui/phase10.py" line="499"/>
         <source>Score</source>
         <translation>Score</translation>
     </message>
