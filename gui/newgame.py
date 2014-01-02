@@ -196,8 +196,9 @@ class PlayerList(QtGui.QListView):
         item = self.indexAt(event.pos())
         try: player = str(item.data().toString())
         except AttributeError: player = str(item.data())
-        self.doubleclickeditem.emit(player)
-        self.model().removeRows(item.row(),1)
+        if player != str(None):
+            self.doubleclickeditem.emit(player)
+            self.model().removeRows(item.row(),1)
         return QtGui.QListView.mouseDoubleClickEvent(self,event)
     
     def openMenu(self,position):
