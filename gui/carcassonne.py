@@ -16,7 +16,7 @@ from gui.gamestats import QuickStatsBox, StatsTable
 
 class CarcassonneWidget(GameWidget):
 
-    bgcolors = [0xFFCC99,0xCCCCCC,0xFFFF99,0xCCFF99,0xCCFFCC]
+    bgcolors = [0xFFCC99,0xCCCCCC,0xFFFF99,0xCCFF99,0xCCFFCC,0xFFB6C1]
 
     def createEngine(self):
         if self.game != 'Carcassonne':
@@ -147,6 +147,7 @@ class CarcassonneInputWidget(QtGui.QWidget):
     QtGui.QApplication.translate("CarcassonneInputWidget",'Cloister')
     QtGui.QApplication.translate("CarcassonneInputWidget",'Field')
     QtGui.QApplication.translate("CarcassonneInputWidget",'Goods')
+    QtGui.QApplication.translate("CarcassonneInputWidget",'Fair')
     
     def __init__(self,engine, bgcolors, parent=None):
         super(CarcassonneInputWidget,self).__init__(parent)
@@ -202,6 +203,7 @@ class CarcassonneInputWidget(QtGui.QWidget):
             
         self.kindButtons[3].toggled.connect(self.setCloisterPoints)
         self.kindButtons[5].toggled.connect(self.setGoodsPoints)
+        self.kindButtons[6].toggled.connect(self.setFairPoints)
         
         self.scoreGroup = QtGui.QGroupBox(self)
         self.widgetLayout.addWidget(self.scoreGroup)
@@ -274,6 +276,15 @@ class CarcassonneInputWidget(QtGui.QWidget):
     def setGoodsPoints(self,doit):
         if doit: 
             self.scoreSpinBox.setValue(10)
+            self.scoreSpinBox.setReadOnly(True)
+
+        else: 
+            self.scoreSpinBox.setReadOnly(False)
+            self.scoreSpinBox.setValue(0)
+            
+    def setFairPoints(self,doit):
+        if doit: 
+            self.scoreSpinBox.setValue(5)
             self.scoreSpinBox.setReadOnly(True)
 
         else: 

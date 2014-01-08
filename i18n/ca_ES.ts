@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="ca_ES" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="ca_ES">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -36,7 +37,7 @@
         <translation type="obsolete">Estadístiques</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="302"/>
+        <location filename="gui/carcassonne.py" line="303"/>
         <source>Totals</source>
         <translation>Totals</translation>
     </message>
@@ -54,17 +55,17 @@
 <context>
     <name>CarcassonneInputWidget</name>
     <message>
-        <location filename="gui/carcassonne.py" line="216"/>
+        <location filename="gui/carcassonne.py" line="217"/>
         <source>Select Player</source>
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="217"/>
+        <location filename="gui/carcassonne.py" line="218"/>
         <source>Select kind of entry</source>
         <translation>Tipus d&apos;entrada</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="218"/>
+        <location filename="gui/carcassonne.py" line="219"/>
         <source>Points</source>
         <translation>Punts</translation>
     </message>
@@ -93,31 +94,36 @@
         <source>Goods</source>
         <translation>Béns</translation>
     </message>
+    <message>
+        <location filename="gui/carcassonne.py" line="150"/>
+        <source>Fair</source>
+        <translation>Fira</translation>
+    </message>
 </context>
 <context>
     <name>CarcassonneQSBox</name>
     <message>
-        <location filename="gui/carcassonne.py" line="453"/>
+        <location filename="gui/carcassonne.py" line="454"/>
         <source>Record</source>
         <translation>Record</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="453"/>
+        <location filename="gui/carcassonne.py" line="454"/>
         <source>Player</source>
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="453"/>
+        <location filename="gui/carcassonne.py" line="454"/>
         <source>Date</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="435"/>
+        <location filename="gui/carcassonne.py" line="436"/>
         <source>Match Records</source>
         <translation>Records de Partida</translation>
     </message>
     <message>
-        <location filename="gui/carcassonne.py" line="434"/>
+        <location filename="gui/carcassonne.py" line="435"/>
         <source>Individual Records</source>
         <translation>Records Individuals</translation>
     </message>
@@ -595,12 +601,12 @@
 <context>
     <name>PlayerList</name>
     <message>
-        <location filename="gui/newgame.py" line="212"/>
+        <location filename="gui/newgame.py" line="213"/>
         <source>Unset Favourite</source>
         <translation>Desactivar favorit</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="214"/>
+        <location filename="gui/newgame.py" line="215"/>
         <source>Set Favourite</source>
         <translation>Activar favorit</translation>
     </message>
@@ -746,42 +752,42 @@
 <context>
     <name>ResumeBox</name>
     <message>
-        <location filename="gui/newgame.py" line="322"/>
+        <location filename="gui/newgame.py" line="323"/>
         <source>Saved Games</source>
         <translation>Partides Desades</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="323"/>
+        <location filename="gui/newgame.py" line="324"/>
         <source>Resume</source>
         <translation>Restaura</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="325"/>
+        <location filename="gui/newgame.py" line="326"/>
         <source>No matches to be resumed</source>
         <translation>No hi ha cap partida desada</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="324"/>
+        <location filename="gui/newgame.py" line="325"/>
         <source>Cancel</source>
         <translation>Cancel·la</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="372"/>
+        <location filename="gui/newgame.py" line="373"/>
         <source>Cancel Saved Game</source>
         <translation>Cancel·la Partida Desada</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="372"/>
+        <location filename="gui/newgame.py" line="373"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>Estàs segur que vols cancel·lar la partida desada?</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="347"/>
+        <location filename="gui/newgame.py" line="348"/>
         <source>Saved on {}. Time played: {}</source>
         <translation>Desat el {}- Temps jugat: {}</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="352"/>
+        <location filename="gui/newgame.py" line="353"/>
         <source>Players: {}</source>
         <translation>Jugadors: {}</translation>
     </message>
