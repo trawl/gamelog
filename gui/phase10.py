@@ -55,7 +55,8 @@ class Phase10Widget(GameWidget):
         for _ in range(len(self.getPhases())):
             self.extraGroupLayout.addSpacing(10)
             label = QtGui.QLabel(self)
-            label.setStyleSheet("QLabel {font-size: 16px; font-weight: bold; }")
+            label.setStyleSheet("QLabel {font-size: 18px; font-weight: bold; }")
+#             label.setScaledContents(True)
             self.phaseLabels.append(label)
             self.extraGroupLayout.addWidget(label)
         
@@ -182,7 +183,7 @@ class Phase10InputWidget(GameInputWidget):
         else:
             players_grid = False
             self.widgetLayout =  QtGui.QVBoxLayout(self)
-            self.widgetLayout.addStretch()
+#             self.widgetLayout.addStretch()
 
         for np, player in enumerate(players):
             self.playerInputList[player] = Phase10PlayerWidget(player,self.engine,self.winnerButtonGroup,self)
@@ -192,7 +193,7 @@ class Phase10InputWidget(GameInputWidget):
             else: 
                 self.widgetLayout.addWidget(self.playerInputList[player])
             
-        if not players_grid: self.widgetLayout.addStretch()
+#         if not players_grid: self.widgetLayout.addStretch()
         
     def retranslateUI(self):
         for piw in self.playerInputList.values():
@@ -327,10 +328,14 @@ class Phase10PlayerWidget(GamePlayerWidget):
         #Left part - score
         self.leftLayout.addWidget(self.iconlabel)
         self.leftLayout.addWidget(self.scoreLCD)
-#         self.scoreLCD.adjustSize()
-#         self.scoreLCD.setFixedHeight(80)
-#         self.iconlabel.setFixedSize(80,80)
-        self.scoreLCD.display(self.engine.getScoreFromPlayer(self.player))
+        
+        self.iconlabel.setFixedSize(60,60)
+
+        self.scoreLCD.setMinimumWidth(100)
+        self.scoreLCD.setMaximumWidth(200)
+        self.scoreLCD.setMinimumHeight(30)
+        self.scoreLCD.setMaximumHeight(80)
+        self.scoreLCD.display(self.engine.getScoreFromPlayer(self.player))   
         
         #Middle part - Phase list
         self.phaseLabels=list()
@@ -472,7 +477,7 @@ class Phase10Label(QtGui.QLabel):
         self.setScaledContents(True)
         self.setAlignment(QtCore.Qt.AlignCenter)
         self.setWordWrap(False)
-#         self.setMinimumSize(25, 25)
+        self.setMinimumSize(25, 25)
         self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.MinimumExpanding)
 #         self.setFixedSize(QtCore.QSize(40,40))
         self.number = number
@@ -560,18 +565,36 @@ class Phase10RoundPlot(GameRoundPlot):
         QtGui.QWidget().setLayout(self.layout())
         self.widgetLayout = QtGui.QGridLayout()
         self.setLayout(self.widgetLayout)
+        self.playersTitleLabel = QtGui.QLabel("",self)
+        self.widgetLayout.addWidget(self.playersTitleLabel,0,0)
         self.phasesLabel = QtGui.QLabel("",self)
-        self.widgetLayout.addWidget(self.phasesLabel,0,0)
+        self.widgetLayout.addWidget(self.phasesLabel,0,1)
         self.scoreLabel = QtGui.QLabel("",self)
-        self.widgetLayout.addWidget(self.scoreLabel,0,1)
+        self.widgetLayout.addWidget(self.scoreLabel,0,2)
+        
+        self.playersListLayout = QtGui.QVBoxLayout()
+        self.widgetLayout.addLayout(self.playersListLayout,1,0)
+        
+        self.playersListLayout.addStretch()
+        
+        for i,player in enumerate(self.engine.getListPlayers()):
+            colour = PlayerColours[i]
+            label = QtGui.QLabel(player)
+            label.setStyleSheet("QLabel {{ font-size: 18px; font-weight: bold; color:rgb({},{},{});}}".format(colour.red(),colour.green(),colour.blue()))
+            self.playersListLayout.addWidget(label)
+            self.playersListLayout.addStretch()
+        
+        self.playersListLayout.addStretch()
+        
         self.canvas = PlotView(PlayerColours,self)
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
         self.canvas.addLinePlot()
-        self.widgetLayout.addWidget(self.canvas,1,0)
+        self.widgetLayout.addWidget(self.canvas,1,1)
         self.scorecanvas = PlotView(PlayerColours,self)
         self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
         self.scorecanvas.addLinePlot()
-        self.widgetLayout.addWidget(self.scorecanvas,1,1)
+        self.widgetLayout.addWidget(self.scorecanvas,1,2)
+
         self.retranslatePlot()
         self.updatePlot()
     
@@ -580,6 +603,7 @@ class Phase10RoundPlot(GameRoundPlot):
         super(Phase10RoundPlot,self).retranslatePlot()
         self.phasesLabel.setText(QtGui.QApplication.translate("Phase10RoundPlot",'Phases') )
         self.scoreLabel.setText(QtGui.QApplication.translate("Phase10RoundPlot",'Scores') )
+#         self.playersTitleLabel.setText(QtGui.QApplication.translate("Phase10RoundPlot",'Players') )
         
     def updatePlot(self):
         super(Phase10RoundPlot,self).updatePlot()

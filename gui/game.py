@@ -268,6 +268,18 @@ class ScoreSpinBox(QtGui.QSpinBox):
         else: return super(ScoreSpinBox,self).textFromValue(value)        
         
 class IconLabel(QtGui.QLabel):
+#     def __init__(self,parent = None):
+#         super(IconLabel,self).__init__(parent)
+#         self._pixmap = None
+#     def setPixmap(self,pixmap):
+#         self._pixmap = pixmap
+#         super(IconLabel,self).setPixmap(pixmap)
+#     def resizeEvent(self, event):
+#         size = min(self.width(), self.height())
+#         self.setFixedSize(size,size)
+#         if self._pixmap and not self._pixmap.isNull():
+#             print(event)
+#             self.setPixmap(self._pixmap.scaled(size, size,QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
     def setDisabled(self,b): pass
     def setEnabled(self,b): pass
     
@@ -289,8 +301,6 @@ class GamePlayerWidget(QtGui.QGroupBox):
         self.mainLayout.addWidget(self.scoreLCD)
         self.scoreLCD.setNumDigits(3)
         self.scoreLCD.setFixedSize(100,50)
-#        self.scoreLCD.setMinimumHeight(30)
-#        self.scoreLCD.setMaximumHeight(100)
         self.scoreLCD.display(0)
         self.scoreLCD.setStyleSheet("QLCDNumber {{ color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
         
