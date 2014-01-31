@@ -307,18 +307,29 @@ class Phase10PlayerWidget(GamePlayerWidget):
         
         self.mainLayout = QtGui.QHBoxLayout(self)
         self.leftLayout = QtGui.QHBoxLayout()
+        self.supermiddleLayout = QtGui.QVBoxLayout()
+        self.supermiddleLayout.addStretch()
         self.middleLayout = QtGui.QGridLayout()
         self.middleLayout.setSpacing(5)
+        self.supermiddleLayout.addLayout(self.middleLayout)
+        self.supermiddleLayout.addStretch()
+        self.superrightLayout = QtGui.QVBoxLayout()
+        self.superrightLayout.addStretch()
         self.rightLayout = QtGui.QGridLayout()
-        self.mainLayout.addStretch()
+        self.superrightLayout.addLayout(self.rightLayout)
+        self.superrightLayout.addStretch()
+#         self.mainLayout.addStretch()
         self.mainLayout.addLayout(self.leftLayout)
-        self.mainLayout.addLayout(self.middleLayout)
-        self.mainLayout.addLayout(self.rightLayout)
-        self.mainLayout.addStretch()      
+        self.mainLayout.addLayout(self.supermiddleLayout)
+        self.mainLayout.addLayout(self.superrightLayout)
+#         self.mainLayout.addStretch()      
         
         #Left part - score
         self.leftLayout.addWidget(self.iconlabel)
         self.leftLayout.addWidget(self.scoreLCD)
+#         self.scoreLCD.adjustSize()
+#         self.scoreLCD.setFixedHeight(80)
+#         self.iconlabel.setFixedSize(80,80)
         self.scoreLCD.display(self.engine.getScoreFromPlayer(self.player))
         
         #Middle part - Phase list
@@ -456,12 +467,14 @@ class Phase10Label(QtGui.QLabel):
         self.setText(str(number).zfill(2))
         self.setAutoFillBackground(False)
         self.setRemaining()
-        self.setFrameShape(QtGui.QFrame.Box)
-        self.setFrameShadow(QtGui.QFrame.Raised)
+#         self.setFrameShape(QtGui.QFrame.Box)
+#         self.setFrameShadow(QtGui.QFrame.Raised)
         self.setScaledContents(True)
         self.setAlignment(QtCore.Qt.AlignCenter)
         self.setWordWrap(False)
-        self.setFixedSize(QtCore.QSize(25,25))
+#         self.setMinimumSize(25, 25)
+        self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.MinimumExpanding)
+#         self.setFixedSize(QtCore.QSize(40,40))
         self.number = number
 
     def isPassed(self):
