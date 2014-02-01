@@ -472,7 +472,7 @@ class Phase10Label(QtGui.QLabel):
         self.setText(str(number).zfill(2))
         self.setAutoFillBackground(False)
         self.setRemaining()
-#         self.setFrameShape(QtGui.QFrame.Box)
+        self.setFrameShape(QtGui.QFrame.StyledPanel)
 #         self.setFrameShadow(QtGui.QFrame.Raised)
         self.setScaledContents(True)
         self.setAlignment(QtCore.Qt.AlignCenter)
