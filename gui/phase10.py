@@ -565,35 +565,37 @@ class Phase10RoundPlot(GameRoundPlot):
         QtGui.QWidget().setLayout(self.layout())
         self.widgetLayout = QtGui.QGridLayout()
         self.setLayout(self.widgetLayout)
-        self.playersTitleLabel = QtGui.QLabel("",self)
-        self.widgetLayout.addWidget(self.playersTitleLabel,0,0)
+
         self.phasesLabel = QtGui.QLabel("",self)
-        self.widgetLayout.addWidget(self.phasesLabel,0,1)
+        self.widgetLayout.addWidget(self.phasesLabel,0,0)
         self.scoreLabel = QtGui.QLabel("",self)
-        self.widgetLayout.addWidget(self.scoreLabel,0,2)
+        self.widgetLayout.addWidget(self.scoreLabel,0,1)
+        self.playersTitleLabel = QtGui.QLabel("",self)
+        self.widgetLayout.addWidget(self.playersTitleLabel,0,2)
+        
+        self.canvas = PlotView(PlayerColours,self)
+        self.canvas.setBackground(self.palette().color(self.backgroundRole()))
+        self.canvas.addLinePlot()
+        self.widgetLayout.addWidget(self.canvas,1,0)
+        self.scorecanvas = PlotView(PlayerColours,self)
+        self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
+        self.scorecanvas.addLinePlot()
+        self.widgetLayout.addWidget(self.scorecanvas,1,1)
         
         self.playersListLayout = QtGui.QVBoxLayout()
-        self.widgetLayout.addLayout(self.playersListLayout,1,0)
+        self.widgetLayout.addLayout(self.playersListLayout,1,2)
         
         self.playersListLayout.addStretch()
+#         self.playersListLayout.addWidget(self.playersTitleLabel)
         
         for i,player in enumerate(self.engine.getListPlayers()):
             colour = PlayerColours[i]
             label = QtGui.QLabel(player)
             label.setStyleSheet("QLabel {{ font-size: 18px; font-weight: bold; color:rgb({},{},{});}}".format(colour.red(),colour.green(),colour.blue()))
             self.playersListLayout.addWidget(label)
-            self.playersListLayout.addStretch()
+#             self.playersListLayout.addStretch()
         
         self.playersListLayout.addStretch()
-        
-        self.canvas = PlotView(PlayerColours,self)
-        self.canvas.setBackground(self.palette().color(self.backgroundRole()))
-        self.canvas.addLinePlot()
-        self.widgetLayout.addWidget(self.canvas,1,1)
-        self.scorecanvas = PlotView(PlayerColours,self)
-        self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
-        self.scorecanvas.addLinePlot()
-        self.widgetLayout.addWidget(self.scorecanvas,1,2)
 
         self.retranslatePlot()
         self.updatePlot()
