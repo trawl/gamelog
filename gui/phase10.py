@@ -14,6 +14,7 @@ except ImportError as error:
 
 from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
 from gui.game import GameWidget, GameInputWidget, GamePlayerWidget, ScoreSpinBox, GameRoundsDetail, GameRoundTable, GameRoundPlot, PlayerColours
+from gui.gamestats import QuickStatsBox, StatsTable
 from gui.plots import PlotView
 
 class Phase10Widget(GameWidget):
@@ -528,6 +529,8 @@ class Phase10RoundsDetail(GameRoundsDetail):
     def createRoundPlot(self, engine, parent=None): 
         return Phase10RoundPlot(self.engine,self)
     
+    def createQSBox(self, parent=None):
+        return Phase10QSBox(self.engine.getGame(),self)
     
 class Phase10RoundTable(GameRoundTable):
     
@@ -635,4 +638,11 @@ class Phase10RoundPlot(GameRoundPlot):
             self.scorecanvas.addSeries(scores[player],player)
             
         
-        
+class Phase10QSBox(QuickStatsBox): 
+    
+    QtGui.QApplication.translate("QuickStatsBox",'Lowest phases')
+    
+    def __init__(self,gname,parent):
+        super(Phase10QSBox, self).__init__(gname,parent)
+        self.playerStatsKeys.append('min_phases')
+        self.playerStatsHeaders.append('Lowest phases')

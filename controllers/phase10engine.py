@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from controllers.baseengine import RoundGameEngine,readInput
+from controllers.statsengine import StatsEngine
 from controllers.db import db
 
 class Phase10Engine(RoundGameEngine):
@@ -81,4 +82,32 @@ if __name__ == "__main__":
     if game == 'Phase10': pe = Phase10Engine()
     else: pe = Phase10MasterEngine()
     pe.gameStub()        
+    
+    
+class Phase10StatsEngine(StatsEngine):
+    _worst_phases="""
+        SELECT game, nick, min(pc) AS min_phases from (
+            SELECT m.Game_name as game,m.idMatch AS match ,rs.nick AS nick ,count(value) AS pc
+            FROM RoundStatistics AS rs,Match AS m 
+            WHERE rs.idMatch = m.idMatch
+                AND key = "PhaseCompleted"
+                AND value <> 0
+                AND state = 1
+            GROUP BY game, m.idMatch, rs.nick
+        ) AS temp
+        GROUP BY game, nick
+    """
+    def update(self):
+        super(Phase10StatsEngine, self).update()
+        self.wphases = db.queryDict(self._worst_phases)
+        for row in self.wphases:
+            game = row['game']
+            player= row['nick']
+            for r2 in self.generalplayerstats:
+                if r2['nick'] == player and r2['game'] == game:
+                    r2['min_phases'] = row['min_phases']
+                    break
+            
+#         print([row for row in self.generalplayerstats if row['game'] in ('Phase10Master','Phase10')])    
+            
         

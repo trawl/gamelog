@@ -98,7 +98,7 @@ class NewGameWidget(Tab):
         
         self.gameStatsBox = QSBoxFactory.createQSBox(game,self)
         self.gameGroupBoxLayout.addWidget(self.gameStatsBox)  
-        
+        self.gameStatsBox.update(game)
         self.resumeGroup.changeGame(game)
 
     def populatePlayersGroupBox(self):
