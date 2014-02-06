@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from controllers.phase10engine import Phase10Engine,Phase10MasterEngine
+from controllers.phase10engine import Phase10Engine,Phase10MasterEngine,Phase10StatsEngine
 from controllers.remigioengine import RemigioEngine
 from controllers.ratukiengine import RatukiEngine
 from controllers.carcassonneengine import CarcassonneEngine,CarcassonneStatsEngine
@@ -24,4 +24,5 @@ class StatsEngineFactory:
     @classmethod
     def getStatsEngine(cls,gname):
         if gname == 'Carcassonne': return CarcassonneStatsEngine()
+        if gname in ('Phase10Master','Phase10'): return Phase10StatsEngine()
         return StatsEngine()
