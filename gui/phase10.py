@@ -386,7 +386,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.roundPhaseClearedCheckbox.setChecked(False)
         
         for phase, label in enumerate(self.phaseLabels,start=1):
-            if phase == self.current_phase:
+            if phase == self.current_phase and not self.engine.getWinner():
                 if not label.isCurrent():label.setCurrent()
             elif phase in completed_phases:
                 if not label.isPassed(): label.setPassed()
