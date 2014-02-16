@@ -300,7 +300,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
         super(Phase10PlayerWidget,self).__init__(nick,PlayerColours[self.engine.getListPlayers().index(nick)],parent)
         
     def initUI(self):
-        self.setStyleSheet("QGroupBox {{ font-size: 18px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
+        self.setStyleSheet("QGroupBox {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
         self.setTitle(self.player)
         super(Phase10PlayerWidget,self).initUI()
 
@@ -594,7 +594,7 @@ class Phase10RoundPlot(GameRoundPlot):
         for i,player in enumerate(self.engine.getListPlayers()):
             colour = PlayerColours[i]
             label = QtGui.QLabel(player)
-            label.setStyleSheet("QLabel {{ font-size: 18px; font-weight: bold; color:rgb({},{},{});}}".format(colour.red(),colour.green(),colour.blue()))
+            label.setStyleSheet("QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}".format(colour.red(),colour.green(),colour.blue()))
             self.playersListLayout.addWidget(label)
 #             self.playersListLayout.addStretch()
         
