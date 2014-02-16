@@ -306,7 +306,7 @@ class GamePlayerWidget(QtGui.QGroupBox):
         
         self.nameLabel = QtGui.QLabel(self)
         self.nameLabel.setText(self.player)
-        sh = "QLabel {{ font-size: 18px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
+        sh = "QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
         self.nameLabel.setStyleSheet(sh)
         self.mainLayout.addWidget(self.nameLabel)
         
