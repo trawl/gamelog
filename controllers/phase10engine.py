@@ -97,6 +97,15 @@ class Phase10StatsEngine(StatsEngine):
         ) AS temp
         GROUP BY game, nick
     """
+    _damned_phases="""
+        SELECT Game_name AS game, nick AS player, value AS damned_phase,  COUNT(value) AS times
+        FROM Match,RoundStatistics 
+        WHERE
+            Match.idMatch = RoundStatistics.idMatch
+            AND key="PhaseAimed"
+        GROUP BY game, player,damned_phase
+        ORDER BY game, player, times desc
+    """
     def update(self):
         super(Phase10StatsEngine, self).update()
         self.wphases = db.queryDict(self._worst_phases)
@@ -107,7 +116,15 @@ class Phase10StatsEngine(StatsEngine):
                 if r2['nick'] == player and r2['game'] == game:
                     r2['min_phases'] = row['min_phases']
                     break
+        
+        attempted = db.queryDict(self._damned_phases)
+        damned = {}
+        for row in attempted:
+            if row['game'] not in damned: damned[row['game']]={}
+            if row['player'] not in damned[row['game']]: damned[row['game']][row['player']] = {}
+            damned[row['game']][row['player']][row['damned_phase']] = row['times']
             
+        
 #         print([row for row in self.generalplayerstats if row['game'] in ('Phase10Master','Phase10')])    
             
         
