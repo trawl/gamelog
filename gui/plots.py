@@ -54,7 +54,7 @@ class LinePlot(QtGui.QGraphicsItem):
     
     def __init__(self,clrs=None,parent=None, scene=None):
         super(LinePlot,self).__init__(parent, scene)
-        self.hmargin = 40
+        self.hmargin = 50
         self.vmargin = 40
         self.awidth = 400
         self.aheight = 300
@@ -170,6 +170,9 @@ class LinePlot(QtGui.QGraphicsItem):
             else:
                 PlotLine(pxstart-2,py,pxend,py,0.5,colour,self)
             nlabel=QtGui.QGraphicsSimpleTextItem("{}".format(vy),self)
+            font = nlabel.font()
+            font.setPixelSize(20)
+            nlabel.setFont(font)
             nlabelrect = nlabel.boundingRect()
             nlabel.setPos(pxstart - nlabelrect.width() - 5,py-nlabelrect.height()/2)
             py-=unitincrement*factor
@@ -207,6 +210,9 @@ class LinePlot(QtGui.QGraphicsItem):
             colour = QtGui.QColor(0,0,0,255)
             PlotLine(px+0.5,pystart+2,px+0.5,pyend,1.5,colour,self)
             nlabel=QtGui.QGraphicsSimpleTextItem("{}".format(vx),self)
+            font = nlabel.font()
+            font.setPixelSize(20)
+            nlabel.setFont(font)
             nlabelrect = nlabel.boundingRect()
             nlabel.setPos(px + 0.5 - nlabelrect.width()/2, pystart+3)
             px+=unitincrement*factor
