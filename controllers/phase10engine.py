@@ -98,13 +98,13 @@ class Phase10StatsEngine(StatsEngine):
         GROUP BY game, nick
     """
     _damned_phases="""
-        SELECT Game_name AS game, nick AS player, value AS damned_phase,  COUNT(value) AS times
+        SELECT Game_name AS game, nick AS player, value AS phase,  COUNT(value) AS times
         FROM Match,RoundStatistics 
         WHERE
             Match.idMatch = RoundStatistics.idMatch
             AND key="PhaseAimed"
-        GROUP BY game, player,damned_phase
-        ORDER BY game, player, times desc
+        GROUP BY game, player, phase
+        ORDER BY game, player, phase
     """
     def update(self):
         super(Phase10StatsEngine, self).update()
@@ -117,12 +117,20 @@ class Phase10StatsEngine(StatsEngine):
                     r2['min_phases'] = row['min_phases']
                     break
         
-        attempted = db.queryDict(self._damned_phases)
-        damned = {}
-        for row in attempted:
-            if row['game'] not in damned: damned[row['game']]={}
-            if row['player'] not in damned[row['game']]: damned[row['game']][row['player']] = {}
-            damned[row['game']][row['player']][row['damned_phase']] = row['times']
+        rows = db.queryDict(self._damned_phases)
+        attempts = {}
+        for row in rows:
+            if row['game'] not in attempts: attempts[row['game']]={}
+            if row['player'] not in attempts[row['game']]: attempts[row['game']][row['player']] = [0,0,0,0,0,0,0,0,0,0]
+            attempts[row['game']][row['player']][int(row['phase'])-1] = row['times']
+            
+        for row in self.generalplayerstats:    
+            if row['game'] in attempts:
+                if row['nick'] in attempts[row['game']]:
+                    times = attempts[row['game']][row['nick']]
+                    max_times  = max(times)
+                    row['damned_phase'] = times.index(max_times) + 1
+
             
         
 #         print([row for row in self.generalplayerstats if row['game'] in ('Phase10Master','Phase10')])    

@@ -460,7 +460,7 @@
         <translation>Expuesta</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="552"/>
+        <location filename="gui/phase10.py" line="554"/>
         <source> (Phase {})</source>
         <translation> (Fase {})</translation>
     </message>
@@ -468,12 +468,12 @@
 <context>
     <name>Phase10RoundPlot</name>
     <message>
-        <location filename="gui/phase10.py" line="607"/>
+        <location filename="gui/phase10.py" line="609"/>
         <source>Phases</source>
         <translation>Fases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="608"/>
+        <location filename="gui/phase10.py" line="610"/>
         <source>Scores</source>
         <translation>Puntuación</translation>
     </message>
@@ -481,7 +481,7 @@
 <context>
     <name>Phase10RoundTable</name>
     <message>
-        <location filename="gui/phase10.py" line="544"/>
+        <location filename="gui/phase10.py" line="546"/>
         <source>Winner</source>
         <translation>Ganador</translation>
     </message>
@@ -702,9 +702,14 @@
         <translation>Jugadores</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="641"/>
+        <location filename="gui/phase10.py" line="643"/>
         <source>Lowest phases</source>
         <translation>Fase más baja</translation>
+    </message>
+    <message>
+        <location filename="gui/phase10.py" line="644"/>
+        <source>Damned phase</source>
+        <translation>Fase maldita</translation>
     </message>
 </context>
 <context>

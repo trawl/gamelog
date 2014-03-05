@@ -641,8 +641,11 @@ class Phase10RoundPlot(GameRoundPlot):
 class Phase10QSBox(QuickStatsBox): 
     
     QtGui.QApplication.translate("QuickStatsBox",'Lowest phases')
+    QtGui.QApplication.translate("QuickStatsBox",'Damned phase')
     
     def __init__(self,gname,parent):
         super(Phase10QSBox, self).__init__(gname,parent)
         self.playerStatsKeys.append('min_phases')
         self.playerStatsHeaders.append('Lowest phases')
+        self.playerStatsKeys.append('damned_phase')
+        self.playerStatsHeaders.append('Damned phase')
