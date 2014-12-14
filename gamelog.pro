@@ -7,6 +7,7 @@ SOURCES = \
 	gui/remigio.py \
 	gui/ratuki.py \
 	gui/carcassonne.py \
+	gui/pocha.py \
 	gui/languagechooser.py \ 
 	gui/gamestats.py
    

@@ -169,12 +169,12 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="gui/game.py" line="436"/>
+        <location filename="gui/game.py" line="442"/>
         <source>Delete Entry</source>
         <translation>Delete Entry</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="436"/>
+        <location filename="gui/game.py" line="442"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>
 Are you sure you want to delete this entry?</translation>
@@ -206,52 +206,52 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="gui/game.py" line="117"/>
+        <location filename="gui/game.py" line="115"/>
         <source>Cancel Match</source>
         <translation>Cancel Match</translation>
     </message>
     <message>
         <location filename="gui/game.py" line="95"/>
         <source>Round</source>
-        <translation>Round</translation>
+        <translation type="obsolete">Round</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="97"/>
+        <location filename="gui/game.py" line="95"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pause/Play</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="98"/>
+        <location filename="gui/game.py" line="96"/>
         <source>&amp;Cancel Match</source>
         <translation>&amp;Cancel Match</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="99"/>
+        <location filename="gui/game.py" line="97"/>
         <source>Commit &amp;Round</source>
         <translation>Commit &amp;Round</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="100"/>
+        <location filename="gui/game.py" line="98"/>
         <source>Match</source>
         <translation>Match</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="102"/>
+        <location filename="gui/game.py" line="100"/>
         <source>Winner deals</source>
         <translation>Winner deals</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="109"/>
+        <location filename="gui/game.py" line="107"/>
         <source>{} won this match!</source>
         <translation>{} won this match!</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="111"/>
+        <location filename="gui/game.py" line="109"/>
         <source>Game is paused</source>
         <translation>Game is paused</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="148"/>
+        <location filename="gui/game.py" line="146"/>
         <source>No winner selected</source>
         <translation>No winner selected</translation>
     </message>
@@ -261,22 +261,22 @@ Are you sure you want to delete this entry?</translation>
         <translation>{0} score is not valid</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="162"/>
+        <location filename="gui/game.py" line="160"/>
         <source>Commit Round</source>
         <translation>Commit Round</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="162"/>
+        <location filename="gui/game.py" line="160"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>Are you sure you want to commit the current round?</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="198"/>
+        <location filename="gui/game.py" line="190"/>
         <source>Round {0}</source>
         <translation>Round {0}</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="117"/>
+        <location filename="gui/game.py" line="115"/>
         <source>Do you want to save the current {} match?</source>
         <translation>Do you want to save the current {} match?</translation>
     </message>
@@ -610,6 +610,72 @@ Are you sure you want to delete this entry?</translation>
         <location filename="gui/newgame.py" line="215"/>
         <source>Set Favourite</source>
         <translation>Set favourite</translation>
+    </message>
+</context>
+<context>
+    <name>PochaRoundTable</name>
+    <message>
+        <location filename="gui/pocha.py" line="297"/>
+        <source> (Winner)</source>
+        <translation> (Winner)</translation>
+    </message>
+</context>
+<context>
+    <name>PochaWidget</name>
+    <message>
+        <location filename="gui/pocha.py" line="18"/>
+        <source>going up</source>
+        <translation>going up</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="19"/>
+        <source>going down</source>
+        <translation>going down</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="76"/>
+        <source>hand</source>
+        <translation>hand</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="78"/>
+        <source>hands</source>
+        <translation>hands</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="68"/>
+        <source>Score</source>
+        <translation>Score</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="22"/>
+        <source>coins</source>
+        <translation>Coins</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="23"/>
+        <source>cups</source>
+        <translation>Cups</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="24"/>
+        <source>swords</source>
+        <translation>Swords</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="25"/>
+        <source>clubs</source>
+        <translation>Clubs</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="106"/>
+        <source>There are players with no selected won hands.</source>
+        <translation>There are players with no selected won hands.</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="110"/>
+        <source>There are {} won hands selected when there should be {}.</source>
+        <translation>There are {} won hands selected when there should be {}.</translation>
     </message>
 </context>
 <context>

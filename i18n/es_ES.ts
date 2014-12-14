@@ -169,12 +169,12 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="gui/game.py" line="436"/>
+        <location filename="gui/game.py" line="442"/>
         <source>Delete Entry</source>
         <translation>Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="436"/>
+        <location filename="gui/game.py" line="442"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>¿Está seguro de que quiere eliminar esta entrada?</translation>
     </message>
@@ -205,52 +205,52 @@
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="gui/game.py" line="117"/>
+        <location filename="gui/game.py" line="115"/>
         <source>Cancel Match</source>
         <translation>Salir del Juego</translation>
     </message>
     <message>
         <location filename="gui/game.py" line="95"/>
         <source>Round</source>
-        <translation>Ronda</translation>
+        <translation type="obsolete">Ronda</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="97"/>
+        <location filename="gui/game.py" line="95"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pausar/Reanudar</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="98"/>
+        <location filename="gui/game.py" line="96"/>
         <source>&amp;Cancel Match</source>
         <translation>&amp;Salir del Juego</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="99"/>
+        <location filename="gui/game.py" line="97"/>
         <source>Commit &amp;Round</source>
         <translation>Cerrar &amp;Ronda</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="100"/>
+        <location filename="gui/game.py" line="98"/>
         <source>Match</source>
         <translation>Partida</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="102"/>
+        <location filename="gui/game.py" line="100"/>
         <source>Winner deals</source>
         <translation>El ganador reparte</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="109"/>
+        <location filename="gui/game.py" line="107"/>
         <source>{} won this match!</source>
         <translation>¡{} ha ganado la partida!</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="111"/>
+        <location filename="gui/game.py" line="109"/>
         <source>Game is paused</source>
         <translation>El juego está pausado</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="148"/>
+        <location filename="gui/game.py" line="146"/>
         <source>No winner selected</source>
         <translation>No se ha seleccionado ningún ganador</translation>
     </message>
@@ -260,22 +260,22 @@
         <translation>La puntación de {0} no es válida</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="162"/>
+        <location filename="gui/game.py" line="160"/>
         <source>Commit Round</source>
         <translation>Cerrar Ronda</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="162"/>
+        <location filename="gui/game.py" line="160"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>¿Estás seguro que quieres cerrar la ronda actual?</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="198"/>
+        <location filename="gui/game.py" line="190"/>
         <source>Round {0}</source>
         <translation>Ronda {0}</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="117"/>
+        <location filename="gui/game.py" line="115"/>
         <source>Do you want to save the current {} match?</source>
         <translation>¿Quieres guardar la partida de {} actual?</translation>
     </message>
@@ -609,6 +609,72 @@
         <location filename="gui/newgame.py" line="215"/>
         <source>Set Favourite</source>
         <translation>Activar favorito</translation>
+    </message>
+</context>
+<context>
+    <name>PochaRoundTable</name>
+    <message>
+        <location filename="gui/pocha.py" line="297"/>
+        <source> (Winner)</source>
+        <translation> (Ganador)</translation>
+    </message>
+</context>
+<context>
+    <name>PochaWidget</name>
+    <message>
+        <location filename="gui/pocha.py" line="18"/>
+        <source>going up</source>
+        <translation>subiendo</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="19"/>
+        <source>going down</source>
+        <translation>bajando</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="76"/>
+        <source>hand</source>
+        <translation>mano</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="78"/>
+        <source>hands</source>
+        <translation>manos</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="68"/>
+        <source>Score</source>
+        <translation>Marcador</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="22"/>
+        <source>coins</source>
+        <translation>Oros</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="23"/>
+        <source>cups</source>
+        <translation>Copas</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="24"/>
+        <source>swords</source>
+        <translation>Espadas</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="25"/>
+        <source>clubs</source>
+        <translation>Bastos</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="106"/>
+        <source>There are players with no selected won hands.</source>
+        <translation>Faltan manos ganadas de algunos jugadores.</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="110"/>
+        <source>There are {} won hands selected when there should be {}.</source>
+        <translation>Hay {} manos ganadas cuando tendría que haber {}.</translation>
     </message>
 </context>
 <context>

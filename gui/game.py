@@ -91,9 +91,7 @@ class GameWidget(Tab):
             self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
         
     def retranslateUI(self):
-        try:
-            self.roundGroup.setTitle("{} {}".format(QtGui.QApplication.translate("GameWidget","Round"),str(self.engine.getNumRound())))
-        except AttributeError: pass
+        self.setRoundTitle()
         self.pauseMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Pause/Play"))
         self.cancelMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Cancel Match"))
         self.commitRoundButton.setText(QtGui.QApplication.translate("GameWidget","Commit &Round"))
@@ -186,6 +184,12 @@ class GameWidget(Tab):
         if score >= 0: return True
         else: return False
         
+    def setRoundTitle(self):
+        try:
+            nround = self.engine.getNumRound()
+            self.roundGroup.setTitle(QtGui.QApplication.translate("GameWidget","Round {0}").format(str(nround)))
+        except AttributeError: pass
+        
     def updatePanel(self):
         self.gameInput.reset()
         try: self.dealerPolicyCheckBox.setEnabled(False)
@@ -193,10 +197,7 @@ class GameWidget(Tab):
         if self.engine.getWinner():
             self.setWinner()
         else:
-            try:
-                nround = self.engine.getNumRound()
-                self.roundGroup.setTitle(QtGui.QApplication.translate("GameWidget","Round {0}").format(str(nround)))
-            except AttributeError: pass
+            self.setRoundTitle()
             
     def getGameName(self): return self.game        
     
@@ -231,6 +232,11 @@ class GameInputWidget(QtGui.QWidget):
         self.playerInputList = {}
             
     def getWinner(self):
+        maxScore = -1000000
+        for player,score in self.getScores().items():
+            if score > maxScore:
+                maxScore = score
+                self.winnerSelected = player
         return self.winnerSelected
     
     def getScores(self):
