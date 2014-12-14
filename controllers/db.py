@@ -130,6 +130,7 @@ INSERT INTO "Game" VALUES('Phase10Master',6,'Master Edition','El dani las tiene'
 INSERT INTO "Game" VALUES('Remigio',12,'Classic Remigio','Home rules');
 INSERT INTO "Game" VALUES('Ratuki',5,'Ratuki Slap game','Home rules');
 INSERT INTO "Game" VALUES('Carcassonne',6,'Carcassonne board game','Home rules');
+INSERT INTO "Game" VALUES('Pocha',6,'Carcassonne board game','Home rules');
 DROP TABLE IF EXISTS "GameExtras";
 CREATE TABLE `GameExtras` (
   `Game_name` VARCHAR(45) NOT NULL ,

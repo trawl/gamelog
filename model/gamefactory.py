@@ -6,6 +6,7 @@
 from model.phase10 import Phase10Match,Phase10MasterMatch
 from model.remigio import RemigioMatch
 from model.ratuki import RatukiMatch
+from model.pocha import PochaMatch
 from model.carcassonne import CarcassonneMatch
 
 class GameFactory:
@@ -18,5 +19,6 @@ class GameFactory:
         if gname == 'Remigio': return RemigioMatch(players)
         if gname == 'Ratuki': return RatukiMatch(players)
         if gname == 'Carcassonne': return CarcassonneMatch(players)
+        if gname == 'Pocha': return PochaMatch(players)
         
         return None
