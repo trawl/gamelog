@@ -262,6 +262,9 @@ class GameInputWidget(QtGui.QWidget):
             self.enterPressed.emit()
         return super(GameInputWidget,self).keyPressEvent(event)
         
+    def mousePressEvent(self,event):
+        self.setFocus()
+        return QtGui.QWidget.mousePressEvent(self, event)
         
 class ScoreSpinBox(QtGui.QSpinBox):
 

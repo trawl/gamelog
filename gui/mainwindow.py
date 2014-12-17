@@ -134,6 +134,7 @@ class MainWindow(QtGui.QMainWindow):
         self.verticalLayout.addWidget(matchTab)
         self.setWindowTitle("Gamelog - {}".format(title))
         matchTab.show()
+        matchTab.setFocus()
         self.openedGames.append(matchTab)
 #        idx = self.tabWidget.addTab(matchTab, title)
 #        self.tabWidget.setCurrentIndex(idx)
