@@ -36,6 +36,9 @@ class PlotView(QtGui.QGraphicsView):
     def addLinePlot(self):
         self.plot = LinePlot(self.colours,None,self.scene)
         
+    def addHHeaders(self,headers):
+        self.plot.addHHeaders(headers)
+        
     def addSeries(self,series,label):
         self.plot.plot(series,label)
         
@@ -64,12 +67,16 @@ class LinePlot(QtGui.QGraphicsItem):
         self.yvmax = 0
         self.seriesLabels=[]
         self.seriesData=[]
+        self.hheaders = []
         self.limitvalue=None
         self.changed=False
         self.colours=clrs
                         
     def boundingRect(self):
         return QtCore.QRectF(0,0,self.awidth+self.hmargin*2,self.aheight+self.vmargin*2)
+    
+    def addHHeaders(self,headers): 
+        self.hheaders = headers
     
     def plot(self,data,label="",linewidth=2.5, linestyle="-",marker='o'):
         self.seriesLabels.append(label)
@@ -192,6 +199,9 @@ class LinePlot(QtGui.QGraphicsItem):
         pxend = pend.x()
         pyend = pend.y()-2
         
+        try: minsep = 10 * max([len(h) for h in self.hheaders])
+        except: pass
+        
         while (unitincrement*factor<minsep):
             provfactor=2*factor
             if(unitincrement*provfactor>minsep): 
@@ -209,7 +219,9 @@ class LinePlot(QtGui.QGraphicsItem):
         while(px<=pxend):
             colour = QtGui.QColor(0,0,0,255)
             PlotLine(px+0.5,pystart+2,px+0.5,pyend,1.5,colour,self)
-            nlabel=QtGui.QGraphicsSimpleTextItem("{}".format(vx),self)
+            try : header = self.hheaders[vx]
+            except IndexError: header = vx
+            nlabel=QtGui.QGraphicsSimpleTextItem("{}".format(header),self)
             font = nlabel.font()
             font.setPixelSize(20)
             nlabel.setFont(font)

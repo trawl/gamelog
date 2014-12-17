@@ -103,7 +103,7 @@ class PochaWidget(GameWidget):
         hands = self.engine.getHands()
         wonhands = self.gameInput.getWonHands()
         won = sum(wonhands.values())
-        if min(wonhands.values()):
+        if min(wonhands.values()) < 0:
             QtGui.QMessageBox.warning(self,self.game,QtGui.QApplication.translate("PochaWidget","There are players with no selected won hands."))
             return
         
@@ -167,7 +167,6 @@ class PochaInputWidget(GameInputWidget):
                 piw.refreshButtons()
             piw.disableWonRow(len(notselected) == 0 and forbidden == 0)
 
-
     def keyPressEvent(self,event):
         numberkeys = [QtCore.Qt.Key_0,QtCore.Qt.Key_1,QtCore.Qt.Key_2,
                       QtCore.Qt.Key_3,QtCore.Qt.Key_4,QtCore.Qt.Key_5,
@@ -182,8 +181,7 @@ class PochaInputWidget(GameInputWidget):
             self.feedNumber(number)
             
         return super(PochaInputWidget,self).keyPressEvent(event)
-    
-    
+        
     def feedNumber(self, number):
         players = self.engine.getListPlayers()
         expected_hands = self.getExpectedHands()
@@ -203,8 +201,7 @@ class PochaInputWidget(GameInputWidget):
                 return
 
         return
-            
-        
+                    
             
 class PochaPlayerInputWidget(QtGui.QFrame):
     
@@ -219,9 +216,6 @@ class PochaPlayerInputWidget(QtGui.QFrame):
         self.pcolour = colour
         self.mainLayout = QtGui.QVBoxLayout(self)
         self.mainLayout.setSpacing(0)
-#         self.setMinimumHeight(40)
-#         self.sizePolicy()
-#         self.setSizePolicy(QtGui.QSizePolicy.Maximum,QtGui.QSizePolicy.MinimumExpanding)
         
         self.label = QtGui.QLabel(self)
         self.label.setText(self.player)
@@ -241,7 +235,6 @@ class PochaPlayerInputWidget(QtGui.QFrame):
         self.ebLayout.setSpacing(0)
         self.ebLayout.setContentsMargins(2,2,2,2);
         self.expectedGroup = QtGui.QButtonGroup(self)
-#         self.expectedGroup.buttonReleased.connect(self.enableWonGroup)
         self.expectedButtons = []
         
         self.wonGroupBox = QtGui.QFrame(self)
@@ -367,25 +360,23 @@ class PochaRoundTable(GameRoundTable):
         
         
 class PochaRoundPlot(GameRoundPlot):
-    
-    def initPlot(self):
-        super(PochaRoundPlot,self).initPlot()
-        self.updatePlot()
-        
+
     def updatePlot(self):
         super(PochaRoundPlot,self).updatePlot()
         if not self.isPlotInited(): return
         scores = {}
+        roundNames = ['']
         for player in self.engine.getPlayers():
             scores[player] = [0]
             
         for rnd in self.engine.getRounds():
+            roundNames.append("{} {}".format(self.engine.getHands(rnd.getNumRound()),QtGui.QApplication.translate("PochaWidget",self.engine.getDirection(rnd.getNumRound())))[:3])            
             for player in self.engine.getPlayers():
                 rndscore = rnd.getPlayerScore(player)
                 accumscore = scores[player][-1] + rndscore
                 scores[player].append(accumscore)
 
-
+        self.canvas.addHHeaders(roundNames)
         self.canvas.clearPlotContents()
         for player in self.engine.getListPlayers():        
             self.canvas.addSeries(scores[player],player)
