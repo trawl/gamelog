@@ -162,7 +162,7 @@ INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 07','2s4');
 INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 08','1cr4 1s3');
 INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 09','1s5 1s3');
 INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 10','1s5 1cr3');
-INSERT INTO "GameExtras" VALUES ('Carcassonne','Kinds','City,Road,Cloister,Field,Goods');
+INSERT INTO "GameExtras" VALUES ('Carcassonne','Kinds','City,Road,Cloister,Field,Goods,Fair');
 DROP TABLE IF EXISTS "Match";
 CREATE TABLE `Match` (
   `idMatch` INTEGER  PRIMARY KEY ,
