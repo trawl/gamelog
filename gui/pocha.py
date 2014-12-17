@@ -138,6 +138,12 @@ class PochaInputWidget(GameInputWidget):
         for player,piw in self.playerInputList.items():
             won[player] = piw.getWonHands()
         return won
+    
+    def getExpectedHands(self):
+        expected = {}
+        for player,piw in self.playerInputList.items():
+            expected[player] = piw.getexpectedHands()
+        return expected        
 
     def checkExpected(self):
         notselected = []
@@ -157,7 +163,25 @@ class PochaInputWidget(GameInputWidget):
                 piw.refreshButtons()
             piw.disableWonRow(len(notselected) == 0 and forbidden == 0)
 
+    def keyPressEvent(self,event):
+        numberkeys = [QtCore.Qt.Key_0,QtCore.Qt.Key_1,QtCore.Qt.Key_2,
+                      QtCore.Qt.Key_3,QtCore.Qt.Key_4,QtCore.Qt.Key_5,
+                      QtCore.Qt.Key_6,QtCore.Qt.Key_7,QtCore.Qt.Key_8]
+        try: 
+            number = numberkeys.index(event.key()) 
+        except ValueError: 
+            return super(PochaInputWidget,self).keyPressEvent(event)
+
+        if number in range(0,9):
+            self.feedNumber(number)
+            
+        return super(PochaInputWidget,self).keyPressEvent(event)
+    
+    def feedNumber(self, number):
+        players_expected = self.getExpectedHands()
+        players_won = self.getWonHands()
         
+            
 class PochaPlayerInputWidget(QtGui.QFrame):
     
     winnerSet = QtCore.Signal(str)
@@ -204,19 +228,13 @@ class PochaPlayerInputWidget(QtGui.QFrame):
         self.wonGroup = QtGui.QButtonGroup(self)
         self.wonButtons = []
         for i in range(-1,9):
-            button = QtGui.QPushButton(str(i),self)
-            button.setCheckable(True)
-            button.setMinimumSize(20, 20)
-            button.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.Maximum)
+            button = PochaHandsButton(str(i),self)
             self.expectedGroup.addButton(button,i)
             self.expectedButtons.append(button)
             if i<0: button.hide()
             else: self.ebLayout.addWidget(button)
             
-            button = QtGui.QPushButton(str(i),self)
-            button.setCheckable(True)
-            button.setMinimumSize(20, 20)
-            button.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.Maximum)
+            button = PochaHandsButton(str(i),self)
             self.wonGroup.addButton(button,i)
             self.wonButtons.append(button)
             if i<0: button.hide()
@@ -258,6 +276,21 @@ class PochaPlayerInputWidget(QtGui.QFrame):
     def getWonHands(self): return self.wonGroup.checkedId()
     
     def getExpectedHands(self): return self.expectedGroup.checkedId()
+
+
+class PochaHandsButton(QtGui.QPushButton):
+    
+    def __init__(self,text="",parent=None):
+        super(PochaHandsButton,self).__init__(text,parent)
+        self.setCheckable(True)
+        self.setMinimumSize(25, 25)
+        self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.Maximum)
+        self.toggled.connect(self.setColour)
+        
+    def setColour(self,toggle):
+        if toggle: self.setStyleSheet("background-color: red; font: bold")
+        else: self.setStyleSheet("background-color: None; font: normal")
+        
 
 class PochaRoundsDetail(GameRoundsDetail):
     
