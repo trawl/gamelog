@@ -20,7 +20,7 @@ class GameClock(QtGui.QLCDNumber):
         self.startTime = datetime.datetime.now()
         self.accumulated = elapsed
         self.paused = False
-        self.refreshinterval = 500
+        self.refreshinterval = 50
         self.timer = QtCore.QTimer(self)
         self.timer.start(self.refreshinterval)
         self.setNumDigits(5)
