@@ -258,8 +258,9 @@ class GameInputWidget(QtGui.QWidget):
         self.winnerSelected = winner
         
     def keyPressEvent(self,event):
-        if (event.key() == QtCore.Qt.Key_Return):
+        if event.key() in (QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter):
             self.enterPressed.emit()
+            event.accept()
         return super(GameInputWidget,self).keyPressEvent(event)
         
     def mousePressEvent(self,event):
