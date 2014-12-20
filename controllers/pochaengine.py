@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from controllers.baseengine import RoundGameEngine,readInput
-
+from controllers.statsengine import StatsEngine
+from controllers.db import db
 
 class PochaEngine(RoundGameEngine):
     def __init__(self):
@@ -24,6 +25,55 @@ class PochaEngine(RoundGameEngine):
         index = self.getNumRound()-1
         if rnd is not None: index = rnd - 1 
         return self.directions[index]
+
+class PochaStatsEngine(StatsEngine):
+    
+    _hitsQuery="""
+    SELECT player, max(hits) as "max_hits", min(hits) as "min_hits" from (   
+     SELECT Round.idMatch as idm, Round.nick as "player", COUNT(Round.idRound) as "hits"
+        FROM Round,Match
+        WHERE Match.idMatch = Round.idMatch 
+            and Match.state = 1
+            and Game_name="Pocha" 
+            and Round.score>=10 
+        group by idm, player
+    ) as tmp
+    group by player
+    order by player
+    """
+    
+    _extremeRounds="""
+     SELECT Round.nick as "player", max(score) as "max_round_score", min(score) as "min_round_score"
+        FROM Round,Match
+        WHERE Match.idMatch = Round.idMatch 
+            and Match.state = 1
+            and Game_name="Pocha" 
+        group by player
+   """
+    
+    def __init__(self):
+        super(PochaStatsEngine, self).__init__()
+        self.singleKindRecord=None
+        
+    def update(self):
+        super(PochaStatsEngine, self).update()
+        self.hitsRecord = db.queryDict(self._hitsQuery)
+        self.extremeRoundsRecord = db.queryDict(self._extremeRounds)
+        
+        for row in self.hitsRecord:
+            player = row['player']
+            for r2 in self.generalplayerstats:
+                if r2['nick'] == player and r2['game'] == "Pocha":
+                    r2['max_hits'] = row['max_hits']
+                    r2['min_hits'] = row['min_hits']
+                    break
+        for row in self.extremeRoundsRecord:
+            player = row['player']
+            for r2 in self.generalplayerstats:
+                if r2['nick'] == player and r2['game'] == "Pocha":
+                    r2['max_round_score'] = row['max_round_score']
+                    r2['min_round_score'] = row['min_round_score']
+                    break
         
 if __name__ == "__main__":
     re = PochaEngine()

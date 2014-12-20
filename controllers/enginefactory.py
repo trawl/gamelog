@@ -5,7 +5,7 @@ from controllers.phase10engine import Phase10Engine,Phase10MasterEngine,Phase10S
 from controllers.remigioengine import RemigioEngine
 from controllers.ratukiengine import RatukiEngine
 from controllers.carcassonneengine import CarcassonneEngine,CarcassonneStatsEngine
-from controllers.pochaengine import PochaEngine
+from controllers.pochaengine import PochaEngine, PochaStatsEngine
 from controllers.statsengine import StatsEngine
 
 class GameEngineFactory:
@@ -27,4 +27,5 @@ class StatsEngineFactory:
     def getStatsEngine(cls,gname):
         if gname == 'Carcassonne': return CarcassonneStatsEngine()
         if gname in ('Phase10Master','Phase10'): return Phase10StatsEngine()
+        if gname == 'Pocha': return PochaStatsEngine()
         return StatsEngine()

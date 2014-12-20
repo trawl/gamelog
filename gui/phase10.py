@@ -14,7 +14,7 @@ except ImportError as error:
 
 from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
 from gui.game import GameWidget, GameInputWidget, GamePlayerWidget, ScoreSpinBox, GameRoundsDetail, GameRoundTable, GameRoundPlot, PlayerColours
-from gui.gamestats import QuickStatsBox, StatsTable
+from gui.gamestats import QuickStatsBox
 from gui.plots import PlotView
 
 class Phase10Widget(GameWidget):

@@ -4,12 +4,12 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="gui/mainwindow.py" line="178"/>
+        <location filename="gui/mainwindow.py" line="179"/>
         <source>About Gamelog</source>
         <translation>Acerda de Gamelog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="191"/>
+        <location filename="gui/mainwindow.py" line="192"/>
         <source>Gamelog is a utility to keep track of the score in board games.</source>
         <translation>Gamelog es un programa para llevar la cuenta de puntos en juegos de mesa.</translation>
     </message>
@@ -169,12 +169,12 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="gui/game.py" line="442"/>
+        <location filename="gui/game.py" line="446"/>
         <source>Delete Entry</source>
         <translation>Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="442"/>
+        <location filename="gui/game.py" line="446"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>¿Está seguro de que quiere eliminar esta entrada?</translation>
     </message>
@@ -614,7 +614,7 @@
 <context>
     <name>PochaRoundTable</name>
     <message>
-        <location filename="gui/pocha.py" line="297"/>
+        <location filename="gui/pocha.py" line="396"/>
         <source> (Winner)</source>
         <translation> (Ganador)</translation>
     </message>
@@ -667,12 +667,12 @@
         <translation>Bastos</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="106"/>
+        <location filename="gui/pocha.py" line="107"/>
         <source>There are players with no selected won hands.</source>
         <translation>Faltan manos ganadas de algunos jugadores.</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="110"/>
+        <location filename="gui/pocha.py" line="111"/>
         <source>There are {} won hands selected when there should be {}.</source>
         <translation>Hay {} manos ganadas cuando tendría que haber {}.</translation>
     </message>
@@ -776,6 +776,21 @@
         <location filename="gui/phase10.py" line="644"/>
         <source>Damned phase</source>
         <translation>Fase maldita</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="426"/>
+        <source>Max Hits</source>
+        <translation>Max Aciertos</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="427"/>
+        <source>Min Hits</source>
+        <translation>Min Aciertos</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="428"/>
+        <source>Best Round</source>
+        <translation>Mejor Ronda</translation>
     </message>
 </context>
 <context>
