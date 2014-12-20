@@ -11,7 +11,7 @@ except ImportError as error:
 
 from controllers.pochaengine import PochaEngine
 from gui.game import GameWidget,GameInputWidget,GameRoundsDetail,GameRoundTable,GameRoundPlot,GamePlayerWidget,PlayerColours
-
+from gui.gamestats import QuickStatsBox
 
 class PochaWidget(GameWidget):
     
@@ -421,4 +421,17 @@ class PochaRoundPlot(GameRoundPlot):
         for player in self.engine.getListPlayers():        
             self.canvas.addSeries(scores[player],player)
             
-            
+class PochaQSBox(QuickStatsBox): 
+    
+    QtGui.QApplication.translate("QuickStatsBox",'Max Hits')
+    QtGui.QApplication.translate("QuickStatsBox",'Min Hits')
+    QtGui.QApplication.translate("QuickStatsBox",'Best Round')
+    
+    def __init__(self,gname,parent):
+        super(PochaQSBox, self).__init__(gname,parent)
+        self.playerStatsKeys.append('max_hits')
+        self.playerStatsHeaders.append('Max Hits')
+        self.playerStatsKeys.append('min_hits')
+        self.playerStatsHeaders.append('Min Hits')
+        self.playerStatsKeys.append('max_round_score')
+        self.playerStatsHeaders.append('Best Round')     
