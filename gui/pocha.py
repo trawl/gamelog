@@ -23,6 +23,10 @@ class PochaWidget(GameWidget):
     QtGui.QApplication.translate("PochaWidget",'cups')
     QtGui.QApplication.translate("PochaWidget",'swords')
     QtGui.QApplication.translate("PochaWidget",'clubs')
+    QtGui.QApplication.translate("PochaWidget",'diamonds')
+    QtGui.QApplication.translate("PochaWidget",'hearts')
+    QtGui.QApplication.translate("PochaWidget",'pikes')
+    QtGui.QApplication.translate("PochaWidget",'clovers')
         
     def createEngine(self):
         if self.game != 'Pocha':
@@ -38,6 +42,18 @@ class PochaWidget(GameWidget):
         self.roundLayout.addWidget(self.gameInput)
         
         self.configLayout = QtGui.QGridLayout()
+        self.matchGroupLayout.addLayout(self.configLayout)
+        self.suitTypeGroup = QtGui.QButtonGroup(self)
+        self.spanishSuitRadio = QtGui.QRadioButton(self)
+        self.spanishSuitRadio.setChecked(self.engine.getSuitType()=='spanish')
+        self.spanishSuitRadio.toggled.connect(self.changeSuit)
+        self.suitTypeGroup.addButton(self.spanishSuitRadio)
+        self.configLayout.addWidget(self.spanishSuitRadio)
+        self.frenchSuitRadio = QtGui.QRadioButton(self)
+        self.suitTypeGroup.addButton(self.frenchSuitRadio)
+        self.configLayout.addWidget(self.frenchSuitRadio)
+        self.frenchSuitRadio.toggled.connect(self.changeSuit)
+        self.frenchSuitRadio.setChecked(self.engine.getSuitType()=='french')
         
         self.dealerPolicyCheckBox.hide()
         
@@ -66,7 +82,15 @@ class PochaWidget(GameWidget):
     def retranslateUI(self):
         super(PochaWidget,self).retranslateUI()
         self.playerGroup.setTitle(QtGui.QApplication.translate("PochaWidget","Score"))
+        self.spanishSuitRadio.setText(QtGui.QApplication.translate("PochaWidget","Spanish Deck"))
+        self.frenchSuitRadio.setText(QtGui.QApplication.translate("PochaWidget","French Deck"))
         self.detailGroup.retranslateUI()
+        
+    def changeSuit(self, *args):
+        if self.spanishSuitRadio.isChecked(): self.engine.setSuitType('spansih')
+        elif self.frenchSuitRadio.isChecked(): self.engine.setSuitType('french')
+        self.retranslateUI()
+        
         
     def setRoundTitle(self):
         super(PochaWidget,self).setRoundTitle()
@@ -116,6 +140,7 @@ class PochaWidget(GameWidget):
     def setFocus(self):
         self.gameInput.setFocus()
         
+
 class PochaInputWidget(GameInputWidget):
     
     def __init__(self,engine, parent=None):
@@ -370,6 +395,9 @@ class PochaRoundsDetail(GameRoundsDetail):
     def createRoundPlot(self, engine, parent=None): 
         return PochaRoundPlot(self.engine,self)
     
+    def createQSBox(self, parent=None):
+        return PochaQSBox(self.engine.getGame(),self)
+        
     
 class PochaRoundTable(GameRoundTable):
     

@@ -615,7 +615,7 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>PochaRoundTable</name>
     <message>
-        <location filename="gui/pocha.py" line="396"/>
+        <location filename="gui/pocha.py" line="420"/>
         <source> (Winner)</source>
         <translation> (Winner)</translation>
     </message>
@@ -633,17 +633,17 @@ Are you sure you want to delete this entry?</translation>
         <translation>going down</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="76"/>
+        <location filename="gui/pocha.py" line="100"/>
         <source>hand</source>
         <translation>hand</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="78"/>
+        <location filename="gui/pocha.py" line="102"/>
         <source>hands</source>
         <translation>hands</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="68"/>
+        <location filename="gui/pocha.py" line="84"/>
         <source>Score</source>
         <translation>Score</translation>
     </message>
@@ -668,14 +668,44 @@ Are you sure you want to delete this entry?</translation>
         <translation>Clubs</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="107"/>
+        <location filename="gui/pocha.py" line="131"/>
         <source>There are players with no selected won hands.</source>
         <translation>There are players with no selected won hands.</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="111"/>
+        <location filename="gui/pocha.py" line="135"/>
         <source>There are {} won hands selected when there should be {}.</source>
         <translation>There are {} won hands selected when there should be {}.</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="85"/>
+        <source>Spanish Deck</source>
+        <translation>Spanish Deck</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="86"/>
+        <source>French Deck</source>
+        <translation>French Deck</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="26"/>
+        <source>diamonds</source>
+        <translation>Diamonds</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="27"/>
+        <source>hearts</source>
+        <translation>Hearts</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="28"/>
+        <source>pikes</source>
+        <translation>Pikes</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="29"/>
+        <source>clovers</source>
+        <translation>Clovers</translation>
     </message>
 </context>
 <context>
@@ -779,17 +809,17 @@ Are you sure you want to delete this entry?</translation>
         <translation>Damned phase</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="426"/>
+        <location filename="gui/pocha.py" line="450"/>
         <source>Max Hits</source>
         <translation>Max Hits</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="427"/>
+        <location filename="gui/pocha.py" line="451"/>
         <source>Min Hits</source>
         <translation>Min Hits</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="428"/>
+        <location filename="gui/pocha.py" line="452"/>
         <source>Best Round</source>
         <translation>Best Round</translation>
     </message>
