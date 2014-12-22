@@ -10,8 +10,8 @@ class PochaEngine(RoundGameEngine):
         super(PochaEngine,self).__init__()
         self.game = 'Pocha'
         self.hands = [1,2,3,4,5,6,7,8,8,8,8,7,6,5,4,3,2,1]
-        self.directions = ["going up"] * 7 + ['coins','cups','swords','clubs'] + ["going down"] * 7
-        
+        self.setSuitType()
+
     def runRoundPlayer(self,player,winner):
         score = readInput("{} round score: ".format(player),int,lambda x: True,"Sorry, invalid score number.")
         self.addRoundInfo(player,score)   
@@ -25,7 +25,18 @@ class PochaEngine(RoundGameEngine):
         index = self.getNumRound()-1
         if rnd is not None: index = rnd - 1 
         return self.directions[index]
-
+    
+    def setSuitType(self,st='spanish'):
+        self.suitType = st
+        if st == 'french':
+            self.directions = ["going up"] * 7 + ['diamonds','hearts','pikes','clovers'] + ["going down"] * 7
+        else:
+            self.directions = ["going up"] * 7 + ['coins','cups','swords','clubs'] + ["going down"] * 7
+                
+    def getSuitType(self): return self.suitType
+    
+    
+    
 class PochaStatsEngine(StatsEngine):
     
     _hitsQuery="""

@@ -614,7 +614,7 @@
 <context>
     <name>PochaRoundTable</name>
     <message>
-        <location filename="gui/pocha.py" line="396"/>
+        <location filename="gui/pocha.py" line="420"/>
         <source> (Winner)</source>
         <translation> (Guanyador)</translation>
     </message>
@@ -632,17 +632,17 @@
         <translation>baixant</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="76"/>
+        <location filename="gui/pocha.py" line="100"/>
         <source>hand</source>
         <translation>mà</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="78"/>
+        <location filename="gui/pocha.py" line="102"/>
         <source>hands</source>
         <translation>mans</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="68"/>
+        <location filename="gui/pocha.py" line="84"/>
         <source>Score</source>
         <translation>Marcador</translation>
     </message>
@@ -667,14 +667,44 @@
         <translation>Bastos</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="107"/>
+        <location filename="gui/pocha.py" line="131"/>
         <source>There are players with no selected won hands.</source>
         <translation>Falten mans guanyades d&apos;alguns jugadors.</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="111"/>
+        <location filename="gui/pocha.py" line="135"/>
         <source>There are {} won hands selected when there should be {}.</source>
         <translation>Hi ha {} mans guanyades quan hi hauria d&apos;haver {}.</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="85"/>
+        <source>Spanish Deck</source>
+        <translation>Baralla Espanyola</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="86"/>
+        <source>French Deck</source>
+        <translation>Baralla Francesa</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="26"/>
+        <source>diamonds</source>
+        <translation>Diamants</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="27"/>
+        <source>hearts</source>
+        <translation>Cors</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="28"/>
+        <source>pikes</source>
+        <translation>Piques</translation>
+    </message>
+    <message>
+        <location filename="gui/pocha.py" line="29"/>
+        <source>clovers</source>
+        <translation>Trèbols</translation>
     </message>
 </context>
 <context>
@@ -778,17 +808,17 @@
         <translation>Fase maleïda</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="426"/>
+        <location filename="gui/pocha.py" line="450"/>
         <source>Max Hits</source>
         <translation>Max Encerts</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="427"/>
+        <location filename="gui/pocha.py" line="451"/>
         <source>Min Hits</source>
         <translation>Min Encerts</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="428"/>
+        <location filename="gui/pocha.py" line="452"/>
         <source>Best Round</source>
         <translation>Millor Ronda</translation>
     </message>
