@@ -19,13 +19,14 @@ class PochaEngine(RoundGameEngine):
     def getHands(self,rnd=None):
         index = self.getNumRound()-1
         if rnd is not None: index = rnd - 1 
-        return self.hands[index]
+        try: return self.hands[index]
+        except IndexError: return self.hands[-1]
     
     def getDirection(self,rnd=None):
         index = self.getNumRound()-1
         if rnd is not None: index = rnd - 1 
-        return self.directions[index]
-    
+        try: return self.directions[index]
+        except IndexError: return self.directions[-1]
     def setSuitType(self,st='spanish'):
         self.suitType = st
         if st == 'french':

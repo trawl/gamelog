@@ -13,6 +13,7 @@ from gui.tab import Tab
 from gui.clock import GameClock
 from gui.plots import PlotView
 from gui.gamestats import QuickStatsBox
+from gui.playerorder import PlayerOrderDialog
         
 PlayerColours=[QtGui.QColor(237,44,48),
          QtGui.QColor(23,89,169),
@@ -66,6 +67,10 @@ class GameWidget(Tab):
         self.commitRoundButton = QtGui.QPushButton(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.commitRoundButton)
         self.commitRoundButton.clicked.connect(self.commitRound)
+        
+#         self.playerOrderButton = QtGui.QPushButton(self.roundGroup)
+#         self.buttonGroupLayout.addWidget(self.playerOrderButton)
+#         self.playerOrderButton.clicked.connect(self.changePlayerOrder)
 
         self.gameStatusLabel = QtGui.QLabel(self.roundGroup)
         self.gameStatusLabel.setAlignment(QtCore.Qt.AlignCenter)
@@ -95,6 +100,7 @@ class GameWidget(Tab):
         self.pauseMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Pause/Play"))
         self.cancelMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Cancel Match"))
         self.commitRoundButton.setText(QtGui.QApplication.translate("GameWidget","Commit &Round"))
+#         self.playerOrderButton.setText(QtGui.QApplication.translate("GameWidget","Player &Order"))
         self.matchGroup.setTitle(QtGui.QApplication.translate("GameWidget","Match"))
         if self.engine.getDealingPolicy() not in (self.engine.NoDealer,self.engine.StarterDealer): 
             self.dealerPolicyCheckBox.setText(QtGui.QApplication.translate("GameWidget","Winner deals"))
@@ -219,6 +225,10 @@ class GameWidget(Tab):
         self.commitRoundButton.setDisabled(True)
         self.updateGameStatusLabel()    
         self.gameInput.setDisabled(True)
+        
+    def changePlayerOrder(self):
+        pod = PlayerOrderDialog(self.engine,self)
+        pod.exec_()
         
     
 class GameInputWidget(QtGui.QWidget):
@@ -479,4 +489,6 @@ class GameRoundPlot(QtGui.QWidget):
     def updatePlot(self): pass
     
     def retranslatePlot(self): pass
+    
+
         

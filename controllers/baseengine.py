@@ -88,6 +88,10 @@ class GameEngine(object):
     
     def getDealer(self): return self.match.getDealer()
     
+    def setDealer(self, player): self.match.setDealer(player)
+    
+    def setPlayerOrder(self,porder): self.porder = porder
+    
     def updateDealer(self): pass
     
 
