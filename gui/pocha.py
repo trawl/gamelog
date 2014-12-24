@@ -380,8 +380,8 @@ class PochaHandsButton(QtGui.QPushButton):
         self.toggled.connect(self.setColour)
         
     def setColour(self,toggle):
-        if toggle: self.setStyleSheet("background-color: red; font: bold; padding: 3px;")
-        else: self.setStyleSheet("background-color: None; font: normal; padding: 3px;")
+        if toggle: self.setStyleSheet("background-color: red; font: bold")
+        else: self.setStyleSheet("background-color: None; font: normal")
 
 class PochaRoundsDetail(GameRoundsDetail):
     
