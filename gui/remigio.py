@@ -89,7 +89,7 @@ class RemigioWidget(GameWidget):
     def getPlayerExtraInfo(self,player):  
         c_type = self.gameInput.getCloseType()
         if c_type: return {'closeType':c_type}
-        else: return None
+        else: return {}
     
     def unsetDealer(self): self.playerGroupBox[self.engine.getDealer()].unsetDealer()
     
@@ -147,7 +147,9 @@ class RemigioInputWidget(GameInputWidget):
     def getCloseType(self):
         try: return self.playerInputList[self.winnerSelected].getCloseType()
         except KeyError: return 0
-    
+        
+    def getWinner(self): return self.winnerSelected
+        
     def getScores(self):
         scores = {}
         for player,piw in self.playerInputList.items():
