@@ -113,7 +113,7 @@ class NewGameWidget(Tab):
         self.playersGroupBoxLayout.addWidget(self.inGameGroup)
         self.inGameGroupLayout = QtGui.QVBoxLayout(self.inGameGroup)
         self.playersInGameList = PlayerList(self.inGameGroup)
-        self.inGameGroup.setMaximumHeight(150)
+        self.inGameGroup.setMaximumHeight(280)
         self.inGameGroupLayout.addWidget(self.playersInGameList)
         
         self.playersButtonsLayout = QtGui.QHBoxLayout()
@@ -269,7 +269,8 @@ class PlayerListModel(QtGui.QStandardItemModel):
         item.setEditable(False)
         item.setDropEnabled(False)
         font = item.font()
-        font.setPixelSize(14)
+        font.setPixelSize(24)
+        font.setBold(True)
         item.setFont(font)
         self.addIcon(item,db.isPlayerFavourite(player))
         if row is not None and row>=0:

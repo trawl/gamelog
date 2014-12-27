@@ -44,7 +44,7 @@ class GameWidget(Tab):
         
     def initUI(self):
         #Set up the main grid
-        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
+        self.setStyleSheet("QGroupBox { font-size: 32px; font-weight: bold; }")
         self.widgetLayout = QtGui.QGridLayout(self)
         self.roundGroup = QtGui.QGroupBox(self)
         self.widgetLayout.addWidget(self.roundGroup,0,0)
@@ -90,7 +90,7 @@ class GameWidget(Tab):
                 self.dealerPolicyCheckBox.setChecked(True)
             else:
                 self.dealerPolicyCheckBox.setChecked(False)
-            self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-size: 14px; font-weight: bold; }")
+            self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
             self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
             self.dealerPolicyCheckBox.setDisabled(self.engine.getNumRound()>1)
             self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
@@ -101,7 +101,7 @@ class GameWidget(Tab):
         self.cancelMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Cancel Match"))
         self.commitRoundButton.setText(QtGui.QApplication.translate("GameWidget","Commit &Round"))
 #         self.playerOrderButton.setText(QtGui.QApplication.translate("GameWidget","Player &Order"))
-        self.matchGroup.setTitle(QtGui.QApplication.translate("GameWidget","Match"))
+#         self.matchGroup.setTitle(QtGui.QApplication.translate("GameWidget","Match"))
         if self.engine.getDealingPolicy() not in (self.engine.NoDealer,self.engine.StarterDealer): 
             self.dealerPolicyCheckBox.setText(QtGui.QApplication.translate("GameWidget","Winner deals"))
         self.updateGameStatusLabel()
@@ -320,13 +320,13 @@ class GamePlayerWidget(QtGui.QGroupBox):
         self.scoreLCD.setSegmentStyle(QtGui.QLCDNumber.Flat)
         self.mainLayout.addWidget(self.scoreLCD)
         self.scoreLCD.setNumDigits(3)
-        self.scoreLCD.setFixedSize(100,50)
+        self.scoreLCD.setFixedSize(100,60)
         self.scoreLCD.display(0)
         self.scoreLCD.setStyleSheet("QLCDNumber {{ color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
         
         self.nameLabel = QtGui.QLabel(self)
         self.nameLabel.setText(self.player)
-        sh = "QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
+        sh = "QLabel {{ font-size: 32px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
         self.nameLabel.setStyleSheet(sh)
         self.mainLayout.addWidget(self.nameLabel)
         
@@ -335,7 +335,7 @@ class GamePlayerWidget(QtGui.QGroupBox):
         self.winnerPixmap = QtGui.QPixmap('icons/winner.png')
         
         self.iconlabel = IconLabel(self)
-        self.iconlabel.setFixedSize(40,40)
+        self.iconlabel.setFixedSize(50,50)
         self.iconlabel.setScaledContents(True)
         self.mainLayout.insertWidget(0,self.iconlabel)
 #         self.mainLayout.addStretch()
@@ -392,7 +392,7 @@ class GameRoundsDetail(QtGui.QGroupBox):
         self.statsLayout.addWidget(self.gamestats)
 
     def retranslateUI(self):
-        self.setTitle(QtGui.QApplication.translate("GameRoundsDetail",'Details'))
+#         self.setTitle(QtGui.QApplication.translate("GameRoundsDetail",'Details'))
         self.container.setTabText(0,QtGui.QApplication.translate("GameRoundsDetail","Table"))
         self.container.setTabText(1,QtGui.QApplication.translate("GameRoundsDetail","Plot"))
         self.container.setTabText(2,QtGui.QApplication.translate("GameRoundsDetail","Statistics"))
