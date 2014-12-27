@@ -73,6 +73,9 @@ class MainWindow(QtGui.QMainWindow):
         self.retranslateUi()
 
         #And finally, show it!
+        
+        self.setStyleSheet("font-size: 20px;")
+        
         self.show()
         
     def retranslateUi(self):

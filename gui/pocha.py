@@ -81,7 +81,7 @@ class PochaWidget(GameWidget):
         
     def retranslateUI(self):
         super(PochaWidget,self).retranslateUI()
-        self.playerGroup.setTitle(QtGui.QApplication.translate("PochaWidget","Score"))
+#         self.playerGroup.setTitle(QtGui.QApplication.translate("PochaWidget","Score"))
         self.spanishSuitRadio.setText(QtGui.QApplication.translate("PochaWidget","Spanish Deck"))
         self.frenchSuitRadio.setText(QtGui.QApplication.translate("PochaWidget","French Deck"))
         self.detailGroup.retranslateUI()
@@ -272,7 +272,7 @@ class PochaPlayerInputWidget(QtGui.QFrame):
         self.label.setScaledContents(True)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setWordWrap(False)
-        sh = "QLabel {{ font-size: 20px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
+        sh = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
         self.label.setStyleSheet(sh)
         
         self.expectedGroupBox = QtGui.QFrame(self)

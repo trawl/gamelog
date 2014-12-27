@@ -65,7 +65,7 @@ class CarcassonneWidget(GameWidget):
     def retranslateUI(self):
         super(CarcassonneWidget,self).retranslateUI()
         self.finishButton.setText(QtGui.QApplication.translate("GameWidget","&Finish Game"))
-        self.playerGroup.setTitle(QtGui.QApplication.translate("CarcassonneWidget","Score"))
+#         self.playerGroup.setTitle(QtGui.QApplication.translate("CarcassonneWidget","Score"))
         self.gameInput.retranslateUI()
         self.detailGroup.retranslateUI()
     
@@ -154,7 +154,7 @@ class CarcassonneInputWidget(QtGui.QWidget):
         self.engine = engine
         self.parent = parent
         self.bgcolors = bgcolors
-        self.setStyleSheet("QGroupBox { font-size: 14px; font-weight: normal; }")
+        self.setStyleSheet("QGroupBox { font-size: 22px; font-weight: bold; }")
         self.initUI()
 
     def initUI(self):

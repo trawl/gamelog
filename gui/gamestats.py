@@ -142,7 +142,7 @@ class StatsTable(QtGui.QTableWidget):
         s = QtCore.QSize()
         s.setWidth(super(StatsTable,self).sizeHint().width())
         s.setWidth(75*(self.columnCount()+1)+2*self.columnCount())
-        s.setHeight(self.rowHeight(0)*(self.rowCount()+1)+2)
+        s.setHeight(self.rowHeight(0)*(self.rowCount()+1)+10)
         return s
         
 

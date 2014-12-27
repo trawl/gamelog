@@ -33,7 +33,7 @@ class RatukiWidget(GameWidget):
         self.topPointsLineEdit = QtGui.QLineEdit(self.matchGroup)
         self.topPointsLineEdit.setText(str(self.engine.getTop()))
         self.topPointsLineEdit.setValidator(QtGui.QIntValidator(1,10000,self.topPointsLineEdit))
-        self.topPointsLineEdit.setFixedWidth(35)
+        self.topPointsLineEdit.setFixedWidth(50)
         sp = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
         self.topPointsLineEdit.setSizePolicy(sp)
         self.topPointsLineEdit.textChanged.connect(self.changeTop)
@@ -41,7 +41,7 @@ class RatukiWidget(GameWidget):
         self.configLayout.addWidget(self.topPointsLineEdit,0,0)
         
         self.topPointsLabel = QtGui.QLabel(self.matchGroup)
-        self.topPointsLabel.setStyleSheet("QLabel { font-size: 14px; font-weight: bold; }")
+        self.topPointsLabel.setStyleSheet("QLabel {font-weight: bold; }")
         self.configLayout.addWidget(self.topPointsLabel,0,1)
         
         self.detailGroup = RatukiRoundsDetail(self.engine, self)
@@ -69,7 +69,7 @@ class RatukiWidget(GameWidget):
     def retranslateUI(self):
         super(RatukiWidget,self).retranslateUI()
         self.topPointsLabel.setText(QtGui.QApplication.translate("RatukiWidget","Score Limit"))
-        self.playerGroup.setTitle(QtGui.QApplication.translate("RatukiWidget","Score"))
+#         self.playerGroup.setTitle(QtGui.QApplication.translate("RatukiWidget","Score"))
         self.detailGroup.retranslateUI()
         
     def checkPlayerScore(self,player,score): return True
@@ -112,8 +112,8 @@ class RatukiInputWidget(GameInputWidget):
     def initUI(self):
         self.widgetLayout = QtGui.QHBoxLayout(self)
 
-        for player in self.engine.getListPlayers():
-            self.playerInputList[player] = RatukiPlayerInputWidget(player,self)
+        for i,player in enumerate(self.engine.getListPlayers()):
+            self.playerInputList[player] = RatukiPlayerInputWidget(player,PlayerColours[i],self)
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
     
@@ -128,10 +128,11 @@ class RatukiPlayerInputWidget(QtGui.QFrame):
     
     winnerSet = QtCore.Signal(str)
     
-    def __init__(self,player,parent=None):
+    def __init__(self,player,colour=None, parent=None):
         super(RatukiPlayerInputWidget, self).__init__(parent)
         self.player = player
         self.winner = False
+        self.pcolour = colour
         self.mainLayout = QtGui.QVBoxLayout(self)
         
         self.label = QtGui.QLabel(self)
@@ -150,6 +151,10 @@ class RatukiPlayerInputWidget(QtGui.QFrame):
         self.scoreSpinBox.setRange(-100,100)
         self.mainLayout.addWidget(self.scoreSpinBox)
         self.mainLayout.setAlignment(self.scoreSpinBox,QtCore.Qt.AlignCenter)
+        
+        sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
+        self.label.setStyleSheet(sh)
+        self.scoreSpinBox.setStyleSheet(sh)
         
         self.reset()
     

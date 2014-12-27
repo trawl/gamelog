@@ -78,7 +78,7 @@ class LinePlot(QtGui.QGraphicsItem):
     def addHHeaders(self,headers): 
         self.hheaders = headers
     
-    def plot(self,data,label="",linewidth=2.5, linestyle="-",marker='o'):
+    def plot(self,data,label="",linewidth=5., linestyle="-",marker='o'):
         self.seriesLabels.append(label)
         self.seriesData.append(data)
         self.changed = True
@@ -249,9 +249,9 @@ class LinePlot(QtGui.QGraphicsItem):
             colour = self.colours[i]
             for vx,vy in enumerate(ser):
                 point = self.value2point(vx, vy)
-                dot = PlotDot(point.x(),point.y(),10,colour,self)
+                dot = PlotDot(point.x(),point.y(),15,colour,self)
                 dot.setMetaData({'label':self.seriesLabels[i],'x':vx,'y':vy})
-                if vx>0: PlotLine(pp.x(),pp.y(),point.x(),point.y(),3,colour,self)
+                if vx>0: PlotLine(pp.x(),pp.y(),point.x(),point.y(),5,colour,self)
                 pp = point        
                 
     def value2point(self,vx,vy):

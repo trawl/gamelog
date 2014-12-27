@@ -35,7 +35,7 @@ class RemigioWidget(GameWidget):
         self.topPointsLineEdit = QtGui.QLineEdit(self.matchGroup)
         self.topPointsLineEdit.setText(str(self.engine.getTop()))
         self.topPointsLineEdit.setValidator(QtGui.QIntValidator(1,10000,self.topPointsLineEdit))
-        self.topPointsLineEdit.setFixedWidth(35)
+        self.topPointsLineEdit.setFixedWidth(50)
         sp = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
         self.topPointsLineEdit.setSizePolicy(sp)
         self.topPointsLineEdit.textChanged.connect(self.changeTop)
@@ -43,7 +43,7 @@ class RemigioWidget(GameWidget):
         self.configLayout.addWidget(self.topPointsLineEdit,0,0)
         
         self.topPointsLabel = QtGui.QLabel(self.matchGroup)
-        self.topPointsLabel.setStyleSheet("QLabel { font-size: 14px; font-weight: bold; }")
+        self.topPointsLabel.setStyleSheet("QLabel {font-weight: bold; }")
         self.configLayout.addWidget(self.topPointsLabel,0,1)
         
         self.detailGroup = RemigioRoundsDetail(self.engine, RemigioWidget.bgcolors, self)
@@ -75,7 +75,7 @@ class RemigioWidget(GameWidget):
     def retranslateUI(self):
         super(RemigioWidget,self).retranslateUI()
         self.topPointsLabel.setText(QtGui.QApplication.translate("RemigioWidget","Score Limit"))
-        self.playerGroup.setTitle(QtGui.QApplication.translate("RemigioWidget","Score"))
+#         self.playerGroup.setTitle(QtGui.QApplication.translate("RemigioWidget","Score"))
         self.detailGroup.retranslateUI()
         
     
@@ -138,8 +138,8 @@ class RemigioInputWidget(GameInputWidget):
     def initUI(self):
         self.widgetLayout = QtGui.QHBoxLayout(self)
 
-        for player in self.engine.getListPlayers():
-            self.playerInputList[player] = RemigioPlayerInputWidget(player,self.bgcolors,self)
+        for i,player in enumerate(self.engine.getListPlayers()):
+            self.playerInputList[player] = RemigioPlayerInputWidget(player,self.bgcolors,PlayerColours[i],self)
             if self.engine.isPlayerOff(player): self.koPlayer(player)
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
@@ -165,9 +165,10 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
     
     winnerSet = QtCore.Signal(str)
     
-    def __init__(self,player,bgcolors,parent=None):
+    def __init__(self,player,bgcolors,colour=None,parent=None):
         super(RemigioPlayerInputWidget, self).__init__(parent)
         self.player = player
+        self.pcolour = colour
         self.ko = False
         self.bgcolors = bgcolors
         
@@ -181,11 +182,14 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         self.label.setScaledContents(True)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setWordWrap(False)
+        sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
+        self.label.setStyleSheet(sh)
         
         self.scoreSpinBox = ScoreSpinBox(self)
         self.scoreSpinBox.setAlignment(QtCore.Qt.AlignCenter)
-        self.scoreSpinBox.setMaximumWidth(60)
+        self.scoreSpinBox.setMaximumWidth(90)
         self.scoreSpinBox.setRange(-1,100)
+        self.scoreSpinBox.setStyleSheet(sh)
         self.mainLayout.addWidget(self.scoreSpinBox)
         self.mainLayout.setAlignment(self.scoreSpinBox,QtCore.Qt.AlignCenter)
         
