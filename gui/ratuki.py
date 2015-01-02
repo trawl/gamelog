@@ -101,7 +101,19 @@ class RatukiWidget(GameWidget):
         winner = self.engine.getWinner()
         if winner in self.players:
             self.playerGroupBox[winner].setWinner()
-        
+
+    def updatePlayerOrder(self):
+        GameWidget.updatePlayerOrder(self)
+        trash = QtGui.QWidget()
+        trash.setLayout(self.playersLayout)
+        self.playersLayout = QtGui.QVBoxLayout(self.playerGroup)
+        self.playersLayout.addStretch()
+        for i,player in enumerate(self.engine.getListPlayers()):
+            trash.layout().removeWidget(self.playerGroupBox[player])
+            self.playersLayout.addWidget(self.playerGroupBox[player])
+            self.playerGroupBox[player].setColour(PlayerColours[i])
+        self.playersLayout.addStretch()
+        self.detailGroup.updatePlayerOrder()        
         
 class RatukiInputWidget(GameInputWidget):
     
@@ -122,6 +134,16 @@ class RatukiInputWidget(GameInputWidget):
         for player,piw in self.playerInputList.items():
             scores[player] = piw.getScore()
         return scores
+    
+    def updatePlayerOrder(self):
+#         QtGui.QWidget().setLayout(self.layout())
+        trash = QtGui.QWidget()
+        trash.setLayout(self.layout())
+        self.widgetLayout = QtGui.QHBoxLayout(self)
+        for i,player in enumerate(self.engine.getListPlayers()):
+            trash.layout().removeWidget(self.playerInputList[player])
+            self.widgetLayout.addWidget(self.playerInputList[player])
+            self.playerInputList[player].setColour(PlayerColours[i])
         
         
 class RatukiPlayerInputWidget(QtGui.QFrame):
@@ -190,6 +212,12 @@ class RatukiPlayerInputWidget(QtGui.QFrame):
     
     def getScore(self): return self.scoreSpinBox.value()
 
+    def setColour(self,colour):
+        self.pcolour = colour
+        sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
+        self.label.setStyleSheet(sh)     
+        self.scoreSpinBox.setStyleSheet(sh)
+        
 
 class RatukiRoundsDetail(GameRoundsDetail):
     

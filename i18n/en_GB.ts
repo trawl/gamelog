@@ -4,12 +4,12 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="gui/mainwindow.py" line="179"/>
+        <location filename="gui/mainwindow.py" line="182"/>
         <source>About Gamelog</source>
         <translation>About Gamelog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="192"/>
+        <location filename="gui/mainwindow.py" line="195"/>
         <source>Gamelog is a utility to keep track of the score in board games.</source>
         <translation>Gamelog is a utility to keep track of the score in board games.</translation>
     </message>
@@ -133,7 +133,7 @@
     <message>
         <location filename="gui/carcassonne.py" line="68"/>
         <source>Score</source>
-        <translation>Score</translation>
+        <translation type="obsolete">Score</translation>
     </message>
     <message>
         <location filename="gui/carcassonne.py" line="95"/>
@@ -169,12 +169,12 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="gui/game.py" line="446"/>
+        <location filename="gui/game.py" line="486"/>
         <source>Delete Entry</source>
         <translation>Delete Entry</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="446"/>
+        <location filename="gui/game.py" line="486"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>
 Are you sure you want to delete this entry?</translation>
@@ -185,20 +185,20 @@ Are you sure you want to delete this entry?</translation>
     <message>
         <location filename="gui/phase10.py" line="517"/>
         <source>Details</source>
-        <translation>Details</translation>
+        <translation type="obsolete">Details</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="519"/>
+        <location filename="gui/phase10.py" line="541"/>
         <source>Table</source>
         <translation>Table</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="520"/>
+        <location filename="gui/phase10.py" line="542"/>
         <source>Plot</source>
         <translation>Plot</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="521"/>
+        <location filename="gui/phase10.py" line="543"/>
         <source>Statistics</source>
         <translation>Statistics</translation>
     </message>
@@ -206,7 +206,7 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="gui/game.py" line="115"/>
+        <location filename="gui/game.py" line="122"/>
         <source>Cancel Match</source>
         <translation>Cancel Match</translation>
     </message>
@@ -216,42 +216,42 @@ Are you sure you want to delete this entry?</translation>
         <translation type="obsolete">Round</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="95"/>
+        <location filename="gui/game.py" line="101"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pause/Play</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="96"/>
+        <location filename="gui/game.py" line="102"/>
         <source>&amp;Cancel Match</source>
         <translation>&amp;Cancel Match</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="97"/>
+        <location filename="gui/game.py" line="103"/>
         <source>Commit &amp;Round</source>
         <translation>Commit &amp;Round</translation>
     </message>
     <message>
         <location filename="gui/game.py" line="98"/>
         <source>Match</source>
-        <translation>Match</translation>
+        <translation type="obsolete">Match</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="100"/>
+        <location filename="gui/game.py" line="107"/>
         <source>Winner deals</source>
         <translation>Winner deals</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="107"/>
+        <location filename="gui/game.py" line="114"/>
         <source>{} won this match!</source>
         <translation>{} won this match!</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="109"/>
+        <location filename="gui/game.py" line="116"/>
         <source>Game is paused</source>
         <translation>Game is paused</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="146"/>
+        <location filename="gui/game.py" line="153"/>
         <source>No winner selected</source>
         <translation>No winner selected</translation>
     </message>
@@ -261,22 +261,22 @@ Are you sure you want to delete this entry?</translation>
         <translation>{0} score is not valid</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="160"/>
+        <location filename="gui/game.py" line="167"/>
         <source>Commit Round</source>
         <translation>Commit Round</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="160"/>
+        <location filename="gui/game.py" line="167"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>Are you sure you want to commit the current round?</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="190"/>
+        <location filename="gui/game.py" line="197"/>
         <source>Round {0}</source>
         <translation>Round {0}</translation>
     </message>
     <message>
-        <location filename="gui/game.py" line="115"/>
+        <location filename="gui/game.py" line="122"/>
         <source>Do you want to save the current {} match?</source>
         <translation>Do you want to save the current {} match?</translation>
     </message>
@@ -284,6 +284,11 @@ Are you sure you want to delete this entry?</translation>
         <location filename="gui/carcassonne.py" line="67"/>
         <source>&amp;Finish Game</source>
         <translation>&amp;Finish Game</translation>
+    </message>
+    <message>
+        <location filename="gui/game.py" line="104"/>
+        <source>Player &amp;Order</source>
+        <translation>Player &amp;Order</translation>
     </message>
 </context>
 <context>
@@ -302,62 +307,62 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="gui/mainwindow.py" line="80"/>
+        <location filename="gui/mainwindow.py" line="83"/>
         <source>GameLog</source>
         <translation>GameLog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="81"/>
+        <location filename="gui/mainwindow.py" line="84"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="83"/>
+        <location filename="gui/mainwindow.py" line="86"/>
         <source>&amp;Quit</source>
         <translation>&amp;Quit</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="84"/>
+        <location filename="gui/mainwindow.py" line="87"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="85"/>
+        <location filename="gui/mainwindow.py" line="88"/>
         <source>Quit GameLog</source>
         <translation>Quit GameLog</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="121"/>
+        <location filename="gui/mainwindow.py" line="124"/>
         <source>Exit</source>
         <translation>Exit</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="121"/>
+        <location filename="gui/mainwindow.py" line="124"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Are you sure you want to exit GameLog?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="82"/>
+        <location filename="gui/mainwindow.py" line="85"/>
         <source>&amp;Language...</source>
         <translation>&amp;Language...</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="109"/>
+        <location filename="gui/mainwindow.py" line="112"/>
         <source>You have {} opened matches. Do you want to save them before exiting?</source>
         <translation>You have {} opened matches. Do you want to save them before exiting?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="105"/>
+        <location filename="gui/mainwindow.py" line="108"/>
         <source>You have an opened {} match. Do you want to save it before exiting?</source>
         <translation>You have an opened {} match. Do you want to save it before exiting?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="87"/>
+        <location filename="gui/mainwindow.py" line="90"/>
         <source>&amp;Help</source>
         <translation>&amp;Help</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.py" line="88"/>
+        <location filename="gui/mainwindow.py" line="91"/>
         <source>&amp;About Gamelog...</source>
         <translation>&amp;About Gamelog...</translation>
     </message>
@@ -365,57 +370,57 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>NewGameWidget</name>
     <message>
-        <location filename="gui/newgame.py" line="52"/>
+        <location filename="gui/newgame.py" line="53"/>
         <source>Games</source>
         <translation>Games</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="54"/>
+        <location filename="gui/newgame.py" line="55"/>
         <source>Players</source>
         <translation>Players</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="55"/>
+        <location filename="gui/newgame.py" line="56"/>
         <source>Available Players</source>
         <translation>Available Players</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="56"/>
+        <location filename="gui/newgame.py" line="57"/>
         <source>New Player</source>
         <translation>New Player</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="57"/>
+        <location filename="gui/newgame.py" line="58"/>
         <source>Selected Players</source>
         <translation>Selected Players</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="58"/>
+        <location filename="gui/newgame.py" line="59"/>
         <source>Play!</source>
         <translation>Play!</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="92"/>
+        <location filename="gui/newgame.py" line="93"/>
         <source>players</source>
         <translation>players</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="148"/>
+        <location filename="gui/newgame.py" line="149"/>
         <source>At least 2 players are needed to play</source>
         <translation>At least 2 players are needed to play</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="157"/>
+        <location filename="gui/newgame.py" line="158"/>
         <source>New Match</source>
         <translation>New Match</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="150"/>
+        <location filename="gui/newgame.py" line="151"/>
         <source>The maximum number of players is</source>
         <translation>The maximum number of players is</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="157"/>
+        <location filename="gui/newgame.py" line="158"/>
         <source>Widget not implemented</source>
         <translation>Widget not implemented</translation>
     </message>
@@ -451,17 +456,17 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>Phase10PlayerWidget</name>
     <message>
-        <location filename="gui/phase10.py" line="373"/>
+        <location filename="gui/phase10.py" line="388"/>
         <source>Winner</source>
         <translation>Winner</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="374"/>
+        <location filename="gui/phase10.py" line="389"/>
         <source>Completed</source>
         <translation>Completed</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="554"/>
+        <location filename="gui/phase10.py" line="576"/>
         <source> (Phase {})</source>
         <translation> (Phase {})</translation>
     </message>
@@ -469,12 +474,12 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>Phase10RoundPlot</name>
     <message>
-        <location filename="gui/phase10.py" line="609"/>
+        <location filename="gui/phase10.py" line="631"/>
         <source>Phases</source>
         <translation>Phases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="610"/>
+        <location filename="gui/phase10.py" line="632"/>
         <source>Scores</source>
         <translation>Scores</translation>
     </message>
@@ -482,7 +487,7 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>Phase10RoundTable</name>
     <message>
-        <location filename="gui/phase10.py" line="546"/>
+        <location filename="gui/phase10.py" line="568"/>
         <source>Winner</source>
         <translation>Winner</translation>
     </message>
@@ -498,7 +503,7 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>Phase10Widget</name>
     <message>
-        <location filename="gui/phase10.py" line="69"/>
+        <location filename="gui/phase10.py" line="119"/>
         <source>Phases in order</source>
         <translation>Phases in order</translation>
     </message>
@@ -508,83 +513,83 @@ Are you sure you want to delete this entry?</translation>
         <translation type="obsolete">Phases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="72"/>
+        <location filename="gui/phase10.py" line="122"/>
         <source>Phase</source>
         <translation>Phase</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="129"/>
+        <location filename="gui/phase10.py" line="39"/>
         <source>cards of the same colour</source>
         <translation>cards of the same colour</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="131"/>
+        <location filename="gui/phase10.py" line="41"/>
         <source>run of</source>
         <translation>run of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="132"/>
+        <location filename="gui/phase10.py" line="42"/>
         <source>runs of</source>
         <translation>runs of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="135"/>
+        <location filename="gui/phase10.py" line="45"/>
         <source>colour run of</source>
         <translation>colour run of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="136"/>
+        <location filename="gui/phase10.py" line="46"/>
         <source>colour runs of</source>
         <translation>colour runs of</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="113"/>
+        <location filename="gui/phase10.py" line="23"/>
         <source>pair</source>
         <translation>pair</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="114"/>
+        <location filename="gui/phase10.py" line="24"/>
         <source>pairs</source>
         <translation>pairs</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="117"/>
+        <location filename="gui/phase10.py" line="27"/>
         <source>three of a kind</source>
         <comment>singular</comment>
         <translation>three of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="118"/>
+        <location filename="gui/phase10.py" line="28"/>
         <source>three of a kind</source>
         <comment>plural</comment>
         <translation>three of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="121"/>
+        <location filename="gui/phase10.py" line="31"/>
         <source>four of a kind</source>
         <comment>singular</comment>
         <translation>four of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="122"/>
+        <location filename="gui/phase10.py" line="32"/>
         <source>four of a kind</source>
         <comment>plural</comment>
         <translation>four of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="125"/>
+        <location filename="gui/phase10.py" line="35"/>
         <source>five of a kind</source>
         <comment>singular</comment>
         <translation>five of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="126"/>
+        <location filename="gui/phase10.py" line="36"/>
         <source>five of a kind</source>
         <comment>plural</comment>
         <translation>five of a kind</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="518"/>
+        <location filename="gui/phase10.py" line="540"/>
         <source>Score</source>
         <translation>Score</translation>
     </message>
@@ -602,20 +607,33 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>PlayerList</name>
     <message>
-        <location filename="gui/newgame.py" line="213"/>
+        <location filename="gui/playerlist.py" line="96"/>
         <source>Unset Favourite</source>
         <translation>Unset Favourite</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="215"/>
+        <location filename="gui/playerlist.py" line="98"/>
         <source>Set Favourite</source>
         <translation>Set favourite</translation>
+    </message>
+    <message>
+        <location filename="gui/playerlist.py" line="102"/>
+        <source>Set dealer</source>
+        <translation>Set dealer</translation>
+    </message>
+</context>
+<context>
+    <name>PlayerOrderDialog</name>
+    <message>
+        <location filename="gui/playerlist.py" line="28"/>
+        <source>Player Order</source>
+        <translation>Player Order</translation>
     </message>
 </context>
 <context>
     <name>PochaRoundTable</name>
     <message>
-        <location filename="gui/pocha.py" line="420"/>
+        <location filename="gui/pocha.py" line="424"/>
         <source> (Winner)</source>
         <translation> (Winner)</translation>
     </message>
@@ -645,7 +663,7 @@ Are you sure you want to delete this entry?</translation>
     <message>
         <location filename="gui/pocha.py" line="84"/>
         <source>Score</source>
-        <translation>Score</translation>
+        <translation type="obsolete">Score</translation>
     </message>
     <message>
         <location filename="gui/pocha.py" line="22"/>
@@ -799,27 +817,27 @@ Are you sure you want to delete this entry?</translation>
         <translation>Players</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="643"/>
+        <location filename="gui/phase10.py" line="665"/>
         <source>Lowest phases</source>
         <translation>Lowest phases</translation>
     </message>
     <message>
-        <location filename="gui/phase10.py" line="644"/>
+        <location filename="gui/phase10.py" line="666"/>
         <source>Damned phase</source>
         <translation>Damned phase</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="450"/>
+        <location filename="gui/pocha.py" line="454"/>
         <source>Max Hits</source>
         <translation>Max Hits</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="451"/>
+        <location filename="gui/pocha.py" line="455"/>
         <source>Min Hits</source>
         <translation>Min Hits</translation>
     </message>
     <message>
-        <location filename="gui/pocha.py" line="452"/>
+        <location filename="gui/pocha.py" line="456"/>
         <source>Best Round</source>
         <translation>Best Round</translation>
     </message>
@@ -827,7 +845,7 @@ Are you sure you want to delete this entry?</translation>
 <context>
     <name>RatukiRoundTable</name>
     <message>
-        <location filename="gui/ratuki.py" line="221"/>
+        <location filename="gui/ratuki.py" line="226"/>
         <source> (Winner)</source>
         <translation> (Winner)</translation>
     </message>
@@ -842,13 +860,13 @@ Are you sure you want to delete this entry?</translation>
     <message>
         <location filename="gui/ratuki.py" line="72"/>
         <source>Score</source>
-        <translation>Score</translation>
+        <translation type="obsolete">Score</translation>
     </message>
 </context>
 <context>
     <name>RemigioRoundTable</name>
     <message>
-        <location filename="gui/remigio.py" line="290"/>
+        <location filename="gui/remigio.py" line="337"/>
         <source>Winner ({}x)</source>
         <translation>Winner ({}x)</translation>
     </message>
@@ -868,48 +886,48 @@ Are you sure you want to delete this entry?</translation>
     <message>
         <location filename="gui/remigio.py" line="78"/>
         <source>Score</source>
-        <translation>Score</translation>
+        <translation type="obsolete">Score</translation>
     </message>
 </context>
 <context>
     <name>ResumeBox</name>
     <message>
-        <location filename="gui/newgame.py" line="323"/>
+        <location filename="gui/newgame.py" line="210"/>
         <source>Saved Games</source>
         <translation>Saved Games</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="324"/>
+        <location filename="gui/newgame.py" line="211"/>
         <source>Resume</source>
         <translation>Resume</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="326"/>
+        <location filename="gui/newgame.py" line="213"/>
         <source>No matches to be resumed</source>
         <translation>No matches to be resumed</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="325"/>
+        <location filename="gui/newgame.py" line="212"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="373"/>
+        <location filename="gui/newgame.py" line="260"/>
         <source>Cancel Saved Game</source>
         <translation>Cancel Saved Game</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="373"/>
+        <location filename="gui/newgame.py" line="260"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>Are you sure you want to cancel saved game?</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="348"/>
+        <location filename="gui/newgame.py" line="235"/>
         <source>Saved on {}. Time played: {}</source>
         <translation>Saved on {}. Time played: {}</translation>
     </message>
     <message>
-        <location filename="gui/newgame.py" line="353"/>
+        <location filename="gui/newgame.py" line="240"/>
         <source>Players: {}</source>
         <translation>Players: {}</translation>
     </message>

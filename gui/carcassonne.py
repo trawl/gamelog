@@ -136,6 +136,19 @@ class CarcassonneWidget(GameWidget):
         winner = self.engine.getWinner()
         if winner in self.players:
             self.playerGroupBox[winner].setWinner()
+            
+    def updatePlayerOrder(self):
+        GameWidget.updatePlayerOrder(self)
+        trash = QtGui.QWidget()
+        trash.setLayout(self.playersLayout)
+        self.playersLayout = QtGui.QVBoxLayout(self.playerGroup)
+        self.playersLayout.addStretch()
+        for i,player in enumerate(self.engine.getListPlayers()):
+            trash.layout().removeWidget(self.playerGroupBox[player])
+            self.playersLayout.addWidget(self.playerGroupBox[player])
+            self.playerGroupBox[player].setColour(PlayerColours[i])
+        self.playersLayout.addStretch()
+        self.detailGroup.updateRound()
 
         
 class CarcassonneInputWidget(QtGui.QWidget):
@@ -291,6 +304,27 @@ class CarcassonneInputWidget(QtGui.QWidget):
             self.scoreSpinBox.setReadOnly(False)
             self.scoreSpinBox.setValue(0)
             
+    def updatePlayerOrder(self):
+        trash = QtGui.QWidget()
+        trash.setLayout(self.playerGroupLayout)
+        
+        self.playerButtonGroup = QtGui.QButtonGroup(self)
+        self.playerGroupLayout = QtGui.QGridLayout(self.playerGroup)        
+        b = QtGui.QRadioButton("",self.playerGroup)
+        self.playerButtonGroup.addButton(b,0)
+        self.playerButtons=[b]
+        b.hide()
+        
+        for i, player in enumerate(self.engine.getListPlayers(),1):
+            b = QtGui.QRadioButton('{}. {}'.format(i,player),self.playerGroup)
+            if len(self.engine.getListPlayers())>2:
+                self.playerGroupLayout.addWidget(b,(i-1)%2,(i-1)/2)
+            else:
+                self.playerGroupLayout.addWidget(b,0,(i-1)%2)
+            self.playerButtonGroup.addButton(b,i)
+            self.playerButtons.append(b)
+        self.setFocus()
+
             
 class CarcassonneEntriesDetail(GameRoundsDetail):
     
@@ -312,9 +346,10 @@ class CarcassonneEntriesDetail(GameRoundsDetail):
         self.totals.setVerticalHeaderLabels([QtGui.QApplication.translate("CarcassonneInputWidget",kind) for kind in self.engine.getEntryKinds()])
         self.totalsLabel.setText(QtGui.QApplication.translate("CarcassonneEntriesDetail","Totals"))
         super(CarcassonneEntriesDetail, self).retranslateUI()
-        self.resetTotals()
+        self.updateRound()
         
     def resetTotals(self):
+        self.totals.setHorizontalHeaderLabels(self.engine.getListPlayers())
         self.totals.clearContents()
         for row in range(len(self.engine.getEntryKinds())):
             background=self.bgcolors[row]

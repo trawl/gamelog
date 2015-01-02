@@ -139,7 +139,19 @@ class PochaWidget(GameWidget):
         
     def setFocus(self):
         self.gameInput.setFocus()
-        
+    
+    def updatePlayerOrder(self):
+        GameWidget.updatePlayerOrder(self)
+        trash = QtGui.QWidget()
+        trash.setLayout(self.playersLayout)
+        self.playersLayout = QtGui.QVBoxLayout(self.playerGroup)
+        self.playersLayout.addStretch()
+        for i,player in enumerate(self.engine.getListPlayers()):
+            trash.layout().removeWidget(self.playerGroupBox[player])
+            self.playersLayout.addWidget(self.playerGroupBox[player])
+            self.playerGroupBox[player].setColour(PlayerColours[i])
+        self.playersLayout.addStretch()
+        self.detailGroup.updatePlayerOrder()
 
 class PochaInputWidget(GameInputWidget):
     
@@ -246,7 +258,17 @@ class PochaInputWidget(GameInputWidget):
                 return
 
         return
-                    
+
+    def updatePlayerOrder(self):
+#         QtGui.QWidget().setLayout(self.layout())
+        trash = QtGui.QWidget()
+        trash.setLayout(self.layout())
+        self.widgetLayout = QtGui.QGridLayout(self)
+        for i,player in enumerate(self.engine.getListPlayers()):
+            trash.layout().removeWidget(self.playerInputList[player])
+            self.widgetLayout.addWidget(self.playerInputList[player],i/4,i%4)
+            self.playerInputList[player].setColour(PlayerColours[i])
+            
             
 class PochaPlayerInputWidget(QtGui.QFrame):
     
@@ -368,6 +390,11 @@ class PochaPlayerInputWidget(QtGui.QFrame):
         
     def wonClickedAction(self,_):
         self.handsClicked.emit('won',self.player)
+        
+    def setColour(self,colour):
+        self.pcolour = colour
+        sh = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
+        self.label.setStyleSheet(sh)     
         
 
 class PochaHandsButton(QtGui.QPushButton):

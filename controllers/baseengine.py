@@ -60,6 +60,9 @@ class GameEngine(object):
     
     def getListPlayers(self):
         return self.porder
+    
+    def setListPlayers(self, neworder):
+        if sorted(neworder) == sorted(self.porder): self.porder = neworder
 
     def getScoreFromPlayer(self,player):
         try: return self.match.getScoreFromPlayer(player)

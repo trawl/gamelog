@@ -126,6 +126,19 @@ class RemigioWidget(GameWidget):
         winner = self.engine.getWinner()
         if winner in self.players:
             self.playerGroupBox[winner].setWinner()
+            
+    def updatePlayerOrder(self):
+        GameWidget.updatePlayerOrder(self)
+        trash = QtGui.QWidget()
+        trash.setLayout(self.playersLayout)
+        self.playersLayout = QtGui.QVBoxLayout(self.playerGroup)
+        self.playersLayout.addStretch()
+        for i,player in enumerate(self.engine.getListPlayers()):
+            trash.layout().removeWidget(self.playerGroupBox[player])
+            self.playersLayout.addWidget(self.playerGroupBox[player])
+            self.playerGroupBox[player].setColour(PlayerColours[i])
+        self.playersLayout.addStretch()
+        self.detailGroup.updatePlayerOrder()
         
         
 class RemigioInputWidget(GameInputWidget):
@@ -159,6 +172,17 @@ class RemigioInputWidget(GameInputWidget):
     def koPlayer(self,player): self.playerInputList[player].setKo()
     
     def unKoPlayer(self,player): self.playerInputList[player].unsetKo()
+    
+    def updatePlayerOrder(self):
+#         QtGui.QWidget().setLayout(self.layout())
+        trash = QtGui.QWidget()
+        trash.setLayout(self.layout())
+        self.widgetLayout = QtGui.QHBoxLayout(self)
+        for i,player in enumerate(self.engine.getListPlayers()):
+            trash.layout().removeWidget(self.playerInputList[player])
+            self.widgetLayout.addWidget(self.playerInputList[player])
+            self.playerInputList[player].setColour(PlayerColours[i])
+            
         
         
 class RemigioPlayerInputWidget(QtGui.QFrame):
@@ -187,17 +211,34 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         
         self.scoreSpinBox = ScoreSpinBox(self)
         self.scoreSpinBox.setAlignment(QtCore.Qt.AlignCenter)
-        self.scoreSpinBox.setMaximumWidth(90)
+#         self.scoreSpinBox.setMaximumWidth(150)
         self.scoreSpinBox.setRange(-1,100)
         self.scoreSpinBox.setStyleSheet(sh)
-        self.mainLayout.addWidget(self.scoreSpinBox)
-        self.mainLayout.setAlignment(self.scoreSpinBox,QtCore.Qt.AlignCenter)
+        
+        self.lowerLayout = QtGui.QHBoxLayout()
+        self.mainLayout.addLayout(self.lowerLayout)
+        
+#         self.downButton = QtGui.QPushButton("-",self)
+#         self.downButton.pressed.connect(self.scoreSpinBox.stepDown)
+#         self.upButton = QtGui.QPushButton("+",self)
+#         self.upButton.pressed.connect(self.scoreSpinBox.stepUp)
+#         self.lowerLayout.addWidget(self.downButton)
+        self.lowerLayout.addWidget(self.scoreSpinBox)
+#         self.lowerLayout.addWidget(self.upButton)
+#         self.mainLayout.setAlignment(self.scoreSpinBox,QtCore.Qt.AlignCenter)
         
         self.reset()
     
     def reset(self):
         self.closeType = 0
         self.updatePanel()
+        
+    def setColour(self,colour):
+        self.pcolour = colour
+        sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
+        self.label.setStyleSheet(sh)
+        self.scoreSpinBox.setStyleSheet(sh)
+        
         
     def increaseCloseType(self):
         self.closeType = (self.closeType)%4 + 1
