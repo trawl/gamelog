@@ -165,8 +165,9 @@ class Phase10Widget(GameWidget):
             self.engine.setPhasesInOrderFlag(True)
         self.gameInput.updatePanel()
             
-        
-
+    def updatePlayerOrder(self):
+        GameWidget.updatePlayerOrder(self)
+        self.details.updatePlayerOrder()
 
 class Phase10InputWidget(GameInputWidget):
     
@@ -232,6 +233,25 @@ class Phase10InputWidget(GameInputWidget):
             self.playerInputList[winner].setWinner()
             for pi in self.playerInputList.values(): pi.finish()
             
+    def updatePlayerOrder(self):
+#         QtGui.QWidget().setLayout(self.layout())
+        trash = QtGui.QWidget()
+        trash.setLayout(self.layout())
+        players = self.engine.getListPlayers()
+        if len(players)>=4:
+            players_grid = True
+            self.widgetLayout =  QtGui.QGridLayout(self)
+        else:
+            players_grid = False
+            self.widgetLayout =  QtGui.QVBoxLayout(self)
+
+        for i,player in enumerate(self.engine.getListPlayers()):
+            trash.layout().removeWidget(self.playerInputList[player])   
+            if players_grid: 
+                self.widgetLayout.addWidget(self.playerInputList[player],i/2,i%2)
+            else: 
+                self.widgetLayout.addWidget(self.playerInputList[player])
+            self.playerInputList[player].setColour(PlayerColours[i])
     
 class Phase10ScoreSpinBox(ScoreSpinBox):
     
@@ -487,7 +507,11 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.roundPhaseClearedCheckbox.setDisabled(True)
         self.roundScore.setDisabled(True)
         
+    def setColour(self,colour):
+        self.pcolour = colour
+        self.setStyleSheet("QGroupBox {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
 
+  
 class Phase10Label(QtGui.QLabel):
     
     def __init__(self,number,parent=None):
@@ -658,6 +682,26 @@ class Phase10RoundPlot(GameRoundPlot):
         for player in self.engine.getListPlayers():        
             self.canvas.addSeries(phases[player],player)
             self.scorecanvas.addSeries(scores[player],player)
+            
+        self.updatePlayerOrder()
+            
+    def updatePlayerOrder(self):
+        trash = QtGui.QWidget()
+        self.widgetLayout.removeItem(self.playersListLayout)
+        trash.setLayout(self.playersListLayout)
+        self.playersListLayout = QtGui.QVBoxLayout()
+        self.widgetLayout.addLayout(self.playersListLayout,1,2)
+         
+        self.playersListLayout.addStretch()
+         
+        for i,player in enumerate(self.engine.getListPlayers()):
+            colour = PlayerColours[i]
+            label = QtGui.QLabel(player)
+            label.setStyleSheet("QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}".format(colour.red(),colour.green(),colour.blue()))
+            self.playersListLayout.addWidget(label)
+         
+        self.playersListLayout.addStretch()
+
             
         
 class Phase10QSBox(QuickStatsBox): 

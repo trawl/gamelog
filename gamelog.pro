@@ -9,7 +9,8 @@ SOURCES = \
 	gui/carcassonne.py \
 	gui/pocha.py \
 	gui/languagechooser.py \ 
-	gui/gamestats.py
+	gui/gamestats.py \
+	gui/playerlist.py
    
 TRANSLATIONS = \
 	i18n/es_ES.ts \

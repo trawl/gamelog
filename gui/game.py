@@ -13,7 +13,7 @@ from gui.tab import Tab
 from gui.clock import GameClock
 from gui.plots import PlotView
 from gui.gamestats import QuickStatsBox
-from gui.playerorder import PlayerOrderDialog
+from gui.playerlist import PlayerOrderDialog
         
 PlayerColours=[QtGui.QColor(237,44,48),
          QtGui.QColor(23,89,169),
@@ -63,14 +63,15 @@ class GameWidget(Tab):
         self.pauseMatchButton = QtGui.QPushButton(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.pauseMatchButton)
         self.pauseMatchButton.clicked.connect(self.pauseMatch)
+        
+        self.playerOrderButton = QtGui.QPushButton(self.roundGroup)
+        self.buttonGroupLayout.addWidget(self.playerOrderButton)
+        self.playerOrderButton.clicked.connect(self.changePlayerOrder)
 
         self.commitRoundButton = QtGui.QPushButton(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.commitRoundButton)
         self.commitRoundButton.clicked.connect(self.commitRound)
         
-#         self.playerOrderButton = QtGui.QPushButton(self.roundGroup)
-#         self.buttonGroupLayout.addWidget(self.playerOrderButton)
-#         self.playerOrderButton.clicked.connect(self.changePlayerOrder)
 
         self.gameStatusLabel = QtGui.QLabel(self.roundGroup)
         self.gameStatusLabel.setAlignment(QtCore.Qt.AlignCenter)
@@ -100,7 +101,7 @@ class GameWidget(Tab):
         self.pauseMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Pause/Play"))
         self.cancelMatchButton.setText(QtGui.QApplication.translate("GameWidget","&Cancel Match"))
         self.commitRoundButton.setText(QtGui.QApplication.translate("GameWidget","Commit &Round"))
-#         self.playerOrderButton.setText(QtGui.QApplication.translate("GameWidget","Player &Order"))
+        self.playerOrderButton.setText(QtGui.QApplication.translate("GameWidget","Player &Order"))
 #         self.matchGroup.setTitle(QtGui.QApplication.translate("GameWidget","Match"))
         if self.engine.getDealingPolicy() not in (self.engine.NoDealer,self.engine.StarterDealer): 
             self.dealerPolicyCheckBox.setText(QtGui.QApplication.translate("GameWidget","Winner deals"))
@@ -223,13 +224,30 @@ class GameWidget(Tab):
         self.pauseMatchButton.setDisabled(True)
         self.clock.stopTimer()
         self.commitRoundButton.setDisabled(True)
+        self.playerOrderButton.setDisabled(True)
         self.updateGameStatusLabel()    
         self.gameInput.setDisabled(True)
         
     def changePlayerOrder(self):
+        originaldealer = self.engine.getDealer()
         pod = PlayerOrderDialog(self.engine,self)
-        pod.exec_()
+#         pod.dealerChanged.connect(self.changedDealer)
+        if pod.exec_():
+            newdealer = pod.getNewDealer()
+            neworder = pod.getNewOrder()
+            if self.players != neworder:
+                # Do something
+                self.engine.setListPlayers(neworder)
+                self.players = neworder
+                self.updatePlayerOrder()
+            if originaldealer != newdealer:
+                self.unsetDealer()
+                self.engine.setDealer(newdealer)
+                self.setDealer()
         
+    def updatePlayerOrder(self):
+        self.gameInput.updatePlayerOrder()
+
     
 class GameInputWidget(QtGui.QWidget):
     
@@ -276,6 +294,9 @@ class GameInputWidget(QtGui.QWidget):
     def mousePressEvent(self,event):
         self.setFocus()
         return QtGui.QWidget.mousePressEvent(self, event)
+    
+    def updatePlayerOrder(self): pass
+        
         
 class ScoreSpinBox(QtGui.QSpinBox):
 
@@ -350,6 +371,12 @@ class GamePlayerWidget(QtGui.QGroupBox):
     def unsetDealer(self): self.iconlabel.setPixmap(self.nonDealerPixmap)
     
     def setWinner(self): self.iconlabel.setPixmap(self.winnerPixmap)
+    
+    def setColour(self,colour):
+        self.pcolour = colour
+        self.scoreLCD.setStyleSheet("QLCDNumber {{ color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
+        sh = "QLabel {{ font-size: 32px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
+        self.nameLabel.setStyleSheet(sh)
 
 
 class GameRoundsDetail(QtGui.QGroupBox):
@@ -421,6 +448,9 @@ class GameRoundsDetail(QtGui.QGroupBox):
     def createRoundTable(self, engine, parent=None) : return GameRoundTable(self)
     def createRoundPlot(self, engine, parent=None): return GameRoundPlot(self)
     def createQSBox(self, parent=None): return QuickStatsBox(self.engine.getGame(), self)
+    
+    def updatePlayerOrder(self): 
+        self.updateRound()
 
 
 class GameRoundTable(QtGui.QTableWidget):
@@ -440,6 +470,7 @@ class GameRoundTable(QtGui.QTableWidget):
         self.customContextMenuRequested.connect(self.openTableMenu)    
         
     def resetClear(self):
+        self.setHorizontalHeaderLabels(self.engine.getListPlayers())
         self.clearContents()
         self.setRowCount(0)
         

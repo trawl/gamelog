@@ -17,6 +17,7 @@ from gui.tab import Tab
 from gui.gamewidgetfactory import GameWidgetFactory
 from gui.newplayer import NewPlayerDialog
 from gui.gamestatsfactory import QSBoxFactory
+from gui.playerlist import PlayerList
 
 
 class NewGameWidget(Tab):
@@ -112,7 +113,7 @@ class NewGameWidget(Tab):
         self.inGameGroup = QtGui.QGroupBox(self)
         self.playersGroupBoxLayout.addWidget(self.inGameGroup)
         self.inGameGroupLayout = QtGui.QVBoxLayout(self.inGameGroup)
-        self.playersInGameList = PlayerList(self.inGameGroup)
+        self.playersInGameList = PlayerList(None,self.inGameGroup)
         self.inGameGroup.setMaximumHeight(280)
         self.inGameGroupLayout.addWidget(self.playersInGameList)
         
@@ -127,7 +128,7 @@ class NewGameWidget(Tab):
         self.availablePlayersGroup = QtGui.QGroupBox(self)
         self.playersGroupBoxLayout.addWidget(self.availablePlayersGroup)
         self.availablePlayersGroupLayout = QtGui.QVBoxLayout(self.availablePlayersGroup)
-        self.playersAvailableList = PlayerList(self.playersGroupBox)
+        self.playersAvailableList = PlayerList(None, self.playersGroupBox)
         self.availablePlayersGroupLayout.addWidget(self.playersAvailableList)
         
 #        self.availablePlayersGroupLayout.addStretch()
@@ -173,122 +174,7 @@ class NewGameWidget(Tab):
         return QtGui.QWidget.showEvent(self, event)
 
 
-class PlayerList(QtGui.QListView):
-    
-    doubleclickeditem = QtCore.Signal(str)
-    
-    def __init__(self,parent):
-        super(PlayerList, self).__init__(parent)
-        self.setDragEnabled(True)
-        self.setAcceptDrops(True)
-        self.setModel(PlayerListModel())
 
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.openMenu)
-
-    def dropEvent(self, e):
-        e.setDropAction(QtCore.Qt.MoveAction)
-        QtGui.QListView.dropEvent(self,e)
-            
-    def addItem(self,text): self.model().addPlayer(text)
-
-    def mouseDoubleClickEvent(self,event):
-        item = self.indexAt(event.pos())
-        try: player = str(item.data().toString())
-        except AttributeError: player = str(item.data())
-        if player != str(None):
-            self.doubleclickeditem.emit(player)
-            self.model().removeRows(item.row(),1)
-        return QtGui.QListView.mouseDoubleClickEvent(self,event)
-    
-    def openMenu(self,position):
-        item = self.indexAt(position)
-        if item.row()<0: return
-        try: player = str(item.data().toString())
-        except AttributeError: player = str(item.data())
-        if player:
-            menu = QtGui.QMenu()
-            isfav =  db.isPlayerFavourite(player)
-            if isfav:
-                favouriteAction = QtGui.QAction(QtGui.QIcon('icons/player.png'),QtGui.QApplication.translate("PlayerList","Unset Favourite"), self)
-            else:
-                favouriteAction = QtGui.QAction( QtGui.QIcon('icons/fav.png'),QtGui.QApplication.translate("PlayerList","Set Favourite"), self)
-            menu.addAction(favouriteAction)
-            action = menu.exec_(self.mapToGlobal(position))
-            if action == favouriteAction:
-                isfav = not isfav
-                db.setPlayerFavourite(player,isfav)
-                self.model().addIcon(self.model().itemFromIndex(item),isfav)
-        
-
-class PlayerListModel(QtGui.QStandardItemModel):
-    
-    def __init__(self, parent = None):
-        super(PlayerListModel, self).__init__( parent)
-
-    def dropMimeData(self, data, action, row, column, parent):
-
-        if data.hasFormat('application/x-qabstractitemmodeldatalist'):
-            barray = data.data('application/x-qabstractitemmodeldatalist')
-            data_items = self.decode_data(barray)
-
-            # Assuming that we get at least one item, and that it defines
-            # text that we can display.
-            try:
-                text = data_items[0][QtCore.Qt.DisplayRole].toString()
-            except AttributeError:
-                text = str(data_items[0][QtCore.Qt.DisplayRole])
-
-#            self.appendRow(QtGui.QStandardItem(text))
-            self.addPlayer(text,row)
-            return True
-        else:
-            return QtGui.QStandardItemModel.dropMimeData(self, data, action, row, column, parent)
-
-    def decode_data(self, barray):
-        data = []
-        item = {}
-        ds = QtCore.QDataStream(barray)
-        while not ds.atEnd():
-            ds.readInt32() #Row 
-            ds.readInt32() #Column
-            map_items = ds.readInt32()
-            for _ in range(map_items):
-                key = ds.readInt32()
-                try:
-                    value = QtCore.QVariant()
-                    ds >> value
-                except (AttributeError,TypeError):
-                    value = ds.readQVariant()
-                item[QtCore.Qt.ItemDataRole(key)] = value
-            data.append(item)
-        return data
-    
-    def addPlayer(self,player,row=None):
-        item = QtGui.QStandardItem(player)
-        item.setEditable(False)
-        item.setDropEnabled(False)
-        font = item.font()
-        font.setPixelSize(24)
-        font.setBold(True)
-        item.setFont(font)
-        self.addIcon(item,db.isPlayerFavourite(player))
-        if row is not None and row>=0:
-            self.insertRow(row,item)
-        else:        
-            self.appendRow(item)
-        
-    def addIcon(self,item,isfav):
-        if isfav: icon = QtGui.QIcon('icons/fav.png')
-        else: icon = QtGui.QIcon('icons/player.png')
-        item.setIcon(icon)
-
-    def retrievePlayers(self):
-        players = list()
-        for i in range(self.rowCount()):
-            nick =str(self.item(i).text())
-            players.append(nick)
-        return players
                 
 class ResumeBox(QtGui.QGroupBox):
     
