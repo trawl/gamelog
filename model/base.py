@@ -257,6 +257,10 @@ class GenericRoundMatch(GenericMatch):
        
     def getRounds(self): return self.rounds
 
+    def getDealer(self): 
+        if self.dealingp == 3 and len(self.rounds)>0:
+            return None
+        return self.dealer
  
     # To be implemented in subclasses
     def playerAddRound(self,player,rnd): pass

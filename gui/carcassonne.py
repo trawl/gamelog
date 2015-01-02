@@ -137,6 +137,10 @@ class CarcassonneWidget(GameWidget):
         if winner in self.players:
             self.playerGroupBox[winner].setWinner()
             
+    def unsetDealer(self): self.playerGroupBox[self.engine.getDealer()].unsetDealer()
+    
+    def setDealer(self): self.playerGroupBox[self.engine.getDealer()].setDealer() 
+            
     def updatePlayerOrder(self):
         GameWidget.updatePlayerOrder(self)
         trash = QtGui.QWidget()
@@ -323,7 +327,8 @@ class CarcassonneInputWidget(QtGui.QWidget):
                 self.playerGroupLayout.addWidget(b,0,(i-1)%2)
             self.playerButtonGroup.addButton(b,i)
             self.playerButtons.append(b)
-        self.setFocus()
+            
+        self.reset()
 
             
 class CarcassonneEntriesDetail(GameRoundsDetail):
