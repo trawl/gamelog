@@ -169,14 +169,16 @@ class RatukiPlayerInputWidget(QtGui.QFrame):
         
         self.scoreSpinBox = ScoreSpinBox(self)
         self.scoreSpinBox.setAlignment(QtCore.Qt.AlignCenter)
-        self.scoreSpinBox.setMaximumWidth(60)
+#         self.scoreSpinBox.setMaximumWidth(60)
         self.scoreSpinBox.setRange(-100,100)
-        self.mainLayout.addWidget(self.scoreSpinBox)
-        self.mainLayout.setAlignment(self.scoreSpinBox,QtCore.Qt.AlignCenter)
+#         self.mainLayout.addWidget(self.scoreSpinBox)
+#         self.mainLayout.setAlignment(self.scoreSpinBox,QtCore.Qt.AlignCenter)
         
-        sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
-        self.label.setStyleSheet(sh)
-        self.scoreSpinBox.setStyleSheet(sh)
+        self.setColour(self.pcolour)
+        
+        self.lowerLayout = QtGui.QHBoxLayout()
+        self.mainLayout.addLayout(self.lowerLayout)
+        self.lowerLayout.addWidget(self.scoreSpinBox)
         
         self.reset()
     
@@ -212,11 +214,18 @@ class RatukiPlayerInputWidget(QtGui.QFrame):
     
     def getScore(self): return self.scoreSpinBox.value()
 
-    def setColour(self,colour):
-        self.pcolour = colour
+    def setColour(self,colour=None):
+        if colour is not None:
+            self.pcolour = colour
         sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
-        self.label.setStyleSheet(sh)     
+        self.label.setStyleSheet(sh)
+        sh = """
+        QSpinBox {{ {} }} 
+        QSpinBox::up-button  {{subcontrol-origin: border; subcontrol-position: left; width: 60px; height: 60px; }}
+        QSpinBox::down-button  {{subcontrol-origin: border; subcontrol-position: right; width: 60px; height: 60px; }}
+        """.format(sh)
         self.scoreSpinBox.setStyleSheet(sh)
+        print("Setting stylesheet to the scoreSpinBox")
         
 
 class RatukiRoundsDetail(GameRoundsDetail):
