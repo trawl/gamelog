@@ -52,13 +52,12 @@ class PlayerList(QtGui.QListView):
     def __init__(self,engine=None, parent=None):
         super(PlayerList, self).__init__(parent)
         self.engine = engine
-        self.dealer = None
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
         self.setModel(PlayerListModel(engine))
         
         if self.engine: 
-            self.dealer = self.engine.getDealer()
+            self.model().dealer = self.engine.getDealer()
             for player in self.engine.getListPlayers():
                 self.model().addPlayer(player)
 
@@ -77,8 +76,9 @@ class PlayerList(QtGui.QListView):
         except AttributeError: player = str(item.data())
         if player != str(None):
             self.doubleclickeditem.emit(player)
-            if self.dealer:
-                self.setDealer(item,player)
+            if self.engine:
+                if self.model().dealer:
+                    self.setDealer(item,player)
             else:
                 self.model().removeRows(item.row(),1)
         return QtGui.QListView.mouseDoubleClickEvent(self,event)
@@ -98,11 +98,13 @@ class PlayerList(QtGui.QListView):
                 favouriteAction = QtGui.QAction(QtGui.QIcon(favouriteIcon),QtGui.QApplication.translate("PlayerList","Set Favourite"), self)
             menu.addAction(favouriteAction)
             dealerAction = None
-            if self.engine and player != self.engine.getDealer():
+            if self.engine and self.engine.getDealer() is not None and player != self.model().dealer:
                 dealerAction = QtGui.QAction( QtGui.QIcon(dealerIcon),QtGui.QApplication.translate("PlayerList","Set dealer"), self)
                 menu.addAction(dealerAction)
             action = menu.exec_(self.mapToGlobal(position))
-            if action == favouriteAction:
+            if action is None: 
+                return
+            elif action == favouriteAction:
                 isfav = not isfav
                 db.setPlayerFavourite(player,isfav)
                 icon = standardIcon
@@ -114,12 +116,12 @@ class PlayerList(QtGui.QListView):
                 
     def setDealer(self,item,player):
         icon = standardIcon
-        if db.isPlayerFavourite(self.dealer): icon = favouriteIcon
-        self.model().addIcon(self.model().itemFromPlayer(self.dealer), icon)
+        if db.isPlayerFavourite(self.model().dealer): icon = favouriteIcon
+        self.model().addIcon(self.model().itemFromPlayer(self.model().dealer), icon)
         self.model().addIcon(self.model().itemFromIndex(item),dealerIcon)
-        self.dealer = player
+        self.model().dealer = player
         
-    def getDealer(self): return self.dealer
+    def getDealer(self): return self.model().dealer
     
 
 class PlayerListModel(QtGui.QStandardItemModel):
@@ -127,6 +129,7 @@ class PlayerListModel(QtGui.QStandardItemModel):
     def __init__(self, engine=None, parent = None):
         super(PlayerListModel, self).__init__( parent)
         self.engine = engine
+        self.dealer = None
         
     def dropMimeData(self, data, action, row, column, parent):
 
@@ -175,7 +178,7 @@ class PlayerListModel(QtGui.QStandardItemModel):
         font.setBold(True)
         item.setFont(font)
         icon = standardIcon
-        if self.engine and self.engine.getDealer() == player:
+        if self.engine and self.dealer == player:
             icon = dealerIcon
         elif db.isPlayerFavourite(player): 
             icon = favouriteIcon
