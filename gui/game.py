@@ -299,6 +299,10 @@ class GameInputWidget(QtGui.QWidget):
         
         
 class ScoreSpinBox(QtGui.QSpinBox):
+    
+    def __init__(self,*args,**kwargs):
+        super(ScoreSpinBox,self).__init__(*args,**kwargs)
+        self.setAccelerated(True)
 
     def valueFromText(self,text):
         if text == "": return self.minimum()

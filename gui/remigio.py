@@ -206,26 +206,16 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         self.label.setScaledContents(True)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setWordWrap(False)
-        sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
-        self.label.setStyleSheet(sh)
         
         self.scoreSpinBox = ScoreSpinBox(self)
         self.scoreSpinBox.setAlignment(QtCore.Qt.AlignCenter)
 #         self.scoreSpinBox.setMaximumWidth(150)
         self.scoreSpinBox.setRange(-1,100)
-        self.scoreSpinBox.setStyleSheet(sh)
+        self.setColour(colour)
         
         self.lowerLayout = QtGui.QHBoxLayout()
         self.mainLayout.addLayout(self.lowerLayout)
-        
-#         self.downButton = QtGui.QPushButton("-",self)
-#         self.downButton.pressed.connect(self.scoreSpinBox.stepDown)
-#         self.upButton = QtGui.QPushButton("+",self)
-#         self.upButton.pressed.connect(self.scoreSpinBox.stepUp)
-#         self.lowerLayout.addWidget(self.downButton)
         self.lowerLayout.addWidget(self.scoreSpinBox)
-#         self.lowerLayout.addWidget(self.upButton)
-#         self.mainLayout.setAlignment(self.scoreSpinBox,QtCore.Qt.AlignCenter)
         
         self.reset()
     
@@ -237,6 +227,11 @@ class RemigioPlayerInputWidget(QtGui.QFrame):
         self.pcolour = colour
         sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
         self.label.setStyleSheet(sh)
+        sh = """
+        QSpinBox {{ {} }} 
+        QSpinBox::up-button  {{subcontrol-origin: border; subcontrol-position: left; width: 60px; height: 60px; }}
+        QSpinBox::down-button  {{subcontrol-origin: border; subcontrol-position: right; width: 60px; height: 60px; }}
+        """.format(sh)
         self.scoreSpinBox.setStyleSheet(sh)
         
         
