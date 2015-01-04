@@ -233,6 +233,11 @@ class Phase10InputWidget(GameInputWidget):
             self.playerInputList[winner].setWinner()
             for pi in self.playerInputList.values(): pi.finish()
             
+    def getWinner(self):
+        for player,piw in self.playerInputList.items():
+            if piw.isRoundWinner(): return player
+        return None
+            
     def updatePlayerOrder(self):
 #         QtGui.QWidget().setLayout(self.layout())
         trash = QtGui.QWidget()
@@ -262,6 +267,9 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
         self.setValue(5)
         self.clear()
         self.fixed = False
+        self.setSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.MinimumExpanding)
+        self.setFixedWidth(60)
+        self.setAlignment(QtCore.Qt.AlignCenter)
         self.editingFinished.connect(self.clearFixed)
         self.setValidDisplay()
 
@@ -308,10 +316,22 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
         self.valueChanged.emit(self.value())
         super(Phase10ScoreSpinBox,self).setEnabled(enable)
 
-    def setValidDisplay(self): self.setStyleSheet("font-size: 24px; font-weight: bold;")
+    def setValidDisplay(self): 
+        sh = "font-size: 24px; font-weight: bold;"
+        sh = """
+        QSpinBox {{ padding-top: 30px; padding-bottom: 30px; {} }} 
+        QSpinBox::up-button  {{subcontrol-origin: margin; subcontrol-position: top; min-width: 60px; max-width:100px; height: 30px; }}
+        QSpinBox::down-button  {{subcontrol-origin: margin; subcontrol-position: bottom; min-width: 60px;  max-width:100px; height: 30px; }}
+        """.format(sh)
+        self.setStyleSheet(sh)
     
-    def setInvalidDisplay(self): self.setStyleSheet("font-size: 24px; font-weight: bold; background-color: #FF5E5E")
-
+    def setInvalidDisplay(self): 
+        sh = "font-size: 24px; font-weight: bold; background-color: #FF5E5E"
+        sh = """
+        QSpinBox {{ {} }} 
+        QSpinBox::up-button  {{subcontrol-origin: margin; subcontrol-position: top; min-width: 60px;  max-width:100px; height: 30px; }}
+        QSpinBox::down-button  {{subcontrol-origin: margin; subcontrol-position: bottom; min-width: 60px;  max-width:100px; height: 30px; }}
+        """.format(sh)
 
 class Phase10PlayerWidget(GamePlayerWidget):
     
@@ -333,6 +353,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
         trashWidget.setLayout(self.mainLayout)
         
         self.mainLayout = QtGui.QVBoxLayout(self)
+        self.mainLayout.addStretch()
         self.upperLayout = QtGui.QHBoxLayout()
         self.mainLayout.addLayout(self.upperLayout)
         self.upperLayout.addStretch()
@@ -343,34 +364,33 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.upperLayout.addStretch()
         self.lowerLayout = QtGui.QHBoxLayout()
         self.mainLayout.addLayout(self.lowerLayout)
-        self.leftLayout = QtGui.QHBoxLayout()
-        self.supermiddleLayout = QtGui.QVBoxLayout()
-        self.supermiddleLayout.addStretch()
-        self.middleLayout = QtGui.QGridLayout()
-        self.middleLayout.setSpacing(5)
-        self.supermiddleLayout.addLayout(self.middleLayout)
-        self.supermiddleLayout.addStretch()
-        self.superrightLayout = QtGui.QVBoxLayout()
-        self.superrightLayout.addStretch()
-        self.rightLayout = QtGui.QGridLayout()
-        self.superrightLayout.addLayout(self.rightLayout)
-        self.superrightLayout.addStretch()
-#         self.mainLayout.addStretch()
-        self.lowerLayout.addLayout(self.leftLayout)
-        self.lowerLayout.addLayout(self.supermiddleLayout)
-        self.lowerLayout.addLayout(self.superrightLayout)
-#         self.mainLayout.addStretch()      
+        self.mainLayout.addStretch()
+        
+        self.phaseLabelsLayout = QtGui.QGridLayout()
+        self.phaseLabelsLayout.setSpacing(5)
+        
+        self.checkboxLayout = QtGui.QVBoxLayout()
+        
+        self.scoreLCD = QtGui.QLCDNumber(self)
+        self.scoreLCD.setSegmentStyle(QtGui.QLCDNumber.Flat)
+        self.mainLayout.addWidget(self.scoreLCD)
+        self.scoreLCD.setNumDigits(3)
+        self.scoreLCD.setMinimumWidth(100)
+        self.scoreLCD.setStyleSheet("QLCDNumber {{ color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
         
         #Left part - score
-        self.leftLayout.addWidget(self.iconlabel)
-        self.leftLayout.addWidget(self.scoreLCD)
+        self.lowerLayout.addWidget(self.iconlabel)
+        self.lowerLayout.addWidget(self.scoreLCD)
+        self.lowerLayout.addLayout(self.phaseLabelsLayout)
+        self.lowerLayout.addLayout(self.checkboxLayout)
         
-        self.iconlabel.setFixedSize(60,60)
+        self.iconlabel.setMinimumSize(60,60)
 
-        self.scoreLCD.setMinimumWidth(100)
-        self.scoreLCD.setMaximumWidth(200)
-        self.scoreLCD.setMinimumHeight(30)
-        self.scoreLCD.setMaximumHeight(80)
+#         self.scoreLCD.setMinimumWidth(100)
+#         self.scoreLCD.setMaximumWidth(200)
+#         self.scoreLCD.setMinimumHeight(60)
+#         self.scoreLCD.setMaximumHeight(80)
+
         self.scoreLCD.display(self.engine.getScoreFromPlayer(self.player))   
         
         #Middle part - Phase list
@@ -382,27 +402,27 @@ class Phase10PlayerWidget(GamePlayerWidget):
             elif self.engine.hasPhaseCompleted(self.player, phase):
                 label.setPassed()
             self.phaseLabels.append(label)
-            self.middleLayout.addWidget(label,(phase-1)/5,(phase-1)%5,1,1)
+            self.phaseLabelsLayout.addWidget(label,(phase-1)/5,(phase-1)%5,1,1)
             
         #Middle part - Inputs
         self.roundWinnerRadioButton = QtGui.QRadioButton()
         self.bgroup.addButton(self.roundWinnerRadioButton)
-        self.rightLayout.addWidget(self.roundWinnerRadioButton,0,0)
+        self.checkboxLayout.addWidget(self.roundWinnerRadioButton)
+        
+        self.roundPhaseClearedCheckbox = QtGui.QCheckBox(self)  
+        self.checkboxLayout.addWidget(self.roundPhaseClearedCheckbox)
         
         self.roundScore=Phase10ScoreSpinBox(self)
         self.roundScore.setMaximumWidth(90)
         self.roundScore.valueChanged.connect(self.updateRoundPhaseCleared)
-        self.rightLayout.addWidget(self.roundScore,0,1)
+        self.lowerLayout.addWidget(self.roundScore)
 
-        self.roundPhaseClearedCheckbox = QtGui.QCheckBox(self)
-        self.rightLayout.addWidget(self.roundPhaseClearedCheckbox,1,0)
-        
         self.roundWinnerRadioButton.toggled.connect(self.roundScore.setDisabled)
         self.roundWinnerRadioButton.toggled.connect(self.roundPhaseClearedCheckbox.setDisabled)
         self.roundWinnerRadioButton.toggled.connect(self.roundPhaseClearedCheckbox.setChecked)
         self.roundWinnerRadioButton.toggled.connect(self.roundWinnerSetAction)
         
-        self.retranslateUI()       
+        self.retranslateUI()    
         
     def retranslateUI(self):
         self.roundWinnerRadioButton.setText(QtGui.QApplication.translate("Phase10PlayerWidget","Winner"))
