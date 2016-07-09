@@ -111,7 +111,8 @@ class CarcassonneWidget(GameWidget):
         if ret == QtGui.QMessageBox.No: return
 
         # Once here, we can commit round
-        self.playerGroupBox[self.engine.getDealer()].unsetDealer()
+        try: self.playerGroupBox[self.engine.getDealer()].unsetDealer()
+        except KeyError: pass
         self.engine.addEntry(player,score, {'kind': kind})
         self.engine.printStats()
         
