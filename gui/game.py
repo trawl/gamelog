@@ -8,6 +8,8 @@ try:
 except ImportError as error:
     from PySide import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
+    
+import ctypes
        
 from gui.tab import Tab
 from gui.clock import GameClock
@@ -40,6 +42,7 @@ class GameWidget(Tab):
         self.engine.printStats()
         self.gameInput = None
         self.finished = False
+        self.toggleScreenLock()
         self.initUI()
         
     def initUI(self):
@@ -128,6 +131,8 @@ class GameWidget(Tab):
                 self.closeMatch()
             else:
                 self.saveMatch()
+                
+        self.toggleScreenLock(True)
         self.requestClose()
         
     def pauseMatch(self):
@@ -136,11 +141,13 @@ class GameWidget(Tab):
             self.commitRoundButton.setEnabled(True)
             self.gameInput.setEnabled(True)
             self.engine.unpause()
+            self.toggleScreenLock()
         else:
             self.clock.pauseTimer()
             self.commitRoundButton.setDisabled(True)
             self.gameInput.setDisabled(True)
             self.engine.pause()
+            self.toggleScreenLock(True)
         self.updateGameStatusLabel()
             
     def commitRound(self):
@@ -227,6 +234,7 @@ class GameWidget(Tab):
         self.playerOrderButton.setDisabled(True)
         self.updateGameStatusLabel()    
         self.gameInput.setDisabled(True)
+        self.toggleScreenLock(True)
         
     def changePlayerOrder(self):
         originaldealer = self.engine.getDealer()
@@ -247,8 +255,21 @@ class GameWidget(Tab):
         
     def updatePlayerOrder(self):
         self.gameInput.updatePlayerOrder()
+        
+    def toggleScreenLock(self,on=False):
+        ES_CONTINUOUS        = 0x80000000
+        ES_DISPLAY_REQUIRED  = 0x00000002
+        try:
+            if not on:
+                ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS | ES_DISPLAY_REQUIRED)
+                print("Disabled Screensaver")
+            else:
+                ctypes.windll.kernel32.SetThreadExecutionState(0)
+                print("Enabled Screensaver")
+        except:
+            pass
 
-    
+
 class GameInputWidget(QtGui.QWidget):
     
     enterPressed = QtCore.Signal()
