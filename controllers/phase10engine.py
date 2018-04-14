@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from controllers.baseengine import RoundGameEngine,readInput
-from controllers.statsengine import StatsEngine
+from controllers.statsengine import StatsEngine,ParticularStatsEngine
 from controllers.db import db
 
 class Phase10Engine(RoundGameEngine):
@@ -82,22 +82,21 @@ if __name__ == "__main__":
     if game == 'Phase10': pe = Phase10Engine()
     else: pe = Phase10MasterEngine()
     pe.gameStub()        
-    
-    
-class Phase10StatsEngine(StatsEngine):
-    _worst_phases="""
+
+class Phase10StatsQueries(object):
+    worst_phases="""
         SELECT game, nick, min(pc) AS min_phases from (
-            SELECT m.Game_name as game,m.idMatch AS match ,rs.nick AS nick ,count(value) AS pc
-            FROM RoundStatistics AS rs,Match AS m 
-            WHERE rs.idMatch = m.idMatch
+            SELECT Match.Game_name as game,Match.idMatch AS match ,rs.nick AS nick ,count(value) AS pc
+            FROM RoundStatistics AS rs,Match
+            WHERE rs.idMatch = Match.idMatch
                 AND key = "PhaseCompleted"
                 AND value <> 0
                 AND state = 1
-            GROUP BY game, m.idMatch, rs.nick
+            GROUP BY game, Match.idMatch, rs.nick
         ) AS temp
         GROUP BY game, nick
     """
-    _damned_phases="""
+    damned_phases="""
         SELECT Game_name AS game, nick AS player, value AS phase,  COUNT(value) AS times
         FROM Match,RoundStatistics 
         WHERE
@@ -106,6 +105,15 @@ class Phase10StatsEngine(StatsEngine):
         GROUP BY game, player, phase
         ORDER BY game, player, phase
     """
+    
+class Phase10StatsEngine(StatsEngine):
+    
+    def __init__(self):
+        super(Phase10StatsEngine, self).__init__()
+        q = Phase10StatsQueries()
+        self._worst_phases = q.worst_phases
+        self._damned_phases = q.damned_phases
+
     def update(self):
         super(Phase10StatsEngine, self).update()
         self.wphases = db.queryDict(self._worst_phases)
@@ -134,5 +142,15 @@ class Phase10StatsEngine(StatsEngine):
             
         
 #         print([row for row in self.generalplayerstats if row['game'] in ('Phase10Master','Phase10')])    
-            
+
+class Phase10ParticularStatsEngine(Phase10StatsEngine, ParticularStatsEngine):
+    
+    def updatePlayers(self,players):
+        super(Phase10ParticularStatsEngine, self).updatePlayers(players)
+        if players:
+            q = Phase10StatsQueries()
+            self._worst_phases = q.worst_phases.replace('WHERE',"WHERE {} AND".format("Match." + self._newclause))
+            self._damned_phases = q.damned_phases.replace('WHERE',"WHERE {} AND".format("Match." + self._newclause))
+
         
+            

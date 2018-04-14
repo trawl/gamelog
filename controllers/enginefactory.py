@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from controllers.phase10engine import Phase10Engine,Phase10MasterEngine,Phase10StatsEngine
+from controllers.phase10engine import Phase10Engine,Phase10MasterEngine,Phase10StatsEngine,Phase10ParticularStatsEngine
 from controllers.remigioengine import RemigioEngine
 from controllers.ratukiengine import RatukiEngine
-from controllers.carcassonneengine import CarcassonneEngine,CarcassonneStatsEngine
-from controllers.pochaengine import PochaEngine, PochaStatsEngine
-from controllers.statsengine import StatsEngine
+from controllers.carcassonneengine import CarcassonneEngine,CarcassonneStatsEngine,CarcassonneParticularStatsEngine
+from controllers.pochaengine import PochaEngine, PochaStatsEngine,PochaParticularStatsEngine
+from controllers.statsengine import StatsEngine,ParticularStatsEngine
 
 class GameEngineFactory:
     
@@ -29,3 +29,10 @@ class StatsEngineFactory:
         if gname in ('Phase10Master','Phase10'): return Phase10StatsEngine()
         if gname == 'Pocha': return PochaStatsEngine()
         return StatsEngine()
+    
+    @classmethod
+    def getParticularStatsEngine(cls,gname):
+        if gname == 'Carcassonne': return CarcassonneParticularStatsEngine()
+        if gname in ('Phase10Master','Phase10'): return Phase10ParticularStatsEngine()
+        if gname == 'Pocha': return PochaParticularStatsEngine()
+        return ParticularStatsEngine()    

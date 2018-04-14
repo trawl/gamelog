@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from controllers.baseengine import RoundGameEngine,readInput
-from controllers.statsengine import StatsEngine
+from controllers.statsengine import StatsEngine,ParticularStatsEngine
 from controllers.db import db
 
 class PochaEngine(RoundGameEngine):
@@ -36,11 +36,9 @@ class PochaEngine(RoundGameEngine):
                 
     def getSuitType(self): return self.suitType
     
-    
-    
-class PochaStatsEngine(StatsEngine):
-    
-    _hitsQuery="""
+
+class PochaStatsQueries(object):
+    hitsQuery="""
     SELECT player, max(hits) as "max_hits", min(hits) as "min_hits" from (   
      SELECT Round.idMatch as idm, Round.nick as "player", COUNT(Round.idRound) as "hits"
         FROM Round,Match
@@ -54,7 +52,7 @@ class PochaStatsEngine(StatsEngine):
     order by player
     """
     
-    _extremeRounds="""
+    extremeRounds="""
      SELECT Round.nick as "player", max(score) as "max_round_score", min(score) as "min_round_score"
         FROM Round,Match
         WHERE Match.idMatch = Round.idMatch 
@@ -63,9 +61,15 @@ class PochaStatsEngine(StatsEngine):
         group by player
    """
     
+class PochaStatsEngine(StatsEngine):
+       
     def __init__(self):
         super(PochaStatsEngine, self).__init__()
         self.singleKindRecord=None
+        q = PochaStatsQueries()
+        self._hitsQuery = q.hitsQuery
+        self._extremeRounds = q.extremeRounds
+        
         
     def update(self):
         super(PochaStatsEngine, self).update()
@@ -86,6 +90,15 @@ class PochaStatsEngine(StatsEngine):
                     r2['max_round_score'] = row['max_round_score']
                     r2['min_round_score'] = row['min_round_score']
                     break
+
+class PochaParticularStatsEngine(PochaStatsEngine, ParticularStatsEngine):
+    
+    def updatePlayers(self,players):
+        super(PochaParticularStatsEngine, self).updatePlayers(players)
+        if players:
+            q = PochaStatsQueries()
+            self._hitsQuery = q.hitsQuery.replace('WHERE',"WHERE {} AND".format("Match." + self._newclause))
+            self._extremeRounds = q.extremeRounds.replace('WHERE',"WHERE {} AND".format("Match." + self._newclause))
         
 if __name__ == "__main__":
     re = PochaEngine()

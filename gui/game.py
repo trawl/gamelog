@@ -14,7 +14,7 @@ import ctypes
 from gui.tab import Tab
 from gui.clock import GameClock
 from gui.plots import PlotView
-from gui.gamestats import QuickStatsBox
+from gui.gamestats import QuickStatsTW
 from gui.playerlist import PlayerOrderDialog
         
 PlayerColours=[QtGui.QColor(237,44,48),
@@ -464,7 +464,10 @@ class GameRoundsDetail(QtGui.QGroupBox):
         self.updatePlot()      
         
     def updateStats(self):
-        self.gamestats.update()
+        try:
+            self.gamestats.update(self.engine.getGame(), self.engine.getListPlayers())
+        except:
+            self.gamestats.update()
     
     def deleteRound(self,nround):
         self.plot.updatePlot()
@@ -472,7 +475,7 @@ class GameRoundsDetail(QtGui.QGroupBox):
     # Implement in subclasses if necessary
     def createRoundTable(self, engine, parent=None) : return GameRoundTable(self)
     def createRoundPlot(self, engine, parent=None): return GameRoundPlot(self)
-    def createQSBox(self, parent=None): return QuickStatsBox(self.engine.getGame(), self)
+    def createQSBox(self, parent=None): return QuickStatsTW(self.engine.getGame(), self.engine.getListPlayers(), self)
     
     def updatePlayerOrder(self): 
         self.updateRound()

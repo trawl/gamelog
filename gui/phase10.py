@@ -14,7 +14,7 @@ except ImportError as error:
 
 from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
 from gui.game import GameWidget, GameInputWidget, GamePlayerWidget, ScoreSpinBox, GameRoundsDetail, GameRoundTable, GameRoundPlot, PlayerColours
-from gui.gamestats import QuickStatsBox
+from gui.gamestats import GeneralQuickStats,QuickStatsTW, ParticularQuickStats
 from gui.plots import PlotView
 
 def getPhaseNames(phasecodes):
@@ -596,7 +596,7 @@ class Phase10RoundsDetail(GameRoundsDetail):
         return Phase10RoundPlot(self.engine,self)
     
     def createQSBox(self, parent=None):
-        return Phase10QSBox(self.engine.getGame(),self)
+        return Phase10QSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
     
 class Phase10RoundTable(GameRoundTable):
     
@@ -722,12 +722,16 @@ class Phase10RoundPlot(GameRoundPlot):
          
         self.playersListLayout.addStretch()
 
+class Phase10QSTW(QuickStatsTW):
+    def initStatsWidgets(self):
+        self.gs = Phase10QSBox(self.game,self)
+        self.ps = Phase10PQSBox(self.game, self)
             
         
-class Phase10QSBox(QuickStatsBox): 
+class Phase10QSBox(GeneralQuickStats): 
     
-    QtGui.QApplication.translate("QuickStatsBox",'Lowest phases')
-    QtGui.QApplication.translate("QuickStatsBox",'Damned phase')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Lowest phases')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Damned phase')
     
     def __init__(self,gname,parent):
         super(Phase10QSBox, self).__init__(gname,parent)
@@ -735,3 +739,7 @@ class Phase10QSBox(QuickStatsBox):
         self.playerStatsHeaders.append('Lowest phases')
         self.playerStatsKeys.append('damned_phase')
         self.playerStatsHeaders.append('Damned phase')
+        
+        
+class Phase10PQSBox(Phase10QSBox, ParticularQuickStats):
+    pass

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from controllers.baseengine import EntryGameEngine,readInput
-from controllers.statsengine import StatsEngine
+from controllers.statsengine import StatsEngine,ParticularStatsEngine
 from controllers.db import db
 
 class CarcassonneEngine(EntryGameEngine):
@@ -22,10 +22,8 @@ if __name__ == "__main__":
     re = CarcassonneEngine()
     re.gameStub()
 
-    
-class CarcassonneStatsEngine(StatsEngine):
-    
-    _singleKindRecordQuery="""
+class CarcassonneStatsQueries(object):
+    singleKindRecordQuery="""
     SELECT value as "record" ,Round.score as "points",RoundStatistics.nick as "player", DATE(Match.finished) as date
     FROM Match,Round,RoundStatistics
     WHERE Match.idMatch = Round.idMatch 
@@ -41,7 +39,7 @@ class CarcassonneStatsEngine(StatsEngine):
     limit 1
     """
     
-    _matchKindRecordQuery="""
+    matchKindRecordQuery="""
         SELECT Match.idMatch as "match", value as "record" ,SUM(Round.score) as "points",RoundStatistics.nick as "player", DATE(Match.finished) as date
     FROM Match,Round,RoundStatistics
     WHERE Match.idMatch = Round.idMatch 
@@ -58,16 +56,20 @@ class CarcassonneStatsEngine(StatsEngine):
    LIMIT 1
    """
     
-    
+class CarcassonneStatsEngine(StatsEngine):
     
     def __init__(self):
         super(CarcassonneStatsEngine, self).__init__()
         self.singleKindRecord=None
+        q = CarcassonneStatsQueries()
+        self._singleKindRecordQuery = q.singleKindRecordQuery
+        self._matchKindRecordQuery = q.matchKindRecordQuery
         
     def update(self):
         super(CarcassonneStatsEngine, self).update()
         self.singleKindRecord = []
         self.matchKindRecord = []
+        
         for kind in ("City","Road","Field"):
             self.singleKindRecord += db.queryDict(self._singleKindRecordQuery.format(kind))
             
@@ -77,4 +79,15 @@ class CarcassonneStatsEngine(StatsEngine):
     def getSingleKindRecords(self): return self.singleKindRecord
     
     def getMatchKindRecords(self): return self.matchKindRecord
+    
+    
+class CarcassonneParticularStatsEngine(CarcassonneStatsEngine, ParticularStatsEngine):
+    
+    def updatePlayers(self,players):
+        super(CarcassonneParticularStatsEngine, self).updatePlayers(players)
+        if players:
+            q = CarcassonneStatsQueries()
+            self._singleKindRecordQuery = q.singleKindRecordQuery.replace('WHERE',"WHERE {} AND".format("Match." + self._newclause))
+            self._matchKindRecordQuery = q.matchKindRecordQuery.replace('WHERE',"WHERE {} AND".format("Match." + self._newclause))
+
     

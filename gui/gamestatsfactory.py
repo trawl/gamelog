@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from gui.gamestats import QuickStatsBox
-from gui.carcassonne import CarcassonneQSBox
-from gui.phase10 import Phase10QSBox
-from gui.pocha import PochaQSBox
+from gui.gamestats import QuickStatsTW
+from gui.carcassonne import CarcassonneQSTW
+from gui.phase10 import Phase10QSTW
+from gui.pocha import PochaQSTW
 
-class QSBoxFactory:
+class QSFactory:
     
     @classmethod
-    def createQSBox(cls,gname,parent):
+    def createQS(cls, gname, players, parent):
         if gname == 'Carcassonne':
-            return CarcassonneQSBox(parent)
+            return CarcassonneQSTW(gname, players, parent)
         if gname in ('Phase10Master','Phase10'): 
-            return Phase10QSBox(gname,parent)
+            return Phase10QSTW(gname, players, parent)
         if gname == 'Pocha':
-            return PochaQSBox(gname,parent)
-        return QuickStatsBox(gname,parent)
+            return PochaQSTW(gname, players, parent)
+        return QuickStatsTW(gname, players, parent)
     

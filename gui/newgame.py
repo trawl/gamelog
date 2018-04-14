@@ -16,7 +16,7 @@ from controllers.resumeengine import ResumeEngine
 from gui.tab import Tab
 from gui.gamewidgetfactory import GameWidgetFactory
 from gui.newplayer import NewPlayerDialog
-from gui.gamestatsfactory import QSBoxFactory
+from gui.gamestatsfactory import QSFactory
 from gui.playerlist import PlayerList
 
 
@@ -34,20 +34,22 @@ class NewGameWidget(Tab):
         self.rightColumnLayout =  QtGui.QVBoxLayout()
         self.widgetLayout.addLayout(self.leftColumnLayout)
         self.widgetLayout.addLayout(self.rightColumnLayout)
-
-        # Game GroupBox
-        self.gameGroupBox = QtGui.QGroupBox(self)
-        self.leftColumnLayout.addWidget(self.gameGroupBox)
-        self.widgetLayout.setStretchFactor(self.leftColumnLayout,3)
-        self.populateGamesGroupBox()
-
+        
+        self.gameStatsBox = None
+        
         #Players GroupBox
         self.playersGroupBox = QtGui.QGroupBox(self)
         self.rightColumnLayout.addWidget(self.playersGroupBox)
         self.widgetLayout.setStretchFactor(self.rightColumnLayout,1)
         self.populatePlayersGroupBox()
         
-        self.retranslateUI()
+        # Game GroupBox
+        self.gameGroupBox = QtGui.QGroupBox(self)
+        self.leftColumnLayout.addWidget(self.gameGroupBox)
+        self.widgetLayout.setStretchFactor(self.leftColumnLayout,3)
+        self.populateGamesGroupBox()
+        
+#        self.retranslateUI()
     
     def retranslateUI(self):
         self.gameGroupBox.setTitle(QtGui.QApplication.translate("NewGameWidget","Games"))
@@ -81,26 +83,38 @@ class NewGameWidget(Tab):
         if lastgame:    
             self.gameComboBox.setCurrentIndex(self.gameComboBox.findText(lastgame))
             
-        self.gameStatsBox = QSBoxFactory.createQSBox(self.gameComboBox.currentText(),self)
-        self.gameGroupBoxLayout.addWidget(self.gameStatsBox)            
+        self.gameStatsBox = None       
             
-        self.updateGameInfo()
+#        self.updateGameInfo()
         
         self.gameComboBox.currentIndexChanged.connect(self.updateGameInfo)
 
     def updateGameInfo(self,foo=0):
+
         game = str(self.gameComboBox.currentText())
         description = "2 - {} {}\n\n{}".format(self.games[game]['maxPlayers'],QtGui.QApplication.translate("NewGameWidget",'players'),self.games[game]['description'])
         self.gameDescriptionLabel.setText(description)
 #        self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
 #         self.gameStatsBox.update(game)
-        self.gameGroupBoxLayout.removeWidget(self.gameStatsBox)
-        self.gameStatsBox.deleteLater()
+        if self.gameStatsBox is not None:
+            self.gameGroupBoxLayout.removeWidget(self.gameStatsBox)
+            print("UGI deleting")
+            self.gameStatsBox.deleteLater()
         
-        self.gameStatsBox = QSBoxFactory.createQSBox(game,self)
+        self.gameStatsBox = QSFactory.createQS(game,None,self)
         self.gameGroupBoxLayout.addWidget(self.gameStatsBox)  
-        self.gameStatsBox.update(game)
+        self.updateStats()
         self.resumeGroup.changeGame(game)
+        
+        
+    def updateStats(self):
+        if self.gameStatsBox:
+            try:
+                self.gameStatsBox.update(self.gameComboBox.currentText(), self.playersInGameList.model().retrievePlayers())
+            except TypeError:
+                # Should not happen, but silently ignore
+                pass
+
 
     def populatePlayersGroupBox(self):
 
@@ -135,6 +149,7 @@ class NewGameWidget(Tab):
         
         self.playersAvailableList.doubleclickeditem.connect(self.playersInGameList.addItem)
         self.playersInGameList.doubleclickeditem.connect(self.playersAvailableList.addItem)
+        self.playersInGameList.changed.connect(self.updateStats)
         
         for p in db.getPlayers():
             if p['favourite']: self.playersInGameList.addItem(p['nick'])
