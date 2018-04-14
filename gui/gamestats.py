@@ -12,27 +12,67 @@ except ImportError as error:
 from controllers.enginefactory import StatsEngineFactory
 from gui.tab import Tab
 
-class QuickStatsBox(QtGui.QGroupBox):
+
+class QuickStatsTW(QtGui.QTabWidget):
+    def __init__(self,game,players,parent):
+        super(QuickStatsTW, self).__init__(parent)
+        self.game = game
+        self.players = players
+        self.gs = None
+        self.ps = None
+        self.initUI()
+        
+    def initStatsWidgets(self):
+        self.gs = GeneralQuickStats(self.game,self)
+        self.ps = ParticularQuickStats(self.game, self)
+
+        
+    def initUI(self):
+        self.initStatsWidgets()
+        try:
+            self.ps.updatePlayers(self.players)
+        except:
+            pass
+        self.addTab(self.gs,"")
+        self.addTab(self.ps,"")
+        self.retranslateUI()
+        
+    def retranslateUI(self):
+        self.setTabText(self.indexOf(self.gs), QtGui.QApplication.translate("QuickStatsTW",'General'))
+        self.setTabText(self.indexOf(self.ps), QtGui.QApplication.translate("QuickStatsTW",'Particular'))
+        self.gs.retranslateUI()
+        self.ps.retranslateUI()
+        
+    def update(self, game=None, players=None):
+        if game is not None: self.game = game
+        self.gs.update(game)
+        self.ps.updatePlayers(players)
+        self.ps.update(game)
+        
+        
+
+class AbstractQuickStatsBox(QtGui.QGroupBox):
     
-    QtGui.QApplication.translate("QuickStatsBox",'Longest')
-    QtGui.QApplication.translate("QuickStatsBox",'Shortest')
-    QtGui.QApplication.translate("QuickStatsBox",'Average')
-    QtGui.QApplication.translate("QuickStatsBox",'Highest')
-    QtGui.QApplication.translate("QuickStatsBox",'Lowest')
-    QtGui.QApplication.translate("QuickStatsBox",'Average')
-    QtGui.QApplication.translate("QuickStatsBox",'Played')
-    QtGui.QApplication.translate("QuickStatsBox",'Victories')
-    QtGui.QApplication.translate("QuickStatsBox",'Ratio (%)')
-    QtGui.QApplication.translate("QuickStatsBox",'Highest')
-    QtGui.QApplication.translate("QuickStatsBox",'Lowest')
-    QtGui.QApplication.translate("QuickStatsBox",'Average')
-    QtGui.QApplication.translate("QuickStatsBox",'Total')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Longest')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Shortest')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Average')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Highest')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Lowest')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Average')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Played')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Victories')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Ratio (%)')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Highest')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Lowest')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Average')
+    QtGui.QApplication.translate("AbstractQuickStatsBox",'Total')
     
     
     def __init__(self,game,parent):
-        super(QuickStatsBox, self).__init__(parent)
-        self.stats = StatsEngineFactory.getStatsEngine(game)
+        super(AbstractQuickStatsBox, self).__init__(parent)
+        self.stats = None
         self.game = game
+        self.initEngine()
         
         self.matchStatsKeys = ['maxduration','minduration','avgduration','maxscore','minscore','avgscore']
         self.matchStatsHeaders = ['Longest','Shortest','Average','Highest','Lowest','Average']
@@ -44,6 +84,9 @@ class QuickStatsBox(QtGui.QGroupBox):
 
         sp = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.Expanding)
         self.setSizePolicy(sp)
+        
+    def initEngine(self):
+        self.stats = StatsEngineFactory.getStatsEngine(self.game)
         
     def initUI(self):
         self.superlayout = QtGui.QVBoxLayout(self)
@@ -74,14 +117,14 @@ class QuickStatsBox(QtGui.QGroupBox):
         self.retranslateUI()
         
     def retranslateUI(self):
-        self.gameStatsText = QtGui.QApplication.translate("QuickStatsBox",'Last winner') + ": {} ({})"
+        self.gameStatsText = QtGui.QApplication.translate("AbstractQuickStatsBox",'Last winner') + ": {} ({})"
 #         self.setTitle(QtGui.QApplication.translate("QuickStatsBox",'Statistics'))
-        self.matchStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Matches"))
-        self.playerStatsTitleLabel.setText(QtGui.QApplication.translate("QuickStatsBox","Players"))
+        self.matchStatsTitleLabel.setText(QtGui.QApplication.translate("AbstractQuickStatsBox","Matches"))
+        self.playerStatsTitleLabel.setText(QtGui.QApplication.translate("AbstractQuickStatsBox","Players"))
         self.update()
         
     def update(self,game=None):
-        if game is not None: self.game = game
+#         if game is not None: self.game = game
 #         self.setTitle(QtGui.QApplication.translate("QuickStatsBox",'Statistics'))
         self.stats.update()
         gamestats = self.stats.getGameStats(self.game)
@@ -89,7 +132,7 @@ class QuickStatsBox(QtGui.QGroupBox):
         playerstats = self.stats.getPlayerGameStats(self.game)
         
         if not gamestats:
-            self.gameStatsLabel.setText(QtGui.QApplication.translate("QuickStatsBox","No statistics found"))
+            self.gameStatsLabel.setText(QtGui.QApplication.translate("AbstractQuickStatsBox","No statistics found"))
             self.playerStatsTitleLabel.hide()
             self.matchStatsTitleLabel.hide()
         else:
@@ -98,12 +141,12 @@ class QuickStatsBox(QtGui.QGroupBox):
             self.matchStatsTitleLabel.show()
 #         keys = ['maxduration','minduration','avgduration','maxscore','minscore','avgscore']
 #       headers = [QtGui.QApplication.translate("QuickStatsBox",'Longest'),QtGui.QApplication.translate("QuickStatsBox",'Shortest'),QtGui.QApplication.translate("QuickStatsBox",'Average'),QtGui.QApplication.translate("QuickStatsBox",'Highest'),QtGui.QApplication.translate("QuickStatsBox",'Lowest'),QtGui.QApplication.translate("QuickStatsBox",'Average')]
-        headers = [QtGui.QApplication.translate("QuickStatsBox",h) for h in self.matchStatsHeaders]
+        headers = [QtGui.QApplication.translate("AbstractQuickStatsBox",h) for h in self.matchStatsHeaders]
         self.updateTable(self.matchStatsTable, matchstats, self.matchStatsKeys, 'nplayers', headers)
             
 #         keys = ['played','victories','victoryp','maxscore','minscore','avgscore','sumscore']
 #         headers = [QtGui.QApplication.translate("QuickStatsBox",'Played'),QtGui.QApplication.translate("QuickStatsBox",'Victories'),QtGui.QApplication.translate("QuickStatsBox",'Ratio (%)'),QtGui.QApplication.translate("QuickStatsBox",'Highest'),QtGui.QApplication.translate("QuickStatsBox",'Lowest'),QtGui.QApplication.translate("QuickStatsBox",'Average'),QtGui.QApplication.translate("QuickStatsBox",'Total')]
-        headers = [QtGui.QApplication.translate("QuickStatsBox",h) for h in self.playerStatsHeaders]
+        headers = [QtGui.QApplication.translate("AbstractQuickStatsBox",h) for h in self.playerStatsHeaders]
         self.updateTable(self.playerStatsTable, playerstats, self.playerStatsKeys, 'nick', headers)
         
                        
@@ -135,7 +178,20 @@ class QuickStatsBox(QtGui.QGroupBox):
 
         else:
             table.hide()
-            
+
+
+class GeneralQuickStats(AbstractQuickStatsBox):
+    pass
+
+
+class ParticularQuickStats(AbstractQuickStatsBox):
+    def initEngine(self):
+        self.stats = StatsEngineFactory.getParticularStatsEngine(self.game)
+        
+    def updatePlayers(self, players):
+        if players:
+            self.stats.updatePlayers(players)   
+
 
 class StatsTable(QtGui.QTableWidget):
     def sizeHint(self):

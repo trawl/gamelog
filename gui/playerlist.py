@@ -48,6 +48,7 @@ class PlayerOrderDialog(QtGui.QDialog):
 class PlayerList(QtGui.QListView):
     
     doubleclickeditem = QtCore.Signal(str)
+    changed = QtCore.Signal()
     
     def __init__(self,engine=None, parent=None):
         super(PlayerList, self).__init__(parent)
@@ -68,7 +69,9 @@ class PlayerList(QtGui.QListView):
         e.setDropAction(QtCore.Qt.MoveAction)
         QtGui.QListView.dropEvent(self,e)
             
-    def addItem(self,text): self.model().addPlayer(text)
+    def addItem(self,text): 
+        self.model().addPlayer(text)
+        self.changed.emit()
 
     def mouseDoubleClickEvent(self,event):
         item = self.indexAt(event.pos())
@@ -76,11 +79,13 @@ class PlayerList(QtGui.QListView):
         except AttributeError: player = str(item.data())
         if player != str(None):
             self.doubleclickeditem.emit(player)
+
             if self.engine:
                 if self.model().dealer:
                     self.setDealer(item,player)
             else:
                 self.model().removeRows(item.row(),1)
+                self.changed.emit()
         return QtGui.QListView.mouseDoubleClickEvent(self,event)
     
     def openMenu(self,position):

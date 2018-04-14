@@ -77,14 +77,44 @@ class StatsEngine(object):
     def getPlayerGameStats(self,game):
         return [ row for row in self.generalplayerstats if row['game'] == game ]
     
-            
+    
+class ParticularStatsEngine(StatsEngine):
+    def __init__(self):
+        super(ParticularStatsEngine, self).__init__()
+        self._lastwinnerquerybase = self._lastwinnerquery
+        self._generalmatchstatsquerybase = self._generalmatchstatsquery
+        self._generalplayerstatsquerybase = self._generalplayerstatsquery
+        self.players = None  
+        self._newclause = ""
+        
+    def update(self, players=None):
+        self.updatePlayers(players)
+        super(ParticularStatsEngine, self).update()
+    
+    def updatePlayers(self,players):
+        if players:
+            splayers = set(players)
+            if self.players != splayers:
+                self.players = splayers
+                players_str = ",".join(["'" + p +"'" for p in self.players])
+                self._newclause = "idMatch IN (SELECT idMatch FROM MatchPlayer WHERE nick IN ({0}) GROUP BY idMatch HAVING COUNT(*)={1} and idMatch NOT IN (SELECT idMatch FROM MatchPlayer WHERE nick NOT IN ({0})))".format(players_str, len(self.players))
+                self._lastwinnerquery = self._lastwinnerquerybase.replace('WHERE',"WHERE {} AND".format(self._newclause))
+                self._generalmatchstatsquery = self._generalmatchstatsquerybase.replace('WHERE',"WHERE {} AND".format(self._newclause))
+                self._generalplayerstatsquery = self._generalplayerstatsquerybase.replace('WHERE',"WHERE {} AND".format(self._newclause))
+
+        
         
 if __name__ == "__main__":
     db = GameLogDB()
     db.connectDB("../db/gamelog.db")      
-    se = StatsEngine()
-    se.update()
-    print(se.getMatchGameStats('Phase10Master'))
-    print(se.getPlayerGameStats('Phase10Master'))
+#     se = StatsEngine()
+#     se.update()
+#     print(se.getMatchGameStats('Phase10Master'))
+#     print(se.getPlayerGameStats('Phase10Master'))
+    
+    pse = ParticularStatsEngine()
+    pse.update(['Xavi','Rosa','Dani','Joan'])
+    print(pse.getMatchGameStats('Phase10Master'))
+    print(pse.getPlayerGameStats('Phase10Master'))
     
     

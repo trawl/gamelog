@@ -11,7 +11,7 @@ except ImportError as error:
 
 from controllers.pochaengine import PochaEngine
 from gui.game import GameWidget,GameInputWidget,GameRoundsDetail,GameRoundTable,GameRoundPlot,GamePlayerWidget,PlayerColours
-from gui.gamestats import QuickStatsBox
+from gui.gamestats import QuickStatsTW,GeneralQuickStats,ParticularQuickStats
 
 class PochaWidget(GameWidget):
     
@@ -423,7 +423,7 @@ class PochaRoundsDetail(GameRoundsDetail):
         return PochaRoundPlot(self.engine,self)
     
     def createQSBox(self, parent=None):
-        return PochaQSBox(self.engine.getGame(),self)
+        return PochaQSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
         
     
 class PochaRoundTable(GameRoundTable):
@@ -475,12 +475,18 @@ class PochaRoundPlot(GameRoundPlot):
         self.canvas.clearPlotContents()
         for player in self.engine.getListPlayers():        
             self.canvas.addSeries(scores[player],player)
+
+class PochaQSTW(QuickStatsTW):
+    def initStatsWidgets(self):
+        self.gs = PochaQSBox(self.game,self)
+        self.ps = PochaPQSBox(self.game, self)
             
-class PochaQSBox(QuickStatsBox): 
+            
+class PochaQSBox(GeneralQuickStats): 
     
-    QtGui.QApplication.translate("QuickStatsBox",'Max Hits')
-    QtGui.QApplication.translate("QuickStatsBox",'Min Hits')
-    QtGui.QApplication.translate("QuickStatsBox",'Best Round')
+    QtGui.QApplication.translate("GeneralQuickStats",'Max Hits')
+    QtGui.QApplication.translate("GeneralQuickStats",'Min Hits')
+    QtGui.QApplication.translate("GeneralQuickStats",'Best Round')
     
     def __init__(self,gname,parent):
         super(PochaQSBox, self).__init__(gname,parent)
@@ -490,3 +496,6 @@ class PochaQSBox(QuickStatsBox):
         self.playerStatsHeaders.append('Min Hits')
         self.playerStatsKeys.append('max_round_score')
         self.playerStatsHeaders.append('Best Round')     
+
+class PochaPQSBox(PochaQSBox, ParticularQuickStats):
+    pass

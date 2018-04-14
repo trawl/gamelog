@@ -10,8 +10,8 @@ except ImportError as error:
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
 
 from controllers.carcassonneengine import CarcassonneEngine
-from gui.game import GameWidget, ScoreSpinBox, GameRoundsDetail, GameRoundTable, GameRoundPlot, GamePlayerWidget, PlayerColours
-from gui.gamestats import QuickStatsBox, StatsTable
+from gui.game import GameWidget, ScoreSpinBox, GameRoundsDetail, GameRoundTable, GameRoundPlot, GamePlayerWidget, PlayerColours,QuickStatsTW
+from gui.gamestats import GeneralQuickStats, StatsTable,ParticularQuickStats
 
 
 class CarcassonneWidget(GameWidget):
@@ -401,7 +401,7 @@ class CarcassonneEntriesDetail(GameRoundsDetail):
         return CarcassonneEntriesPlot(self.engine,self)
     
     def createQSBox(self, parent=None):
-        return CarcassonneQSBox(self)
+        return CarcassonneQSTW(self.engine.getGame(),  self.engine.getListPlayers(), self)
     
     
 class CarcassonneRoundTable(GameRoundTable):
@@ -459,9 +459,13 @@ class CarcassonneEntriesPlot(GameRoundPlot):
         
         for player in self.engine.getListPlayers():        
             self.canvas.addSeries(scores[player],player)
-        
 
-class CarcassonneQSBox(QuickStatsBox):
+class CarcassonneQSTW(QuickStatsTW):
+    def initStatsWidgets(self):
+        self.gs = CarcassonneQSBox(self)
+        self.ps = CarcassonnePQSBox(self)        
+
+class CarcassonneQSBox(GeneralQuickStats):
     
     def __init__(self,parent = None):
         self.game = "Carcassonne"
@@ -494,6 +498,9 @@ class CarcassonneQSBox(QuickStatsBox):
 
         if not singleRecordStats: self.singleRecordsLabel.hide()
         else: self.singleRecordsLabel.show()
+        
+        if not matchRecordStats: self.matchRecordsLabel.hide()
+        else: self.matchRecordsLabel.show()
             
         for row in singleRecordStats:
             row['record'] = QtGui.QApplication.translate("CarcassonneInputWidget",row['record'])
@@ -506,3 +513,5 @@ class CarcassonneQSBox(QuickStatsBox):
         self.updateTable(self.singleRecordsTable, singleRecordStats, keys, 'record', headers)
         self.updateTable(self.matchRecordsTable, matchRecordStats, keys, 'record', headers)
         
+class CarcassonnePQSBox(CarcassonneQSBox, ParticularQuickStats):
+    pass
