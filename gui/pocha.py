@@ -405,10 +405,18 @@ class PochaHandsButton(QtGui.QPushButton):
         self.setMinimumSize(25, 25)
         self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.Maximum)
         self.toggled.connect(self.setColour)
+        self.setColour(False)
         
     def setColour(self,toggle):
         if toggle: self.setStyleSheet("background-color: red; font: bold")
-        else: self.setStyleSheet("background-color: None; font: normal")
+        else: self.setStyleSheet("background-color: lightgreen; font: normal")
+        
+    def setDisabled(self, disabled=True):
+        if disabled:
+            self.setStyleSheet("background-color: none; font: normal")
+        else:
+            self.setColour(self.isChecked())
+        return super(PochaHandsButton,self).setDisabled(disabled)
 
 class PochaRoundsDetail(GameRoundsDetail):
     
