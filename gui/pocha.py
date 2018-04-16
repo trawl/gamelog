@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-try:
-    from PyQt4 import QtCore,QtGui
-    QtCore.Signal = QtCore.pyqtSignal
-    QtCore.Slot = QtCore.pyqtSlot
-except ImportError as error:
-    from PySide import QtCore,QtGui
-    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
+from PyQt5 import QtCore,QtWidgets,QtGui
+QtCore.Signal = QtCore.pyqtSignal
+QtCore.Slot = QtCore.pyqtSlot
+
 
 from controllers.pochaengine import PochaEngine
 from gui.game import GameWidget,GameInputWidget,GameRoundsDetail,GameRoundTable,GameRoundPlot,GamePlayerWidget,PlayerColours
@@ -15,18 +12,18 @@ from gui.gamestats import QuickStatsTW,GeneralQuickStats,ParticularQuickStats
 
 class PochaWidget(GameWidget):
     
-    QtGui.QApplication.translate("PochaWidget",'going up')
-    QtGui.QApplication.translate("PochaWidget",'going down')
-    QtGui.QApplication.translate("PochaWidget",'hand')
-    QtGui.QApplication.translate("PochaWidget",'hands')
-    QtGui.QApplication.translate("PochaWidget",'coins')
-    QtGui.QApplication.translate("PochaWidget",'cups')
-    QtGui.QApplication.translate("PochaWidget",'swords')
-    QtGui.QApplication.translate("PochaWidget",'clubs')
-    QtGui.QApplication.translate("PochaWidget",'diamonds')
-    QtGui.QApplication.translate("PochaWidget",'hearts')
-    QtGui.QApplication.translate("PochaWidget",'pikes')
-    QtGui.QApplication.translate("PochaWidget",'clovers')
+    QtWidgets.QApplication.translate("PochaWidget",'going up')
+    QtWidgets.QApplication.translate("PochaWidget",'going down')
+    QtWidgets.QApplication.translate("PochaWidget",'hand')
+    QtWidgets.QApplication.translate("PochaWidget",'hands')
+    QtWidgets.QApplication.translate("PochaWidget",'coins')
+    QtWidgets.QApplication.translate("PochaWidget",'cups')
+    QtWidgets.QApplication.translate("PochaWidget",'swords')
+    QtWidgets.QApplication.translate("PochaWidget",'clubs')
+    QtWidgets.QApplication.translate("PochaWidget",'diamonds')
+    QtWidgets.QApplication.translate("PochaWidget",'hearts')
+    QtWidgets.QApplication.translate("PochaWidget",'pikes')
+    QtWidgets.QApplication.translate("PochaWidget",'clovers')
         
     def createEngine(self):
         if self.game != 'Pocha':
@@ -41,15 +38,15 @@ class PochaWidget(GameWidget):
         self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
         
-        self.configLayout = QtGui.QGridLayout()
+        self.configLayout = QtWidgets.QGridLayout()
         self.matchGroupLayout.addLayout(self.configLayout)
-        self.suitTypeGroup = QtGui.QButtonGroup(self)
-        self.spanishSuitRadio = QtGui.QRadioButton(self)
+        self.suitTypeGroup = QtWidgets.QButtonGroup(self)
+        self.spanishSuitRadio = QtWidgets.QRadioButton(self)
         self.spanishSuitRadio.setChecked(self.engine.getSuitType()=='spanish')
         self.spanishSuitRadio.toggled.connect(self.changeSuit)
         self.suitTypeGroup.addButton(self.spanishSuitRadio)
         self.configLayout.addWidget(self.spanishSuitRadio)
-        self.frenchSuitRadio = QtGui.QRadioButton(self)
+        self.frenchSuitRadio = QtWidgets.QRadioButton(self)
         self.suitTypeGroup.addButton(self.frenchSuitRadio)
         self.configLayout.addWidget(self.frenchSuitRadio)
         self.frenchSuitRadio.toggled.connect(self.changeSuit)
@@ -61,11 +58,11 @@ class PochaWidget(GameWidget):
         self.detailGroup.edited.connect(self.updatePanel)
         self.widgetLayout.addWidget(self.detailGroup,1,0)        
         
-        self.playerGroup = QtGui.QGroupBox(self)
+        self.playerGroup = QtWidgets.QGroupBox(self)
         self.widgetLayout.addWidget(self.playerGroup,1,1)
 
         self.playerGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-        self.playersLayout = QtGui.QVBoxLayout(self.playerGroup)
+        self.playersLayout = QtWidgets.QVBoxLayout(self.playerGroup)
         self.playersLayout.addStretch()
         self.playerGroupBox = {}
         for i,player in enumerate(self.players):
@@ -81,9 +78,9 @@ class PochaWidget(GameWidget):
         
     def retranslateUI(self):
         super(PochaWidget,self).retranslateUI()
-#         self.playerGroup.setTitle(QtGui.QApplication.translate("PochaWidget","Score"))
-        self.spanishSuitRadio.setText(QtGui.QApplication.translate("PochaWidget","Spanish Deck"))
-        self.frenchSuitRadio.setText(QtGui.QApplication.translate("PochaWidget","French Deck"))
+#         self.playerGroup.setTitle(QtWidgets.QApplication.translate("PochaWidget","Score"))
+        self.spanishSuitRadio.setText(QtWidgets.QApplication.translate("PochaWidget","Spanish Deck"))
+        self.frenchSuitRadio.setText(QtWidgets.QApplication.translate("PochaWidget","French Deck"))
         self.detailGroup.retranslateUI()
         
     def changeSuit(self, *args):
@@ -97,9 +94,9 @@ class PochaWidget(GameWidget):
         hands = self.engine.getHands()
         direction = self.engine.getDirection()
         if hands == 1:
-            self.roundGroup.setTitle("{} - {} {} {}".format(self.roundGroup.title(),str(hands),QtGui.QApplication.translate("PochaWidget","hand"), QtGui.QApplication.translate("PochaWidget",direction)))
+            self.roundGroup.setTitle("{} - {} {} {}".format(self.roundGroup.title(),str(hands),QtWidgets.QApplication.translate("PochaWidget","hand"), QtWidgets.QApplication.translate("PochaWidget",direction)))
         else:
-            self.roundGroup.setTitle("{} - {} {} {}".format(self.roundGroup.title(),str(hands),QtGui.QApplication.translate("PochaWidget","hands"), QtGui.QApplication.translate("PochaWidget",direction)))
+            self.roundGroup.setTitle("{} - {} {} {}".format(self.roundGroup.title(),str(hands),QtWidgets.QApplication.translate("PochaWidget","hands"), QtWidgets.QApplication.translate("PochaWidget",direction)))
         
     def checkPlayerScore(self,player,score): return True
     
@@ -128,11 +125,11 @@ class PochaWidget(GameWidget):
         wonhands = self.gameInput.getWonHands()
         won = sum(wonhands.values())
         if min(wonhands.values()) < 0:
-            QtGui.QMessageBox.warning(self,self.game,QtGui.QApplication.translate("PochaWidget","There are players with no selected won hands."))
+            QtWidgets.QMessageBox.warning(self,self.game,QtWidgets.QApplication.translate("PochaWidget","There are players with no selected won hands."))
             return
         
         if hands != won:
-            QtGui.QMessageBox.warning(self,self.game,QtGui.QApplication.translate("PochaWidget","There are {} won hands selected when there should be {}.").format(won,hands))
+            QtWidgets.QMessageBox.warning(self,self.game,QtWidgets.QApplication.translate("PochaWidget","There are {} won hands selected when there should be {}.").format(won,hands))
             return
 
         super(PochaWidget,self).commitRound()
@@ -142,9 +139,9 @@ class PochaWidget(GameWidget):
     
     def updatePlayerOrder(self):
         GameWidget.updatePlayerOrder(self)
-        trash = QtGui.QWidget()
+        trash = QtWidgets.QWidget()
         trash.setLayout(self.playersLayout)
-        self.playersLayout = QtGui.QVBoxLayout(self.playerGroup)
+        self.playersLayout = QtWidgets.QVBoxLayout(self.playerGroup)
         self.playersLayout.addStretch()
         for i,player in enumerate(self.engine.getListPlayers()):
             trash.layout().removeWidget(self.playerGroupBox[player])
@@ -161,7 +158,7 @@ class PochaInputWidget(GameInputWidget):
         self.lastChoices = []
 
     def initUI(self):
-        self.widgetLayout = QtGui.QGridLayout(self)
+        self.widgetLayout = QtWidgets.QGridLayout(self)
         players = self.engine.getListPlayers()
         for i,player in enumerate(players):
             self.playerInputList[player] = PochaPlayerInputWidget(player, self.engine, PlayerColours[i], self)
@@ -260,17 +257,17 @@ class PochaInputWidget(GameInputWidget):
         return
 
     def updatePlayerOrder(self):
-#         QtGui.QWidget().setLayout(self.layout())
-        trash = QtGui.QWidget()
+#         QtWidgets.QWidget().setLayout(self.layout())
+        trash = QtWidgets.QWidget()
         trash.setLayout(self.layout())
-        self.widgetLayout = QtGui.QGridLayout(self)
+        self.widgetLayout = QtWidgets.QGridLayout(self)
         for i,player in enumerate(self.engine.getListPlayers()):
             trash.layout().removeWidget(self.playerInputList[player])
             self.widgetLayout.addWidget(self.playerInputList[player],i/4,i%4)
             self.playerInputList[player].setColour(PlayerColours[i])
             
             
-class PochaPlayerInputWidget(QtGui.QFrame):
+class PochaPlayerInputWidget(QtWidgets.QFrame):
     
     winnerSet = QtCore.Signal(str)
     newExpected = QtCore.Signal()
@@ -282,36 +279,36 @@ class PochaPlayerInputWidget(QtGui.QFrame):
         self.engine = engine
         self.winner = False
         self.pcolour = colour
-        self.mainLayout = QtGui.QVBoxLayout(self)
+        self.mainLayout = QtWidgets.QVBoxLayout(self)
         self.mainLayout.setSpacing(0)
         
-        self.label = QtGui.QLabel(self)
+        self.label = QtWidgets.QLabel(self)
         self.label.setText(self.player)
         self.mainLayout.addWidget(self.label)
         self.label.setAutoFillBackground(False)
-        self.setFrameShape(QtGui.QFrame.Panel)
-        self.setFrameShadow(QtGui.QFrame.Raised)
+        self.setFrameShape(QtWidgets.QFrame.Panel)
+        self.setFrameShadow(QtWidgets.QFrame.Raised)
         self.label.setScaledContents(True)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setWordWrap(False)
         sh = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue())
         self.label.setStyleSheet(sh)
         
-        self.expectedGroupBox = QtGui.QFrame(self)
+        self.expectedGroupBox = QtWidgets.QFrame(self)
         self.mainLayout.addWidget(self.expectedGroupBox)
-        self.ebLayout = QtGui.QHBoxLayout(self.expectedGroupBox)
+        self.ebLayout = QtWidgets.QHBoxLayout(self.expectedGroupBox)
         self.ebLayout.setSpacing(0)
         self.ebLayout.setContentsMargins(2,2,2,2);
-        self.expectedGroup = QtGui.QButtonGroup(self)
+        self.expectedGroup = QtWidgets.QButtonGroup(self)
         self.expectedGroup.buttonReleased.connect(self.expectedClickedAction)
         self.expectedButtons = []
         
-        self.wonGroupBox = QtGui.QFrame(self)
+        self.wonGroupBox = QtWidgets.QFrame(self)
         self.mainLayout.addWidget(self.wonGroupBox)
-        self.wbLayout = QtGui.QHBoxLayout(self.wonGroupBox)
+        self.wbLayout = QtWidgets.QHBoxLayout(self.wonGroupBox)
         self.wbLayout.setSpacing(0)
         self.wbLayout.setContentsMargins(2,2,2,2);
-        self.wonGroup = QtGui.QButtonGroup(self)
+        self.wonGroup = QtWidgets.QButtonGroup(self)
         self.wonGroup.buttonReleased.connect(self.wonClickedAction)
         self.wonButtons = []
         for i in range(-1,9):
@@ -397,13 +394,13 @@ class PochaPlayerInputWidget(QtGui.QFrame):
         self.label.setStyleSheet(sh)     
         
 
-class PochaHandsButton(QtGui.QPushButton):
+class PochaHandsButton(QtWidgets.QPushButton):
     
     def __init__(self,text="",parent=None):
         super(PochaHandsButton,self).__init__(text,parent)
         self.setCheckable(True)
         self.setMinimumSize(25, 25)
-        self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.Maximum)
+        self.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,QtWidgets.QSizePolicy.Maximum)
         self.toggled.connect(self.setColour)
         self.setColour(False)
         
@@ -444,11 +441,11 @@ class PochaRoundTable(GameRoundTable):
         winner = r.getWinner()
         i = r.getNumRound() - 1
         self.insertRow(i)
-        hitem = QtGui.QTableWidgetItem("{} {}".format(self.engine.getHands(r.getNumRound()),QtGui.QApplication.translate("PochaWidget",self.engine.getDirection(r.getNumRound()))))
+        hitem = QtWidgets.QTableWidgetItem("{} {}".format(self.engine.getHands(r.getNumRound()),QtWidgets.QApplication.translate("PochaWidget",self.engine.getDirection(r.getNumRound()))))
         self.setVerticalHeaderItem(i,hitem)
         
         for j, player in enumerate(self.engine.getListPlayers()):
-            item = QtGui.QTableWidgetItem()
+            item = QtWidgets.QTableWidgetItem()
             item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
             item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
             score = r.getPlayerScore(player)
@@ -456,7 +453,7 @@ class PochaRoundTable(GameRoundTable):
             else: background = self.bgcolors[1]
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
             text = str(score)
-            if player == winner: text += QtGui.QApplication.translate("PochaRoundTable"," (Winner)")
+            if player == winner: text += QtWidgets.QApplication.translate("PochaRoundTable"," (Winner)")
             item.setText(text)
             self.setItem(i,j,item)
         self.scrollToBottom()
@@ -473,7 +470,7 @@ class PochaRoundPlot(GameRoundPlot):
             scores[player] = [0]
             
         for rnd in self.engine.getRounds():
-            roundNames.append("{} {}".format(self.engine.getHands(rnd.getNumRound()),QtGui.QApplication.translate("PochaWidget",self.engine.getDirection(rnd.getNumRound())))[:3])            
+            roundNames.append("{} {}".format(self.engine.getHands(rnd.getNumRound()),QtWidgets.QApplication.translate("PochaWidget",self.engine.getDirection(rnd.getNumRound())))[:3])            
             for player in self.engine.getPlayers():
                 rndscore = rnd.getPlayerScore(player)
                 accumscore = scores[player][-1] + rndscore
@@ -492,9 +489,9 @@ class PochaQSTW(QuickStatsTW):
             
 class PochaQSBox(GeneralQuickStats): 
     
-    QtGui.QApplication.translate("GeneralQuickStats",'Max Hits')
-    QtGui.QApplication.translate("GeneralQuickStats",'Min Hits')
-    QtGui.QApplication.translate("GeneralQuickStats",'Best Round')
+    QtWidgets.QApplication.translate("GeneralQuickStats",'Max Hits')
+    QtWidgets.QApplication.translate("GeneralQuickStats",'Min Hits')
+    QtWidgets.QApplication.translate("GeneralQuickStats",'Best Round')
     
     def __init__(self,gname,parent):
         super(PochaQSBox, self).__init__(gname,parent)

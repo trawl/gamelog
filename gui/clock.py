@@ -3,20 +3,16 @@
 
 import datetime
 
-try:
-    from PyQt4 import QtCore,QtGui
-    QtCore.Signal = QtCore.pyqtSignal
-    QtCore.Slot = QtCore.pyqtSlot
-except ImportError as error:
-    from PySide import QtCore,QtGui
-    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
+from PyQt5 import QtCore,QtWidgets
+QtCore.Signal = QtCore.pyqtSignal
+QtCore.Slot = QtCore.pyqtSlot
 
 
-class GameClock(QtGui.QLCDNumber):
+class GameClock(QtWidgets.QLCDNumber):
     
     def __init__(self,elapsed=0,parent=None):
         super(GameClock,self).__init__(parent)
-        self.setSegmentStyle(QtGui.QLCDNumber.Filled)
+        self.setSegmentStyle(QtWidgets.QLCDNumber.Filled)
         self.startTime = datetime.datetime.now()
         self.accumulated = elapsed
         self.paused = False

@@ -4,13 +4,9 @@
 import re
 import sys
 
-try:
-    from PyQt4 import QtCore,QtGui
-    QtCore.Signal = QtCore.pyqtSignal
-    QtCore.Slot = QtCore.pyqtSlot
-except ImportError as error:
-    from PySide import QtCore,QtGui
-    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
+from PyQt5 import QtCore,QtGui,QtWidgets
+QtCore.Signal = QtCore.pyqtSignal
+QtCore.Slot = QtCore.pyqtSlot
 
 from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
 from gui.game import GameWidget, GameInputWidget, GamePlayerWidget, ScoreSpinBox, GameRoundsDetail, GameRoundTable, GameRoundPlot, PlayerColours
@@ -20,30 +16,30 @@ from gui.plots import PlotView
 def getPhaseNames(phasecodes):
     types = {'s': {
                    '2':[
-                        QtGui.QApplication.translate("Phase10Widget",'pair'),
-                        QtGui.QApplication.translate("Phase10Widget",'pairs')
+                        QtWidgets.QApplication.translate("Phase10Widget",'pair'),
+                        QtWidgets.QApplication.translate("Phase10Widget",'pairs')
                         ], 
                    '3':[
-                        QtGui.QApplication.translate("Phase10Widget",'three of a kind','singular'),
-                        QtGui.QApplication.translate("Phase10Widget",'three of a kind','plural')
+                        QtWidgets.QApplication.translate("Phase10Widget",'three of a kind','singular'),
+                        QtWidgets.QApplication.translate("Phase10Widget",'three of a kind','plural')
                         ], 
                    '4':[
-                        QtGui.QApplication.translate("Phase10Widget",'four of a kind','singular'),
-                        QtGui.QApplication.translate("Phase10Widget",'four of a kind','plural')
+                        QtWidgets.QApplication.translate("Phase10Widget",'four of a kind','singular'),
+                        QtWidgets.QApplication.translate("Phase10Widget",'four of a kind','plural')
                         ],
                    '5':[
-                        QtGui.QApplication.translate("Phase10Widget",'five of a kind','singular'),
-                        QtGui.QApplication.translate("Phase10Widget",'five of a kind','plural')
+                        QtWidgets.QApplication.translate("Phase10Widget",'five of a kind','singular'),
+                        QtWidgets.QApplication.translate("Phase10Widget",'five of a kind','plural')
                         ]
                     },
-             'c': QtGui.QApplication.translate("Phase10Widget","cards of the same colour"), 
+             'c': QtWidgets.QApplication.translate("Phase10Widget","cards of the same colour"), 
              'r': [
-                   QtGui.QApplication.translate("Phase10Widget",'run of'),
-                   QtGui.QApplication.translate("Phase10Widget", 'runs of')
+                   QtWidgets.QApplication.translate("Phase10Widget",'run of'),
+                   QtWidgets.QApplication.translate("Phase10Widget", 'runs of')
                    ], 
              'cr': [
-                    QtGui.QApplication.translate("Phase10Widget",'colour run of'),
-                    QtGui.QApplication.translate("Phase10Widget",'colour runs of')
+                    QtWidgets.QApplication.translate("Phase10Widget",'colour run of'),
+                    QtWidgets.QApplication.translate("Phase10Widget",'colour runs of')
                     ]
              }
     phases = []
@@ -81,7 +77,7 @@ class Phase10Widget(GameWidget):
     def initUI(self):
         super(Phase10Widget,self).initUI()
                
-        self.phasesInOrderCheckBox = QtGui.QCheckBox(self.matchGroup)
+        self.phasesInOrderCheckBox = QtWidgets.QCheckBox(self.matchGroup)
         self.phasesInOrderCheckBox.setChecked(self.engine.getPhasesInOrderFlag())
         self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
         self.phasesInOrderCheckBox.setDisabled(self.engine.getNumRound()>1)
@@ -97,15 +93,15 @@ class Phase10Widget(GameWidget):
         self.details.edited.connect(self.updatePanel)
         self.widgetLayout.addWidget(self.details,1,0)   
 
-        self.extraGroup = QtGui.QGroupBox(self)
+        self.extraGroup = QtWidgets.QGroupBox(self)
         self.extraGroup.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout.addWidget(self.extraGroup,1,1)
-        self.extraGroupLayout = QtGui.QVBoxLayout(self.extraGroup)
+        self.extraGroupLayout = QtWidgets.QVBoxLayout(self.extraGroup)
         
         self.phaseLabels = []
         for _ in range(len(self.engine.getPhases())):
             self.extraGroupLayout.addSpacing(10)
-            label = QtGui.QLabel(self)
+            label = QtWidgets.QLabel(self)
             label.setStyleSheet("QLabel {font-size: 22px; font-weight: bold; }")
 #             label.setScaledContents(True)
             self.phaseLabels.append(label)
@@ -116,10 +112,10 @@ class Phase10Widget(GameWidget):
         
     def retranslateUI(self):
         super(Phase10Widget,self).retranslateUI()
-        self.phasesInOrderCheckBox.setText(QtGui.QApplication.translate("Phase10Widget","Phases in order"))
+        self.phasesInOrderCheckBox.setText(QtWidgets.QApplication.translate("Phase10Widget","Phases in order"))
         self.gameInput.retranslateUI()
         self.details.retranslateUI()
-        phaseword = QtGui.QApplication.translate("Phase10Widget","Phase")
+        phaseword = QtWidgets.QApplication.translate("Phase10Widget","Phase")
         for number,(phase,label) in enumerate(zip(getPhaseNames(self.engine.getPhases()),self.phaseLabels),start=1):
             #label.setText("{0} {1:02}: {2}".format(phaseword,number,phase))
             label.setText("{1:02}: {2}".format(phaseword,number,phase))
@@ -176,8 +172,8 @@ class Phase10InputWidget(GameInputWidget):
         self.initUI()
     
     def initUI(self):
-        self.winnerButtonGroup=QtGui.QButtonGroup()
-        self.nobodyWinnerRadioButton = QtGui.QRadioButton(self)
+        self.winnerButtonGroup=QtWidgets.QButtonGroup()
+        self.nobodyWinnerRadioButton = QtWidgets.QRadioButton(self)
         self.nobodyWinnerRadioButton.hide()
         self.nobodyWinnerRadioButton.setChecked(True)
         self.winnerButtonGroup.addButton(self.nobodyWinnerRadioButton)
@@ -185,10 +181,10 @@ class Phase10InputWidget(GameInputWidget):
         players = self.engine.getListPlayers()
         if len(players)>=4:
             players_grid = True
-            self.widgetLayout =  QtGui.QGridLayout(self)
+            self.widgetLayout =  QtWidgets.QGridLayout(self)
         else:
             players_grid = False
-            self.widgetLayout =  QtGui.QVBoxLayout(self)
+            self.widgetLayout =  QtWidgets.QVBoxLayout(self)
 #             self.widgetLayout.addStretch()
 
         for np, player in enumerate(players):
@@ -239,16 +235,16 @@ class Phase10InputWidget(GameInputWidget):
         return None
             
     def updatePlayerOrder(self):
-#         QtGui.QWidget().setLayout(self.layout())
-        trash = QtGui.QWidget()
+#         QtWidgets.QWidget().setLayout(self.layout())
+        trash = QtWidgets.QWidget()
         trash.setLayout(self.layout())
         players = self.engine.getListPlayers()
         if len(players)>=4:
             players_grid = True
-            self.widgetLayout =  QtGui.QGridLayout(self)
+            self.widgetLayout =  QtWidgets.QGridLayout(self)
         else:
             players_grid = False
-            self.widgetLayout =  QtGui.QVBoxLayout(self)
+            self.widgetLayout =  QtWidgets.QVBoxLayout(self)
 
         for i,player in enumerate(self.engine.getListPlayers()):
             trash.layout().removeWidget(self.playerInputList[player])   
@@ -267,7 +263,7 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
         self.setValue(5)
         self.clear()
         self.fixed = False
-        self.setSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.MinimumExpanding)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.MinimumExpanding)
         self.setFixedWidth(60)
         self.setAlignment(QtCore.Qt.AlignCenter)
         self.editingFinished.connect(self.clearFixed)
@@ -349,30 +345,30 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.setTitle(self.player)
         super(Phase10PlayerWidget,self).initUI()
 
-        trashWidget = QtGui.QWidget()
+        trashWidget = QtWidgets.QWidget()
         trashWidget.setLayout(self.mainLayout)
         
-        self.mainLayout = QtGui.QVBoxLayout(self)
+        self.mainLayout = QtWidgets.QVBoxLayout(self)
         self.mainLayout.addStretch()
-        self.upperLayout = QtGui.QHBoxLayout()
+        self.upperLayout = QtWidgets.QHBoxLayout()
         self.mainLayout.addLayout(self.upperLayout)
         self.upperLayout.addStretch()
-        self.phaseNameLabel = QtGui.QLabel(self)
+        self.phaseNameLabel = QtWidgets.QLabel(self)
         self.phaseNameLabel.setStyleSheet("font-weight: bold; font-size: 24px;")
         self.updatePhaseName()
         self.upperLayout.addWidget(self.phaseNameLabel)
         self.upperLayout.addStretch()
-        self.lowerLayout = QtGui.QHBoxLayout()
+        self.lowerLayout = QtWidgets.QHBoxLayout()
         self.mainLayout.addLayout(self.lowerLayout)
         self.mainLayout.addStretch()
         
-        self.phaseLabelsLayout = QtGui.QGridLayout()
+        self.phaseLabelsLayout = QtWidgets.QGridLayout()
         self.phaseLabelsLayout.setSpacing(5)
         
-        self.checkboxLayout = QtGui.QVBoxLayout()
+        self.checkboxLayout = QtWidgets.QVBoxLayout()
         
-        self.scoreLCD = QtGui.QLCDNumber(self)
-        self.scoreLCD.setSegmentStyle(QtGui.QLCDNumber.Flat)
+        self.scoreLCD = QtWidgets.QLCDNumber(self)
+        self.scoreLCD.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
         self.mainLayout.addWidget(self.scoreLCD)
         self.scoreLCD.setNumDigits(3)
         self.scoreLCD.setMinimumWidth(100)
@@ -405,11 +401,11 @@ class Phase10PlayerWidget(GamePlayerWidget):
             self.phaseLabelsLayout.addWidget(label,(phase-1)/5,(phase-1)%5,1,1)
             
         #Middle part - Inputs
-        self.roundWinnerRadioButton = QtGui.QRadioButton()
+        self.roundWinnerRadioButton = QtWidgets.QRadioButton()
         self.bgroup.addButton(self.roundWinnerRadioButton)
         self.checkboxLayout.addWidget(self.roundWinnerRadioButton)
         
-        self.roundPhaseClearedCheckbox = QtGui.QCheckBox(self)  
+        self.roundPhaseClearedCheckbox = QtWidgets.QCheckBox(self)  
         self.checkboxLayout.addWidget(self.roundPhaseClearedCheckbox)
         
         self.roundScore=Phase10ScoreSpinBox(self)
@@ -425,8 +421,8 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.retranslateUI()    
         
     def retranslateUI(self):
-        self.roundWinnerRadioButton.setText(QtGui.QApplication.translate("Phase10PlayerWidget","Winner"))
-        self.roundPhaseClearedCheckbox.setText(QtGui.QApplication.translate("Phase10PlayerWidget","Completed"))
+        self.roundWinnerRadioButton.setText(QtWidgets.QApplication.translate("Phase10PlayerWidget","Winner"))
+        self.roundPhaseClearedCheckbox.setText(QtWidgets.QApplication.translate("Phase10PlayerWidget","Completed"))
         self.updatePhaseName()
                     
     def updateDisplay(self,points,completed_phases,remaining_phases):
@@ -505,7 +501,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
         if child is None: self.roundScore.setFocus()
         elif type(child) == Phase10Label and not self.phases_in_order:
             self.updatePhaseSelected(child)
-        return QtGui.QGroupBox.mousePressEvent(self, event)
+        return QtWidgets.QGroupBox.mousePressEvent(self, event)
 #        
     def isRoundWinner(self): return self.roundWinnerRadioButton.isChecked()
  
@@ -532,20 +528,20 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.setStyleSheet("QGroupBox {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}".format(self.pcolour.red(),self.pcolour.green(),self.pcolour.blue()))
 
   
-class Phase10Label(QtGui.QLabel):
+class Phase10Label(QtWidgets.QLabel):
     
     def __init__(self,number,parent=None):
         super(Phase10Label, self).__init__(parent)
         self.setText(str(number).zfill(2))
         self.setAutoFillBackground(False)
         self.setRemaining()
-        self.setFrameShape(QtGui.QFrame.StyledPanel)
-#         self.setFrameShadow(QtGui.QFrame.Raised)
+        self.setFrameShape(QtWidgets.QFrame.StyledPanel)
+#         self.setFrameShadow(QtWidgets.QFrame.Raised)
         self.setScaledContents(True)
         self.setAlignment(QtCore.Qt.AlignCenter)
         self.setWordWrap(False)
         self.setMinimumSize(30, 30)
-        self.setSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.MinimumExpanding)
+        self.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding,QtWidgets.QSizePolicy.MinimumExpanding)
 #         self.setFixedSize(QtCore.QSize(40,40))
         self.number = number
 
@@ -580,11 +576,11 @@ class Phase10RoundsDetail(GameRoundsDetail):
         self.container.setCurrentIndex(0)
         
     def retranslateUI(self):
-#         self.setTitle(QtGui.QApplication.translate("GameRoundsDetail",'Details'))
-        self.container.setTabText(0,QtGui.QApplication.translate("Phase10Widget","Score"))
-        self.container.setTabText(1,QtGui.QApplication.translate("GameRoundsDetail","Table"))
-        self.container.setTabText(2,QtGui.QApplication.translate("GameRoundsDetail","Plot"))
-        self.container.setTabText(3,QtGui.QApplication.translate("GameRoundsDetail","Statistics"))
+#         self.setTitle(QtWidgets.QApplication.translate("GameRoundsDetail",'Details'))
+        self.container.setTabText(0,QtWidgets.QApplication.translate("Phase10Widget","Score"))
+        self.container.setTabText(1,QtWidgets.QApplication.translate("GameRoundsDetail","Table"))
+        self.container.setTabText(2,QtWidgets.QApplication.translate("GameRoundsDetail","Plot"))
+        self.container.setTabText(3,QtWidgets.QApplication.translate("GameRoundsDetail","Statistics"))
         self.gamestats.retranslateUI()
         self.plot.retranslateUI()
         self.updateRound()
@@ -605,11 +601,11 @@ class Phase10RoundTable(GameRoundTable):
         i = r.getNumRound() - 1
         self.insertRow(i)
         for j, player in enumerate(self.engine.getListPlayers()):
-            item = QtGui.QTableWidgetItem()
+            item = QtWidgets.QTableWidgetItem()
             item.setFlags(item.flags()^QtCore.Qt.ItemIsEditable)
             item.setTextAlignment(QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
             if player == winner:
-                text = QtGui.QApplication.translate("Phase10RoundTable","Winner")
+                text = QtWidgets.QApplication.translate("Phase10RoundTable","Winner")
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)   
@@ -617,7 +613,7 @@ class Phase10RoundTable(GameRoundTable):
                 text = str(r.getPlayerScore(player))
             a_phase = r.getPlayerAimedPhase(player)
             c_phase = r.getPlayerCompletedPhase(player)
-            text += QtGui.QApplication.translate("Phase10PlayerWidget", " (Phase {})").format(a_phase)
+            text += QtWidgets.QApplication.translate("Phase10PlayerWidget", " (Phase {})").format(a_phase)
             if c_phase != 0: background = 0xCCFF99 #green
             else: background = 0xFFCC99 #red
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
@@ -631,15 +627,15 @@ class Phase10RoundPlot(GameRoundPlot):
     def initUI(self):
         super(Phase10RoundPlot,self).initUI()
         self.setStyleSheet("QLabel {font-size: 18px; }")
-        QtGui.QWidget().setLayout(self.layout())
-        self.widgetLayout = QtGui.QGridLayout()
+        QtWidgets.QWidget().setLayout(self.layout())
+        self.widgetLayout = QtWidgets.QGridLayout()
         self.setLayout(self.widgetLayout)
 
-        self.phasesLabel = QtGui.QLabel("",self)
+        self.phasesLabel = QtWidgets.QLabel("",self)
         self.widgetLayout.addWidget(self.phasesLabel,0,0)
-        self.scoreLabel = QtGui.QLabel("",self)
+        self.scoreLabel = QtWidgets.QLabel("",self)
         self.widgetLayout.addWidget(self.scoreLabel,0,1)
-        self.playersTitleLabel = QtGui.QLabel("",self)
+        self.playersTitleLabel = QtWidgets.QLabel("",self)
         self.widgetLayout.addWidget(self.playersTitleLabel,0,2)
         
         self.canvas = PlotView(PlayerColours,self)
@@ -651,7 +647,7 @@ class Phase10RoundPlot(GameRoundPlot):
         self.scorecanvas.addLinePlot()
         self.widgetLayout.addWidget(self.scorecanvas,1,1)
         
-        self.playersListLayout = QtGui.QVBoxLayout()
+        self.playersListLayout = QtWidgets.QVBoxLayout()
         self.widgetLayout.addLayout(self.playersListLayout,1,2)
         
         self.playersListLayout.addStretch()
@@ -659,7 +655,7 @@ class Phase10RoundPlot(GameRoundPlot):
         
         for i,player in enumerate(self.engine.getListPlayers()):
             colour = PlayerColours[i]
-            label = QtGui.QLabel(player)
+            label = QtWidgets.QLabel(player)
             label.setStyleSheet("QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}".format(colour.red(),colour.green(),colour.blue()))
             self.playersListLayout.addWidget(label)
 #             self.playersListLayout.addStretch()
@@ -672,9 +668,9 @@ class Phase10RoundPlot(GameRoundPlot):
         
     def retranslatePlot(self):
         super(Phase10RoundPlot,self).retranslatePlot()
-        self.phasesLabel.setText(QtGui.QApplication.translate("Phase10RoundPlot",'Phases') )
-        self.scoreLabel.setText(QtGui.QApplication.translate("Phase10RoundPlot",'Scores') )
-#         self.playersTitleLabel.setText(QtGui.QApplication.translate("Phase10RoundPlot",'Players') )
+        self.phasesLabel.setText(QtWidgets.QApplication.translate("Phase10RoundPlot",'Phases') )
+        self.scoreLabel.setText(QtWidgets.QApplication.translate("Phase10RoundPlot",'Scores') )
+#         self.playersTitleLabel.setText(QtWidgets.QApplication.translate("Phase10RoundPlot",'Players') )
         
     def updatePlot(self):
         super(Phase10RoundPlot,self).updatePlot()
@@ -706,17 +702,17 @@ class Phase10RoundPlot(GameRoundPlot):
         self.updatePlayerOrder()
             
     def updatePlayerOrder(self):
-        trash = QtGui.QWidget()
+        trash = QtWidgets.QWidget()
         self.widgetLayout.removeItem(self.playersListLayout)
         trash.setLayout(self.playersListLayout)
-        self.playersListLayout = QtGui.QVBoxLayout()
+        self.playersListLayout = QtWidgets.QVBoxLayout()
         self.widgetLayout.addLayout(self.playersListLayout,1,2)
          
         self.playersListLayout.addStretch()
          
         for i,player in enumerate(self.engine.getListPlayers()):
             colour = PlayerColours[i]
-            label = QtGui.QLabel(player)
+            label = QtWidgets.QLabel(player)
             label.setStyleSheet("QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}".format(colour.red(),colour.green(),colour.blue()))
             self.playersListLayout.addWidget(label)
          
@@ -730,8 +726,8 @@ class Phase10QSTW(QuickStatsTW):
         
 class Phase10QSBox(GeneralQuickStats): 
     
-    QtGui.QApplication.translate("AbstractQuickStatsBox",'Lowest phases')
-    QtGui.QApplication.translate("AbstractQuickStatsBox",'Damned phase')
+    QtWidgets.QApplication.translate("AbstractQuickStatsBox",'Lowest phases')
+    QtWidgets.QApplication.translate("AbstractQuickStatsBox",'Damned phase')
     
     def __init__(self,gname,parent):
         super(Phase10QSBox, self).__init__(gname,parent)

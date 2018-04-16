@@ -3,13 +3,9 @@
 
 import sys
 
-try:
-    from PyQt4 import QtCore,QtGui
-    QtCore.Signal = QtCore.pyqtSignal
-    QtCore.Slot = QtCore.pyqtSlot
-except ImportError as error:
-    from PySide import QtCore,QtGui
-    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
+from PyQt5 import QtCore,QtWidgets, QtGui
+QtCore.Signal = QtCore.pyqtSignal
+QtCore.Slot = QtCore.pyqtSlot
 
 colours=[QtGui.QColor(237,44,48),
          QtGui.QColor(23,89,169),
@@ -20,10 +16,10 @@ colours=[QtGui.QColor(237,44,48),
          QtGui.QColor(179,56,148)
          ]
 
-class PlotView(QtGui.QGraphicsView):
+class PlotView(QtWidgets.QGraphicsView):
     def __init__(self,clrs=colours,parent=None):
-        QtGui.QGraphicsView.__init__(self,parent)
-        self.scene = QtGui.QGraphicsScene(self)
+        QtWidgets.QGraphicsView.__init__(self,parent)
+        self.scene = QtWidgets.QGraphicsScene(self)
         self.scene.setSceneRect(QtCore.QRectF(0, 0, 440, 340))
         self.setScene(self.scene)
         self.setBackgroundBrush(QtGui.QBrush(QtGui.QColor(0,0,0,0)))
@@ -34,7 +30,8 @@ class PlotView(QtGui.QGraphicsView):
         self.setBackgroundBrush(QtGui.QBrush(colour))
         
     def addLinePlot(self):
-        self.plot = LinePlot(self.colours,None,self.scene)
+        self.plot = LinePlot(self.colours)
+        self.scene.addItem(self.plot)
         
     def addHHeaders(self,headers):
         self.plot.addHHeaders(headers)
@@ -53,10 +50,10 @@ class PlotView(QtGui.QGraphicsView):
         if self.plot: self.plot.updatePlot()
         
         
-class LinePlot(QtGui.QGraphicsItem):
+class LinePlot(QtWidgets.QGraphicsItem):
     
-    def __init__(self,clrs=None,parent=None, scene=None):
-        super(LinePlot,self).__init__(parent, scene)
+    def __init__(self,clrs=None,parent=None):
+        super(LinePlot,self).__init__(parent)
         self.hmargin = 50
         self.vmargin = 40
         self.awidth = 400
@@ -110,7 +107,7 @@ class LinePlot(QtGui.QGraphicsItem):
         self.changed=True
         
     def decorateAxes(self):
-        QtGui.QGraphicsRectItem(self.hmargin,self.vmargin,self.awidth,self.aheight,self)
+        QtWidgets.QGraphicsRectItem(self.hmargin,self.vmargin,self.awidth,self.aheight,self)
         self.computeAxesBoundaries()
         self.drawVRefs()
         self.drawHRefs()
@@ -176,7 +173,7 @@ class LinePlot(QtGui.QGraphicsItem):
                 PlotLine(pxstart-2,py,pxend,py,1.5,QtCore.Qt.black,self)
             else:
                 PlotLine(pxstart-2,py,pxend,py,0.5,colour,self)
-            nlabel=QtGui.QGraphicsSimpleTextItem("{}".format(vy),self)
+            nlabel=QtWidgets.QGraphicsSimpleTextItem("{}".format(vy),self)
             font = nlabel.font()
             font.setPixelSize(20)
             nlabel.setFont(font)
@@ -221,7 +218,7 @@ class LinePlot(QtGui.QGraphicsItem):
             PlotLine(px+0.5,pystart+2,px+0.5,pyend,1.5,colour,self)
             try : header = self.hheaders[vx]
             except IndexError: header = vx
-            nlabel=QtGui.QGraphicsSimpleTextItem("{}".format(header),self)
+            nlabel=QtWidgets.QGraphicsSimpleTextItem("{}".format(header),self)
             font = nlabel.font()
             font.setPixelSize(20)
             nlabel.setFont(font)
@@ -260,9 +257,9 @@ class LinePlot(QtGui.QGraphicsItem):
         return QtCore.QPointF(px,py)
 
 
-class PlotLine(QtGui.QGraphicsLineItem):
-    def __init__(self,x1,y1,x2,y2,linewidth=None,colour=None,parent=None,scene=None):
-        super(PlotLine,self).__init__(x1,y1,x2,y2,parent,scene)
+class PlotLine(QtWidgets.QGraphicsLineItem):
+    def __init__(self,x1,y1,x2,y2,linewidth=None,colour=None,parent=None):
+        super(PlotLine,self).__init__(x1,y1,x2,y2,parent)
         pen = self.pen()
         if linewidth: pen.setWidthF(linewidth)
         if colour: pen.setColor(colour)
@@ -274,10 +271,10 @@ class PlotLine(QtGui.QGraphicsLineItem):
         painter.setRenderHint(QtGui.QPainter.Antialiasing,False);
 
 
-class PlotDot(QtGui.QGraphicsEllipseItem):
-    def __init__(self,x,y,width,colour=None,parent=None,scene=None):
+class PlotDot(QtWidgets.QGraphicsEllipseItem):
+    def __init__(self,x,y,width,colour=None,parent=None):
         radius=width/2.0
-        super(PlotDot,self).__init__(x-radius,y-radius,width,width,parent,scene)
+        super(PlotDot,self).__init__(x-radius,y-radius,width,width,parent)
         brush = self.brush()
         brush.setStyle(QtCore.Qt.SolidPattern)
         if colour: 
@@ -304,7 +301,7 @@ class PlotDot(QtGui.QGraphicsEllipseItem):
         painter.setRenderHint(QtGui.QPainter.Antialiasing,False);
         
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     view = PlotView()
     view.addLinePlot()
     data=[0,1,2,4,8,16,8,4,2,1,0]
