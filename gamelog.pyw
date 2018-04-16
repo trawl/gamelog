@@ -6,13 +6,11 @@ import sys
 import os
 import ctypes
 
-try:
-    from PyQt4 import QtCore,QtGui
-    QtCore.Signal = QtCore.pyqtSignal
-    QtCore.Slot = QtCore.pyqtSlot
-except ImportError as error:
-    from PySide import QtCore,QtGui
-    QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
+
+from PyQt5 import QtCore,QtWidgets
+QtCore.Signal = QtCore.pyqtSignal
+QtCore.Slot = QtCore.pyqtSlot
+
     
 # Program imports
 from gui.mainwindow import MainWindow
@@ -30,8 +28,8 @@ if __name__ == "__main__":
     translator = QtCore.QTranslator()
     if not translator.load(QtCore.QLocale.system().name(),'i18n/'):
         translator.load('i18n/es_ES')
-    app = QtGui.QApplication(sys.argv)
-#    app.setStyle(QtGui.QStyleFactory.create("plastique"))
+    app = QtWidgets.QApplication(sys.argv)
+#    app.setStyle(QtWidgets.QStyleFactory.create("plastique"))
     app.installTranslator(translator)
     mw = MainWindow()
     sys.exit(app.exec_())
