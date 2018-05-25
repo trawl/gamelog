@@ -153,9 +153,9 @@ class PochaWidget(GameWidget):
             return
 
         if hands != won:
-            msg = i18n("PochaWidget",
-                       ("There are {} won hands selected when "
-                        "there should be {}."))
+            msg = i18n(
+                "PochaWidget",
+                "There are {} won hands selected when there should be {}.")
             QMessageBox.warning(
                 self, self.game, msg.format(won, hands))
             return
@@ -519,8 +519,7 @@ class PochaRoundTable(GameRoundTable):
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
             text = str(score)
             if player == winner:
-                text += i18n(
-                    "PochaRoundTable", " (Winner)")
+                text += i18n("PochaRoundTable", " (Winner)")
             item.setText(text)
             self.setItem(i, j, item)
         self.scrollToBottom()

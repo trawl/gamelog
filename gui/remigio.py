@@ -92,9 +92,8 @@ class RemigioWidget(GameWidget):
         super(RemigioWidget, self).updateGameStatusLabel()
         if self.gameStatusLabel.text() == "":
             self.gameStatusLabel.setStyleSheet("QLabel {font-weight:bold;}")
-            msg = i18n("RemigioWidget",
-                       ("Warning: real points are computed automatically "
-                        "depending on the close type"))
+            msg = i18n("RemigioWidget", "Warning: real points are computed \
+                        automatically depending on the close type")
             self.gameStatusLabel.setText(msg)
 
     def getPlayerExtraInfo(self, player):
