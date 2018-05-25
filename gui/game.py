@@ -175,7 +175,7 @@ class GameWidget(Tab):
         winner = self.gameInput.getWinner()
         if not winner:
             msg = i18n("GameWidget", "No winner selected")
-            QMessageBox.warning(self, self.game, mag)
+            QMessageBox.warning(self, self.game, msg)
 
             return
         else:
@@ -584,8 +584,8 @@ class GameRoundTable(QTableWidget):
         action = menu.exec_(self.mapToGlobal(position))
         if action == deleteEntryAction:
             title = i18n("GameRoundTable", 'Delete Entry')
-            msg = i18n("GameRoundTable", ("Are you sure you want to"
-                                          "delete this entry?"))
+            msg = i18n("GameRoundTable", "Are you sure you want to \
+                        delete this entry?")
             ret = QMessageBox.question(self, title, msg,
                                        QMessageBox.Yes | QMessageBox.No,
                                        QMessageBox.Yes)

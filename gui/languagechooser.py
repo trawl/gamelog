@@ -10,8 +10,8 @@ i18n = QApplication.translate
 class LanguageChooser(QDialog):
 
     newQM = QtCore.pyqtSignal(str)
-    supportedLanguages = {'Español': 'i18n/es_ES',
-                          'English': 'i18n/en_GB', 'Català': 'i18n/ca_ES'}
+    supportedLanguages = {'Español': 'es_ES',
+                          'English': 'en_GB', 'Català': 'ca_ES'}
 
     def __init__(self, parent=None):
         super(LanguageChooser, self).__init__(parent)

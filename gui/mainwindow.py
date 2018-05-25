@@ -3,7 +3,7 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtWidgets import (QAction, QApplication, QDialog, QHBoxLayout,
                              QLabel, QMainWindow, QMessageBox, QTabWidget,
-                             QVBoxLayout, QWidget)
+                             QVBoxLayout, QWidget, qApp)
 
 from controllers.db import db
 from gui.newgame import NewGameWidget
@@ -20,11 +20,12 @@ class MainWindow(QMainWindow):
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "OK")
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "Cancel")
 
-    def __init__(self, parent=None):
+    def __init__(self, translator=None, qt_translator=None, parent=None):
         super(MainWindow, self).__init__(parent)
         db.connectDB()
         self.openedGames = []
-        self.translator = None
+        self.translator = translator
+        self.qt_translator = qt_translator
         self.initUI()
 
     def initUI(self):
@@ -114,9 +115,8 @@ class MainWindow(QMainWindow):
             tit = i18n("MainWindow", 'Exit')
             if (numgames == 1):
                 msg = i18n(
-                    "MainWindow",
-                    ("You have an opened {} match. "
-                     "Do you want to save it before exiting?"))
+                    "MainWindow", "You have an opened {} match. \
+                    Do you want to save it before exiting?")
                 msg = msg.format(realopened[0].getGameName())
                 reply = QMessageBox.question(self, tit, msg,
                                              QMessageBox.Yes |
@@ -125,10 +125,9 @@ class MainWindow(QMainWindow):
                                              QMessageBox.Cancel)
             else:
                 tit = i18n("MainWindow", 'Exit')
-                msg = ("You have {} opened matches. "
-                       "Do you want to save them before exiting?")
-                msg = i18n(
-                    "MainWindow", msg).format(numgames)
+                msg = i18n("MainWindow", "You have {} opened matches. \
+                            Do you want to save them before exiting?")
+                msg = msg.format(numgames)
                 reply = QMessageBox.question(self, tit, msg,
                                              QMessageBox.Yes |
                                              QMessageBox.No |
@@ -145,8 +144,8 @@ class MainWindow(QMainWindow):
                     game.saveMatch()
         else:
             tit = i18n("MainWindow", 'Exit')
-            msg = "Are you sure you want to exit GameLog?"
-            msg = i18n("MainWindow", msg)
+            msg = i18n("MainWindow", "Are you sure you want to exit GameLog?")
+
             reply = QMessageBox.question(self, tit, msg,
                                          QMessageBox.Yes | QMessageBox.No,
                                          QMessageBox.No)
@@ -184,13 +183,20 @@ class MainWindow(QMainWindow):
         self.abdialog = AboutDialog(self)
         self.abdialog.exec_()
 
-    def loadTranslator(self, tfile):
+    def loadTranslator(self, lang):
         translator = QtCore.QTranslator()
-        ret = translator.load(tfile)
+        ret = translator.load(lang, 'i18n/')
+        qt_translator = QtCore.QTranslator()
+        qt_qm = 'qtbase_' + lang.split('_')[0]
+        qt_translator.load(qt_qm, 'i18n/')
         if ret:
             if self.translator:
                 qApp.removeTranslator(self.translator)
+            if self.qt_translator:
+                qApp.removeTranslator(self.qt_translator)
+            self.qt_translator = qt_translator
             self.translator = translator
+            qApp.installTranslator(self.qt_translator)
             qApp.installTranslator(self.translator)
 
     def changeEvent(self, event):

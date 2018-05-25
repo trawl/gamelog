@@ -4,7 +4,8 @@
 import sys
 import os
 import ctypes
-from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import QTranslator, QLibraryInfo, QLocale
+from PyQt5.QtWidgets import QApplication
 from gui.mainwindow import MainWindow
 
 if __name__ == "__main__":
@@ -19,12 +20,20 @@ if __name__ == "__main__":
         sys.stdout = f
         sys.stderr = f
 
+    app = QApplication(sys.argv)
     # Default to system language, fallback to Spanish if not available
-    translator = QtCore.QTranslator()
-    if not translator.load(QtCore.QLocale.system().name(), 'i18n/'):
+    qt_translator = QTranslator()
+    qt_translator.load('i18n/qtbase_ca')
+
+    translator = QTranslator()
+    if translator.load(QLocale.system().name(), 'i18n/'):
+        qt_translator.load('i18n/qtbase_' + QLocale.system().name())
+    else:
         translator.load('i18n/es_ES')
-    app = QtWidgets.QApplication(sys.argv)
-#    app.setStyle(QtWidgets.QStyleFactory.create("plastique"))
+        qt_translator.load('i18n/qtbase_es')
+#    app.setStyle(QStyleFactory.create("plastique"))
+    app.installTranslator(qt_translator)
     app.installTranslator(translator)
-    mw = MainWindow()
+
+    mw = MainWindow(translator, qt_translator)
     sys.exit(app.exec_())
