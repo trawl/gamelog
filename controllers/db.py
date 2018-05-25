@@ -6,27 +6,30 @@ import os.path
 import sqlite3 as lite
 import datetime
 
+
 class GameLogDB:
     __shared_state = {}
+
     def __init__(self):
         self.__dict__ = self.__shared_state
-        if not hasattr(self,'con'):
-            self.con=None
-    def connectDB(self,dbname='db/gamelog.db'):
+        if not hasattr(self, 'con'):
+            self.con = None
+
+    def connectDB(self, dbname='db/gamelog.db'):
         self.disconnectDB()
         dbdir, _ = os.path.split(dbname)
         if not os.path.isdir(dbdir):
-            try: 
+            try:
                 os.makedirs(dbdir)
             except os.error as e:
                 self._printError("Error creating DB: {}".format(e.args[0]))
                 sys.exit(1)
-        try:    
+        try:
             self.con = lite.connect(dbname)
             self._checkDB()
         except Exception as e:
-            self._printError("Error creating DB: {}".format(e.args[0]))
-            
+            self._printError("Error connecting to DB: {}".format(e.args[0]))
+
         db.execute("PRAGMA synchronous=OFF")
 
     def isConnected(self):
@@ -35,7 +38,8 @@ class GameLogDB:
     def disconnectDB(self):
         if self.con:
             self.con.close()
-    def execute(self,query):
+
+    def execute(self, query):
         try:
             with self.con:
                 self.con.row_factory = lite.Row
@@ -43,19 +47,20 @@ class GameLogDB:
                 cur.execute(query)
                 return cur
         except lite.Error as e:
-            self._printError("Error running query {}\n {}".format(query,e.args[0]))
+            self._printError(
+                "Error running query {}\n {}".format(query, e.args[0]))
             sys.exit(1)
-            
-    def queryDict(self,query):
-        result=[]
+
+    def queryDict(self, query):
+        result = []
         for row in self.execute(query):
             entry = {}
             for key in row.keys():
-                entry[key]=row[key]
+                entry[key] = row[key]
             result.append(entry)
         return result
-            
-    def _executeScript(self,script):
+
+    def _executeScript(self, script):
         try:
             with self.con:
                 cur = self.con.cursor()
@@ -64,56 +69,68 @@ class GameLogDB:
         except lite.Error as e:
             self._printError("Error running script: {}".format(e.args[0]))
             sys.exit(1)
-            
+
     def _checkDB(self):
-        cur = self.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Game'")
+        cur = self.execute(
+            ("SELECT name FROM sqlite_master "
+             "WHERE type='table' AND name='Game'"))
         if not cur.fetchone():
             self._executeScript(_emptydb)
-            
+
     def getAvailableGames(self):
         cur = db.execute("Select name,maxPlayers,description,rules from Game")
-        games=dict()
+        games = dict()
         for row in cur:
-            games[row['name']]=dict()
-            games[row['name']]['maxPlayers']=row['maxPlayers']
-            games[row['name']]['description']=row['description']
-            games[row['name']]['rules']=row['rules']
+            games[row['name']] = dict()
+            games[row['name']]['maxPlayers'] = row['maxPlayers']
+            games[row['name']]['description'] = row['description']
+            games[row['name']]['rules'] = row['rules']
         return games
-    
+
     def getLastGame(self):
-        cur = db.execute("Select Game_name from Match order by idMatch desc limit 1")
+        cur = db.execute(
+            "Select Game_name from Match order by idMatch desc limit 1")
         row = cur.fetchone()
-        if not row: return None
+        if not row:
+            return None
         return str(row['Game_name'])
-    
+
     def getPlayerNicks(self):
         cur = db.execute("Select nick from Player order by nick")
-        return [ row['nick'] for row in cur ]
-    
+        return [row['nick'] for row in cur]
+
     def getPlayers(self):
         cur = db.execute("Select * from Player order by nick")
         return cur
-    
-    def addPlayer(self,nick,fullname):
-        db.execute("INSERT INTO Player(nick,fullName,dateCreation) VALUES('{}','{}','{}')".format(nick,fullname,datetime.datetime.now()))
 
-    def isPlayerFavourite(self,nick):
-        cur = db.execute("Select nick from Player where nick='{}' and favourite=1".format(nick))
-        if not cur.fetchone(): return False
-        else: return True
-    
-    def setPlayerFavourite(self,nick,isfav):  
-        if isfav: flag = 1
-        else: flag = 0
-        db.execute("UPDATE Player set favourite={} where nick='{}'".format(flag,nick))
-           
-    def _printError(self,message):
+    def addPlayer(self, nick, fullname):
+        db.execute("INSERT INTO Player(nick,fullName,dateCreation) "
+                   "VALUES('{}','{}','{}')".format(
+                        nick, fullname, datetime.datetime.now()))
+
+    def isPlayerFavourite(self, nick):
+        cur = db.execute("SELECT nick FROM Player "
+                         "WHERE nick='{}' and favourite=1".format(nick))
+        if not cur.fetchone():
+            return False
+        else:
+            return True
+
+    def setPlayerFavourite(self, nick, isfav):
+        if isfav:
+            flag = 1
+        else:
+            flag = 0
+        db.execute("UPDATE Player SET favourite={} "
+                   "WHERE nick='{}'".format(flag, nick))
+
+    def _printError(self, message):
         # Python 2 syntax
-#         print >> sys.stderr, message
+        #         print >> sys.stderr, message
         # Python 3 syntax
-        print(message,file=sys.stderr)
-           
-           
+        print(message, file=sys.stderr)
+
+
 db = GameLogDB()
 
 
@@ -125,11 +142,12 @@ CREATE TABLE `Game` (
   `description` TEXT NULL ,
   `rules` TEXT NULL ,
   PRIMARY KEY (`name`) );
-INSERT INTO "Game" VALUES('Phase10',6,'Standard Edition','Todos las sabemos ya');
-INSERT INTO "Game" VALUES('Phase10Master',6,'Master Edition','El dani las tiene');
+INSERT INTO "Game" VALUES('Phase10',6,'Standard Edition','Home rules');
+INSERT INTO "Game" VALUES('Phase10Master',6,'Master Edition','Home rules');
 INSERT INTO "Game" VALUES('Remigio',12,'Classic Remigio','Home rules');
 INSERT INTO "Game" VALUES('Ratuki',5,'Ratuki Slap game','Home rules');
-INSERT INTO "Game" VALUES('Carcassonne',6,'Carcassonne board game','Home rules');
+INSERT INTO "Game"
+    VALUES('Carcassonne',6,'Carcassonne board game','Home rules');
 INSERT INTO "Game" VALUES('Pocha',6,'Carcassonne board game','Home rules');
 DROP TABLE IF EXISTS "GameExtras";
 CREATE TABLE `GameExtras` (
@@ -162,7 +180,8 @@ INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 07','2s4');
 INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 08','1cr4 1s3');
 INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 09','1s5 1s3');
 INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 10','1s5 1cr3');
-INSERT INTO "GameExtras" VALUES ('Carcassonne','Kinds','City,Road,Cloister,Field,Goods,Fair');
+INSERT INTO "GameExtras"
+    VALUES ('Carcassonne','Kinds','City,Road,Cloister,Field,Goods,Fair');
 DROP TABLE IF EXISTS "Match";
 CREATE TABLE `Match` (
   `idMatch` INTEGER  PRIMARY KEY ,
@@ -193,7 +212,7 @@ CREATE TABLE `MatchPlayer` (
     REFERENCES `Player` (`nick` )
     ON DELETE NO ACTION
     ON UPDATE CASCADE);
-DROP TABLE IF EXISTS "MatchExtras";    
+DROP TABLE IF EXISTS "MatchExtras";
 CREATE TABLE `MatchExtras` (
   `idMatch` INTEGER  NOT NULL ,
   `key` VARCHAR(45) NOT NULL ,
