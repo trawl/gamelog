@@ -6,32 +6,33 @@ from gui.ratuki import RatukiWidget
 from gui.pocha import PochaWidget
 from gui.carcassonne import CarcassonneWidget
 
+
 class GameWidgetFactory:
-    
+
     @classmethod
-    def createGameWidget(cls,gname,players,parent):
-        if gname in ['Phase10','Phase10Master']:
-            return Phase10Widget(gname,players,None,parent)
+    def createGameWidget(cls, gname, players, parent):
+        if gname in ['Phase10', 'Phase10Master']:
+            return Phase10Widget(gname, players, None, parent)
         if gname == 'Remigio':
-            return RemigioWidget(gname,players,None,parent)      
+            return RemigioWidget(gname, players, None, parent)
         if gname == 'Ratuki':
-            return RatukiWidget(gname,players,None,parent)
+            return RatukiWidget(gname, players, None, parent)
         if gname == 'Carcassonne':
-            return CarcassonneWidget(gname,players,None,parent)
+            return CarcassonneWidget(gname, players, None, parent)
         if gname == 'Pocha':
-            return PochaWidget(gname,players,None,parent)
+            return PochaWidget(gname, players, None, parent)
         return None
-    
+
     @classmethod
-    def resumeGameWidget(cls,gname,engine,parent):
-        if gname in ['Phase10','Phase10Master']:
-            return Phase10Widget(gname,None,engine,parent)
+    def resumeGameWidget(cls, gname, engine, parent):
+        if gname in ['Phase10', 'Phase10Master']:
+            return Phase10Widget(gname, None, engine, parent)
         if gname == 'Remigio':
-            return RemigioWidget(gname,None,engine,parent)
+            return RemigioWidget(gname, None, engine, parent)
         if gname == 'Ratuki':
-            return RatukiWidget(gname,None,engine,parent)
+            return RatukiWidget(gname, None, engine, parent)
         if gname == 'Carcassonne':
-            return CarcassonneWidget(gname,None,engine,parent)
+            return CarcassonneWidget(gname, None, engine, parent)
         if gname == 'Pocha':
-            return PochaWidget(gname,None,engine,parent)
+            return PochaWidget(gname, None, engine, parent)
         return None
