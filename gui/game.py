@@ -64,6 +64,10 @@ class GameWidget(Tab):
         self.buttonGroupLayout.addWidget(self.cancelMatchButton)
         self.cancelMatchButton.clicked.connect(self.cancelMatch)
 
+        self.restartMatchButton = QPushButton(self.roundGroup)
+        self.buttonGroupLayout.addWidget(self.restartMatchButton)
+        self.restartMatchButton.clicked.connect(self.restartMatch)
+
         self.pauseMatchButton = QPushButton(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.pauseMatchButton)
         self.pauseMatchButton.clicked.connect(self.pauseMatch)
@@ -108,6 +112,8 @@ class GameWidget(Tab):
             i18n("GameWidget", "&Pause/Play"))
         self.cancelMatchButton.setText(
             i18n("GameWidget", "&Cancel Match"))
+        self.restartMatchButton.setText(
+            i18n("GameWidget", "Restart &Match"))
         self.commitRoundButton.setText(
             i18n("GameWidget", "Commit &Round"))
         self.playerOrderButton.setText(
@@ -151,6 +157,24 @@ class GameWidget(Tab):
 
         self.toggleScreenLock(True)
         self.requestClose()
+
+    def restartMatch(self):
+        if not self.isFinished():
+            tit = i18n("GameWidget", 'Restart Match')
+            msg = i18n(
+                'GameWidget', 'Do you want to save the current {} match?')
+            msg = msg.format(self.game)
+            ret = QMessageBox.question(self, tit, msg,
+                                       QMessageBox.Yes | QMessageBox.No |
+                                       QMessageBox.Cancel,
+                                       QMessageBox.Cancel)
+
+            if ret == QMessageBox.Cancel:
+                return
+            if ret == QMessageBox.Yes:
+                self.saveMatch()
+        self.toggleScreenLock(True)
+        self.requestRestart()
 
     def pauseMatch(self):
         if self.engine.isPaused():
