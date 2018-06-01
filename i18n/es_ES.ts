@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="es_ES" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="es_ES">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -211,12 +212,12 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="../gui/game.py" line="589"/>
+        <location filename="../gui/game.py" line="613"/>
         <source>Delete Entry</source>
         <translation>Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="590"/>
+        <location filename="../gui/game.py" line="614"/>
         <source>Are you sure you want to                         delete this entry?</source>
         <translation>¿Estás seguro que quieres eliminar esta entrada?</translation>
     </message>
@@ -242,42 +243,42 @@
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="../gui/game.py" line="137"/>
+        <location filename="../gui/game.py" line="143"/>
         <source>Cancel Match</source>
         <translation>Salir del Juego</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="107"/>
+        <location filename="../gui/game.py" line="111"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pausar/Reanudar</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="109"/>
+        <location filename="../gui/game.py" line="113"/>
         <source>&amp;Cancel Match</source>
         <translation>&amp;Salir del Juego</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="111"/>
+        <location filename="../gui/game.py" line="117"/>
         <source>Commit &amp;Round</source>
         <translation>Cerrar &amp;Ronda</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="117"/>
+        <location filename="../gui/game.py" line="123"/>
         <source>Winner deals</source>
         <translation>El ganador reparte</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="126"/>
+        <location filename="../gui/game.py" line="132"/>
         <source>{} won this match!</source>
         <translation>¡{} ha ganado la partida!</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="129"/>
+        <location filename="../gui/game.py" line="135"/>
         <source>Game is paused</source>
         <translation>El juego está pausado</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="177"/>
+        <location filename="../gui/game.py" line="201"/>
         <source>No winner selected</source>
         <translation>No se ha seleccionado ningún ganador</translation>
     </message>
@@ -287,22 +288,22 @@
         <translation>La puntación de {0} no es válida</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="196"/>
+        <location filename="../gui/game.py" line="220"/>
         <source>Commit Round</source>
         <translation>Cerrar Ronda</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="197"/>
+        <location filename="../gui/game.py" line="221"/>
         <source>Are you sure you want to commit the current round?</source>
         <translation>¿Estás seguro que quieres cerrar la ronda actual?</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="233"/>
+        <location filename="../gui/game.py" line="257"/>
         <source>Round {0}</source>
         <translation>Ronda {0}</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="138"/>
+        <location filename="../gui/game.py" line="164"/>
         <source>Do you want to save the current {} match?</source>
         <translation>¿Quieres guardar la partida de {} actual?</translation>
     </message>
@@ -312,9 +313,19 @@
         <translation>&amp;Finalizar Partida</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="113"/>
+        <location filename="../gui/game.py" line="119"/>
         <source>Player &amp;Order</source>
         <translation>&amp;Orden Jugadores</translation>
+    </message>
+    <message>
+        <location filename="../gui/game.py" line="115"/>
+        <source>Restart &amp;Match</source>
+        <translation>Nueva &amp;Partida</translation>
+    </message>
+    <message>
+        <location filename="../gui/game.py" line="163"/>
+        <source>Restart Match</source>
+        <translation>Nueva Partida</translation>
     </message>
 </context>
 <context>
@@ -464,7 +475,7 @@
         <translation>El máximo número de jugadores es</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="190"/>
+        <location filename="../gui/newgame.py" line="207"/>
         <source>Widget not implemented</source>
         <translation>Widget no implementado</translation>
     </message>
@@ -818,42 +829,42 @@
 <context>
     <name>ResumeBox</name>
     <message>
-        <location filename="../gui/newgame.py" line="245"/>
+        <location filename="../gui/newgame.py" line="262"/>
         <source>Saved Games</source>
         <translation>Partidas Guardadas</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="247"/>
+        <location filename="../gui/newgame.py" line="264"/>
         <source>Resume</source>
         <translation>Restaurar</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="251"/>
+        <location filename="../gui/newgame.py" line="268"/>
         <source>No matches to be resumed</source>
         <translation>No hay ninguna partida guardada</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="249"/>
+        <location filename="../gui/newgame.py" line="266"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="306"/>
+        <location filename="../gui/newgame.py" line="324"/>
         <source>Cancel Saved Game</source>
         <translation>Cancelar Partida Guardada</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="307"/>
+        <location filename="../gui/newgame.py" line="325"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>¿Estás seguro que quieres cancelar la partida guardada?</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="276"/>
+        <location filename="../gui/newgame.py" line="293"/>
         <source>Saved on {}. Time played: {}</source>
         <translation>Guardado el {}. Tiempo jugado: {}</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="284"/>
+        <location filename="../gui/newgame.py" line="301"/>
         <source>Players: {}</source>
         <translation>Jugadores: {}</translation>
     </message>

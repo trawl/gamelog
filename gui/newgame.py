@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QComboBox,
                              QGroupBox, QHBoxLayout, QLabel, QListWidget,
                              QListWidgetItem, QMessageBox, QPushButton,
@@ -74,6 +74,7 @@ class NewGameWidget(Tab):
         self.gameGroupBoxLayout.addWidget(self.gameComboBox)
         self.gameDescriptionLabel = QLabel(self.gameGroupBox)
         self.resumeGroup = ResumeBox(self.parent)
+        self.resumeGroup.restartRequested.connect(self.restartGame)
 #        self.gameRulesBrowser = QTextBrowser(self.gameGroupBox)
         self.gameGroupBoxLayout.addWidget(self.gameDescriptionLabel)
         self.gameGroupBoxLayout.addWidget(self.resumeGroup)
@@ -185,12 +186,29 @@ class NewGameWidget(Tab):
                 game, players, self.parent)
             if matchTab:
                 matchTab.closeRequested.connect(self.parent.removeTab)
+                matchTab.restartRequested.connect(self.restartGame)
                 self.parent.newTab(matchTab, game)
             else:
                 QMessageBox.warning(self, tit,
                                     i18n("NewGameWidget",
                                          "Widget not implemented"))
                 return
+
+    def restartGame(self, gamewidget):
+        players = gamewidget.players
+        game = gamewidget.game
+        self.parent.removeTab(gamewidget)
+        matchTab = GameWidgetFactory.createGameWidget(
+            game, players, self.parent)
+        if matchTab:
+            matchTab.closeRequested.connect(self.parent.removeTab)
+            matchTab.restartRequested.connect(self.restartGame)
+            self.parent.newTab(matchTab, game)
+        else:
+            QMessageBox.warning(self, tit,
+                                i18n("NewGameWidget",
+                                     "Widget not implemented"))
+            return
 
     def createNewPlayer(self):
         npd = NewPlayerDialog(self)
@@ -211,6 +229,8 @@ class NewGameWidget(Tab):
 
 
 class ResumeBox(QGroupBox):
+
+    restartRequested = pyqtSignal(QWidget)
 
     def __init__(self, parent):
         super(ResumeBox, self).__init__(parent)
@@ -296,7 +316,11 @@ class ResumeBox(QGroupBox):
                 self.game, gameengine, self.parent)
             if matchTab:
                 matchTab.closeRequested.connect(self.parent.removeTab)
+                matchTab.restartRequested.connect(self.restartGame)
                 self.parent.newTab(matchTab, self.game)
+
+    def restartGame(self, gamewidget):
+        self.restartRequested.emit(gamewidget)
 
     def deleteGame(self):
         selected = self.savedlist.selectedIndexes()
