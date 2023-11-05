@@ -470,7 +470,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
                 label.setPassed()
             self.phaseLabels.append(label)
             self.phaseLabelsLayout.addWidget(
-                label, (phase-1)/5, (phase-1) % 5, 1, 1)
+                label, int((phase-1)/5), int((phase-1) % 5), 1, 1)
 
         # Middle part - Inputs
         self.roundWinnerRadioButton = QRadioButton()

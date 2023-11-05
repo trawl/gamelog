@@ -224,7 +224,7 @@ class CarcassonneInputWidget(QWidget):
             b = QRadioButton(
                 '{}. {}'.format(i, player), self.playerGroup)
             if len(self.engine.getListPlayers()) > 2:
-                self.playerGroupLayout.addWidget(b, (i-1) % 2, (i-1)/2)
+                self.playerGroupLayout.addWidget(b, (i-1) % 2, (i-1)//2)
             else:
                 self.playerGroupLayout.addWidget(b, 0, (i-1) % 2)
             self.playerButtonGroup.addButton(b, i)
@@ -249,7 +249,7 @@ class CarcassonneInputWidget(QWidget):
         for i, kind in enumerate(self.engine.getEntryKinds(), 1):
             lbl = i18n("CarcassonneInputWidget", kind)
             b = QRadioButton('{}. {}'.format(i, lbl), self.kindGroup)
-            self.kindGroupLayout.addWidget(b, (i-1) % 2, (i-1)/2)
+            self.kindGroupLayout.addWidget(b, (i-1) % 2, (i-1)//2)
             self.kindButtonGroup.addButton(b, i)
             b.clicked.connect(self.scoreSpinBox.setFocus)
             self.kindButtons.append(b)
@@ -367,7 +367,7 @@ class CarcassonneInputWidget(QWidget):
             b = QRadioButton(
                 '{}. {}'.format(i, player), self.playerGroup)
             if len(self.engine.getListPlayers()) > 2:
-                self.playerGroupLayout.addWidget(b, (i-1) % 2, (i-1)/2)
+                self.playerGroupLayout.addWidget(b, (i-1) % 2, (i-1)//2)
             else:
                 self.playerGroupLayout.addWidget(b, 0, (i-1) % 2)
             self.playerButtonGroup.addButton(b, i)

@@ -12,6 +12,7 @@ from controllers.carcassonneengine import (CarcassonneEngine,
 from controllers.pochaengine import (PochaEngine, PochaStatsEngine,
                                      PochaParticularStatsEngine)
 from controllers.statsengine import StatsEngine, ParticularStatsEngine
+from controllers.skullkingengine import SkullKingEngine
 
 
 class GameEngineFactory:
@@ -30,6 +31,8 @@ class GameEngineFactory:
             return CarcassonneEngine()
         if gname == 'Pocha':
             return PochaEngine()
+        if gname == 'Skull King':
+            return SkullKingEngine()
 
         return None
 
