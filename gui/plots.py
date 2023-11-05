@@ -4,6 +4,7 @@
 import sys
 
 from PyQt5 import QtCore, QtGui
+from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import (QApplication, QGraphicsEllipseItem, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsRectItem,
                              QGraphicsScene, QGraphicsSimpleTextItem,
@@ -11,7 +12,8 @@ from PyQt5.QtWidgets import (QApplication, QGraphicsEllipseItem, QGraphicsItem,
 
 
 colours = [QtGui.QColor(237, 44, 48),
-           QtGui.QColor(23, 89, 169),
+           QtGui.QColor(123, 164, 218),
+        #    QtGui.QColor(23, 89, 169),
            QtGui.QColor(0, 140, 70),
            QtGui.QColor(243, 124, 33),
            QtGui.QColor(101, 43, 145),
@@ -26,7 +28,6 @@ class PlotView(QGraphicsView):
         self.scene = QGraphicsScene(self)
         self.scene.setSceneRect(QtCore.QRectF(0, 0, 440, 340))
         self.setScene(self.scene)
-        self.setBackgroundBrush(QtGui.QBrush(QtGui.QColor(0, 0, 0, 0)))
         self.setMinimumSize(100, 100)
         self.colours = clrs
 
@@ -74,6 +75,10 @@ class LinePlot(QGraphicsItem):
         self.limitvalue = None
         self.changed = False
         self.colours = clrs
+        self.dark_mode = False
+        self.parent = parent
+        if QPalette().color(QPalette.Window).red() < 128:
+            self.dark_mode = True
 
     def boundingRect(self):
         return QtCore.QRectF(0, 0, self.awidth+self.hmargin*2,
@@ -92,6 +97,10 @@ class LinePlot(QGraphicsItem):
         self.updatePlot()
 
     def paint(self, painter, options, widget):
+        new_theme = QPalette().color(QPalette.Window).red() < 128
+        if self.dark_mode != new_theme:
+            self.dark_mode = new_theme
+            self.changed = True
         if self.changed:
             self.updatePlot()
             self.changed = False
@@ -183,16 +192,23 @@ class LinePlot(QGraphicsItem):
         pxend = pend.x()
         pyend = pend.y()
 
-        while(py > pyend):
-            colour = QtGui.QColor(0, 0, 0, 200)
+        
+        if self.dark_mode:
             colour = QtGui.QColor(255, 255, 255, 200)
+        else:
+            colour = QtGui.QColor(0, 0, 0, 200)
+
+        while(py > pyend):
             if vy == 0:
-                PlotLine(pxstart-2, py, pxend, py, 1.5, QtCore.Qt.black, self)
-                PlotLine(pxstart-2, py, pxend, py, 1.5, QtCore.Qt.white, self)
+                if self.dark_mode:
+                    PlotLine(pxstart-2, py, pxend, py, 1.5, QtCore.Qt.white, self)
+                else:
+                    PlotLine(pxstart-2, py, pxend, py, 1.5, QtCore.Qt.black, self)
             else:
                 PlotLine(pxstart-2, py, pxend, py, 0.5, colour, self)
             nlabel = QGraphicsSimpleTextItem("{}".format(vy), self)
-            nlabel.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255)))
+            if self.dark_mode:
+                nlabel.setBrush(QtGui.QColor(255, 255, 255))
             font = nlabel.font()
             font.setPixelSize(20)
             nlabel.setFont(font)
@@ -238,7 +254,10 @@ class LinePlot(QGraphicsItem):
 
         while(px <= pxend):
             colour = QtGui.QColor(0, 0, 0, 255)
-            colour = QtGui.QColor(255, 255, 255, 255)
+            if self.dark_mode:
+                colour = QtGui.QColor(255, 255, 255, 255)
+            else:
+                colour = QtGui.QColor(0, 0, 0, 255)
             PlotLine(px+0.5, pystart+2, px+0.5, pyend, 1.5, colour, self)
             try:
                 header = self.hheaders[vx]
@@ -246,7 +265,8 @@ class LinePlot(QGraphicsItem):
                 header = vx
             nlabel = QGraphicsSimpleTextItem(
                 "{}".format(header), self)
-            nlabel.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255)))
+            if self.dark_mode:
+                nlabel.setBrush(QtGui.QColor(255, 255, 255))
             font = nlabel.font()
             font.setPixelSize(20)
             nlabel.setFont(font)

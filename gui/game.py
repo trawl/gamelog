@@ -642,6 +642,10 @@ class GameRoundPlot(QWidget):
         self.canvas.addLinePlot()
         self.widgetLayout.addWidget(self.canvas)
         self.plotinited = True
+    
+    def paintEvent(self, event):
+        self.canvas.setBackground(self.palette().color(self.backgroundRole()))
+        QWidget.paintEvent(self, event)
 
     def retranslateUI(self): self.retranslatePlot()
 
