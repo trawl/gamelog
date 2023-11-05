@@ -4,7 +4,9 @@
 import sys
 import os
 import ctypes
-from PyQt5.QtCore import QTranslator, QLibraryInfo, QLocale
+import platform
+from PyQt5.QtCore import QTranslator, QLibraryInfo, QLocale, Qt
+from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QApplication
 from gui.mainwindow import MainWindow
 
@@ -36,4 +38,5 @@ if __name__ == "__main__":
     app.installTranslator(translator)
 
     mw = MainWindow(translator, qt_translator)
+    print(QPalette().color(QPalette.Window).red())
     sys.exit(app.exec_())

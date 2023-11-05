@@ -205,7 +205,7 @@ class NewGameWidget(Tab):
             matchTab.restartRequested.connect(self.restartGame)
             self.parent.newTab(matchTab, game)
         else:
-            QMessageBox.warning(self, tit,
+            QMessageBox.warning(self, "Warning",
                                 i18n("NewGameWidget",
                                      "Widget not implemented"))
             return

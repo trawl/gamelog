@@ -17,7 +17,8 @@ from gui.playerlist import PlayerOrderDialog
 i18n = QApplication.translate
 
 PlayerColours = [QtGui.QColor(237, 44, 48),
-                 QtGui.QColor(23, 89, 169),
+                #  QtGui.QColor(23, 89, 169),
+                 QtGui.QColor(123, 164, 218),
                  QtGui.QColor(0, 140, 70),
                  QtGui.QColor(243, 124, 33),
                  QtGui.QColor(101, 43, 145),
@@ -460,8 +461,10 @@ class GamePlayerWidget(QGroupBox):
         self.unsetDealer()
 
     def updateDisplay(self, points):
-        if points >= 1000:
+        if points >= 1000 or points <= -100:
             self.scoreLCD.setNumDigits(4)
+        else:
+            self.scoreLCD.setNumDigits(3)
         self.scoreLCD.display(points)
 
     def setDealer(self): self.iconlabel.setPixmap(self.dealerPixmap)

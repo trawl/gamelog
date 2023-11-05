@@ -185,11 +185,14 @@ class LinePlot(QGraphicsItem):
 
         while(py > pyend):
             colour = QtGui.QColor(0, 0, 0, 200)
+            colour = QtGui.QColor(255, 255, 255, 200)
             if vy == 0:
                 PlotLine(pxstart-2, py, pxend, py, 1.5, QtCore.Qt.black, self)
+                PlotLine(pxstart-2, py, pxend, py, 1.5, QtCore.Qt.white, self)
             else:
                 PlotLine(pxstart-2, py, pxend, py, 0.5, colour, self)
             nlabel = QGraphicsSimpleTextItem("{}".format(vy), self)
+            nlabel.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255)))
             font = nlabel.font()
             font.setPixelSize(20)
             nlabel.setFont(font)
@@ -235,6 +238,7 @@ class LinePlot(QGraphicsItem):
 
         while(px <= pxend):
             colour = QtGui.QColor(0, 0, 0, 255)
+            colour = QtGui.QColor(255, 255, 255, 255)
             PlotLine(px+0.5, pystart+2, px+0.5, pyend, 1.5, colour, self)
             try:
                 header = self.hheaders[vx]
@@ -242,6 +246,7 @@ class LinePlot(QGraphicsItem):
                 header = vx
             nlabel = QGraphicsSimpleTextItem(
                 "{}".format(header), self)
+            nlabel.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255)))
             font = nlabel.font()
             font.setPixelSize(20)
             nlabel.setFont(font)

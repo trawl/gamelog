@@ -4,15 +4,15 @@
 from model.base import GenericRoundMatch
 
 
-class PochaMatch(GenericRoundMatch):
+class SkullKingMatch(GenericRoundMatch):
     def __init__(self, players=[]):
-        super(PochaMatch, self).__init__(players)
-        self.game = 'Pocha'
+        super(SkullKingMatch, self).__init__(players)
+        self.game = 'Skull King'
         self.dealingp = 1
-        self.maxRounds = 18
+        self.maxRounds = 10
 
     def resumeMatch(self, idMatch):
-        if not super(PochaMatch, self).resumeMatch(idMatch):
+        if not super(SkullKingMatch, self).resumeMatch(idMatch):
             return False
 
         for player in self.getPlayers():

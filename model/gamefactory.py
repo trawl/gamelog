@@ -6,6 +6,7 @@ from model.remigio import RemigioMatch
 from model.ratuki import RatukiMatch
 from model.pocha import PochaMatch
 from model.carcassonne import CarcassonneMatch
+from model.skullking import SkullKingMatch
 
 
 class GameFactory:
@@ -25,5 +26,7 @@ class GameFactory:
             return CarcassonneMatch(players)
         if gname == 'Pocha':
             return PochaMatch(players)
+        if gname == 'Skull King':
+            return SkullKingMatch(players)
 
         return None
