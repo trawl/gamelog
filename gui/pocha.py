@@ -63,15 +63,17 @@ class PochaWidget(GameWidget):
 
         self.detailGroup = PochaRoundsDetail(self.engine, self)
         self.detailGroup.edited.connect(self.updatePanel)
-        self.widgetLayout.addWidget(self.detailGroup, 1, 0)
+        # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
+        self.leftLayout.addWidget(self.detailGroup)
 
         self.playerGroup = QGroupBox(self)
-        self.widgetLayout.addWidget(self.playerGroup, 1, 1)
+        # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
+        self.rightLayout.addWidget(self.playerGroup)
 
         self.playerGroup.setStyleSheet(
             "QGroupBox { font-size: 18px; font-weight: bold; }")
         self.playersLayout = QVBoxLayout(self.playerGroup)
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
             pw = GamePlayerWidget(player, PlayerColours[i], self.playerGroup)
@@ -81,7 +83,7 @@ class PochaWidget(GameWidget):
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
 
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
 
         self.retranslateUI()
 
@@ -170,12 +172,12 @@ class PochaWidget(GameWidget):
         trash = QWidget()
         trash.setLayout(self.playersLayout)
         self.playersLayout = QVBoxLayout(self.playerGroup)
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
         for i, player in enumerate(self.engine.getListPlayers()):
             trash.layout().removeWidget(self.playerGroupBox[player])
             self.playersLayout.addWidget(self.playerGroupBox[player])
             self.playerGroupBox[player].setColour(PlayerColours[i])
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
         self.detailGroup.updatePlayerOrder()
 
 

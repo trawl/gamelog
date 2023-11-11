@@ -18,9 +18,6 @@ i18n = QApplication.translate
 
 class SkullKingWidget(GameWidget):
 
-    i18n("SkullKingWidget", 'hand')
-    i18n("SkullKingWidget", 'hands')
-
     def createEngine(self):
         if self.game != 'Skull King':
             raise Exception("No engine for game {}".format(self.game))
@@ -40,15 +37,17 @@ class SkullKingWidget(GameWidget):
 
         self.detailGroup = SkullKingRoundsDetail(self.engine, self)
         self.detailGroup.edited.connect(self.updatePanel)
-        self.widgetLayout.addWidget(self.detailGroup, 1, 0)
+        # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
+        self.leftLayout.addWidget(self.detailGroup)
 
         self.playerGroup = QGroupBox(self)
-        self.widgetLayout.addWidget(self.playerGroup, 1, 1)
+        # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
+        self.rightLayout.addWidget(self.playerGroup)
 
         self.playerGroup.setStyleSheet(
             "QGroupBox { font-size: 18px; font-weight: bold; }")
         self.playersLayout = QVBoxLayout(self.playerGroup)
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
             pw = GamePlayerWidget(player, PlayerColours[i], self.playerGroup)
@@ -58,7 +57,7 @@ class SkullKingWidget(GameWidget):
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
 
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
 
         self.retranslateUI()
 
@@ -73,11 +72,11 @@ class SkullKingWidget(GameWidget):
         if hands == 1:
             self.roundGroup.setTitle("{} - {} {}".format(
                 self.roundGroup.title(), str(hands),
-                i18n("SkullKingWidget", "hand")))
+                i18n("PochaWidget", "hand")))
         else:
             self.roundGroup.setTitle("{} - {} {}".format(
                 self.roundGroup.title(), str(hands),
-                i18n("SkullKingWidget", "hands")))
+                i18n("PochaWidget", "hands")))
 
     def checkPlayerScore(self, player, score): return True
 
@@ -111,13 +110,13 @@ class SkullKingWidget(GameWidget):
         if min(wonhands.values()) < 0:
             QMessageBox.warning(
                 self, self.game,
-                i18n("SkullKingWidget",
+                i18n("PochaWidget",
                      "There are players with no selected won hands."))
             return
 
         if hands != won:
             msg = i18n(
-                "SkullKingWidget",
+                "PochaWidget",
                 "There are {} won hands selected when there should be {}.")
             QMessageBox.warning(
                 self, self.game, msg.format(won, hands))
@@ -133,12 +132,12 @@ class SkullKingWidget(GameWidget):
         trash = QWidget()
         trash.setLayout(self.playersLayout)
         self.playersLayout = QVBoxLayout(self.playerGroup)
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
         for i, player in enumerate(self.engine.getListPlayers()):
             trash.layout().removeWidget(self.playerGroupBox[player])
             self.playersLayout.addWidget(self.playerGroupBox[player])
             self.playerGroupBox[player].setColour(PlayerColours[i])
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
         self.detailGroup.updatePlayerOrder()
 
 
@@ -493,7 +492,7 @@ class SkullKingRoundTable(GameRoundTable):
             item.setForeground(QtGui.QBrush(QtGui.QColor(0,0,0)))
             text = str(score)
             if player == winner:
-                text += i18n("SkullKingRoundTable", " (Winner)")
+                text += i18n("PochaWidget", " (Winner)")
             item.setText(text)
             self.setItem(i, j, item)
         self.scrollToBottom()
