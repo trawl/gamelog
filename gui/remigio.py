@@ -54,15 +54,17 @@ class RemigioWidget(GameWidget):
             self.engine, RemigioWidget.bgcolors, self)
         self.detailGroup.edited.connect(self.updatePanel)
 #         self.detailGroup = GameRoundsDetail(self.engine, self)
-        self.widgetLayout.addWidget(self.detailGroup, 1, 0)
+        # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
+        self.leftLayout.addWidget(self.detailGroup)
 
         self.playerGroup = QGroupBox(self)
-        self.widgetLayout.addWidget(self.playerGroup, 1, 1)
+        # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
+        self.rightLayout.addWidget(self.playerGroup)
 
         self.playerGroup.setStyleSheet(
             "QGroupBox { font-size: 18px; font-weight: bold; }")
         self.playersLayout = QVBoxLayout(self.playerGroup)
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
             pw = RemigioPlayerWidget(
@@ -77,7 +79,7 @@ class RemigioWidget(GameWidget):
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
 
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
 
         self.retranslateUI()
 
@@ -248,13 +250,14 @@ class RemigioPlayerInputWidget(QFrame):
         sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(
             self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
         self.label.setStyleSheet(sh)
-        sh = """
-        QSpinBox {{ {} }}
-        QSpinBox::up-button  {{subcontrol-origin: border;
-            subcontrol-position: left; width: 60px; height: 60px; }}
-        QSpinBox::down-button  {{subcontrol-origin: border;
-            subcontrol-position: right; width: 60px; height: 60px; }}
-        """.format(sh)
+        sh = "QSpinBox {{ {} }}".format(sh)
+        # sh = """
+        # QSpinBox {{ {} }}
+        # QSpinBox::up-button  {{subcontrol-origin: border;
+        #     subcontrol-position: left; width: 20px; height: 20px; }}
+        # QSpinBox::down-button  {{subcontrol-origin: border;
+        #     subcontrol-position: right; width: 20px; height: 20px; }}
+        # """.format(sh)
         self.scoreSpinBox.setStyleSheet(sh)
 
     def increaseCloseType(self):

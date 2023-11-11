@@ -4,8 +4,8 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QFrame,
                              QGridLayout, QGroupBox, QHBoxLayout, QHeaderView,
                              QLCDNumber, QLabel, QMenu, QMessageBox,
-                             QPushButton, QSpinBox, QTabWidget, QTableWidget,
-                             QToolBox, QVBoxLayout, QWidget)
+                             QPushButton, QSizePolicy, QSpinBox, QTabWidget,
+                             QTableWidget, QToolBox, QVBoxLayout, QWidget)
 import ctypes
 
 from gui.tab import Tab
@@ -21,9 +21,10 @@ PlayerColours = [QtGui.QColor(237, 44, 48),
                  QtGui.QColor(123, 164, 218),
                  QtGui.QColor(0, 140, 70),
                  QtGui.QColor(243, 124, 33),
-                 QtGui.QColor(101, 43, 145),
-                 QtGui.QColor(161, 29, 33),
-                 QtGui.QColor(179, 56, 148)
+                 QtGui.QColor(147, 112, 219),
+                #  QtGui.QColor(101, 43, 145),
+                #  QtGui.QColor(161, 29, 33),
+                 QtGui.QColor(255, 0, 255)
                  ]
 
 
@@ -50,11 +51,16 @@ class GameWidget(Tab):
     def initUI(self):
         # Set up the main grid
         #self.setStyleSheet("QGroupBox { font-size: 32px; font-weight: bold; }")
-        self.widgetLayout = QGridLayout(self)
+        # self.widgetLayout = QGridLayout(self)
+        self.widgetLayout = QHBoxLayout(self)
+        self.leftLayout = QVBoxLayout()
+        self.rightLayout = QVBoxLayout()
+        self.widgetLayout.addLayout(self.leftLayout)
+        self.widgetLayout.addLayout(self.rightLayout)
         self.roundGroup = QGroupBox(self)
-        self.widgetLayout.addWidget(self.roundGroup, 0, 0)
+        self.leftLayout.addWidget(self.roundGroup)
         self.matchGroup = QGroupBox(self)
-        self.widgetLayout.addWidget(self.matchGroup, 0, 1)
+        self.rightLayout.addWidget(self.matchGroup)
 
         # Round Group
         self.roundLayout = QVBoxLayout(self.roundGroup)
@@ -90,6 +96,10 @@ class GameWidget(Tab):
 
         self.clock = GameClock(self.engine.getGameSeconds(), self)
         self.clock.setMinimumHeight(100)
+        # Set size policy to Fixed in the vertical direction
+        size_policy = self.matchGroup.sizePolicy()
+        size_policy.setVerticalPolicy(QSizePolicy.Fixed)
+        self.matchGroup.setSizePolicy(size_policy)
         self.matchGroupLayout.addWidget(self.clock)
 
         dpolicy = self.engine.getDealingPolicy()

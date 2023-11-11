@@ -113,12 +113,14 @@ class Phase10Widget(GameWidget):
 
         self.details = Phase10RoundsDetail(self.engine, self.gameInput, self)
         self.details.edited.connect(self.updatePanel)
-        self.widgetLayout.addWidget(self.details, 1, 0)
+        #self.widgetLayout.addWidget(self.details, 1, 0)
+        self.leftLayout.addWidget(self.details)
 
         self.extraGroup = QGroupBox(self)
         self.extraGroup.setStyleSheet(
             "QGroupBox { font-size: 18px; font-weight: bold; }")
-        self.widgetLayout.addWidget(self.extraGroup, 1, 1)
+        # self.widgetLayout.addWidget(self.extraGroup, 1, 1)
+        self.rightLayout.addWidget(self.extraGroup)
         self.extraGroupLayout = QVBoxLayout(self.extraGroup)
 
         self.phaseLabels = []
@@ -225,7 +227,7 @@ class Phase10InputWidget(GameInputWidget):
                 self.changedWinner)
             if players_grid:
                 self.widgetLayout.addWidget(
-                    self.playerInputList[player], np/2, np % 2)
+                    self.playerInputList[player], np // 2, np % 2)
             else:
                 self.widgetLayout.addWidget(self.playerInputList[player])
 
@@ -632,7 +634,8 @@ class Phase10Label(QLabel):
 
     def __init__(self, number, parent=None):
         super(Phase10Label, self).__init__(parent)
-        self.setText(str(number).zfill(2))
+        # self.setText(str(number).zfill(2))
+        self.setText(str(number))
         self.setAutoFillBackground(False)
         self.setRemaining()
         self.setFrameShape(QFrame.StyledPanel)
@@ -640,7 +643,7 @@ class Phase10Label(QLabel):
         self.setScaledContents(True)
         self.setAlignment(QtCore.Qt.AlignCenter)
         self.setWordWrap(False)
-        self.setMinimumSize(30, 30)
+        self.setMinimumSize(20, 20)
         self.setSizePolicy(QSizePolicy.MinimumExpanding,
                            QSizePolicy.MinimumExpanding)
 #         self.setFixedSize(QtCore.QSize(40,40))
