@@ -94,6 +94,7 @@ class PochaWidget(GameWidget):
             i18n("PochaWidget", "Spanish Deck"))
         self.frenchSuitRadio.setText(
             i18n("PochaWidget", "French Deck"))
+        self.playerGroup.setTitle(i18n("GameWidget","Scoreboard"))
         self.detailGroup.retranslateUI()
 
     def changeSuit(self, *args):

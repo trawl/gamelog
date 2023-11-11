@@ -128,7 +128,7 @@ class Phase10Widget(GameWidget):
             self.extraGroupLayout.addSpacing(10)
             label = QLabel(self)
             label.setStyleSheet(
-                "QLabel {font-size: 22px; font-weight: bold; }")
+                "QLabel {font-weight: bold; }")
 #             label.setScaledContents(True)
             self.phaseLabels.append(label)
             self.extraGroupLayout.addWidget(label)
@@ -141,12 +141,13 @@ class Phase10Widget(GameWidget):
         self.phasesInOrderCheckBox.setText(
             i18n("Phase10Widget", "Phases in order"))
         self.gameInput.retranslateUI()
+        self.extraGroup.setTitle(i18n("Phase10RoundPlot", "Phases"))
         self.details.retranslateUI()
         phaseword = i18n("Phase10Widget", "Phase")
         phaselabels = zip(getPhaseNames(self.engine.getPhases()),
                           self.phaseLabels)
         for number, (phase, label) in enumerate(phaselabels, start=1):
-            label.setText("{1:02}: {2}".format(phaseword, number, phase))
+            label.setText("{1} : {2}".format(phaseword, number, phase))
 
     def checkPlayerScore(self, player, score):
         return (super(Phase10Widget, self).checkPlayerScore(self, score) and

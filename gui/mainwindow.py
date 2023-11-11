@@ -73,7 +73,8 @@ class MainWindow(QMainWindow):
 
         # And finally, show it!
 
-        self.setStyleSheet("font-size: 20px;")
+        # self.setStyleSheet("font-size: 20px;")
+        self.setStyleSheet("font-size: 18px;")
 
         self.show()
 
