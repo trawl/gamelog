@@ -58,6 +58,7 @@ class RemigioWidget(GameWidget):
         self.leftLayout.addWidget(self.detailGroup)
 
         self.playerGroup = QGroupBox(self)
+        self.setStyleSheet("QGroupBox { font-size: 120%; font-weight: bold; }")
         # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
         self.rightLayout.addWidget(self.playerGroup)
 
@@ -88,6 +89,7 @@ class RemigioWidget(GameWidget):
         self.topPointsLabel.setText(
             i18n("RemigioWidget", "Score Limit"))
 #         self.playerGroup.setTitle(i18n("RemigioWidget","Score"))
+        self.playerGroup.setTitle(i18n("GameWidget","Scoreboard"))
         self.detailGroup.retranslateUI()
 
     def updateGameStatusLabel(self):

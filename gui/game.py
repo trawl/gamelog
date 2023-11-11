@@ -30,6 +30,8 @@ PlayerColours = [QtGui.QColor(237, 44, 48),
 
 class GameWidget(Tab):
 
+    i18n("GameWidget","Scoreboard")
+
     def __init__(self, game, players, engine=None, parent=None):
         super(GameWidget, self).__init__(parent)
         self.game = game
@@ -50,7 +52,7 @@ class GameWidget(Tab):
 
     def initUI(self):
         # Set up the main grid
-        #self.setStyleSheet("QGroupBox { font-size: 32px; font-weight: bold; }")
+        self.setStyleSheet("QGroupBox { font-size: 120%; font-weight: bold; }")
         # self.widgetLayout = QGridLayout(self)
         self.widgetLayout = QHBoxLayout(self)
         self.leftLayout = QVBoxLayout()
@@ -92,6 +94,7 @@ class GameWidget(Tab):
         self.roundLayout.addWidget(self.gameStatusLabel)
 
         # Match Group
+        self.matchGroup.setTitle(i18n("GameWidget", "Game Time"))
         self.matchGroupLayout = QVBoxLayout(self.matchGroup)
 
         self.clock = GameClock(self.engine.getGameSeconds(), self)
@@ -119,6 +122,7 @@ class GameWidget(Tab):
 
     def retranslateUI(self):
         self.setRoundTitle()
+        self.matchGroup.setTitle(i18n("GameWidget", "Game Time"))
         self.pauseMatchButton.setText(
             i18n("GameWidget", "&Pause/Play"))
         self.cancelMatchButton.setText(

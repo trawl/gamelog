@@ -243,6 +243,16 @@
 <context>
     <name>GameWidget</name>
     <message>
+        <location filename="../gui/game.py" line="95"/>
+        <source>Scoreboard</source>
+        <translation>Marcador</translation>
+    </message>
+    <message>
+        <location filename="../gui/game.py" line="95"/>
+        <source>Game Time</source>
+        <translation>Temps de Joc</translation>
+    </message>
+    <message>
         <location filename="../gui/game.py" line="143"/>
         <source>Cancel Match</source>
         <translation>Sortir del Joc</translation>

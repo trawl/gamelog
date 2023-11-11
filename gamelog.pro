@@ -8,6 +8,7 @@ SOURCES = \
 	gui/ratuki.py \
 	gui/carcassonne.py \
 	gui/pocha.py \
+	gui/skullking.py \
 	gui/languagechooser.py \ 
 	gui/gamestats.py \
 	gui/playerlist.py

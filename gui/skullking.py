@@ -63,7 +63,7 @@ class SkullKingWidget(GameWidget):
 
     def retranslateUI(self):
         super(SkullKingWidget, self).retranslateUI()
-#         self.playerGroup.setTitle(i18n("SkullKingWidget","Score"))
+        self.playerGroup.setTitle(i18n("GameWidget","Scoreboard"))
         self.detailGroup.retranslateUI()
 
     def setRoundTitle(self):
@@ -166,12 +166,16 @@ class SkullKingInputWidget(GameInputWidget):
                 self.checkExpected)
             self.playerInputList[player].handsClicked.connect(self.newChoice)
 
+        print(f"trying to set focus to {self.engine.getListPlayers()[0]}")
+        self.playerInputList[self.engine.getListPlayers()[0]].setFocus()
+
     def newChoice(self, mode, player):
         self.lastChoices.append((mode, player))
 
     def reset(self):
         super(SkullKingInputWidget, self).reset()
         self.lastChoices = []
+        self.playerInputList[self.engine.getListPlayers()[0]].setFocus()
 
     def getScores(self):
         scores = {}
@@ -233,13 +237,13 @@ class SkullKingInputWidget(GameInputWidget):
         first_player = (players.index(dealer)+1) % len(players)
         hand_player_order = players[first_player:]+players[0:first_player]
         if any([value < 0 for value in expected_hands.values()]):
-            for player in hand_player_order:
+            for player in players:
                 if expected_hands[player] < 0:
                     if self.playerInputList[player].setExpectedHands(number):
                         self.lastChoices.append(('expected', player))
                     return
 
-        for player in hand_player_order:
+        for player in players:
             if won_hands[player] < 0:
                 if self.playerInputList[player].setWonHands(number):
                     self.lastChoices.append(('won', player))

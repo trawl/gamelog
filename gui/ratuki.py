@@ -78,6 +78,7 @@ class RatukiWidget(GameWidget):
         self.topPointsLabel.setText(
             i18n("RatukiWidget", "Score Limit"))
 #         self.playerGroup.setTitle(i18n("RatukiWidget","Score"))
+        self.playerGroup.setTitle(i18n("GameWidget","Scoreboard"))
         self.detailGroup.retranslateUI()
 
     def checkPlayerScore(self, player, score): return True
