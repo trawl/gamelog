@@ -414,6 +414,7 @@ class CarcassonneEntriesDetail(GameRoundsDetail):
                 item.setTextAlignment(
                     QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter)
                 item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+                item.setForeground(QtGui.QBrush(QtGui.QColor(0,0,0)))
                 item.setText("0")
                 self.totals.setItem(row, col, item)
 
@@ -476,6 +477,7 @@ class CarcassonneRoundTable(GameRoundTable):
             item.setTextAlignment(QtCore.Qt.AlignVCenter |
                                   QtCore.Qt.AlignCenter)
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+            item.setForeground(QtGui.QBrush(QtGui.QColor(0,0,0)))
 
             if player == entry.getPlayer():
                 text = "{} ({})".format(entry.getPlayerScore(), kind)

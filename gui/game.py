@@ -49,7 +49,7 @@ class GameWidget(Tab):
 
     def initUI(self):
         # Set up the main grid
-        self.setStyleSheet("QGroupBox { font-size: 32px; font-weight: bold; }")
+        #self.setStyleSheet("QGroupBox { font-size: 32px; font-weight: bold; }")
         self.widgetLayout = QGridLayout(self)
         self.roundGroup = QGroupBox(self)
         self.widgetLayout.addWidget(self.roundGroup, 0, 0)

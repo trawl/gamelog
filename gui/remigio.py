@@ -356,6 +356,7 @@ class RemigioRoundTable(GameRoundTable):
             item.setTextAlignment(QtCore.Qt.AlignVCenter |
                                   QtCore.Qt.AlignCenter)
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+            item.setForeground(QtGui.QBrush(QtGui.QColor(0,0,0)))
             if player == winner:
                 text = i18n(
                     "RemigioRoundTable", "Winner ({}x)").format(closeType)
@@ -369,6 +370,7 @@ class RemigioRoundTable(GameRoundTable):
                 else:
                     text = str(r.getPlayerScore(player))
                 item.setBackground(QtGui.QBrush(QtCore.Qt.gray))
+                item.setForeground(QtGui.QBrush(QtGui.QColor(0,0,0)))
             else:
                 text = str(r.getPlayerScore(player))
             item.setText(text)

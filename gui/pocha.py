@@ -189,11 +189,16 @@ class PochaInputWidget(GameInputWidget):
     def initUI(self):
         self.widgetLayout = QGridLayout(self)
         players = self.engine.getListPlayers()
+        if len(players) == 4:
+            players_per_column = 2
+        else:
+            players_per_column = 3
+
         for i, player in enumerate(players):
             self.playerInputList[player] = PochaPlayerInputWidget(
                 player, self.engine, PlayerColours[i], self)
             self.widgetLayout.addWidget(
-                self.playerInputList[player], i//4, i % 4)
+                self.playerInputList[player], i//players_per_column, i % players_per_column)
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
             self.playerInputList[player].newExpected.connect(
                 self.checkExpected)
@@ -460,6 +465,7 @@ class PochaHandsButton(QPushButton):
         self.setColour(False)
 
     def setColour(self, toggle):
+        return
         if toggle:
             self.setStyleSheet("background-color: red; font: bold")
         else:
@@ -517,6 +523,7 @@ class PochaRoundTable(GameRoundTable):
             else:
                 background = self.bgcolors[1]
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+            item.setForeground(QtGui.QBrush(QtGui.QColor(0,0,0)))
             text = str(score)
             if player == winner:
                 text += i18n("PochaRoundTable", " (Winner)")
