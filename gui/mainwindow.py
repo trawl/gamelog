@@ -211,7 +211,7 @@ class AboutDialog(QDialog):
 
     def __init__(self, parent=None):
         super(AboutDialog, self).__init__(parent)
-        self.setFixedSize(QtCore.QSize(250, 150))
+        # self.setFixedSize(QtCore.QSize(450, 350))
         self.setWindowTitle(i18n(
             "AboutDialog", 'About Gamelog'))
         self.widgetlayout = QHBoxLayout(self)
