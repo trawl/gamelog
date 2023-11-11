@@ -277,6 +277,7 @@ class RatukiRoundTable(GameRoundTable):
             else:
                 background = self.bgcolors[1]
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+            item.setForeground(QtGui.QBrush(QtGui.QColor(0,0,0)))
             text = str(score)
             if player == winner:
                 text += i18n(

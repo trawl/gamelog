@@ -152,11 +152,16 @@ class SkullKingInputWidget(GameInputWidget):
     def initUI(self):
         self.widgetLayout = QGridLayout(self)
         players = self.engine.getListPlayers()
+        if len(players) == 4:
+            players_per_column = 2
+        else:
+            players_per_column = 3
+
         for i, player in enumerate(players):
             self.playerInputList[player] = SkullKingPlayerInputWidget(
                 player, self.engine, PlayerColours[i], self)
             self.widgetLayout.addWidget(
-                self.playerInputList[player], i//4, i % 4)
+                self.playerInputList[player], i // players_per_column, i % players_per_column)
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
             self.playerInputList[player].newExpected.connect(
                 self.checkExpected)
@@ -485,6 +490,7 @@ class SkullKingRoundTable(GameRoundTable):
             else:
                 background = self.bgcolors[1]
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+            item.setForeground(QtGui.QBrush(QtGui.QColor(0,0,0)))
             text = str(score)
             if player == winner:
                 text += i18n("SkullKingRoundTable", " (Winner)")

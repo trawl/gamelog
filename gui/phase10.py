@@ -742,6 +742,7 @@ class Phase10RoundTable(GameRoundTable):
             else:
                 background = 0xFFCC99  # red
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+            item.setForeground(QtGui.QBrush(QtGui.QColor(0,0,0)))
             item.setText(text)
             self.setItem(i, j, item)
         self.scrollToBottom()
@@ -751,7 +752,7 @@ class Phase10RoundPlot(GameRoundPlot):
 
     def initUI(self):
         super(Phase10RoundPlot, self).initUI()
-        self.setStyleSheet("QLabel {font-size: 18px; }")
+        # self.setStyleSheet("QLabel {font-size: 18px; }")
         QWidget().setLayout(self.layout())
         self.widgetLayout = QGridLayout()
         self.setLayout(self.widgetLayout)
