@@ -1,11 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import (QApplication, QButtonGroup, QFrame, QGridLayout,
-                             QGroupBox, QHBoxLayout, QLabel, QMessageBox,
-                             QPushButton, QCheckBox, QSizePolicy,
-                             QTableWidgetItem, QVBoxLayout, QWidget)
+try:
+    from PySide6 import QtCore, QtGui
+    from PySide6.QtWidgets import (QApplication, QButtonGroup, QFrame, QGridLayout,
+                                QGroupBox, QHBoxLayout, QLabel, QMessageBox,
+                                QPushButton, QCheckBox, QSizePolicy,
+                                QTableWidgetItem, QVBoxLayout, QWidget)
+except ImportError:
+    from PyQt5 import QtCore, QtGui
+    from PyQt5.QtWidgets import (QApplication, QButtonGroup, QFrame, QGridLayout,
+                                QGroupBox, QHBoxLayout, QLabel, QMessageBox,
+                                QPushButton, QCheckBox, QSizePolicy,
+                                QTableWidgetItem, QVBoxLayout, QWidget)
 
 from controllers.skullkingengine import SkullKingEngine
 from gui.game import (GameWidget, GameInputWidget, GameRoundsDetail,
@@ -265,9 +272,9 @@ class SkullKingInputWidget(GameInputWidget):
 
 class SkullKingPlayerInputWidget(QFrame):
 
-    winnerSet = QtCore.pyqtSignal(str)
-    newExpected = QtCore.pyqtSignal()
-    handsClicked = QtCore.pyqtSignal(str, str)
+    winnerSet = QtCore.Signal(str)
+    newExpected = QtCore.Signal()
+    handsClicked = QtCore.Signal(str, str)
 
     def __init__(self, player, engine, colour=None, parent=None):
         super(SkullKingPlayerInputWidget, self).__init__(parent)

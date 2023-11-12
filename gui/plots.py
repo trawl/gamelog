@@ -3,13 +3,20 @@
 
 import sys
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtGui import QPalette
-from PyQt5.QtWidgets import (QApplication, QGraphicsEllipseItem, QGraphicsItem,
-                             QGraphicsLineItem, QGraphicsRectItem,
-                             QGraphicsScene, QGraphicsSimpleTextItem,
-                             QGraphicsView)
-
+try:
+    from PySide6 import QtCore, QtGui
+    from PySide6.QtGui import QPalette
+    from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem, QGraphicsItem,
+                                QGraphicsLineItem, QGraphicsRectItem,
+                                QGraphicsScene, QGraphicsSimpleTextItem,
+                                QGraphicsView)
+except ImportError:
+    from PyQt5 import QtCore, QtGui
+    from PyQt5.QtGui import QPalette
+    from PyQt5.QtWidgets import (QApplication, QGraphicsEllipseItem, QGraphicsItem,
+                                QGraphicsLineItem, QGraphicsRectItem,
+                                QGraphicsScene, QGraphicsSimpleTextItem,
+                                QGraphicsView)
 
 colours =  [QtGui.QColor(237, 44, 48),
         #  QtGui.QColor(23, 89, 169),

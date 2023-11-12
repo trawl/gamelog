@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QApplication, QDialog, QGridLayout, QLabel,
-                             QLineEdit, QPushButton, QVBoxLayout)
+try:
+    from PySide6 import QtCore
+    from PySide6.QtWidgets import (QApplication, QDialog, QGridLayout, QLabel,
+                                QLineEdit, QPushButton, QVBoxLayout)
+except ImportError:
+    from PyQt5 import QtCore
+    from PyQt5.QtWidgets import (QApplication, QDialog, QGridLayout, QLabel,
+                                QLineEdit, QPushButton, QVBoxLayout)
 
 from controllers.db import db
 
@@ -12,7 +17,7 @@ i18n = QApplication.translate
 
 class NewPlayerDialog(QDialog):
 
-    addedNewPlayer = QtCore.pyqtSignal(str)
+    addedNewPlayer = QtCore.Signal(str)
 
     def __init__(self, parent=None):
         super(NewPlayerDialog, self).__init__(parent)

@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 try:
-    from PySide import QtCore,QtGui
+    from PySide6 import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
 except ImportError as error:
-    from PyQt4 import QtCore,QtGui
-    QtCore.Signal = QtCore.pyqtSignal
+    from PyQt5 import QtCore,QtGui
+    QtCore.Signal = Qtcore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
 
 class ErrorMessage(QtGui.QMessageBox):
@@ -14,6 +14,6 @@ class ErrorMessage(QtGui.QMessageBox):
         super(ErrorMessage, self).__init__( parent)
         self.setText(message)
         self.setWindowTitle(title)
-        self.setStandardButtons(QtGui.QMessageBox.Ok);
-        self.setDefaultButton(QtGui.QMessageBox.Ok);
+        self.setStandardButtons(QtGui.QMessageBox.Ok)
+        self.setDefaultButton(QtGui.QMessageBox.Ok)
  

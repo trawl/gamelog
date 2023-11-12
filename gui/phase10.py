@@ -4,12 +4,18 @@
 import re
 import sys
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFrame,
-                             QGridLayout, QGroupBox, QHBoxLayout, QLCDNumber,
-                             QLabel, QRadioButton, QSizePolicy,
-                             QTableWidgetItem, QVBoxLayout, QWidget)
-
+try:
+    from PySide6 import QtCore, QtGui, QtWidgets
+    from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFrame,
+                                QGridLayout, QGroupBox, QHBoxLayout, QLCDNumber,
+                                QLabel, QRadioButton, QSizePolicy,
+                                QTableWidgetItem, QVBoxLayout, QWidget)
+except ImportError:
+    from PyQt5 import QtCore, QtGui, QtWidgets
+    from PyQt5.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFrame,
+                                QGridLayout, QGroupBox, QHBoxLayout, QLCDNumber,
+                                QLabel, QRadioButton, QSizePolicy,
+                                QTableWidgetItem, QVBoxLayout, QWidget)
 
 from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
 from gui.game import (GameWidget, GameInputWidget, GamePlayerWidget,
@@ -394,7 +400,7 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
 
 class Phase10PlayerWidget(GamePlayerWidget):
 
-    roundWinnerSet = QtCore.pyqtSignal(str)
+    roundWinnerSet = QtCore.Signal(str)
 
     def __init__(self, nick, engine, bgroup=None, parent=None):
         self.engine = engine
@@ -441,7 +447,10 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.scoreLCD = QLCDNumber(self)
         self.scoreLCD.setSegmentStyle(QLCDNumber.Flat)
         self.mainLayout.addWidget(self.scoreLCD)
-        self.scoreLCD.setNumDigits(3)
+        try:
+            self.scoreLCD.setDigitCount(3)
+        except TypeError:
+            self.scoreLCD.setNumDigits(3)
         self.scoreLCD.setMinimumWidth(100)
         css = "QLCDNumber {{ color:rgb({},{},{});}}"
         self.scoreLCD.setStyleSheet(css.format(self.pcolour.red(),
@@ -513,7 +522,10 @@ class Phase10PlayerWidget(GamePlayerWidget):
 
         self.roundWinnerRadioButton.setDown(True)
         if points >= 1000:
-            self.scoreLCD.setNumDigits(4)
+            try:
+                self.scoreLCD.setDigitCount(4)
+            except TypeError:
+                self.scoreLCD.setNumDigits(3)
         self.scoreLCD.display(points)
         self.roundScore.setValue(5)
         self.roundScore.clear()

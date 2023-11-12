@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import (QAction, QApplication, QDialog, QListView, QMenu,
-                             QPushButton, QVBoxLayout)
+try:
+    from PySide6 import QtCore, QtGui
+    from PySide6.QtWidgets import (QApplication, QDialog, QListView, QMenu,
+                                QPushButton, QVBoxLayout)
+    from PySide6.QtGui import (QAction)
+except ImportError:
+    from PyQt5 import QtCore, QtGui
+    from PyQt5.QtWidgets import (QAction, QApplication, QDialog, QListView, QMenu,
+                                QPushButton, QVBoxLayout)
+    QtCore.Signal = QtCore.pyqtSignal
 
 from controllers.db import db
 
@@ -16,8 +23,8 @@ dealerIcon = 'icons/cards.png'
 
 class PlayerOrderDialog(QDialog):
 
-    playerOrderChanged = QtCore.pyqtSignal()
-    dealerChanged = QtCore.pyqtSignal()
+    playerOrderChanged = QtCore.Signal()
+    dealerChanged = QtCore.Signal()
 
     def __init__(self, engine, parent=None):
         super(PlayerOrderDialog, self).__init__(parent)
@@ -48,8 +55,8 @@ class PlayerOrderDialog(QDialog):
 
 class PlayerList(QListView):
 
-    doubleclickeditem = QtCore.pyqtSignal(str)
-    changed = QtCore.pyqtSignal()
+    doubleclickeditem = QtCore.Signal(str)
+    changed = QtCore.Signal()
 
     def __init__(self, engine=None, parent=None):
         super(PlayerList, self).__init__(parent)
@@ -150,7 +157,7 @@ class PlayerListModel(QtGui.QStandardItemModel):
         item.setEditable(False)
         item.setDropEnabled(False)
         font = item.font()
-        font.setPixelSize(24)
+        font.setPixelSize(18)
         font.setBold(True)
         item.setFont(font)
         icon = standardIcon

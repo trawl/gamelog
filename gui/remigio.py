@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import (QApplication, QFrame, QGridLayout, QGroupBox,
-                             QHBoxLayout, QLabel, QLineEdit, QSizePolicy,
-                             QTableWidgetItem, QVBoxLayout, QWidget)
+try:
+    from PySide6 import QtCore, QtGui
+    from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QGroupBox,
+                                QHBoxLayout, QLabel, QLineEdit, QSizePolicy,
+                                QTableWidgetItem, QVBoxLayout, QWidget)
+except ImportError:
+    from PyQt5 import QtCore, QtGui
+    from PyQt5.QtWidgets import (QApplication, QFrame, QGridLayout, QGroupBox,
+                                QHBoxLayout, QLabel, QLineEdit, QSizePolicy,
+                                QTableWidgetItem, QVBoxLayout, QWidget)
 
 from controllers.remigioengine import RemigioEngine
 from gui.game import (GameWidget, GameInputWidget, ScoreSpinBox,
@@ -211,7 +217,7 @@ class RemigioInputWidget(GameInputWidget):
 
 class RemigioPlayerInputWidget(QFrame):
 
-    winnerSet = QtCore.pyqtSignal(str)
+    winnerSet = QtCore.Signal(str)
 
     def __init__(self, player, bgcolors, colour=None, parent=None):
         super(RemigioPlayerInputWidget, self).__init__(parent)
