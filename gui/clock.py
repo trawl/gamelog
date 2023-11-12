@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QLCDNumber
+try:
+    from PySide6.QtCore import QTimer
+    from PySide6.QtWidgets import QLCDNumber
+except ImportError:
+    from PyQt5.QtCore import QTimer
+    from PyQt5.QtWidgets import QLCDNumber
 
 
 class GameClock(QLCDNumber):
@@ -17,7 +21,10 @@ class GameClock(QLCDNumber):
         self.refreshinterval = 50
         self.timer = QTimer(self)
         self.timer.start(self.refreshinterval)
-        self.setNumDigits(5)
+        try:
+            self.setDigitCount(5)
+        except TypeError:
+            self.setNumDigits(5)
         self.showTime()
         self.timer.timeout.connect(self.showTime)
 
@@ -30,7 +37,7 @@ class GameClock(QLCDNumber):
         minutes, seconds = divmod(remainder, 60)
         text = "{0:02}:{1:02}:{2:02}".format(hours, minutes, seconds)
         if hours:
-            self.setNumDigits(8)
+            self.setDigitCount(8)
         self.display(text)
 
     def pauseTimer(self):

@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import (QApplication, QFrame, QGridLayout, QGroupBox,
-                             QHBoxLayout, QLabel, QLineEdit, QSizePolicy,
-                             QTableWidgetItem, QVBoxLayout)
+try:
+    from PySide6 import QtCore, QtGui
+    from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QGroupBox,
+                                QHBoxLayout, QLabel, QLineEdit, QSizePolicy,
+                                QTableWidgetItem, QVBoxLayout)
+except ImportError:
+    from PyQt5 import QtCore, QtGui
+    from PyQt5.QtWidgets import (QApplication, QFrame, QGridLayout, QGroupBox,
+                                QHBoxLayout, QLabel, QLineEdit, QSizePolicy,
+                                QTableWidgetItem, QVBoxLayout)
 
 from controllers.ratukiengine import RatukiEngine
 from gui.game import (GameWidget, GameInputWidget, ScoreSpinBox,
@@ -163,7 +169,7 @@ class RatukiInputWidget(GameInputWidget):
 
 class RatukiPlayerInputWidget(QFrame):
 
-    winnerSet = QtCore.pyqtSignal(str)
+    winnerSet = QtCore.Signal(str)
 
     def __init__(self, player, colour=None, parent=None):
         super(RatukiPlayerInputWidget, self).__init__(parent)

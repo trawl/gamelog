@@ -1,11 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (QApplication, QFrame, QGroupBox, QHeaderView,
-                             QLabel, QScrollArea, QSizePolicy, QSpacerItem,
-                             QTabWidget, QTableWidget, QTableWidgetItem,
-                             QVBoxLayout, QWidget)
+try:
+    from PySide6 import QtCore, QtGui, QtWidgets
+    from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHeaderView,
+                                QLabel, QScrollArea, QSizePolicy, QSpacerItem,
+                                QTabWidget, QTableWidget, QTableWidgetItem,
+                                QVBoxLayout, QWidget)
+except ImportError:
+    from PyQt5 import QtCore, QtGui, QtWidgets
+    from PyQt5.QtWidgets import (QApplication, QFrame, QGroupBox, QHeaderView,
+                                QLabel, QScrollArea, QSizePolicy, QSpacerItem,
+                                QTabWidget, QTableWidget, QTableWidgetItem,
+                                QVBoxLayout, QWidget)
 from controllers.enginefactory import StatsEngineFactory
 from gui.tab import Tab
 

@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 try:
-    from PyQt4 import QtCore,QtGui
-    QtCore.Signal = QtCore.pyqtSignal
-    QtCore.Slot = QtCore.pyqtSlot
-except ImportError as error:
-    from PySide import QtCore,QtGui
+    from PySide6 import QtCore,QtGui
     QtGui.QFileDialog.getOpenFileNameAndFilter = QtGui.QFileDialog.getOpenFileName
-
+except ImportError:
+    from PyQt5 import QtCore,QtGui
+    QtCore.Signal = Qtcore.pyqtSignal
+    QtCore.Slot = QtCore.pyqtSlot
     
 class PlayerOrderDialog(QtGui.QDialog):
     

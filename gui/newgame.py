@@ -2,11 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QComboBox,
-                             QGroupBox, QHBoxLayout, QLabel, QListWidget,
-                             QListWidgetItem, QMessageBox, QPushButton,
-                             QTextBrowser, QVBoxLayout, QWidget)
+try:
+    from PySide6.QtCore import Signal
+    from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox,
+                                QGroupBox, QHBoxLayout, QLabel, QListWidget,
+                                QListWidgetItem, QMessageBox, QPushButton,
+                                QTextBrowser, QVBoxLayout, QWidget)
+except:
+    from PyQt5.QtCore import pyqtSignal as Signal
+    from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QComboBox,
+                                QGroupBox, QHBoxLayout, QLabel, QListWidget,
+                                QListWidgetItem, QMessageBox, QPushButton,
+                                QTextBrowser, QVBoxLayout, QWidget)
 
 from controllers.db import db
 from controllers.resumeengine import ResumeEngine
@@ -230,7 +237,7 @@ class NewGameWidget(Tab):
 
 class ResumeBox(QGroupBox):
 
-    restartRequested = pyqtSignal(QWidget)
+    restartRequested = Signal(QWidget)
 
     def __init__(self, parent):
         super(ResumeBox, self).__init__(parent)

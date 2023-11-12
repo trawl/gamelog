@@ -1,11 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QFrame,
-                             QGridLayout, QGroupBox, QHBoxLayout, QHeaderView,
-                             QLCDNumber, QLabel, QMenu, QMessageBox,
-                             QPushButton, QSizePolicy, QSpinBox, QTabWidget,
-                             QTableWidget, QToolBox, QVBoxLayout, QWidget)
+try:
+    from PySide6 import QtCore, QtGui
+    from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame,
+                                QGridLayout, QGroupBox, QHBoxLayout, QHeaderView,
+                                QLCDNumber, QLabel, QMenu, QMessageBox,
+                                QPushButton, QSizePolicy, QSpinBox, QTabWidget,
+                                QTableWidget, QToolBox, QVBoxLayout, QWidget)
+    from PySide6.QtGui import (QAction)
+except ImportError:
+    from PyQt5 import QtCore, QtGui
+    from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QFrame,
+                                QGridLayout, QGroupBox, QHBoxLayout, QHeaderView,
+                                QLCDNumber, QLabel, QMenu, QMessageBox,
+                                QPushButton, QSizePolicy, QSpinBox, QTabWidget,
+                                QTableWidget, QToolBox, QVBoxLayout, QWidget)
+    QtCore.Signal = QtCore.pyqtSignal
+
 import ctypes
 
 from gui.tab import Tab
@@ -232,15 +243,15 @@ class GameWidget(Tab):
             self.engine.addRoundInfo(player, score, extras)
 
         # Everything ok so far, let's confirm
-        tit = i18n("GameWidget", 'Commit Round')
-        msg = i18n(
-            "GameWidget", "Are you sure you want to commit the current round?")
-        ret = QMessageBox.question(self, tit, msg,
-                                   QMessageBox.Yes | QMessageBox.No,
-                                   QMessageBox.Yes)
+        # tit = i18n("GameWidget", 'Commit Round')
+        # msg = i18n(
+        #     "GameWidget", "Are you sure you want to commit the current round?")
+        # ret = QMessageBox.question(self, tit, msg,
+        #                            QMessageBox.Yes | QMessageBox.No,
+        #                            QMessageBox.Yes)
 
-        if ret == QMessageBox.No:
-            return
+        # if ret == QMessageBox.No:
+        #     return
 
         # Once here, we can commit round
         self.unsetDealer()
@@ -345,7 +356,7 @@ class GameWidget(Tab):
 
 class GameInputWidget(QWidget):
 
-    enterPressed = QtCore.pyqtSignal()
+    enterPressed = QtCore.Signal()
 
     def __init__(self, engine, parent=None):
         super(GameInputWidget, self).__init__(parent)
@@ -446,7 +457,10 @@ class GamePlayerWidget(QGroupBox):
         self.scoreLCD = QLCDNumber(self)
         self.scoreLCD.setSegmentStyle(QLCDNumber.Flat)
         self.mainLayout.addWidget(self.scoreLCD)
-        self.scoreLCD.setNumDigits(3)
+        try:
+            self.scoreLCD.setDigitCount(3)
+        except TypeError:
+            self.scoreLCD.setNumDigits(3)
         self.scoreLCD.setFixedSize(100, 60)
         self.scoreLCD.display(0)
         css = "QLCDNumber {{ color:rgb({},{},{});}}"
@@ -476,9 +490,15 @@ class GamePlayerWidget(QGroupBox):
 
     def updateDisplay(self, points):
         if points >= 1000 or points <= -100:
-            self.scoreLCD.setNumDigits(4)
+            try:
+                self.scoreLCD.setDigitCount(4)
+            except TypeError:
+                self.scoreLCD.setNumDigits(4)
         else:
-            self.scoreLCD.setNumDigits(3)
+            try:
+                self.scoreLCD.setDigitCount(3)
+            except TypeError:
+                self.scoreLCD.setNumDigits(3)
         self.scoreLCD.display(points)
 
     def setDealer(self): self.iconlabel.setPixmap(self.dealerPixmap)
@@ -502,7 +522,7 @@ class GamePlayerWidget(QGroupBox):
 
 class GameRoundsDetail(QGroupBox):
 
-    edited = QtCore.pyqtSignal()
+    edited = QtCore.Signal()
 
     def __init__(self, engine, parent=None):
         super(GameRoundsDetail, self).__init__(parent)
@@ -591,7 +611,7 @@ class GameRoundsDetail(QGroupBox):
 
 class GameRoundTable(QTableWidget):
 
-    edited = QtCore.pyqtSignal()
+    edited = QtCore.Signal()
 
     def __init__(self, engine, parent=None):
         super(GameRoundTable, self).__init__(parent)

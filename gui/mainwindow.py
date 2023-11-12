@@ -1,9 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from PyQt5 import QtCore, QtWidgets, QtGui
-from PyQt5.QtWidgets import (QAction, QApplication, QDialog, QHBoxLayout,
-                             QLabel, QMainWindow, QMessageBox, QTabWidget,
-                             QVBoxLayout, QWidget, qApp)
+try:
+    from PySide6 import QtCore, QtWidgets, QtGui
+    from PySide6.QtWidgets import (QApplication, QDialog, QHBoxLayout,
+                                QLabel, QMainWindow, QMessageBox, QTabWidget,
+                                QVBoxLayout, QWidget, QApplication)
+    from PySide6.QtGui import (QAction)
+    qtversion = QtCore.__version__
+
+except:
+    from PyQt5 import QtCore, QtWidgets, QtGui
+    from PyQt5.QtWidgets import (QAction, QApplication, QDialog, QHBoxLayout,
+                                QLabel, QMainWindow, QMessageBox, QTabWidget,
+                                QVBoxLayout, QWidget, qApp)
+    qtversion = QtCore.QT_VERSION_STR
+    QApplication = qApp
 
 from controllers.db import db
 from gui.newgame import NewGameWidget
@@ -68,6 +79,7 @@ class MainWindow(QMainWindow):
         self.verticalLayout.addWidget(self.newGameTab)
 #        self.tabWidget.addTab(self.newGameTab, "")
 #        self.tabWidget.setCurrentIndex(0)
+        self.statusBar().hide()
 
         self.retranslateUi()
 
@@ -192,13 +204,13 @@ class MainWindow(QMainWindow):
         qt_translator.load(qt_qm, 'i18n/')
         if ret:
             if self.translator:
-                qApp.removeTranslator(self.translator)
+                QApplication.removeTranslator(self.translator)
             if self.qt_translator:
-                qApp.removeTranslator(self.qt_translator)
+                QApplication.removeTranslator(self.qt_translator)
             self.qt_translator = qt_translator
             self.translator = translator
-            qApp.installTranslator(self.qt_translator)
-            qApp.installTranslator(self.translator)
+            QApplication.installTranslator(self.qt_translator)
+            QApplication.installTranslator(self.translator)
 
     def changeEvent(self, event):
         if event.type() == QtCore.QEvent.LanguageChange:
@@ -231,6 +243,10 @@ class AboutDialog(QDialog):
             'Gamelog is a utility to keep track of the score in board games.'))
         self.content.setWordWrap(True)
         self.content.setAlignment(QtCore.Qt.AlignTop)
+        self.contentlayout.addWidget(self.content)
+        self.content = QLabel(f'QT {qtversion}')
+        self.content.setWordWrap(True)
+        self.content.setAlignment(QtCore.Qt.AlignLeft)
         self.contentlayout.addWidget(self.content)
         self.content = QLabel('Xavi Abellan 2012')
         self.content.setWordWrap(True)

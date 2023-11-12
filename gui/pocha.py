@@ -1,11 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import (QApplication, QButtonGroup, QFrame, QGridLayout,
-                             QGroupBox, QHBoxLayout, QLabel, QMessageBox,
-                             QPushButton, QRadioButton, QSizePolicy,
-                             QTableWidgetItem, QVBoxLayout, QWidget)
+try:
+    from PySide6 import QtCore, QtGui
+    from PySide6.QtWidgets import (QApplication, QButtonGroup, QFrame, QGridLayout,
+                                QGroupBox, QHBoxLayout, QLabel, QMessageBox,
+                                QPushButton, QRadioButton, QSizePolicy,
+                                QTableWidgetItem, QVBoxLayout, QWidget)
+except ImportError:
+    from PyQt5 import QtCore, QtGui
+    from PyQt5.QtWidgets import (QApplication, QButtonGroup, QFrame, QGridLayout,
+                                QGroupBox, QHBoxLayout, QLabel, QMessageBox,
+                                QPushButton, QRadioButton, QSizePolicy,
+                                QTableWidgetItem, QVBoxLayout, QWidget)
 
 from controllers.pochaengine import PochaEngine
 from gui.game import (GameWidget, GameInputWidget, GameRoundsDetail,
@@ -316,9 +323,9 @@ class PochaInputWidget(GameInputWidget):
 
 class PochaPlayerInputWidget(QFrame):
 
-    winnerSet = QtCore.pyqtSignal(str)
-    newExpected = QtCore.pyqtSignal()
-    handsClicked = QtCore.pyqtSignal(str, str)
+    winnerSet = QtCore.Signal(str)
+    newExpected = QtCore.Signal()
+    handsClicked = QtCore.Signal(str, str)
 
     def __init__(self, player, engine, colour=None, parent=None):
         super(PochaPlayerInputWidget, self).__init__(parent)

@@ -1,15 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QApplication, QDialog, QDialogButtonBox, QLabel,
-                             QListWidget, QVBoxLayout)
+try:
+    from PySide6 import QtCore
+    from PySide6.QtWidgets import (QApplication, QDialog, QDialogButtonBox, QLabel,
+                                QListWidget, QVBoxLayout)
+except ImportError:
+    from PyQt5 import QtCore
+    from PyQt5.QtWidgets import (QApplication, QDialog, QDialogButtonBox, QLabel,
+                                QListWidget, QVBoxLayout)
 
 i18n = QApplication.translate
 
 
 class LanguageChooser(QDialog):
 
-    newQM = QtCore.pyqtSignal(str)
+    newQM = QtCore.Signal(str)
     supportedLanguages = {'Español': 'es_ES',
                           'English': 'en_GB', 'Català': 'ca_ES'}
 

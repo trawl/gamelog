@@ -5,9 +5,16 @@ import sys
 import os
 import ctypes
 import platform
-from PyQt5.QtCore import QTranslator, QLibraryInfo, QLocale, Qt
-from PyQt5.QtGui import QPalette
-from PyQt5.QtWidgets import QApplication
+try:
+    from PySide6.QtCore import QTranslator, QLibraryInfo, QLocale, Qt
+    from PySide6.QtGui import QPalette
+    from PySide6.QtWidgets import QApplication
+    pyside6 = True
+except ImportError:
+    from PyQt5.QtCore import QTranslator, QLibraryInfo, QLocale, Qt
+    from PyQt5.QtGui import QPalette
+    from PyQt5.QtWidgets import QApplication
+    pyside6 = False
 from gui.mainwindow import MainWindow
 
 if __name__ == "__main__":
@@ -38,5 +45,8 @@ if __name__ == "__main__":
     app.installTranslator(translator)
 
     mw = MainWindow(translator, qt_translator)
-    print(QPalette().color(QPalette.Window).red())
-    sys.exit(app.exec_())
+    if pyside6:
+        sys.exit(app.exec())
+    else:
+        # Deprecated
+        sys.exit(app.exec_())

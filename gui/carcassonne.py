@@ -1,11 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import (QApplication, QButtonGroup, QGridLayout,
-                             QGroupBox, QHBoxLayout, QHeaderView, QLabel,
-                             QMessageBox, QPushButton, QRadioButton, QShortcut,
-                             QTableWidgetItem, QVBoxLayout, QWidget)
+try:
+    from PySide6 import QtCore, QtGui
+    from PySide6.QtWidgets import (QApplication, QButtonGroup, QGridLayout,
+                                QGroupBox, QHBoxLayout, QHeaderView, QLabel,
+                                QMessageBox, QPushButton, QRadioButton,
+                                QTableWidgetItem, QVBoxLayout, QWidget)
+    from PySide6.QtGui import (QShortcut)
+except ImportError:
+    from PyQt5 import QtCore, QtGui
+    from PyQt5.QtWidgets import (QApplication, QButtonGroup, QGridLayout,
+                                QGroupBox, QHBoxLayout, QHeaderView, QLabel,
+                                QMessageBox, QPushButton, QRadioButton, QShortcut,
+                                QTableWidgetItem, QVBoxLayout, QWidget)
 
 from controllers.carcassonneengine import CarcassonneEngine
 from gui.game import (GameWidget, ScoreSpinBox, GameRoundsDetail,
@@ -194,7 +201,7 @@ class CarcassonneWidget(GameWidget):
 
 class CarcassonneInputWidget(QWidget):
 
-    enterPressed = QtCore.pyqtSignal()
+    enterPressed = QtCore.Signal()
 
     i18n("CarcassonneInputWidget", 'City')
     i18n("CarcassonneInputWidget", 'Road')
