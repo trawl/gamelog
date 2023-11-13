@@ -220,7 +220,9 @@ class SkullKingInputWidget(GameInputWidget):
                 if mode == 'expected':
                     self.playerInputList[player].setExpectedHands(-1)
                 else:
-                    self.playerInputList[player].setWonHands(-1)
+                    pil = self.playerInputList[player]
+                    pil.setWonHands(-1)
+                    pil.disableExtraRow(pil.getExpectedHands() != pil.getWonHands() or pil.getExpectedHands() < 1)
                 event.accept()
                 return super(SkullKingInputWidget, self).keyPressEvent(event)
             except IndexError:
@@ -254,6 +256,8 @@ class SkullKingInputWidget(GameInputWidget):
             if won_hands[player] < 0:
                 if self.playerInputList[player].setWonHands(number):
                     self.lastChoices.append(('won', player))
+                    pil = self.playerInputList[player]
+                    pil.disableExtraRow(pil.getExpectedHands() != pil.getWonHands() or pil.getExpectedHands() < 1)
                 return
 
         return
