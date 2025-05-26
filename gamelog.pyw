@@ -43,6 +43,7 @@ if __name__ == "__main__":
 #    app.setStyle(QStyleFactory.create("plastique"))
     app.installTranslator(qt_translator)
     app.installTranslator(translator)
+    app.setDesktopFileName("gamelog")
 
     mw = MainWindow(translator, qt_translator)
     if pyside6:
