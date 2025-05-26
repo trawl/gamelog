@@ -131,17 +131,17 @@ class CarcassonneWidget(GameWidget):
             return
 
         # Everything ok so far, let's confirm
-        title = i18n(
-            "CarcassonneWidget", 'Commit Entry')
-        msg = i18n(
-            "CarcassonneWidget", "Are you sure you want to commit this entry?")
+        # title = i18n(
+        #     "CarcassonneWidget", 'Commit Entry')
+        # msg = i18n(
+        #     "CarcassonneWidget", "Are you sure you want to commit this entry?")
 
-        ret = QMessageBox.question(self, title, msg,
-                                   QMessageBox.Yes | QMessageBox.No,
-                                   QMessageBox.Yes)
+        # ret = QMessageBox.question(self, title, msg,
+        #                            QMessageBox.Yes | QMessageBox.No,
+        #                            QMessageBox.Yes)
 
-        if ret == QMessageBox.No:
-            return
+        # if ret == QMessageBox.No:
+        #     return
 
         # Once here, we can commit round
         try:

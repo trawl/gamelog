@@ -58,7 +58,7 @@ class PochaStatsQueries(object):
         FROM Round,Match
         WHERE Match.idMatch = Round.idMatch
             and Match.state = 1
-            and Game_name="Pocha"
+            and Game_name="#GAMENAME#"
             and Round.score>=10
         group by idm, player
     ) as tmp
@@ -72,7 +72,7 @@ class PochaStatsQueries(object):
     FROM Round,Match
     WHERE Match.idMatch = Round.idMatch
         and Match.state = 1
-        and Game_name="Pocha"
+        and Game_name="#GAMENAME#"
     group by player
    """
 
@@ -82,9 +82,13 @@ class PochaStatsEngine(StatsEngine):
     def __init__(self):
         super(PochaStatsEngine, self).__init__()
         self.singleKindRecord = None
+        self.game = "Pocha"
+        self.define_queries()
+    
+    def define_queries(self):
         q = PochaStatsQueries()
-        self._hitsQuery = q.hitsQuery
-        self._extremeRounds = q.extremeRounds
+        self._hitsQuery = q.hitsQuery.replace('#GAMENAME#', self.game)
+        self._extremeRounds = q.extremeRounds.replace('#GAMENAME#', self.game)
 
     def update(self):
         super(PochaStatsEngine, self).update()
@@ -94,14 +98,14 @@ class PochaStatsEngine(StatsEngine):
         for row in self.hitsRecord:
             player = row['player']
             for r2 in self.generalplayerstats:
-                if r2['nick'] == player and r2['game'] == "Pocha":
+                if r2['nick'] == player and r2['game'] == self.game:
                     r2['max_hits'] = row['max_hits']
                     r2['min_hits'] = row['min_hits']
                     break
         for row in self.extremeRoundsRecord:
             player = row['player']
             for r2 in self.generalplayerstats:
-                if r2['nick'] == player and r2['game'] == "Pocha":
+                if r2['nick'] == player and r2['game'] == self.game:
                     r2['max_round_score'] = row['max_round_score']
                     r2['min_round_score'] = row['min_round_score']
                     break
