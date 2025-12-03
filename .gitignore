@@ -6,3 +6,5 @@ __pycache__
 *.py[cod]
 .settings
 Thumbs.db
+.venv
+uv.lock
