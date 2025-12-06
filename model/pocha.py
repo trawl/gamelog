@@ -7,7 +7,7 @@ from model.base import GenericRoundMatch
 class PochaMatch(GenericRoundMatch):
     def __init__(self, players=[]):
         super(PochaMatch, self).__init__(players)
-        self.game = 'Pocha'
+        self.game = "Pocha"
         self.dealingp = 1
         self.maxRounds = 18
 

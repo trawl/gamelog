@@ -1,42 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-try:
-    from PySide6 import QtCore, QtGui
-    from PySide6.QtWidgets import (
-        QApplication,
-        QButtonGroup,
-        QCheckBox,
-        QFrame,
-        QGridLayout,
-        QGroupBox,
-        QHBoxLayout,
-        QLabel,
-        QMessageBox,
-        QPushButton,
-        QSizePolicy,
-        QTableWidgetItem,
-        QVBoxLayout,
-        QWidget,
-    )
-except ImportError:
-    from PyQt5 import QtCore, QtGui
-    from PyQt5.QtWidgets import (
-        QApplication,
-        QButtonGroup,
-        QCheckBox,
-        QFrame,
-        QGridLayout,
-        QGroupBox,
-        QHBoxLayout,
-        QLabel,
-        QMessageBox,
-        QPushButton,
-        QSizePolicy,
-        QTableWidgetItem,
-        QVBoxLayout,
-        QWidget,
-    )
+from PySide6 import QtCore, QtGui
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import (
+    QApplication,
+    QButtonGroup,
+    QCheckBox,
+    QFrame,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QSizePolicy,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
 
 from controllers.skullkingengine import SkullKingEngine
 from gui.game import (
@@ -58,7 +39,6 @@ class SkullKingWidget(GameWidget):
     def createEngine(self):
         if self.game != "Skull King":
             raise Exception("No engine for game {}".format(self.game))
-            return
         self.engine = SkullKingEngine()
 
     def initUI(self):
@@ -174,11 +154,12 @@ class SkullKingWidget(GameWidget):
     def updatePlayerOrder(self):
         GameWidget.updatePlayerOrder(self)
         trash = QWidget()
-        trash.setLayout(self.playersLayout)
+        trash_layout = self.playersLayout
+        trash.setLayout(trash_layout)
         self.playersLayout = QVBoxLayout(self.playerGroup)
         # self.playersLayout.addStretch()
         for i, player in enumerate(self.engine.getListPlayers()):
-            trash.layout().removeWidget(self.playerGroupBox[player])
+            trash_layout.removeWidget(self.playerGroupBox[player])
             self.playersLayout.addWidget(self.playerGroupBox[player])
             self.playerGroupBox[player].setColour(PlayerColours[i])
         # self.playersLayout.addStretch()
@@ -242,26 +223,26 @@ class SkullKingInputWidget(GameInputWidget):
         return expected
 
     def checkExpected(self):
-        for player, piw in self.playerInputList.items():
+        for piw in self.playerInputList.values():
             piw.disableWonRow(piw.getExpectedHands() < 0)
             # print(f"CheckExpected {player}: {piw.getExpectedHands()} {piw.getWonHands()}")
             # piw.disableExtraRow(piw.getExpectedHands() != piw.getWonHands() or piw.getExpectedHands() < 1)
 
     def keyPressEvent(self, event):
         numberkeys = [
-            QtCore.Qt.Key_0,
-            QtCore.Qt.Key_1,
-            QtCore.Qt.Key_2,
-            QtCore.Qt.Key_3,
-            QtCore.Qt.Key_4,
-            QtCore.Qt.Key_5,
-            QtCore.Qt.Key_6,
-            QtCore.Qt.Key_7,
-            QtCore.Qt.Key_8,
-            QtCore.Qt.Key_9,
+            QtCore.Qt.Key.Key_0,
+            QtCore.Qt.Key.Key_1,
+            QtCore.Qt.Key.Key_2,
+            QtCore.Qt.Key.Key_3,
+            QtCore.Qt.Key.Key_4,
+            QtCore.Qt.Key.Key_5,
+            QtCore.Qt.Key.Key_6,
+            QtCore.Qt.Key.Key_7,
+            QtCore.Qt.Key.Key_8,
+            QtCore.Qt.Key.Key_9,
         ]
 
-        if event.key() in (QtCore.Qt.Key_Backspace, QtCore.Qt.Key_Delete):
+        if event.key() in (QtCore.Qt.Key.Key_Backspace, QtCore.Qt.Key.Key_Delete):
             try:
                 mode, player = self.lastChoices.pop()
                 if mode == "expected":
@@ -315,10 +296,13 @@ class SkullKingInputWidget(GameInputWidget):
     def updatePlayerOrder(self):
         #         QWidget().setLayout(self.layout())
         trash = QWidget()
-        trash.setLayout(self.layout())
+        trash_layout = self.layout()
+        if trash_layout:
+            trash.setLayout(trash_layout)
         self.widgetLayout = QGridLayout(self)
         for i, player in enumerate(self.engine.getListPlayers()):
-            trash.layout().removeWidget(self.playerInputList[player])
+            if trash_layout:
+                trash_layout.removeWidget(self.playerInputList[player])
             self.widgetLayout.addWidget(self.playerInputList[player], i // 4, i % 4)
             self.playerInputList[player].setColour(PlayerColours[i])
 
@@ -328,7 +312,7 @@ class SkullKingPlayerInputWidget(QFrame):
     newExpected = QtCore.Signal()
     handsClicked = QtCore.Signal(str, str)
 
-    def __init__(self, player, engine, colour=None, parent=None):
+    def __init__(self, player, engine, colour=QColor(0, 0, 0), parent=None):
         super(SkullKingPlayerInputWidget, self).__init__(parent)
         self.player = player
         self.engine = engine
@@ -341,10 +325,10 @@ class SkullKingPlayerInputWidget(QFrame):
         self.label.setText(self.player)
         self.mainLayout.addWidget(self.label)
         self.label.setAutoFillBackground(False)
-        self.setFrameShape(QFrame.Panel)
-        self.setFrameShadow(QFrame.Raised)
+        self.setFrameShape(QFrame.Shape.Panel)
+        self.setFrameShadow(QFrame.Shadow.Raised)
         self.label.setScaledContents(True)
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.label.setWordWrap(False)
         css = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
         self.label.setStyleSheet(
@@ -425,7 +409,7 @@ class SkullKingPlayerInputWidget(QFrame):
     def disableExtraRow(self, disable=True):
         self.extraPointsGroup.setDisabled(disable)
 
-    def enableWonGroup(self, button):
+    def enableWonGroup(self, _button):
         self.newExpected.emit()
 
     def isWinner(self):
@@ -497,16 +481,18 @@ class SkullKingHandsButton(QPushButton):
         super(SkullKingHandsButton, self).__init__(text, parent)
         self.setCheckable(True)
         self.setMinimumSize(25, 25)
-        self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Maximum)
+        self.setSizePolicy(
+            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Maximum
+        )
         self.toggled.connect(self.setColour)
         self.setColour(False)
 
-    def setColour(self, toggle):
+    def setColour(self, _toggle):
         return
-        if toggle:
-            self.setStyleSheet("background-color: red; font: bold")
-        else:
-            self.setStyleSheet("background-color: green; font: normal")
+        # if _toggle:
+        #     self.setStyleSheet("background-color: red; font: bold")
+        # else:
+        #     self.setStyleSheet("background-color: green; font: normal")
 
     def setDisabled(self, disabled=True):
         if disabled:
@@ -546,8 +532,11 @@ class SkullKingRoundTable(GameRoundTable):
 
         for j, player in enumerate(self.engine.getListPlayers()):
             item = QTableWidgetItem()
-            item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
-            item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter)
+            item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
+            item.setTextAlignment(
+                QtCore.Qt.AlignmentFlag.AlignVCenter
+                | QtCore.Qt.AlignmentFlag.AlignCenter
+            )
             score = rnd.getPlayerScore(player)
             if score > 0:
                 background = self.bgcolors[0]
@@ -586,7 +575,7 @@ class SkullKingRoundPlot(GameRoundPlot):
         for player in self.engine.getListPlayers():
             self.canvas.addSeries(scores[player], player)
 
-        self.canvas.scene.update()
+        self.canvas._scene.update()
 
 
 class SkullKingQSTW(QuickStatsTW):

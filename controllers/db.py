@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
+import datetime
 import os.path
 import sqlite3 as lite
-import datetime
+import sys
 
 
 class GameLogDB:
@@ -12,10 +12,10 @@ class GameLogDB:
 
     def __init__(self):
         self.__dict__ = self.__shared_state
-        if not hasattr(self, 'con'):
+        if not hasattr(self, "con"):
             self.con = None
 
-    def connectDB(self, dbname='db/gamelog.db'):
+    def connectDB(self, dbname="db/gamelog.db"):
         self.disconnectDB()
         dbdir, _ = os.path.split(dbname)
         if not os.path.isdir(dbdir):
@@ -40,6 +40,8 @@ class GameLogDB:
             self.con.close()
 
     def execute(self, query):
+        if self.con is None:
+            raise RuntimeError("Database not connected")
         try:
             with self.con:
                 self.con.row_factory = lite.Row
@@ -47,8 +49,7 @@ class GameLogDB:
                 cur.execute(query)
                 return cur
         except lite.Error as e:
-            self._printError(
-                "Error running query {}\n {}".format(query, e.args[0]))
+            self._printError("Error running query {}\n {}".format(query, e.args[0]))
             sys.exit(1)
 
     def queryDict(self, query):
@@ -61,6 +62,8 @@ class GameLogDB:
         return result
 
     def _executeScript(self, script):
+        if self.con is None:
+            raise RuntimeError("Database not connected")
         try:
             with self.con:
                 cur = self.con.cursor()
@@ -72,8 +75,8 @@ class GameLogDB:
 
     def _checkDB(self):
         cur = self.execute(
-            ("SELECT name FROM sqlite_master "
-             "WHERE type='table' AND name='Game'"))
+            ("SELECT name FROM sqlite_master WHERE type='table' AND name='Game'")
+        )
         if not cur.fetchone():
             self._executeScript(_emptydb)
 
@@ -81,36 +84,37 @@ class GameLogDB:
         cur = db.execute("Select name,maxPlayers,description,rules from Game")
         games = dict()
         for row in cur:
-            games[row['name']] = dict()
-            games[row['name']]['maxPlayers'] = row['maxPlayers']
-            games[row['name']]['description'] = row['description']
-            games[row['name']]['rules'] = row['rules']
+            games[row["name"]] = dict()
+            games[row["name"]]["maxPlayers"] = row["maxPlayers"]
+            games[row["name"]]["description"] = row["description"]
+            games[row["name"]]["rules"] = row["rules"]
         return games
 
     def getLastGame(self):
-        cur = db.execute(
-            "Select Game_name from Match order by idMatch desc limit 1")
+        cur = db.execute("Select Game_name from Match order by idMatch desc limit 1")
         row = cur.fetchone()
         if not row:
             return None
-        return str(row['Game_name'])
+        return str(row["Game_name"])
 
     def getPlayerNicks(self):
         cur = db.execute("Select nick from Player order by nick")
-        return [row['nick'] for row in cur]
+        return [row["nick"] for row in cur]
 
     def getPlayers(self):
         cur = db.execute("Select * from Player order by nick")
         return cur
 
     def addPlayer(self, nick, fullname):
-        db.execute("INSERT INTO Player(nick,fullName,dateCreation) "
-                   "VALUES('{}','{}','{}')".format(
-                        nick, fullname, datetime.datetime.now()))
+        db.execute(
+            "INSERT INTO Player(nick,fullName,dateCreation) "
+            "VALUES('{}','{}','{}')".format(nick, fullname, datetime.datetime.now())
+        )
 
     def isPlayerFavourite(self, nick):
-        cur = db.execute("SELECT nick FROM Player "
-                         "WHERE nick='{}' and favourite=1".format(nick))
+        cur = db.execute(
+            "SELECT nick FROM Player WHERE nick='{}' and favourite=1".format(nick)
+        )
         if not cur.fetchone():
             return False
         else:
@@ -121,8 +125,7 @@ class GameLogDB:
             flag = 1
         else:
             flag = 0
-        db.execute("UPDATE Player SET favourite={} "
-                   "WHERE nick='{}'".format(flag, nick))
+        db.execute("UPDATE Player SET favourite={} WHERE nick='{}'".format(flag, nick))
 
     def _printError(self, message):
         # Python 2 syntax

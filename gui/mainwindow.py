@@ -1,30 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-try:
-    from PySide6 import QtCore, QtWidgets, QtGui
-    from PySide6.QtWidgets import (QApplication, QDialog, QHBoxLayout,
-                                QLabel, QMainWindow, QMessageBox, QTabWidget,
-                                QVBoxLayout, QWidget, QApplication)
-    from PySide6.QtGui import (QAction)
-    qtversion = QtCore.__version__
-
-except:
-    from PyQt5 import QtCore, QtWidgets, QtGui
-    from PyQt5.QtWidgets import (QAction, QApplication, QDialog, QHBoxLayout,
-                                QLabel, QMainWindow, QMessageBox, QTabWidget,
-                                QVBoxLayout, QWidget, qApp)
-    qtversion = QtCore.QT_VERSION_STR
-    QApplication = qApp
+from PySide6 import QtCore, QtGui
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QMessageBox,
+    QVBoxLayout,
+    QWidget,
+)
 
 from controllers.db import db
-from gui.newgame import NewGameWidget
 from gui.languagechooser import LanguageChooser
+from gui.newgame import NewGameWidget
 
 i18n = QApplication.translate
 
 
 class MainWindow(QMainWindow):
-
     # Dialog translations
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "&Yes")
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "&No")
@@ -40,17 +36,16 @@ class MainWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
-
         # Window settings
 
         self.setGeometry(100, 50, 1024, 600)
 
-        self.icon = QtGui.QIcon('icons/cards.png')
+        self.icon = QtGui.QIcon("icons/cards.png")
         self.setWindowIcon(self.icon)
 
         # Menu settings
         self.menubar = self.menuBar()
-        self.fileMenu = self.menubar.addMenu('')
+        self.fileMenu = self.menubar.addMenu("")
 
         self.languageAction = QAction(self)
         self.languageAction.triggered.connect(self.chooseLanguage)
@@ -60,7 +55,7 @@ class MainWindow(QMainWindow):
         self.exitAction.triggered.connect(self.close)
         self.fileMenu.addAction(self.exitAction)
 
-        self.helpMenu = self.menubar.addMenu('')
+        self.helpMenu = self.menubar.addMenu("")
         self.aboutAction = QAction(self)
         self.aboutAction.triggered.connect(self.about)
         self.helpMenu.addAction(self.aboutAction)
@@ -71,14 +66,14 @@ class MainWindow(QMainWindow):
         self.verticalLayout = QVBoxLayout(self.centralwidget)
 
         # Tab widget
-#        self.tabWidget = QTabWidget(self.centralwidget)
-#        self.verticalLayout.addWidget(self.tabWidget)
+        #        self.tabWidget = QTabWidget(self.centralwidget)
+        #        self.verticalLayout.addWidget(self.tabWidget)
 
         # New game tab
         self.newGameTab = NewGameWidget(self)
         self.verticalLayout.addWidget(self.newGameTab)
-#        self.tabWidget.addTab(self.newGameTab, "")
-#        self.tabWidget.setCurrentIndex(0)
+        #        self.tabWidget.addTab(self.newGameTab, "")
+        #        self.tabWidget.setCurrentIndex(0)
         self.statusBar().hide()
 
         self.retranslateUi()
@@ -91,25 +86,16 @@ class MainWindow(QMainWindow):
         self.show()
 
     def retranslateUi(self):
-        self.setWindowTitle(
-            i18n("MainWindow", 'GameLog'))
-        self.statusBar().showMessage(
-            i18n("MainWindow", 'GameLog'))
-        self.fileMenu.setTitle(
-            i18n("MainWindow", '&File'))
-        self.languageAction.setText(
-            i18n("MainWindow", '&Language...'))
-        self.exitAction.setText(
-            i18n("MainWindow", '&Quit'))
-        self.exitAction.setShortcut(
-            i18n("MainWindow", 'Ctrl+Q'))
-        self.exitAction.setStatusTip(
-            i18n("MainWindow", 'Quit GameLog'))
+        self.setWindowTitle(i18n("MainWindow", "GameLog"))
+        self.statusBar().showMessage(i18n("MainWindow", "GameLog"))
+        self.fileMenu.setTitle(i18n("MainWindow", "&File"))
+        self.languageAction.setText(i18n("MainWindow", "&Language..."))
+        self.exitAction.setText(i18n("MainWindow", "&Quit"))
+        self.exitAction.setShortcut(i18n("MainWindow", "Ctrl+Q"))
+        self.exitAction.setStatusTip(i18n("MainWindow", "Quit GameLog"))
 
-        self.helpMenu.setTitle(
-            i18n("MainWindow", '&Help'))
-        self.aboutAction.setText(i18n(
-            "MainWindow", '&About Gamelog...'))
+        self.helpMenu.setTitle(i18n("MainWindow", "&Help"))
+        self.aboutAction.setText(i18n("MainWindow", "&About Gamelog..."))
 
         self.newGameTab.retranslateUI()
         for game in self.openedGames:
@@ -125,45 +111,62 @@ class MainWindow(QMainWindow):
         realopened = [x for x in self.openedGames if not x.isFinished()]
         numgames = len(realopened)
         if numgames > 0:
-            tit = i18n("MainWindow", 'Exit')
-            if (numgames == 1):
+            tit = i18n("MainWindow", "Exit")
+            if numgames == 1:
                 msg = i18n(
-                    "MainWindow", "You have an opened {} match. \
-                    Do you want to save it before exiting?")
+                    "MainWindow",
+                    "You have an opened {} match. \
+                    Do you want to save it before exiting?",
+                )
                 msg = msg.format(realopened[0].getGameName())
-                reply = QMessageBox.question(self, tit, msg,
-                                             QMessageBox.Yes |
-                                             QMessageBox.No |
-                                             QMessageBox.Cancel,
-                                             QMessageBox.Cancel)
+                reply = QMessageBox.question(
+                    self,
+                    tit,
+                    msg,
+                    QMessageBox.StandardButton.Yes
+                    | QMessageBox.StandardButton.No
+                    | QMessageBox.StandardButton.Cancel,
+                    QMessageBox.StandardButton.Cancel,
+                )
             else:
-                tit = i18n("MainWindow", 'Exit')
-                msg = i18n("MainWindow", "You have {} opened matches. \
-                            Do you want to save them before exiting?")
+                tit = i18n("MainWindow", "Exit")
+                msg = i18n(
+                    "MainWindow",
+                    "You have {} opened matches. \
+                            Do you want to save them before exiting?",
+                )
                 msg = msg.format(numgames)
-                reply = QMessageBox.question(self, tit, msg,
-                                             QMessageBox.Yes |
-                                             QMessageBox.No |
-                                             QMessageBox.Cancel,
-                                             QMessageBox.Cancel)
+                reply = QMessageBox.question(
+                    self,
+                    tit,
+                    msg,
+                    QMessageBox.StandardButton.Yes
+                    | QMessageBox.StandardButton.No
+                    | QMessageBox.StandardButton.Cancel,
+                    QMessageBox.StandardButton.Cancel,
+                )
 
-            if reply == QMessageBox.Cancel:
+            if reply == QMessageBox.StandardButton.Cancel:
                 return False
 
             for game in realopened:
-                if reply == QMessageBox.No:
+                if reply == QMessageBox.StandardButton.No:
                     game.closeMatch()
                 else:
                     game.saveMatch()
         else:
-            tit = i18n("MainWindow", 'Exit')
+            tit = i18n("MainWindow", "Exit")
             msg = i18n("MainWindow", "Are you sure you want to exit GameLog?")
 
-            reply = QMessageBox.question(self, tit, msg,
-                                         QMessageBox.Yes | QMessageBox.No,
-                                         QMessageBox.No)
+            reply = QMessageBox.question(
+                self,
+                tit,
+                msg,
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
+            )
 
-            if reply == QMessageBox.No:
+            if reply == QMessageBox.StandardButton.No:
                 return False
 
         if db:
@@ -177,15 +180,17 @@ class MainWindow(QMainWindow):
         matchTab.show()
         matchTab.setFocus()
         self.openedGames.append(matchTab)
-#        idx = self.tabWidget.addTab(matchTab, title)
-#        self.tabWidget.setCurrentIndex(idx)
+
+    #        idx = self.tabWidget.addTab(matchTab, title)
+    #        self.tabWidget.setCurrentIndex(idx)
 
     def removeTab(self, tab):
         tab.close()
         self.openedGames.remove(tab)
         self.setWindowTitle("Gamelog")
         self.newGameTab.show()
-#        self.tabWidget.removeTab(self.tabWidget.indexOf(tab))
+
+    #        self.tabWidget.removeTab(self.tabWidget.indexOf(tab))
 
     def chooseLanguage(self):
         lc = LanguageChooser(self)
@@ -198,10 +203,10 @@ class MainWindow(QMainWindow):
 
     def loadTranslator(self, lang):
         translator = QtCore.QTranslator()
-        ret = translator.load(lang, 'i18n/')
+        ret = translator.load(lang, "i18n/")
         qt_translator = QtCore.QTranslator()
-        qt_qm = 'qtbase_' + lang.split('_')[0]
-        qt_translator.load(qt_qm, 'i18n/')
+        qt_qm = "qtbase_" + lang.split("_")[0]
+        qt_translator.load(qt_qm, "i18n/")
         if ret:
             if self.translator:
                 QApplication.removeTranslator(self.translator)
@@ -213,42 +218,43 @@ class MainWindow(QMainWindow):
             QApplication.installTranslator(self.translator)
 
     def changeEvent(self, event):
-        if event.type() == QtCore.QEvent.LanguageChange:
+        if event.type() == QtCore.QEvent.Type.LanguageChange:
             self.retranslateUi()
 
         return super(MainWindow, self).changeEvent(event)
 
 
 class AboutDialog(QDialog):
-
     def __init__(self, parent=None):
         super(AboutDialog, self).__init__(parent)
         # self.setFixedSize(QtCore.QSize(450, 350))
-        self.setWindowTitle(i18n(
-            "AboutDialog", 'About Gamelog'))
+        self.setWindowTitle(i18n("AboutDialog", "About Gamelog"))
         self.widgetlayout = QHBoxLayout(self)
         self.iconlabel = QLabel(self)
         self.iconlabel.setMaximumSize(75, 75)
         self.iconlabel.setScaledContents(True)
-        self.iconlabel.setPixmap(QtGui.QPixmap('icons/cards.png'))
+        self.iconlabel.setPixmap(QtGui.QPixmap("icons/cards.png"))
         self.widgetlayout.addWidget(self.iconlabel)
         self.contentlayout = QVBoxLayout()
         self.widgetlayout.addLayout(self.contentlayout)
         self.title = QLabel("Gamelog")
         self.title.setStyleSheet("QLabel{font-size:18px; font-weight:bold}")
-        self.title.setAlignment(QtCore.Qt.AlignLeft)
+        self.title.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.contentlayout.addWidget(self.title)
-        self.content = QLabel(i18n(
-            "AboutDialog",
-            'Gamelog is a utility to keep track of the score in board games.'))
+        self.content = QLabel(
+            i18n(
+                "AboutDialog",
+                "Gamelog is a utility to keep track of the score in board games.",
+            )
+        )
         self.content.setWordWrap(True)
-        self.content.setAlignment(QtCore.Qt.AlignTop)
+        self.content.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         self.contentlayout.addWidget(self.content)
-        self.content = QLabel(f'QT {qtversion}')
+        self.content = QLabel(f"QT {QtCore.qVersion()}")
         self.content.setWordWrap(True)
-        self.content.setAlignment(QtCore.Qt.AlignLeft)
+        self.content.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.contentlayout.addWidget(self.content)
-        self.content = QLabel('Xavi Abellan 2012')
+        self.content = QLabel("Xavi Abellan 2012")
         self.content.setWordWrap(True)
-        self.content.setAlignment(QtCore.Qt.AlignLeft)
+        self.content.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.contentlayout.addWidget(self.content)

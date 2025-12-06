@@ -1,53 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-try:
-    from PySide6 import QtCore, QtGui
-    from PySide6.QtGui import QAction
-    from PySide6.QtWidgets import (
-        QApplication,
-        QCheckBox,
-        QFrame,
-        QGroupBox,
-        QHBoxLayout,
-        QHeaderView,
-        QLabel,
-        QLCDNumber,
-        QMenu,
-        QMessageBox,
-        QPushButton,
-        QSizePolicy,
-        QSpinBox,
-        QTableWidget,
-        QTabWidget,
-        QVBoxLayout,
-        QWidget,
-    )
-except ImportError:
-    from PyQt5 import QtCore, QtGui
-    from PyQt5.QtWidgets import (
-        QAction,
-        QApplication,
-        QCheckBox,
-        QFrame,
-        QGroupBox,
-        QHBoxLayout,
-        QHeaderView,
-        QLabel,
-        QLCDNumber,
-        QMenu,
-        QMessageBox,
-        QPushButton,
-        QSizePolicy,
-        QSpinBox,
-        QTableWidget,
-        QTabWidget,
-        QVBoxLayout,
-        QWidget,
-    )
-
-    QtCore.Signal = QtCore.pyqtSignal
-
 import ctypes
+
+from PySide6 import QtCore, QtGui
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import (
+    QApplication,
+    QCheckBox,
+    QFrame,
+    QGroupBox,
+    QHBoxLayout,
+    QHeaderView,
+    QLabel,
+    QLCDNumber,
+    QMenu,
+    QMessageBox,
+    QPushButton,
+    QSizePolicy,
+    QSpinBox,
+    QTableWidget,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
 from gui.clock import GameClock
 from gui.gamestats import QuickStatsTW
@@ -86,7 +61,7 @@ class GameWidget(Tab):
                 self.engine.addPlayer(nick)
             self.engine.begin()
         self.engine.printStats()
-        self.gameInput = None
+        self.gameInput = GameInputWidget(self.engine)
         self.finished = False
         self.toggleScreenLock()
         self.initUI()
@@ -131,7 +106,7 @@ class GameWidget(Tab):
         self.commitRoundButton.clicked.connect(self.commitRound)
 
         self.gameStatusLabel = QLabel(self.roundGroup)
-        self.gameStatusLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.gameStatusLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.roundLayout.addWidget(self.gameStatusLabel)
 
         # Match Group
@@ -142,7 +117,7 @@ class GameWidget(Tab):
         self.clock.setMinimumHeight(100)
         # Set size policy to Fixed in the vertical direction
         size_policy = self.matchGroup.sizePolicy()
-        size_policy.setVerticalPolicy(QSizePolicy.Fixed)
+        size_policy.setVerticalPolicy(QSizePolicy.Policy.Fixed)
         self.matchGroup.setSizePolicy(size_policy)
         self.matchGroupLayout.addWidget(self.clock)
 
@@ -196,13 +171,15 @@ class GameWidget(Tab):
                 self,
                 tit,
                 msg,
-                QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
-                QMessageBox.Cancel,
+                QMessageBox.StandardButton.Yes
+                | QMessageBox.StandardButton.No
+                | QMessageBox.StandardButton.Cancel,
+                QMessageBox.StandardButton.Cancel,
             )
 
-            if ret == QMessageBox.Cancel:
+            if ret == QMessageBox.StandardButton.Cancel:
                 return
-            if ret == QMessageBox.No:
+            if ret == QMessageBox.StandardButton.No:
                 self.closeMatch()
             else:
                 self.saveMatch()
@@ -219,13 +196,15 @@ class GameWidget(Tab):
                 self,
                 tit,
                 msg,
-                QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
-                QMessageBox.Cancel,
+                QMessageBox.StandardButton.Yes
+                | QMessageBox.StandardButton.No
+                | QMessageBox.StandardButton.Cancel,
+                QMessageBox.StandardButton.Cancel,
             )
 
-            if ret == QMessageBox.Cancel:
+            if ret == QMessageBox.StandardButton.Cancel:
                 return
-            if ret == QMessageBox.Yes:
+            if ret == QMessageBox.StandardButton.Yes:
                 self.saveMatch()
         self.toggleScreenLock(True)
         self.requestRestart()
@@ -426,7 +405,7 @@ class GameInputWidget(QWidget):
         self.winnerSelected = winner
 
     def keyPressEvent(self, event):
-        if event.key() in (QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter):
+        if event.key() in (QtCore.Qt.Key.Key_Return, QtCore.Qt.Key.Key_Enter):
             self.enterPressed.emit()
             event.accept()
         return super(GameInputWidget, self).keyPressEvent(event)
@@ -480,7 +459,7 @@ class IconLabel(QLabel):
 
 
 class GamePlayerWidget(QGroupBox):
-    def __init__(self, nick, colour=None, parent=None):
+    def __init__(self, nick, colour=QtGui.QColor(), parent=None):
         super(GamePlayerWidget, self).__init__(parent)
         self.player = nick
         self.pcolour = colour
@@ -491,12 +470,9 @@ class GamePlayerWidget(QGroupBox):
         self.mainLayout = QHBoxLayout(self)
         #         self.mainLayout.addStretch()
         self.scoreLCD = QLCDNumber(self)
-        self.scoreLCD.setSegmentStyle(QLCDNumber.Flat)
+        self.scoreLCD.setSegmentStyle(QLCDNumber.SegmentStyle.Flat)
         self.mainLayout.addWidget(self.scoreLCD)
-        try:
-            self.scoreLCD.setDigitCount(3)
-        except TypeError:
-            self.scoreLCD.setNumDigits(3)
+        self.scoreLCD.setDigitCount(3)
         self.scoreLCD.setFixedSize(100, 60)
         self.scoreLCD.display(0)
         css = "QLCDNumber {{ color:rgb({},{},{});}}"
@@ -525,15 +501,9 @@ class GamePlayerWidget(QGroupBox):
 
     def updateDisplay(self, points):
         if points >= 1000 or points <= -100:
-            try:
-                self.scoreLCD.setDigitCount(4)
-            except TypeError:
-                self.scoreLCD.setNumDigits(4)
+            self.scoreLCD.setDigitCount(4)
         else:
-            try:
-                self.scoreLCD.setDigitCount(3)
-            except TypeError:
-                self.scoreLCD.setNumDigits(3)
+            self.scoreLCD.setDigitCount(3)
         self.scoreLCD.display(points)
 
     def setDealer(self):
@@ -592,7 +562,7 @@ class GameRoundsDetail(QGroupBox):
         self.container.addTab(self.statsFrame, "")
 
         self.statsLayout = QVBoxLayout(self.statsFrame)
-        self.gamestats = self.createQSBox(self.statsFrame)
+        self.gamestats = self.createQSBox()
         self.statsLayout.addWidget(self.gamestats)
 
     def retranslateUI(self):
@@ -621,21 +591,23 @@ class GameRoundsDetail(QGroupBox):
 
     def updateStats(self):
         try:
-            self.gamestats.update(self.engine.getGame(), self.engine.getListPlayers())
+            self.gamestats.updateContent(
+                self.engine.getGame(), self.engine.getListPlayers()
+            )
         except Exception:
             self.gamestats.update()
 
-    def deleteRound(self, nround):
+    def deleteRound(self, _nround):
         self.plot.updatePlot()
 
     # Implement in subclasses if necessary
-    def createRoundTable(self, engine, parent=None):
-        return GameRoundTable(self)
+    def createRoundTable(self, _engine, parent):
+        return GameRoundTable(self, parent)
 
-    def createRoundPlot(self, engine, parent=None):
-        return GameRoundPlot(self)
+    def createRoundPlot(self, _engine, parent):
+        return GameRoundPlot(self, parent)
 
-    def createQSBox(self, parent=None):
+    def createQSBox(self):
         return QuickStatsTW(self.engine.getGame(), self.engine.getListPlayers(), self)
 
     def updatePlayerOrder(self):
@@ -653,8 +625,8 @@ class GameRoundTable(QTableWidget):
 
     def initUI(self):
         self.setHorizontalHeaderLabels(self.engine.getListPlayers())
-        self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.openTableMenu)
 
     def resetClear(self):
@@ -682,21 +654,25 @@ class GameRoundTable(QTableWidget):
                         delete this entry?",
             )
             ret = QMessageBox.question(
-                self, title, msg, QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes
+                self,
+                title,
+                msg,
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.Yes,
             )
-            if ret == QMessageBox.No:
+            if ret == QMessageBox.StandardButton.No:
                 return
             self.engine.deleteRound(nentry)
             self.removeRow(item.row())
             self.edited.emit()
 
     # ReImplement in subclasses
-    def insertRound(self, rnd):
+    def insertRound(self, _rnd):
         pass
 
 
 class GameRoundPlot(QWidget):
-    def __init__(self, engine, parent=None):
+    def __init__(self, engine, parent):
         super(GameRoundPlot, self).__init__(parent)
         self.plotinited = False
         self.engine = engine

@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from controllers.pochaengine import PochaEngine, PochaStatsEngine, PochaParticularStatsEngine
+from controllers.pochaengine import (
+    PochaEngine,
+    PochaParticularStatsEngine,
+    PochaStatsEngine,
+)
 
 
 class SkullKingEngine(PochaEngine):
     def __init__(self):
         super(SkullKingEngine, self).__init__()
-        self.game = 'Skull King'
+        self.game = "Skull King"
         self.hands = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 

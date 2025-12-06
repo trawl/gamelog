@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from controllers.db import db
-from model.base import GenericRoundMatch, GenericRound
+from model.base import GenericRound, GenericRoundMatch
 
 
 class RemigioMatch(GenericRoundMatch):
     def __init__(self, players=[]):
         super(RemigioMatch, self).__init__(players)
-        self.game = 'Remigio'
+        self.game = "Remigio"
         self.activeplayers = []
         self.playersoff = []
         self.top = 100
@@ -23,8 +23,7 @@ class RemigioMatch(GenericRoundMatch):
         closeType = rnd.getCloseType()
         if closeType > 1:
             for player in rnd.getScore().keys():
-                rnd.setPlayerScore(player, closeType *
-                                   rnd.getPlayerScore(player))
+                rnd.setPlayerScore(player, closeType * rnd.getPlayerScore(player))
         GenericRoundMatch.addRound(self, rnd)
 
     def deleteRound(self, nrnd):
@@ -35,7 +34,6 @@ class RemigioMatch(GenericRoundMatch):
                 self.playersoff.remove(player)
 
     def computeWinner(self):
-
         for p in self.activeplayers[:]:
             if self.totalScores[p] >= self.top:
                 self.activeplayers.remove(p)
@@ -49,11 +47,13 @@ class RemigioMatch(GenericRoundMatch):
             return False
 
         cur = db.execute(
-            "SELECT value FROM MatchExtras "
-            "WHERE idMatch ={} and key='Top';".format(idMatch))
+            "SELECT value FROM MatchExtras WHERE idMatch ={} and key='Top';".format(
+                idMatch
+            )
+        )
         row = cur.fetchone()
         if row:
-            self.top = int(row['value'])
+            self.top = int(row["value"])
 
         for player in self.getPlayers():
             self.playerStart(player)
@@ -62,37 +62,47 @@ class RemigioMatch(GenericRoundMatch):
 
     def resumeExtraInfo(self, player, key, value):
         extra = {}
-        if key == 'closeType':
+        if key == "closeType":
             extra[key] = int(value)
         return extra
 
-    def createRound(self, numround): return RemigioRound(numround)
+    def createRound(self, numround):
+        return RemigioRound(numround)
 
-    def getActivePlayers(self): return self.activeplayers
+    def getActivePlayers(self):
+        return self.activeplayers
 
-    def getPlayersOff(self): return self.playersoff
+    def getPlayersOff(self):
+        return self.playersoff
 
-    def isPlayerOff(self, player): return player in self.playersoff
+    def isPlayerOff(self, player):
+        return player in self.playersoff
 
-    def getTop(self): return self.top
+    def getTop(self):
+        return self.top
 
     def setTop(self, top):
         if top <= 0:
             return
         self.top = top
-#        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value)
+
+    #        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value)
     #               VALUES ({},'Top','{}');".format(self.idMatch,top))
 
     def flushToDB(self):
         super(RemigioMatch, self).flushToDB()
-        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-                   "VALUES ({},'Top','{}');".format(self.idMatch, self.top))
+        db.execute(
+            "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
+            "VALUES ({},'Top','{}');".format(self.idMatch, self.top)
+        )
         for rnd in self.rounds:
-            db.execute("INSERT OR REPLACE INTO RoundStatistics "
-                       "(idMatch,nick,idRound,key,value) "
-                       "VALUES ({},'{}',{},'closeType','{}');".format(
-                            self.idMatch, rnd.getWinner(),
-                            rnd.getNumRound(), rnd.closeType))
+            db.execute(
+                "INSERT OR REPLACE INTO RoundStatistics "
+                "(idMatch,nick,idRound,key,value) "
+                "VALUES ({},'{}',{},'closeType','{}');".format(
+                    self.idMatch, rnd.getWinner(), rnd.getNumRound(), rnd.closeType
+                )
+            )
 
 
 class RemigioRound(GenericRound):
@@ -104,8 +114,9 @@ class RemigioRound(GenericRound):
         player = str(player)
         if player == self.getWinner():
             try:
-                self.closeType = extras['closeType']
+                self.closeType = extras["closeType"]
             except KeyError:
                 pass
 
-    def getCloseType(self): return self.closeType
+    def getCloseType(self):
+        return self.closeType

@@ -1,17 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from typing import cast
+
 from controllers.baseengine import RoundGameEngine, readInput
+from model.remigio import RemigioMatch
 
 
 class RemigioEngine(RoundGameEngine):
     def __init__(self):
         RoundGameEngine.__init__(self)
-        self.game = 'Remigio'
+        self.game = "Remigio"
 
-    def getActivePlayers(self): return self.match.getActivePlayers()
+    def getActivePlayers(self):
+        return cast("RemigioMatch", self.match).getActivePlayers()
 
-    def isPlayerOff(self, player): return self.match.isPlayerOff(player)
+    def isPlayerOff(self, player):
+        return cast("RemigioMatch", self.match).isPlayerOff(player)
 
     def wasPlayerOff(self, player, nround):
         totalscore = 0
@@ -24,9 +29,11 @@ class RemigioEngine(RoundGameEngine):
 
         return isoff
 
-    def getTop(self): return self.match.getTop()
+    def getTop(self):
+        return cast("RemigioMatch", self.match).getTop()
 
-    def setTop(self, top): self.match.setTop(top)
+    def setTop(self, top):
+        cast("RemigioMatch", self.match).setTop(top)
 
     def printExtraPlayerStats(self, player):
         if player not in self.getActivePlayers():
@@ -44,18 +51,24 @@ class RemigioEngine(RoundGameEngine):
                 self.match.setDealer(player)
                 break
 
-    def runRoundPlayer(self, player, winner):
+    def runRoundPlayer(self, player, winner=None):
         score = 0
         closeType = 1
         if winner == player:
-            closeType = readInput("{} close type: ".format(player), int,
-                                  lambda x: x in [1, 2, 3, 4],
-                                  "Sorry, invalid Close Type number [1,2,3,4]."
-                                  )
+            closeType = readInput(
+                "{} close type: ".format(player),
+                int,
+                lambda x: x in [1, 2, 3, 4],
+                "Sorry, invalid Close Type number [1,2,3,4].",
+            )
         else:
-            score = readInput("{} round score: ".format(
-                player), int, lambda x: x > 0, "Sorry, invalid score number.")
-        self.addRoundInfo(player, score, {'closeType': closeType})
+            score = readInput(
+                "{} round score: ".format(player),
+                int,
+                lambda x: x > 0,
+                "Sorry, invalid score number.",
+            )
+        self.addRoundInfo(player, score, {"closeType": closeType})
 
     def extraStubConfig(self):
         top = readInput("Top score: ", int, lambda x: x > 0)
