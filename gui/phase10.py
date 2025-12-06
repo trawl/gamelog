@@ -314,7 +314,7 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
     def __init__(self, parent=None):
         super(Phase10ScoreSpinBox, self).__init__(parent)
         self.setSingleStep(5)
-        self.setRange(-5, 200)
+        self.setRange(0, 200)
         self.setValue(5)
         self.clear()
         self.fixed = False
@@ -401,6 +401,7 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
                                  subcontrol-position: bottom; min-width: 60px;
                                  max-width:100px; height: 30px; }}
         """.format(sh)
+        self.setStyleSheet(sh)
 
 
 class Phase10PlayerWidget(GamePlayerWidget):
