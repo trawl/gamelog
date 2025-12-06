@@ -194,7 +194,7 @@ class AbstractQuickStatsBox(QGroupBox):
 
     def updateTable(self, table, contents, keyorder, rowheaderkey, cheaders):
         table.clear()
-        if len(contents) and len(contents[0]) > 1:
+        if contents and len(contents[0]) > 1:
             table.show()
             displayed = contents  # [:10]
             table.setRowCount(len(displayed))
