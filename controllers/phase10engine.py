@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from typing import cast
 
 from controllers.baseengine import RoundGameEngine, readInput
-from controllers.statsengine import StatsEngine, ParticularStatsEngine
 from controllers.db import db
+from controllers.statsengine import ParticularStatsEngine, StatsEngine
+from model.phase10 import Phase10Match
 
 
 class Phase10Engine(RoundGameEngine):
@@ -15,19 +17,23 @@ class Phase10Engine(RoundGameEngine):
         cur = db.execute(
             "Select key,value from GameExtras "
             "where Game_name='{}' and key like 'Phase %' "
-            "order by key asc".format(self.game))
-        return [row['value'] for row in cur]
+            "order by key asc".format(self.game)
+        )
+        return [row["value"] for row in cur]
 
     def getRemainingPhasesFromPlayer(self, player):
         remaining = list(range(1, 11))
-        if (player in self.match.phasesCleared):
-            for phase in self.match.phasesCleared[player]:
+        if (
+            self.match is not None
+            and player in cast("Phase10Match", self.match).phasesCleared
+        ):
+            for phase in cast("Phase10Match", self.match).phasesCleared[player]:
                 remaining.remove(phase)
         return remaining
 
     def getCompletedPhasesFromPlayer(self, player):
-        if (player in self.match.phasesCleared):
-            return self.match.phasesCleared[player]
+        if player in cast("Phase10Match", self.match).phasesCleared:
+            return cast("Phase10Match", self.match).phasesCleared[player]
         else:
             return list()
 
@@ -44,8 +50,7 @@ class Phase10Engine(RoundGameEngine):
             return False
 
     def printExtraPlayerStats(self, player):
-        print("Phases completed: {}".format(
-            self.getCompletedPhasesFromPlayer(player)))
+        print("Phases completed: {}".format(self.getCompletedPhasesFromPlayer(player)))
 
     def printExtraStats(self):
         print("Phases:")
@@ -65,28 +70,38 @@ class Phase10Engine(RoundGameEngine):
             except IndexError:
                 a_phase = 1
         else:
-            a_phase = readInput("{} aimed phase number: ".format(player), int,
-                                lambda x: x > 0 and self.hasPhaseRemaining(
-                                    player, x),
-                                "Sorry, phase not valid or already completed.")
+            a_phase = readInput(
+                "{} aimed phase number: ".format(player),
+                int,
+                lambda x: x > 0 and self.hasPhaseRemaining(player, x),
+                "Sorry, phase not valid or already completed.",
+            )
         if not winner == player:
-            score = readInput("{} round score: ".format(
-                player), int, lambda x: x > 0, "Sorry, invalid score number.")
-            if (score >= 50):
+            score = readInput(
+                "{} round score: ".format(player),
+                int,
+                lambda x: x > 0,
+                "Sorry, invalid score number.",
+            )
+            if score >= 50:
                 cleared = readInput(
                     "Did {} complete phase {}?[1/0]: ".format(player, a_phase),
-                    int, lambda x: x in [0, 1])
+                    int,
+                    lambda x: x in [0, 1],
+                )
         self.addRoundInfo(
-            player, score, {'aimedPhase': a_phase, 'isCompleted': cleared})
+            player, score, {"aimedPhase": a_phase, "isCompleted": cleared}
+        )
 
     def extraStubConfig(self):
-        pio = readInput(
-            "Follow phases in order? [1/0]: ", int, lambda x: x in (0, 1))
+        pio = readInput("Follow phases in order? [1/0]: ", int, lambda x: x in (0, 1))
         self.setPhasesInOrderFlag(bool(pio))
 
-    def getPhasesInOrderFlag(self): return self.match.getPhasesInOrderFlag()
+    def getPhasesInOrderFlag(self):
+        return cast("Phase10Match", self.match).getPhasesInOrderFlag()
 
-    def setPhasesInOrderFlag(self, flag): self.match.setPhasesInOrderFlag(flag)
+    def setPhasesInOrderFlag(self, flag):
+        cast("Phase10Match", self.match).setPhasesInOrderFlag(flag)
 
 
 class Phase10MasterEngine(Phase10Engine):
@@ -96,9 +111,12 @@ class Phase10MasterEngine(Phase10Engine):
 
 
 if __name__ == "__main__":
-    game = readInput('Game to play (Phase10/Phase10Master): ',
-                     str, lambda x: x in ['Phase10', 'Phase10Master'])
-    if game == 'Phase10':
+    game = readInput(
+        "Game to play (Phase10/Phase10Master): ",
+        str,
+        lambda x: x in ["Phase10", "Phase10Master"],
+    )
+    if game == "Phase10":
         pe = Phase10Engine()
     else:
         pe = Phase10MasterEngine()
@@ -132,50 +150,49 @@ class Phase10StatsQueries(object):
 
 
 class Phase10StatsEngine(StatsEngine):
-
     def __init__(self):
         super(Phase10StatsEngine, self).__init__()
         q = Phase10StatsQueries()
         self._worst_phases = q.worst_phases
         self._damned_phases = q.damned_phases
 
-    def update(self):
+    def update(self, players=None):
         super(Phase10StatsEngine, self).update()
         self.wphases = db.queryDict(self._worst_phases)
         for row in self.wphases:
-            game = row['game']
-            player = row['nick']
-            for r2 in self.generalplayerstats:
-                if r2['nick'] == player and r2['game'] == game:
-                    r2['min_phases'] = row['min_phases']
-                    break
+            game = row["game"]
+            player = row["nick"]
+            if self.generalplayerstats:
+                for r2 in self.generalplayerstats:
+                    if r2["nick"] == player and r2["game"] == game:
+                        r2["min_phases"] = row["min_phases"]
+                        break
 
         rows = db.queryDict(self._damned_phases)
         attempts = {}
         for row in rows:
-            if row['game'] not in attempts:
-                attempts[row['game']] = {}
-            if row['player'] not in attempts[row['game']]:
-                attempts[row['game']][row['player']] = [
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            attempts[row['game']][row['player']
-                                  ][int(row['phase'])-1] = row['times']
-
-        for row in self.generalplayerstats:
-            if row['game'] in attempts:
-                if row['nick'] in attempts[row['game']]:
-                    times = attempts[row['game']][row['nick']]
-                    max_times = max(times)
-                    row['damned_phase'] = times.index(max_times) + 1
+            if row["game"] not in attempts:
+                attempts[row["game"]] = {}
+            if row["player"] not in attempts[row["game"]]:
+                attempts[row["game"]][row["player"]] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            attempts[row["game"]][row["player"]][int(row["phase"]) - 1] = row["times"]
+        if self.generalplayerstats:
+            for row in self.generalplayerstats:
+                if row["game"] in attempts:
+                    if row["nick"] in attempts[row["game"]]:
+                        times = attempts[row["game"]][row["nick"]]
+                        max_times = max(times)
+                        row["damned_phase"] = times.index(max_times) + 1
 
 
 class Phase10ParticularStatsEngine(Phase10StatsEngine, ParticularStatsEngine):
-
     def updatePlayers(self, players):
         super(Phase10ParticularStatsEngine, self).updatePlayers(players)
         if players:
             q = Phase10StatsQueries()
             self._worst_phases = q.worst_phases.replace(
-                'WHERE', "WHERE {} AND".format("Match." + self._newclause))
+                "WHERE", "WHERE {} AND".format("Match." + self._newclause)
+            )
             self._damned_phases = q.damned_phases.replace(
-                'WHERE', "WHERE {} AND".format("Match." + self._newclause))
+                "WHERE", "WHERE {} AND".format("Match." + self._newclause)
+            )

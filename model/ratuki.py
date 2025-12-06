@@ -8,7 +8,7 @@ from model.base import GenericRoundMatch
 class RatukiMatch(GenericRoundMatch):
     def __init__(self, players=[]):
         super(RatukiMatch, self).__init__(players)
-        self.game = 'Ratuki'
+        self.game = "Ratuki"
         self.top = 100
 
     def resumeMatch(self, idMatch):
@@ -19,11 +19,13 @@ class RatukiMatch(GenericRoundMatch):
             self.playerStart(player)
 
         cur = db.execute(
-            "SELECT value FROM MatchExtras "
-            "WHERE idMatch ={} and key='Top';".format(idMatch))
+            "SELECT value FROM MatchExtras WHERE idMatch ={} and key='Top';".format(
+                idMatch
+            )
+        )
         row = cur.fetchone()
         if row:
-            self.top = int(row['value'])
+            self.top = int(row["value"])
 
         return True
 
@@ -38,7 +40,8 @@ class RatukiMatch(GenericRoundMatch):
         if winner is not None:
             self.winner = winner
 
-    def getTop(self): return self.top
+    def getTop(self):
+        return self.top
 
     def setTop(self, top):
         if top <= 0:
@@ -47,5 +50,7 @@ class RatukiMatch(GenericRoundMatch):
 
     def flushToDB(self):
         super(RatukiMatch, self).flushToDB()
-        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-                   "VALUES ({},'Top','{}');".format(self.idMatch, self.top))
+        db.execute(
+            "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
+            "VALUES ({},'Top','{}');".format(self.idMatch, self.top)
+        )

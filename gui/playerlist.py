@@ -1,28 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from typing import cast
 
-try:
-    from PySide6 import QtCore, QtGui
-    from PySide6.QtWidgets import (QApplication, QDialog, QListView, QMenu,
-                                QPushButton, QVBoxLayout)
-    from PySide6.QtGui import (QAction)
-except ImportError:
-    from PyQt5 import QtCore, QtGui
-    from PyQt5.QtWidgets import (QAction, QApplication, QDialog, QListView, QMenu,
-                                QPushButton, QVBoxLayout)
-    QtCore.Signal = QtCore.pyqtSignal
+from PySide6 import QtCore, QtGui
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QListView,
+    QMenu,
+    QPushButton,
+    QVBoxLayout,
+)
 
 from controllers.db import db
 
 i18n = QApplication.translate
 
-standardIcon = 'icons/player.png'
-favouriteIcon = 'icons/fav.png'
-dealerIcon = 'icons/cards.png'
+standardIcon = "icons/player.png"
+favouriteIcon = "icons/fav.png"
+dealerIcon = "icons/cards.png"
 
 
 class PlayerOrderDialog(QDialog):
-
     playerOrderChanged = QtCore.Signal()
     dealerChanged = QtCore.Signal()
 
@@ -31,8 +31,7 @@ class PlayerOrderDialog(QDialog):
         self.engine = engine
         self.originalOrder = self.engine.getListPlayers()
         self.originalDealer = self.engine.getDealer()
-        self.setWindowTitle(i18n(
-            "PlayerOrderDialog", 'Player Order'))
+        self.setWindowTitle(i18n("PlayerOrderDialog", "Player Order"))
         self.widgetlayout = QVBoxLayout(self)
         self.pow = PlayerList(self.engine, self)
         self.okbutton = QPushButton("OK", self)
@@ -40,12 +39,14 @@ class PlayerOrderDialog(QDialog):
         self.widgetlayout.addWidget(self.pow)
         self.widgetlayout.addWidget(self.okbutton)
 
-    def getNewDealer(self): return self.pow.getDealer()
+    def getNewDealer(self):
+        return self.pow.getDealer()
 
-    def getNewOrder(self): return self.pow.model().retrievePlayers()
+    def getNewOrder(self):
+        return cast("PlayerListModel", self.pow.model()).retrievePlayers()
 
     def changeOrder(self):
-        players = self.pow.model().retrievePlayers()
+        players = cast("PlayerListModel", self.pow.model()).retrievePlayers()
         dealer = self.pow.getDealer()
         if players != self.originalOrder or dealer != self.originalDealer:
             self.accept()
@@ -54,7 +55,6 @@ class PlayerOrderDialog(QDialog):
 
 
 class PlayerList(QListView):
-
     doubleclickeditem = QtCore.Signal(str)
     changed = QtCore.Signal()
 
@@ -63,19 +63,20 @@ class PlayerList(QListView):
         self.engine = engine
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
-        self.setDefaultDropAction(QtCore.Qt.MoveAction)
+        self.setDefaultDropAction(QtCore.Qt.DropAction.MoveAction)
         self.setModel(PlayerListModel(engine))
+        self._model = cast("PlayerListModel", self.model())
 
         if self.engine:
-            self.model().dealer = self.engine.getDealer()
+            self._model.dealer = self.engine.getDealer()
             for player in self.engine.getListPlayers():
-                self.model().addPlayer(player)
+                self._model.addPlayer(player)
 
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.openMenu)
 
     def addItem(self, text):
-        self.model().addPlayer(text)
+        self._model.addPlayer(text)
         self.changed.emit()
 
     def mouseDoubleClickEvent(self, event):
@@ -88,15 +89,14 @@ class PlayerList(QListView):
             self.doubleclickeditem.emit(player)
 
             if self.engine:
-                if self.model().dealer:
+                if self._model.dealer:
                     self.setDealer(item, player)
             else:
-                self.model().removeRows(item.row(), 1)
+                self._model.removeRows(item.row(), 1)
                 self.changed.emit()
         return QListView.mouseDoubleClickEvent(self, event)
 
     def openMenu(self, position):
-
         item = self.indexAt(position)
         if item.row() < 0:
             return
@@ -108,17 +108,27 @@ class PlayerList(QListView):
             menu = QMenu()
             isfav = db.isPlayerFavourite(player)
             if isfav:
-                favouriteAction = QAction(QtGui.QIcon(
-                    standardIcon), i18n("PlayerList", "Unset Favourite"), self)
+                favouriteAction = QAction(
+                    QtGui.QIcon(standardIcon),
+                    i18n("PlayerList", "Unset Favourite"),
+                    self,
+                )
             else:
-                favouriteAction = QAction(QtGui.QIcon(
-                    favouriteIcon), i18n("PlayerList", "Set Favourite"), self)
+                favouriteAction = QAction(
+                    QtGui.QIcon(favouriteIcon),
+                    i18n("PlayerList", "Set Favourite"),
+                    self,
+                )
             menu.addAction(favouriteAction)
             dealerAction = None
-            if (self.engine and self.engine.getDealer() is not None and
-                    player != self.model().dealer):
-                dealerAction = QAction(QtGui.QIcon(
-                    dealerIcon), i18n("PlayerList", "Set dealer"), self)
+            if (
+                self.engine
+                and self.engine.getDealer() is not None
+                and player != self._model.dealer
+            ):
+                dealerAction = QAction(
+                    QtGui.QIcon(dealerIcon), i18n("PlayerList", "Set dealer"), self
+                )
                 menu.addAction(dealerAction)
             action = menu.exec_(self.mapToGlobal(position))
             if action is None:
@@ -129,24 +139,23 @@ class PlayerList(QListView):
                 icon = standardIcon
                 if isfav:
                     icon = favouriteIcon
-                self.model().addIcon(self.model().itemFromIndex(item), icon)
+                self._model.addIcon(self._model.itemFromIndex(item), icon)
             elif self.engine and action == dealerAction:
                 self.setDealer(item, player)
 
     def setDealer(self, item, player):
         icon = standardIcon
-        if db.isPlayerFavourite(self.model().dealer):
+        if db.isPlayerFavourite(self._model.dealer):
             icon = favouriteIcon
-        self.model().addIcon(self.model().itemFromPlayer(self.model().dealer),
-                             icon)
-        self.model().addIcon(self.model().itemFromIndex(item), dealerIcon)
-        self.model().dealer = player
+        self._model.addIcon(self._model.itemFromPlayer(self._model.dealer), icon)
+        self._model.addIcon(self._model.itemFromIndex(item), dealerIcon)
+        self._model.dealer = player
 
-    def getDealer(self): return self.model().dealer
+    def getDealer(self):
+        return self._model.dealer
 
 
 class PlayerListModel(QtGui.QStandardItemModel):
-
     def __init__(self, engine=None, parent=None):
         super(PlayerListModel, self).__init__(parent)
         self.engine = engine
@@ -192,12 +201,14 @@ class PlayerListModel(QtGui.QStandardItemModel):
 
 if __name__ == "__main__":
     import sys
+
     from controllers.db import db
     from controllers.enginefactory import GameEngineFactory
+
     db.connectDB()
     app = QApplication(sys.argv)
-    engine = GameEngineFactory.createMatch('Pocha')
-    players = ['Xavi', 'Rosa', 'Dani']
+    engine = GameEngineFactory.createMatch("Pocha")
+    players = ["Xavi", "Rosa", "Dani"]
     for p in players:
         engine.addPlayer(p)
     engine.begin()

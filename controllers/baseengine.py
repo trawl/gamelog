@@ -3,13 +3,15 @@
 
 import datetime
 import random
-from model.base import Player
-from model.gamefactory import GameFactory
+from abc import abstractmethod
+from typing import Callable, TypeVar
+
 from controllers.db import db
+from model.base import GenericMatch, GenericRoundMatch, Player
+from model.gamefactory import GameFactory
 
 
 class GameEngine(object):
-
     NoDealer = 0
     RRDealer = 1
     WinnerDealer = 2
@@ -18,11 +20,11 @@ class GameEngine(object):
     def __init__(self):
         self.players = dict()
         self.porder = list()
-        self.match = None
+        self.match = GenericMatch()
         self.game = None
 
     def addPlayer(self, nick, fullName=""):
-        if (fullName == ""):
+        if fullName == "":
             fullName = nick
         self.porder.append(nick)
         self.players[nick] = Player()
@@ -30,15 +32,15 @@ class GameEngine(object):
         cur = db.execute("Select * from Player where nick='{}';".format(nick))
         # Exists in db?
         user = cur.fetchone()
-        if (user):
-            self.players[nick].fullName = user['fullName']
+        if user:
+            self.players[nick].fullName = user["fullName"]
         else:
             self.players[nick].fullName = fullName
             self.players[nick].dateCreation = datetime.datetime.now()
             qd = str(self.players[nick].dateCreation)
             q = """INSERT INTO Player (nick, fullName, dateCreation)
-                 VALUES ('{}','{}','{}');""".format(nick, fullname, qd)
-            db.execute()
+                 VALUES ('{}','{}','{}');""".format(nick, fullName, qd)
+            db.execute(q)
 
     def begin(self):
         self.match = GameFactory.createMatch(self.game)
@@ -57,7 +59,9 @@ class GameEngine(object):
         return self.game
 
     def getWinner(self):
-        return self.match.getWinner()
+        if self.match:
+            return self.match.getWinner()
+        return None
 
     def getPlayers(self):
         return self.players
@@ -71,54 +75,72 @@ class GameEngine(object):
 
     def getScoreFromPlayer(self, player):
         try:
-            return self.match.getScoreFromPlayer(player)
-        except KeyError:
+            if self.match:
+                return self.match.getScoreFromPlayer(player)
+            return 0
+        except (KeyError, AttributeError):
             return 0
 
     def getGameMaxPlayers(self):
         cur = db.execute(
-            "Select maxPlayers from Game where name='{}'".format(self.game))
+            "Select maxPlayers from Game where name='{}'".format(self.game)
+        )
         r = cur.fetchone()
-        return int(r['maxPlayers'])
+        return int(r["maxPlayers"])
 
-    def pause(self): self.match.pause()
+    def pause(self):
+        self.match.pause()
 
-    def unpause(self): self.match.unpause()
+    def unpause(self):
+        self.match.unpause()
 
-    def save(self): self.match.save()
+    def save(self):
+        self.match.save()
 
-    def isPaused(self): return self.match.isPaused()
+    def isPaused(self):
+        return self.match.isPaused()
 
-    def getGameSeconds(self): return self.match.getGameSeconds()
+    def getGameSeconds(self):
+        return self.match.getGameSeconds()
 
-    def cancelMatch(self): self.match.cancel()
+    def cancelMatch(self):
+        self.match.cancel()
 
-    def getDealingPolicy(self): return self.match.getDealingPolicy()
+    def getDealingPolicy(self):
+        return self.match.getDealingPolicy()
 
-    def setDealingPolicy(self, policy): self.match.setDealingPolicy(policy)
+    def setDealingPolicy(self, policy):
+        self.match.setDealingPolicy(policy)
 
-    def getDealer(self): return self.match.getDealer()
+    def getDealer(self):
+        return self.match.getDealer()
 
-    def setDealer(self, player): self.match.setDealer(player)
+    def setDealer(self, player):
+        self.match.setDealer(player)
 
-    def setPlayerOrder(self, porder): self.porder = porder
+    def setPlayerOrder(self, porder):
+        self.porder = porder
 
-    def updateDealer(self): pass
+    def updateDealer(self):
+        pass
 
 
 class RoundGameEngine(GameEngine):
+    match: "GenericRoundMatch"
 
     def begin(self):
         super(RoundGameEngine, self).begin()
         if self.getDealingPolicy() != self.NoDealer:
             self.match.setDealer(random.choice(self.porder))
 
-    def openRound(self, nround): self.round = self.match.createRound(nround)
+    def openRound(self, nround):
+        self.round = self.match.createRound(nround)
 
-    def setRoundWinner(self, winner): self.round.setWinner(winner)
+    def setRoundWinner(self, winner):
+        self.round.setWinner(winner)
 
-    def addRoundInfo(self, player, score, extras=None): self.round.addInfo(
-        player, score, extras)
+    def addRoundInfo(self, player, score, extras=None):
+        self.round.addInfo(player, score, extras)
 
     def commitRound(self):
         self.match.addRound(self.round)
@@ -128,9 +150,11 @@ class RoundGameEngine(GameEngine):
         self.match.deleteRound(nrnd)
         self.printStats()
 
-    def getRounds(self): return self.match.getRounds()
+    def getRounds(self):
+        return self.match.getRounds()
 
-    def getNumRound(self): return len(self.match.rounds)+1
+    def getNumRound(self):
+        return len(self.match.rounds) + 1
 
     def updateDealer(self):
         if self.match.getWinner():
@@ -141,15 +165,14 @@ class RoundGameEngine(GameEngine):
             self.updateWinnerDealer()
 
     def updateRRDealer(self):
-        candidate = (self.porder.index(
-            self.getDealer()) + 1) % len(self.porder)
+        candidate = (self.porder.index(self.getDealer()) + 1) % len(self.porder)
         self.match.setDealer(self.porder[candidate])
 
     def updateWinnerDealer(self):
         self.match.setDealer(self.round.getWinner())
 
     def printStats(self):
-        lastround = self.getNumRound()-1
+        lastround = self.getNumRound() - 1
         if lastround == 0:
             print("===========================")
             print("|{0:^25}|".format(self.game))
@@ -163,8 +186,7 @@ class RoundGameEngine(GameEngine):
                     print(" * {}".format(n))
             print("")
             policies = ["None", "Round Robin", "Winner", "Starter"]
-            print("DealingPolicy: {}".format(
-                policies[self.getDealingPolicy()]))
+            print("DealingPolicy: {}".format(policies[self.getDealingPolicy()]))
             self.printExtraStats()
             print("Game started at {}".format(self.match.getStartTime()))
             print("***************************")
@@ -194,16 +216,17 @@ class RoundGameEngine(GameEngine):
                 print("{0:^27}".format(self.getWinner()))
                 print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 print("")
-                print("{} match finished at {}".format(
-                    self.game, datetime.datetime.now()))
+                print(
+                    "{} match finished at {}".format(self.game, datetime.datetime.now())
+                )
                 print("Time played {}".format(self.match.getGameTime()))
                 print("")
-#
-# Helper functions for cli test
-#
+
+    #
+    # Helper functions for cli test
+    #
 
     def gameStub(self):
-
         print("Welcome to {} Engine Stub".format(self.getGame()))
 
         if not db.isConnected():
@@ -215,22 +238,23 @@ class RoundGameEngine(GameEngine):
 
         errmsg = "Sorry, number of players must be between 2 and {}."
         errmsg = errmsg.format(self.getGameMaxPlayers())
-        nplayers = readInput("Number of players: ", int,
-                             lambda x: x >= 2 and x <= maxPlayers,
-                             errmsg)
+        nplayers = readInput(
+            "Number of players: ", int, lambda x: x >= 2 and x <= maxPlayers, errmsg
+        )
 
-        for i in range(1, nplayers+1):
+        for i in range(1, nplayers + 1):
             print("Player {} Info:".format(i))
             errmsg = "Sorry, player not found in DB"
-            nick = readInput(
-                "Nick: ", str, lambda x: x in validPlayers, errmsg)
+            nick = readInput("Nick: ", str, lambda x: x in validPlayers, errmsg)
             self.addPlayer(nick)
             playersOrder.append(nick)
 
         self.begin()
         option = readInput(
             "Dealing policy[0:None/1:RoundRobin/2:Winner]: ",
-            int, lambda x: x in [0, 1, 2])
+            int,
+            lambda x: x in [0, 1, 2],
+        )
         if option == 0:
             self.setDealingPolicy(RoundGameEngine.NoDealer)
         elif option == 1:
@@ -245,22 +269,26 @@ class RoundGameEngine(GameEngine):
         while not self.getWinner():
             self.openRound(self.getNumRound())
             while True:
-                pmt = ("Round {} Winner (or p to pause, s to save and exit,"
-                       " c to cancel without saving): ")
+                pmt = (
+                    "Round {} Winner (or p to pause, s to save and exit,"
+                    " c to cancel without saving): "
+                )
                 pmt = pmt.format(self.getNumRound())
                 errmsg = "Sorry, player not found in current match."
-                rnd_winner = readInput(pmt, srt,
-                                       lambda x: x in self.getListPlayers()
-                                       or x in ('p', 's', 'c'),
-                                       errmsg)
-                if rnd_winner == 'p':
+                rnd_winner = readInput(
+                    pmt,
+                    str,
+                    lambda x: x in self.getListPlayers() or x in ("p", "s", "c"),
+                    errmsg,
+                )
+                if rnd_winner == "p":
                     self.pause()
                     readInput("Press Enter to unpause...")
                     self.unpause()
-                elif rnd_winner == 's':
+                elif rnd_winner == "s":
                     self.save()
                     exit()
-                elif rnd_winner == 'c':
+                elif rnd_winner == "c":
                     self.cancelMatch()
                     exit()
                 else:
@@ -272,18 +300,28 @@ class RoundGameEngine(GameEngine):
             self.commitRound()
             self.printStats()
 
+    def runRoundPlayer(self, _name, _winner=None):
+        pass
+
     # To be implemented in subclasses
-    def printExtraStats(self): pass
+    @abstractmethod
+    def printExtraStats(self):
+        pass
 
-    def printExtraPlayerStats(self, player): pass
+    @abstractmethod
+    def printExtraPlayerStats(self, player):
+        pass
 
-    def runStubRoundPlayer(self, player, winner): pass
+    @abstractmethod
+    def runStubRoundPlayer(self, player, winner):
+        pass
 
-    def extraStubConfig(self): pass
+    @abstractmethod
+    def extraStubConfig(self):
+        pass
 
 
 class EntryGameEngine(RoundGameEngine):
-
     def addEntry(self, player, score, extras=None):
         self.openRound(self.getNumRound())
         self.addRoundInfo(player, score, extras)
@@ -297,27 +335,31 @@ class EntryGameEngine(RoundGameEngine):
         self.printStats()
         while not self.getWinner():
             while True:
-                pmt = ("Enter player entry (or p to pause, "
-                       "f to finish the game, "
-                       "s to save and exit, c to cancel without saving):")
+                pmt = (
+                    "Enter player entry (or p to pause, "
+                    "f to finish the game, "
+                    "s to save and exit, c to cancel without saving):"
+                )
                 pmt = pmt.format(self.getNumEntry())
                 errmsg = "Sorry, player not found in current match."
-                entry_player = readInput(pmt, str,
-                                         lambda x: x in self.getListPlayers()
-                                         or x in ('p', 's', 'c', 'f'),
-                                         errmsg)
-                if entry_player == 'p':
+                entry_player = readInput(
+                    pmt,
+                    str,
+                    lambda x: x in self.getListPlayers() or x in ("p", "s", "c", "f"),
+                    errmsg,
+                )
+                if entry_player == "p":
                     self.pause()
                     readInput("Press Enter to unpause...")
                     self.unpause()
-                elif entry_player == 'f':
+                elif entry_player == "f":
                     self.finishGame()
                     self.printStats()
                     exit()
-                elif entry_player == 's':
+                elif entry_player == "s":
                     self.save()
                     exit()
-                elif entry_player == 'c':
+                elif entry_player == "c":
                     self.cancelMatch()
                     exit()
                 else:
@@ -325,22 +367,31 @@ class EntryGameEngine(RoundGameEngine):
             self.runRoundPlayer(entry_player)
             self.printStats()
 
+    @abstractmethod
+    def getNumEntry(self):
+        pass
+
+
 #
 # Helper functions for cli test
 #
+#
+
+T = TypeVar("T")
 
 
-def readInput(prompt, cast=str, validator=lambda x: True,
-              errormsg="Sorry, invalid answer."):
-    validInput = False
-    while not validInput:
+def readInput(
+    prompt: str,
+    cast: Callable[[str], T] = str,
+    validator: Callable[[T], bool] = lambda x: True,
+    errormsg: str = "Sorry, invalid answer.",
+) -> T:
+    while True:
         try:
-            ret = cast(input(prompt))
-        except ValueError:
+            value = cast(input(prompt))
+            if validator(value):
+                return value
+            else:
+                print(errormsg)
+        except Exception:
             print(errormsg)
-            continue
-        if validator(ret):
-            validInput = True
-        else:
-            print(errormsg)
-    return ret

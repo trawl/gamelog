@@ -2,30 +2,33 @@
 # -*- coding: utf-8 -*-
 
 from controllers.db import db
-from model.base import GenericRoundMatch, GenericEntry
+from model.base import GenericEntry, GenericRoundMatch
 
 
 class CarcassonneMatch(GenericRoundMatch):
     def __init__(self, players=[]):
         super(CarcassonneMatch, self).__init__(players)
-        self.game = 'Carcassonne'
+        self.game = "Carcassonne"
         cur = db.execute(
             "SELECT value FROM GameExtras "
-            "WHERE Game_name = '{}' and key='Kinds';".format(self.game))
+            "WHERE Game_name = '{}' and key='Kinds';".format(self.game)
+        )
         row = cur.fetchone()
-        self.entry_kinds = [str(kind) for kind in row['value'].split(',')]
+        self.entry_kinds = [str(kind) for kind in row["value"].split(",")]
         self.dealingp = 3
         self.updatewinnereveryround = False
 
-    def getEntryKinds(self): return self.entry_kinds
+    def getEntryKinds(self):
+        return self.entry_kinds
 
     def resumeExtraInfo(self, player, key, value):
         extra = {}
-        if key == 'kind':
+        if key == "kind":
             extra[key] = value
         return extra
 
-    def createRound(self, numround): return CarcassonneEntry(numround)
+    def createRound(self, numround):
+        return CarcassonneEntry(numround)
 
     def addRound(self, rnd):
         self.rounds.append(rnd)
@@ -36,16 +39,22 @@ class CarcassonneMatch(GenericRoundMatch):
     def flushToDB(self):
         super(CarcassonneMatch, self).flushToDB()
         for entry in self.rounds:
-            db.execute("INSERT OR REPLACE INTO RoundStatistics "
-                       "(idMatch,nick,idRound,key,value) "
-                       "VALUES ({},'{}',{},'kind','{}');".format(
-                            self.idMatch, entry.getPlayer(),
-                            entry.getNumEntry(), entry.getKind()))
+            db.execute(
+                "INSERT OR REPLACE INTO RoundStatistics "
+                "(idMatch,nick,idRound,key,value) "
+                "VALUES ({},'{}',{},'kind','{}');".format(
+                    self.idMatch,
+                    entry.getPlayer(),
+                    entry.getNumEntry(),
+                    entry.getKind(),
+                )
+            )
 
     def computeWinner(self):
         maxscore = max(self.totalScores.values())
-        candidates = [player for player,
-                      score in self.totalScores.items() if score == maxscore]
+        candidates = [
+            player for player, score in self.totalScores.items() if score == maxscore
+        ]
         if len(candidates) == 1:
             self.winner = candidates.pop()
             return
@@ -56,8 +65,7 @@ class CarcassonneMatch(GenericRoundMatch):
             for player in candidates:
                 details[kind][player] = 0
         for entry in self.getRounds():
-            details[entry.getKind()][entry.getPlayer()
-                                     ] += entry.getPlayerScore()
+            details[entry.getKind()][entry.getPlayer()] += entry.getPlayerScore()
 
         # Draw
         for kind in self.getEntryKinds():
@@ -88,8 +96,9 @@ class CarcassonneEntry(GenericEntry):
 
     def addExtraInfo(self, player, extras):
         try:
-            self.kind = extras['kind']
+            self.kind = extras["kind"]
         except KeyError:
             pass
 
-    def getKind(self): return self.kind
+    def getKind(self):
+        return self.kind

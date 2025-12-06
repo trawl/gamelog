@@ -1,31 +1,41 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-try:
-    from PySide6 import QtCore, QtGui
-    from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QGroupBox,
-                                QHBoxLayout, QLabel, QLineEdit, QSizePolicy,
-                                QTableWidgetItem, QVBoxLayout)
-except ImportError:
-    from PyQt5 import QtCore, QtGui
-    from PyQt5.QtWidgets import (QApplication, QFrame, QGridLayout, QGroupBox,
-                                QHBoxLayout, QLabel, QLineEdit, QSizePolicy,
-                                QTableWidgetItem, QVBoxLayout)
+from PySide6 import QtCore, QtGui
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import (
+    QApplication,
+    QFrame,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QSizePolicy,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
 
 from controllers.ratukiengine import RatukiEngine
-from gui.game import (GameWidget, GameInputWidget, ScoreSpinBox,
-                      GameRoundsDetail, GameRoundTable, GameRoundPlot,
-                      GamePlayerWidget, PlayerColours)
+from gui.game import (
+    GameInputWidget,
+    GamePlayerWidget,
+    GameRoundPlot,
+    GameRoundsDetail,
+    GameRoundTable,
+    GameWidget,
+    PlayerColours,
+    ScoreSpinBox,
+)
 
 i18n = QApplication.translate
 
 
 class RatukiWidget(GameWidget):
-
     def createEngine(self):
-        if self.game != 'Ratuki':
+        if self.game != "Ratuki":
             raise Exception("No engine for game {}".format(self.game))
-            return
         self.engine = RatukiEngine()
 
     def initUI(self):
@@ -40,10 +50,10 @@ class RatukiWidget(GameWidget):
         self.topPointsLineEdit = QLineEdit(self.matchGroup)
         self.topPointsLineEdit.setText(str(self.engine.getTop()))
         self.topPointsLineEdit.setValidator(
-            QtGui.QIntValidator(1, 10000, self.topPointsLineEdit))
+            QtGui.QIntValidator(1, 10000, self.topPointsLineEdit)
+        )
         self.topPointsLineEdit.setFixedWidth(50)
-        sp = QSizePolicy(
-            QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sp = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.topPointsLineEdit.setSizePolicy(sp)
         self.topPointsLineEdit.textChanged.connect(self.changeTop)
         self.topPointsLineEdit.setDisabled(self.engine.getNumRound() > 1)
@@ -63,7 +73,8 @@ class RatukiWidget(GameWidget):
         self.rightLayout.addWidget(self.playerGroup)
 
         self.playerGroup.setStyleSheet(
-            "QGroupBox { font-size: 18px; font-weight: bold; }")
+            "QGroupBox { font-size: 18px; font-weight: bold; }"
+        )
         self.playersLayout = QVBoxLayout(self.playerGroup)
         # self.playersLayout.addStretch()
         self.playerGroupBox = {}
@@ -81,19 +92,19 @@ class RatukiWidget(GameWidget):
 
     def retranslateUI(self):
         super(RatukiWidget, self).retranslateUI()
-        self.topPointsLabel.setText(
-            i18n("RatukiWidget", "Score Limit"))
-#         self.playerGroup.setTitle(i18n("RatukiWidget","Score"))
-        self.playerGroup.setTitle(i18n("GameWidget","Scoreboard"))
+        self.topPointsLabel.setText(i18n("RatukiWidget", "Score Limit"))
+        #         self.playerGroup.setTitle(i18n("RatukiWidget","Score"))
+        self.playerGroup.setTitle(i18n("GameWidget", "Scoreboard"))
         self.detailGroup.retranslateUI()
 
-    def checkPlayerScore(self, player, score): return True
+    def checkPlayerScore(self, player, score):
+        return True
 
-    def unsetDealer(
-        self): self.playerGroupBox[self.engine.getDealer()].unsetDealer()
+    def unsetDealer(self):
+        self.playerGroupBox[self.engine.getDealer()].unsetDealer()
 
-    def setDealer(
-        self): self.playerGroupBox[self.engine.getDealer()].setDealer()
+    def setDealer(self):
+        self.playerGroupBox[self.engine.getDealer()].setDealer()
 
     def updatePanel(self):
         self.topPointsLineEdit.setReadOnly(True)
@@ -127,8 +138,10 @@ class RatukiWidget(GameWidget):
         trash.setLayout(self.playersLayout)
         self.playersLayout = QVBoxLayout(self.playerGroup)
         # self.playersLayout.addStretch()
+        trash_layout = trash.layout()
         for i, player in enumerate(self.engine.getListPlayers()):
-            trash.layout().removeWidget(self.playerGroupBox[player])
+            if trash_layout:
+                trash_layout.removeWidget(self.playerGroupBox[player])
             self.playersLayout.addWidget(self.playerGroupBox[player])
             self.playerGroupBox[player].setColour(PlayerColours[i])
         # self.playersLayout.addStretch()
@@ -136,7 +149,6 @@ class RatukiWidget(GameWidget):
 
 
 class RatukiInputWidget(GameInputWidget):
-
     def __init__(self, engine, parent=None):
         super(RatukiInputWidget, self).__init__(engine, parent)
         self.initUI()
@@ -146,7 +158,8 @@ class RatukiInputWidget(GameInputWidget):
 
         for i, player in enumerate(self.engine.getListPlayers()):
             self.playerInputList[player] = RatukiPlayerInputWidget(
-                player, PlayerColours[i], self)
+                player, PlayerColours[i], self
+            )
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
 
@@ -159,19 +172,21 @@ class RatukiInputWidget(GameInputWidget):
     def updatePlayerOrder(self):
         #         QWidget().setLayout(self.layout())
         trash = QWidget()
-        trash.setLayout(self.layout())
+        trash_layout = self.layout()
+        if trash_layout:
+            trash.setLayout(trash_layout)
         self.widgetLayout = QHBoxLayout(self)
         for i, player in enumerate(self.engine.getListPlayers()):
-            trash.layout().removeWidget(self.playerInputList[player])
+            if trash_layout:
+                trash_layout.removeWidget(self.playerInputList[player])
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].setColour(PlayerColours[i])
 
 
 class RatukiPlayerInputWidget(QFrame):
-
     winnerSet = QtCore.Signal(str)
 
-    def __init__(self, player, colour=None, parent=None):
+    def __init__(self, player, colour=QColor(0, 0, 0), parent=None):
         super(RatukiPlayerInputWidget, self).__init__(parent)
         self.player = player
         self.winner = False
@@ -182,18 +197,18 @@ class RatukiPlayerInputWidget(QFrame):
         self.label.setText(self.player)
         self.mainLayout.addWidget(self.label)
         self.label.setAutoFillBackground(False)
-        self.setFrameShape(QFrame.Panel)
-        self.setFrameShadow(QFrame.Raised)
+        self.setFrameShape(QFrame.Shape.Panel)
+        self.setFrameShadow(QFrame.Shadow.Raised)
         self.label.setScaledContents(True)
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.label.setWordWrap(False)
 
         self.scoreSpinBox = ScoreSpinBox(self)
-        self.scoreSpinBox.setAlignment(QtCore.Qt.AlignCenter)
-#         self.scoreSpinBox.setMaximumWidth(60)
+        self.scoreSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        #         self.scoreSpinBox.setMaximumWidth(60)
         self.scoreSpinBox.setRange(-100, 100)
-#         self.mainLayout.addWidget(self.scoreSpinBox)
-#         self.mainLayout.setAlignment(self.scoreSpinBox,QtCore.Qt.AlignCenter)
+        #         self.mainLayout.addWidget(self.scoreSpinBox)
+        #         self.mainLayout.setAlignment(self.scoreSpinBox,QtCore.Qt.AlignCenter)
 
         self.setColour(self.pcolour)
 
@@ -211,11 +226,10 @@ class RatukiPlayerInputWidget(QFrame):
     def updatePanel(self):
         css = ""
         if self.winner:
-            css = "font-weight: bold; background-color: #{0:X}".format(
-                0xFFFF99)
-            self.setFrameShadow(QFrame.Sunken)
+            css = "font-weight: bold; background-color: #{0:X}".format(0xFFFF99)
+            self.setFrameShadow(QFrame.Shadow.Sunken)
         else:
-            self.setFrameShadow(QFrame.Raised)
+            self.setFrameShadow(QFrame.Shadow.Raised)
         self.setStyleSheet("QFrame {{ {} }}".format(css))
 
     def mousePressEvent(self, event):
@@ -229,32 +243,35 @@ class RatukiPlayerInputWidget(QFrame):
         else:
             super(RatukiPlayerInputWidget, self).mouseDoubleClickEvent(event)
 
-    def isWinner(self): return self.winner
+    def isWinner(self):
+        return self.winner
 
-    def getPlayer(self): return self.player
+    def getPlayer(self):
+        return self.player
 
-    def getScore(self): return self.scoreSpinBox.value()
+    def getScore(self):
+        return self.scoreSpinBox.value()
 
-    def setColour(self, colour=None):
+    def setColour(self, colour=QColor(0, 0, 0)):
         if colour is not None:
             self.pcolour = colour
-        sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(
-            self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
-        self.label.setStyleSheet(sh)
-        sh = "QSpinBox {{ {} }}".format(sh)
-        # sh = """
-        # QSpinBox {{ {} }}
-        # QSpinBox::up-button  {{subcontrol-origin: border;
-        #     subcontrol-position: left; width: 60px; height: 60px; }}
-        # QSpinBox::down-button  {{subcontrol-origin: border;
-        #     subcontrol-position: right; width: 60px; height: 60px; }}
-        # """.format(sh)
-        self.scoreSpinBox.setStyleSheet(sh)
-        print("Setting stylesheet to the scoreSpinBox")
+            sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(
+                self.pcolour.red(), self.pcolour.green(), self.pcolour.blue()
+            )
+            self.label.setStyleSheet(sh)
+            sh = "QSpinBox {{ {} }}".format(sh)
+            # sh = """
+            # QSpinBox {{ {} }}
+            # QSpinBox::up-button  {{subcontrol-origin: border;
+            #     subcontrol-position: left; width: 60px; height: 60px; }}
+            # QSpinBox::down-button  {{subcontrol-origin: border;
+            #     subcontrol-position: right; width: 60px; height: 60px; }}
+            # """.format(sh)
+            self.scoreSpinBox.setStyleSheet(sh)
+            print("Setting stylesheet to the scoreSpinBox")
 
 
 class RatukiRoundsDetail(GameRoundsDetail):
-
     def __init__(self, engine, parent=None):
         self.bgcolors = [0xCCFF99, 0xFFCC99]
         super(RatukiRoundsDetail, self).__init__(engine, parent)
@@ -267,7 +284,6 @@ class RatukiRoundsDetail(GameRoundsDetail):
 
 
 class RatukiRoundTable(GameRoundTable):
-
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
         super(RatukiRoundTable, self).__init__(engine, parent)
@@ -278,31 +294,27 @@ class RatukiRoundTable(GameRoundTable):
         self.insertRow(i)
         for j, player in enumerate(self.engine.getListPlayers()):
             item = QTableWidgetItem()
-            item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
-            item.setTextAlignment(QtCore.Qt.AlignVCenter |
-                                  QtCore.Qt.AlignCenter)
+            item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
+            item.setTextAlignment(
+                QtCore.Qt.AlignmentFlag.AlignVCenter
+                | QtCore.Qt.AlignmentFlag.AlignCenter
+            )
             score = r.getPlayerScore(player)
             if score > 0:
                 background = self.bgcolors[0]
             else:
                 background = self.bgcolors[1]
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
-            item.setForeground(QtGui.QBrush(QtGui.QColor(0,0,0)))
+            item.setForeground(QtGui.QBrush(QtGui.QColor(0, 0, 0)))
             text = str(score)
             if player == winner:
-                text += i18n(
-                    "RatukiRoundTable", " (Winner)")
+                text += i18n("RatukiRoundTable", " (Winner)")
             item.setText(text)
             self.setItem(i, j, item)
         self.scrollToBottom()
 
 
 class RatukiRoundPlot(GameRoundPlot):
-
-    def initPlot(self):
-        super(RatukiRoundPlot, self).initPlot()
-        self.updatePlot()
-
     def updatePlot(self):
         super(RatukiRoundPlot, self).updatePlot()
         if not self.isPlotInited():
