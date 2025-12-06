@@ -148,7 +148,7 @@ class SkullKingWidget(GameWidget):
 
         super(SkullKingWidget, self).commitRound()
 
-    def setFocus(self):
+    def setFocus(self, reason=None):
         self.gameInput.setFocus()
 
     def updatePlayerOrder(self):
@@ -273,14 +273,17 @@ class SkullKingInputWidget(GameInputWidget):
         players = self.engine.getListPlayers()
         expected_hands = self.getExpectedHands()
         won_hands = self.getWonHands()
+        dealer = self.engine.getDealer()
+        first_player = (players.index(dealer) + 1) % len(players)
+        hand_player_order = players[first_player:] + players[0:first_player]
         if any([value < 0 for value in expected_hands.values()]):
-            for player in players:
+            for player in hand_player_order:
                 if expected_hands[player] < 0:
                     if self.playerInputList[player].setExpectedHands(number):
                         self.lastChoices.append(("expected", player))
                     return
 
-        for player in players:
+        for player in hand_player_order:
             if won_hands[player] < 0:
                 if self.playerInputList[player].setWonHands(number):
                     self.lastChoices.append(("won", player))
