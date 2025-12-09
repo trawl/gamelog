@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+from typing import cast
+
 from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QColor
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QRectF
+from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath
 from PySide6.QtWidgets import (
     QApplication,
     QButtonGroup,
-    QCheckBox,
+    QComboBox,
     QFrame,
     QGridLayout,
     QGroupBox,
@@ -28,9 +32,9 @@ from gui.game import (
     GameRoundTable,
     GameWidget,
     PlayerColours,
-    ScoreSpinBox,
 )
 from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
+from gui.progress import StepProgressBar
 
 i18n = QApplication.translate
 
@@ -48,9 +52,39 @@ class SkullKingWidget(GameWidget):
         self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
 
+        self.progressBar = StepProgressBar(self.engine.getRoundSequence(), self)
+        self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
+        self.matchGroupLayout.addWidget(self.progressBar)
+
         self.configLayout = QGridLayout()
         self.matchGroupLayout.addLayout(self.configLayout)
         self.dealerPolicyCheckBox.hide()
+
+        self.scoringModeLabel = QLabel(i18n("SkullKingWidget", "Scoring"), self)
+        self.configLayout.addWidget(self.scoringModeLabel, 0, 0)
+        self.scoringModeCombo = QComboBox(self)
+        self.scoringModeCombo.addItems(
+            list(cast("SkullKingEngine", self.engine).listScoringModes())
+        )
+        self.scoringModeCombo.setCurrentText(
+            cast("SkullKingEngine", self.engine).getScoringMode()
+        )
+        self.scoringModeCombo.setDisabled(self.engine.getNumRound() > 1)
+        self.scoringModeCombo.currentIndexChanged.connect(self.changeScoringMode)
+        self.configLayout.addWidget(self.scoringModeCombo, 0, 1)
+
+        self.roundModeLabel = QLabel(i18n("SkullKingWidget", "Card Counts"), self)
+        self.configLayout.addWidget(self.roundModeLabel, 1, 0)
+        self.roundModeCombo = QComboBox(self)
+        self.roundModeCombo.addItems(
+            list(cast("SkullKingEngine", self.engine).listRoundModes())
+        )
+        self.roundModeCombo.setCurrentText(
+            cast("SkullKingEngine", self.engine).getRoundMode()
+        )
+        self.roundModeCombo.setDisabled(self.engine.getNumRound() > 1)
+        self.roundModeCombo.currentIndexChanged.connect(self.changeRoundMode)
+        self.configLayout.addWidget(self.roundModeCombo, 1, 1)
 
         self.detailGroup = SkullKingRoundsDetail(self.engine, self)
         self.detailGroup.edited.connect(self.updatePanel)
@@ -110,6 +144,10 @@ class SkullKingWidget(GameWidget):
         self.playerGroupBox[self.engine.getDealer()].setDealer()
 
     def updatePanel(self):
+        self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
+        if self.engine.getNumRound() > 1:
+            self.scoringModeCombo.setEnabled(False)
+            self.roundModeCombo.setEnabled(False)
         for player in self.players:
             score = self.engine.getScoreFromPlayer(player)
             self.playerGroupBox[player].updateDisplay(score)
@@ -137,14 +175,58 @@ class SkullKingWidget(GameWidget):
                 i18n("PochaWidget", "There are players with no selected won hands."),
             )
             return
-
-        if hands != won:
+        if hands == won + 1 and self.engine.getScoringMode() != "classic":
+            # Kraken case
+            kraken_msg = i18n("SkullKingWidget", "Has the Kraken appeared?")
+            msg = (
+                i18n(
+                    "PochaWidget",
+                    "There are {} won hands selected when there should be {}.",
+                ).format(won, hands)
+                + " "
+                + kraken_msg
+            )
+            ret = QMessageBox.question(
+                self,
+                self.game,
+                msg,
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
+            )
+            if ret == QMessageBox.StandardButton.No:
+                return
+        elif hands != won:
             msg = i18n(
                 "PochaWidget",
                 "There are {} won hands selected when there should be {}.",
             )
             QMessageBox.warning(self, self.game, msg.format(won, hands))
             return
+        # Validate bonuses
+        if self.engine.getScoringMode() != "classic":
+            fourteens = 0
+            loots = 0
+            for piw in self.gameInput.playerInputList.values():
+                bbtns = piw.getBonusButtons()
+                for bn, btn in bbtns.items():
+                    if bn == "fourteen":
+                        fourteens += int(btn.getValue())
+                    if bn == "loot":
+                        loots += int(btn.getValue())
+            if fourteens > 3:
+                msg = i18n(
+                    "SkullKingWidget",
+                    "There are more than 3 Fourteen bonuses selected.",
+                )
+                QMessageBox.warning(self, self.game, msg)
+                return
+            if loots > 4:
+                msg = i18n(
+                    "SkullKingWidget",
+                    "There are more than 4 Loot bonuses selected.",
+                )
+                QMessageBox.warning(self, self.game, msg)
+                return
 
         super(SkullKingWidget, self).commitRound()
 
@@ -164,6 +246,28 @@ class SkullKingWidget(GameWidget):
             self.playerGroupBox[player].setColour(PlayerColours[i])
         # self.playersLayout.addStretch()
         self.detailGroup.updatePlayerOrder()
+
+    def changeRoundMode(self, _index):
+        rmode = self.roundModeCombo.currentText()
+        try:
+            cast("SkullKingEngine", self.engine).setRoundMode(rmode)
+        except ValueError as ve:
+            QMessageBox.critical(self, self.game, str(ve))
+            return
+        self.setRoundTitle()
+        self.progressBar.setSteps(self.engine.getRoundSequence())
+        self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
+        self.gameInput.changeRoundMode()
+
+    def changeScoringMode(self, _index):
+        smode = self.scoringModeCombo.currentText()
+        try:
+            cast("SkullKingEngine", self.engine).setScoringMode(smode)
+        except ValueError as ve:
+            QMessageBox.critical(self, self.game, str(ve))
+            return
+        self.gameInput.changeScoringMode()
+        # self.updatePlayerOrder()
 
 
 class SkullKingInputWidget(GameInputWidget):
@@ -192,6 +296,9 @@ class SkullKingInputWidget(GameInputWidget):
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
             self.playerInputList[player].newExpected.connect(self.checkExpected)
             self.playerInputList[player].handsClicked.connect(self.newChoice)
+            self.playerInputList[player].handsClicked.connect(self.newChoice)
+            for bonus_button in self.playerInputList[player].getBonusButtons().values():
+                bonus_button.bonusChanged.connect(self.bonusChangedAction)
 
         print(f"trying to set focus to {self.engine.getListPlayers()[0]}")
         self.playerInputList[self.engine.getListPlayers()[0]].setFocus()
@@ -309,6 +416,30 @@ class SkullKingInputWidget(GameInputWidget):
             self.widgetLayout.addWidget(self.playerInputList[player], i // 4, i % 4)
             self.playerInputList[player].setColour(PlayerColours[i])
 
+    def bonusChangedAction(self, sender_type, sender):
+        for player in self.engine.getListPlayers():
+            for bn, btn in self.playerInputList[player].getBonusButtons().items():
+                trifecta = ("skullking", "pirate", "mermaid")
+                if sender_type in trifecta:
+                    if (
+                        bn == sender_type
+                        and btn is not sender
+                        or bn != sender_type
+                        and bn in trifecta
+                    ):
+                        btn.setChecked(False)
+                if sender_type in ("blackfourteen", "roatan"):
+                    if bn == sender_type and btn is not sender:
+                        btn.setChecked(False)
+
+    def changeRoundMode(self):
+        for piw in self.playerInputList.values():
+            piw.refreshButtons()
+
+    def changeScoringMode(self):
+        for piw in self.playerInputList.values():
+            piw.updateBonusButtons()
+
 
 class SkullKingPlayerInputWidget(QFrame):
     winnerSet = QtCore.Signal(str)
@@ -372,25 +503,71 @@ class SkullKingPlayerInputWidget(QFrame):
                 button.hide()
             else:
                 self.wbLayout.addWidget(button)
+        self.lowerGroup = QFrame(self)
+        self.mainLayout.addWidget(self.lowerGroup)
+        self.lowerLayout = QHBoxLayout(self.lowerGroup)
         self.extraPointsGroup = QFrame(self)
-        self.mainLayout.addWidget(self.extraPointsGroup)
+        self.extraPointsGroup.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
+        )
+        self.lowerLayout.addWidget(self.extraPointsGroup)
         self.epLayout = QHBoxLayout(self.extraPointsGroup)
         self.epLayout.setSpacing(0)
         self.epLayout.setContentsMargins(2, 2, 2, 2)
-        self.skullKingCaptured = QCheckBox("SKC", self.extraPointsGroup)
-        self.epLayout.addWidget(self.skullKingCaptured)
-        self.piratesCaptured = ScoreSpinBox(self.extraPointsGroup)
-        self.epLayout.addWidget(self.piratesCaptured)
-        self.piratesCapturedLabel = QLabel("PC", self.extraPointsGroup)
-        self.epLayout.addWidget(self.piratesCapturedLabel)
+        self.extraFeaturesGroup = QFrame(self)
+        self.extraFeaturesGroup.setSizePolicy(
+            QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
+        )
+        self.lowerLayout.addWidget(self.extraFeaturesGroup)
+        self.efLayout = QHBoxLayout(self.extraFeaturesGroup)
+        self.efLayout.setSpacing(0)
+        self.efLayout.setContentsMargins(2, 2, 2, 2)
+        self.bonusButtons = {}
+        self.updateBonusButtons()
         self.reset()
+
+    def updateBonusButtons(self):
+        trash = QWidget()
+        trash_layout = self.epLayout
+        if trash_layout:
+            trash.setLayout(trash_layout)
+
+        self.epLayout = QHBoxLayout(self.extraPointsGroup)
+        self.epLayout.setSpacing(0)
+        self.epLayout.setContentsMargins(2, 2, 2, 2)
+
+        for btn in self.bonusButtons.values():
+            trash_layout.removeWidget(btn)
+            btn.deleteLater()
+
+        self.bonusButtons = {}
+
+        for btype in self.engine.listBonusTypes():
+            parent = self.extraPointsGroup
+            layout = self.epLayout
+            reps = min(
+                len(self.engine.getPlayers()) - 1, self.engine.getBonusReps(btype)
+            )
+            if btype == "cannonball":
+                parent = self.extraFeaturesGroup
+                layout = self.efLayout
+            if btype == "fourteen":
+                reps = min(
+                    len(self.engine.getPlayers()), self.engine.getBonusReps(btype)
+                )
+            self.bonusButtons[btype] = SkullKingBonusButton(
+                btype,
+                reps,
+                self.pcolour,
+                parent,
+            )
+            layout.addWidget(self.bonusButtons[btype])
 
     def reset(self):
         self.expectedButtons[0].setChecked(True)
         self.wonButtons[0].setChecked(True)
-        self.skullKingCaptured.setChecked(False)
-        self.piratesCaptured.setValue(0)
-        self.piratesCaptured.clear()
+        for button in self.bonusButtons.values():
+            button.setChecked(False)
         self.refreshButtons()
         self.disableWonRow()
         self.disableExtraRow()
@@ -422,19 +599,10 @@ class SkullKingPlayerInputWidget(QFrame):
         return self.player
 
     def getScore(self):
-        expected = self.expectedGroup.checkedId()
-        won = self.wonGroup.checkedId()
-        if expected == 0 and won == 0:
-            return self.engine.getNumRound() * 10
-        if expected == 0 and won != 0:
-            return self.engine.getNumRound() * -10
-        if expected == won:
-            return (
-                won * 20
-                + 30 * int(self.piratesCaptured.value())
-                + 50 * int(self.skullKingCaptured.isChecked())
-            )
-        return -10 * abs(expected - won)
+        expected = self.getExpectedHands()
+        won = self.getWonHands()
+        bonuses = {bt: int(v.getValue()) for bt, v in self.bonusButtons.items()}
+        return self.engine.computePlayerScore(expected, won, bonuses)
 
     def getWonHands(self):
         return self.wonGroup.checkedId()
@@ -478,6 +646,9 @@ class SkullKingPlayerInputWidget(QFrame):
             css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
         )
 
+    def getBonusButtons(self):
+        return self.bonusButtons
+
 
 class SkullKingHandsButton(QPushButton):
     def __init__(self, text="", parent=None):
@@ -503,6 +674,152 @@ class SkullKingHandsButton(QPushButton):
         else:
             self.setColour(self.isChecked())
         return super(SkullKingHandsButton, self).setDisabled(disabled)
+
+
+class SkullKingBonusButton(QPushButton):
+    BUTTON_SIZE = 32
+    bonusChanged = QtCore.Signal(str, object)
+
+    def __init__(self, bonus_name: str, maximum: int = 1, colour=None, parent=None):
+        super().__init__(parent)
+
+        self.bonus_name = bonus_name
+        self.maximum = maximum
+        self.count = 0
+        self.highlight_colour = colour if colour else QColor(200, 0, 0)
+
+        original_image = QImage(f"icons/{bonus_name}.png")
+        self.image = original_image.scaled(
+            self.BUTTON_SIZE,
+            self.BUTTON_SIZE,
+            QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+            QtCore.Qt.TransformationMode.SmoothTransformation,
+        )
+
+        self.grey_image = self.image.convertToFormat(QImage.Format.Format_Grayscale8)
+
+        self.setCheckable(True)
+        self.setFlat(True)
+        self.setStyleSheet("border: none;")
+
+        self.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
+
+        self._fade_alpha = 0.0
+
+        self.fade_anim = QPropertyAnimation(self, b"fade_alpha")
+        self.fade_anim.setDuration(400)
+        self.fade_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+        self.clicked.connect(self._on_pressed)
+
+    def _on_pressed(self):
+        old_value = self.count
+        self.count = (self.count + 1) % (self.maximum + 1)
+        self.setChecked(
+            self.count > 0
+        )  # trigger pulse animation only when transitioning 0 -> >0
+
+        if old_value == 0 and self.count > 0:
+            self.fade_anim.stop()
+            self.fade_anim.setStartValue(0.0)
+            self.fade_anim.setEndValue(1.0)
+            self.fade_anim.start()
+            self.bonusChanged.emit(self.bonus_name, self)
+
+        elif old_value > 0 and self.count == 0:
+            self.fade_anim.stop()
+            self.fade_anim.setStartValue(1.0)
+            self.fade_anim.setEndValue(0.0)
+            self.fade_anim.start()
+        self.update()
+
+    def get_fade_alpha(self):
+        return self._fade_alpha
+
+    def set_fade_alpha(self, value):
+        self._fade_alpha = float(value)
+        self.update()
+
+    fade_alpha = QtCore.Property(float, get_fade_alpha, set_fade_alpha)
+
+    def getValue(self):
+        return self.count
+
+    def setChecked(self, checked):
+        if not checked:
+            self.count = 0
+        super().setChecked(checked)
+
+    def sizeHint(self):
+        return QtCore.QSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
+
+    def setMaximum(self, maximum):
+        self.maximum = maximum
+        if self.count > self.maximum:
+            self.count = self.maximum
+            if self.count == 0:
+                self.setChecked(False)
+            self.update()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        # --- circular clipping ---
+        path = QPainterPath()
+        radius = min(self.width(), self.height()) / 2
+        center = self.rect().center()
+        path.addEllipse(center, radius, radius)
+        painter.setClipPath(path)
+
+        # --- choose image (normal or greyscale if disabled) ---
+        if self.isEnabled():
+            img_to_draw = self.image
+        else:
+            img_to_draw = self.grey_image
+
+        # --- draw icon ---
+        painter.drawImage(self.rect(), img_to_draw)
+
+        # --- active outline (red circular ring) ---
+        if self.count > 0:
+            alpha = int(255 * self._fade_alpha)
+            ring_radius = radius - 2
+            pen = painter.pen()
+            colour = QColor(self.highlight_colour)
+            colour.setAlpha(alpha)
+            pen.setColor(colour)  # red
+            pen.setWidth(4)
+            painter.setPen(pen)
+            painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
+            painter.drawEllipse(center, ring_radius, ring_radius)
+
+        # --- text overlay when count > 1 ---
+        if self.count >= 1 and self.maximum > 1:
+            # Semi-transparent dark circle behind the number
+            overlay_color = QColor(0, 0, 0, 120)
+            painter.setBrush(overlay_color)
+            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+
+            circle_diameter = min(self.width(), self.height()) * 0.45
+            circle_rect = QRectF(
+                (self.width() - circle_diameter) / 2,
+                (self.height() - circle_diameter) / 2,
+                circle_diameter,
+                circle_diameter,
+            )
+            painter.drawEllipse(circle_rect)
+
+            # Draw the number
+            painter.setPen(QColor(255, 255, 255, 220))
+            font = QFont("Arial", int(circle_diameter * 0.8), QFont.Weight.Bold)
+            painter.setFont(font)
+
+            painter.drawText(
+                self.rect(), QtCore.Qt.AlignmentFlag.AlignCenter, str(self.count)
+            )
+
+        painter.end()
 
 
 class SkullKingRoundsDetail(GameRoundsDetail):

@@ -10,8 +10,9 @@ from model.phase10 import Phase10Match
 
 class Phase10Engine(RoundGameEngine):
     def __init__(self):
+        if not hasattr(self, "game"):
+            self.game = "Phase10"
         super(Phase10Engine, self).__init__()
-        self.game = "Phase10"
 
     def getPhases(self):
         cur = db.execute(
@@ -19,7 +20,9 @@ class Phase10Engine(RoundGameEngine):
             "where Game_name='{}' and key like 'Phase %' "
             "order by key asc".format(self.game)
         )
-        return [row["value"] for row in cur]
+        if cur:
+            return [row["value"] for row in cur]
+        return []
 
     def getRemainingPhasesFromPlayer(self, player):
         remaining = list(range(1, 11))
@@ -106,8 +109,9 @@ class Phase10Engine(RoundGameEngine):
 
 class Phase10MasterEngine(Phase10Engine):
     def __init__(self):
+        if not hasattr(self, "game"):
+            self.game = "Phase10Master"
         super(Phase10MasterEngine, self).__init__()
-        self.game = "Phase10Master"
 
 
 if __name__ == "__main__":

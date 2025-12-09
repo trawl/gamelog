@@ -8,8 +8,9 @@ from model.ratuki import RatukiMatch
 
 class RatukiEngine(RoundGameEngine):
     def __init__(self):
+        if not hasattr(self, "game"):
+            self.game = "Ratuki"
         super(RatukiEngine, self).__init__()
-        self.game = "Ratuki"
 
     def getTop(self):
         return cast("RatukiMatch", self.match).getTop()
