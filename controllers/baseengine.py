@@ -7,7 +7,7 @@ from abc import abstractmethod
 from typing import Callable, TypeVar
 
 from controllers.db import db
-from model.base import GenericMatch, GenericRoundMatch, Player
+from model.base import GenericRoundMatch, Player
 from model.gamefactory import GameFactory
 
 
@@ -20,8 +20,9 @@ class GameEngine(object):
     def __init__(self):
         self.players = dict()
         self.porder = list()
-        self.match = GenericMatch()
-        self.game = None
+        if not hasattr(self, "game"):
+            self.game = None
+        self.match = GameFactory.createMatch(self.game)
 
     def addPlayer(self, nick, fullName=""):
         if fullName == "":
@@ -43,12 +44,14 @@ class GameEngine(object):
             db.execute(q)
 
     def begin(self):
-        self.match = GameFactory.createMatch(self.game)
+        if not self.match:
+            self.match = GameFactory.createMatch(self.game)
         self.match.setPlayers(self.porder)
         self.match.startMatch()
 
     def resume(self, idMatch):
-        self.match = GameFactory.createMatch(self.game)
+        if not self.match:
+            self.match = GameFactory.createMatch(self.game)
         if self.match.resumeMatch(idMatch):
             for nick in self.match.getPlayers():
                 self.addPlayer(nick)

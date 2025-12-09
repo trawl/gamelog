@@ -44,6 +44,8 @@ class GenericMatch(object):
             "SELECT Game_name,state,started,elapsed "
             "FROM Match WHERE idMatch ={};".format(idMatch)
         )
+        if not cur:
+            return False
         row = cur.fetchone()
         if not row:
             return False

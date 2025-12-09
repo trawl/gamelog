@@ -70,9 +70,10 @@ class Phase10Match(GenericRoundMatch):
             "SELECT value FROM MatchExtras "
             "WHERE idMatch ={} and key='PhasesInOrder';".format(idMatch)
         )
-        row = cur.fetchone()
-        if row:
-            self.phasesinorder = bool(int(row["value"]))
+        if cur:
+            row = cur.fetchone()
+            if row:
+                self.phasesinorder = bool(int(row["value"]))
 
         for player in self.getPlayers():
             if player not in self.phasesCleared:

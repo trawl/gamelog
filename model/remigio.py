@@ -51,9 +51,10 @@ class RemigioMatch(GenericRoundMatch):
                 idMatch
             )
         )
-        row = cur.fetchone()
-        if row:
-            self.top = int(row["value"])
+        if cur:
+            row = cur.fetchone()
+            if row:
+                self.top = int(row["value"])
 
         for player in self.getPlayers():
             self.playerStart(player)

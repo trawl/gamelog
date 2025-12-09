@@ -9,8 +9,9 @@ from model.remigio import RemigioMatch
 
 class RemigioEngine(RoundGameEngine):
     def __init__(self):
+        if not hasattr(self, "game"):
+            self.game = "Remigio"
         RoundGameEngine.__init__(self)
-        self.game = "Remigio"
 
     def getActivePlayers(self):
         return cast("RemigioMatch", self.match).getActivePlayers()

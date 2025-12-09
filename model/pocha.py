@@ -9,6 +9,7 @@ class PochaMatch(GenericRoundMatch):
         super(PochaMatch, self).__init__(players)
         self.game = "Pocha"
         self.dealingp = 1
+        self.hands = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 12, 11, 10, 9, 8]
         self.maxRounds = 18
 
     def resumeMatch(self, idMatch):
@@ -32,3 +33,6 @@ class PochaMatch(GenericRoundMatch):
 
         if winner is not None:
             self.winner = winner
+
+    def getHands(self):
+        return self.hands

@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from typing import cast
 
 from controllers.baseengine import RoundGameEngine, readInput
 from controllers.db import db
 from controllers.statsengine import ParticularStatsEngine, StatsEngine
+from model.pocha import PochaMatch
 
 
 class PochaEngine(RoundGameEngine):
     def __init__(self):
+        if not hasattr(self, "game"):
+            self.game = "Pocha"
         super(PochaEngine, self).__init__()
-        self.game = "Pocha"
-        self.hands = [1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 8, 7, 6, 5, 4, 3, 2, 1]
         self.setSuitType()
 
     def runRoundPlayer(self, player, winner=None):
@@ -27,9 +29,9 @@ class PochaEngine(RoundGameEngine):
         if rnd is not None:
             index = rnd - 1
         try:
-            return self.hands[index]
+            return cast("PochaMatch", self.match).getHands()[index]
         except IndexError:
-            return self.hands[-1]
+            return 1
 
     def getDirection(self, rnd=None):
         index = self.getNumRound() - 1

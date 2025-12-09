@@ -10,8 +10,9 @@ from model.carcassonne import CarcassonneMatch
 
 class CarcassonneEngine(EntryGameEngine):
     def __init__(self):
+        if not hasattr(self, "game"):
+            self.game = "Carcassonne"
         EntryGameEngine.__init__(self)
-        self.game = "Carcassonne"
 
     def runStubRoundPlayer(self, player, winner=None):
         entry_kinds = self.getEntryKinds()
