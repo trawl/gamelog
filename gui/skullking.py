@@ -4,13 +4,20 @@
 from typing import cast
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QRectF
+from PySide6.QtCore import (
+    Property,
+    QEasingCurve,
+    QPropertyAnimation,
+    QRectF,
+    Qt,
+    QTimer,
+)
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath
 from PySide6.QtWidgets import (
     QApplication,
-    QButtonGroup,
     QComboBox,
     QFrame,
+    QGraphicsColorizeEffect,
     QGridLayout,
     QGroupBox,
     QHBoxLayout,
@@ -95,9 +102,9 @@ class SkullKingWidget(GameWidget):
         # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
         self.rightLayout.addWidget(self.playerGroup)
 
-        self.playerGroup.setStyleSheet(
-            "QGroupBox { font-size: 18px; font-weight: bold; }"
-        )
+        # self.playerGroup.setStyleSheet(
+        #     "QGroupBox { font-size: 18px; font-weight: bold; }"
+        # )
         self.playersLayout = QVBoxLayout(self.playerGroup)
         # self.playersLayout.addStretch()
         self.playerGroupBox = {}
@@ -283,6 +290,7 @@ class SkullKingInputWidget(GameInputWidget):
             players_per_column = 2
         else:
             players_per_column = 3
+        players_per_column = 4
 
         for i, player in enumerate(players):
             self.playerInputList[player] = SkullKingPlayerInputWidget(
@@ -297,14 +305,41 @@ class SkullKingInputWidget(GameInputWidget):
             self.playerInputList[player].newExpected.connect(self.checkExpected)
             self.playerInputList[player].handsClicked.connect(self.newChoice)
             self.playerInputList[player].handsClicked.connect(self.newChoice)
+            self.playerInputList[player].betTricksChanged.connect(
+                self.updateCandidateAction
+            )
             for bonus_button in self.playerInputList[player].getBonusButtons().values():
                 bonus_button.bonusChanged.connect(self.bonusChangedAction)
 
         print(f"trying to set focus to {self.engine.getListPlayers()[0]}")
         self.playerInputList[self.engine.getListPlayers()[0]].setFocus()
+        self.updateCandidateAction()
 
     def newChoice(self, mode, player):
         self.lastChoices.append((mode, player))
+
+    def updateCandidateAction(self):
+        players = self.engine.getListPlayers()
+        expected_hands = self.getExpectedHands()
+        won_hands = self.getWonHands()
+        dealer = self.engine.getDealer()
+        first_player = (players.index(dealer) + 1) % len(players)
+        hand_player_order = players[first_player:] + players[0:first_player]
+        found = False
+        if any([value < 0 for value in expected_hands.values()]):
+            for player in hand_player_order:
+                if not found and expected_hands[player] < 0:
+                    self.playerInputList[player].setCandidate(True)
+                    found = True
+                else:
+                    self.playerInputList[player].setCandidate(False)
+        else:
+            for player in hand_player_order:
+                if not found and won_hands[player] < 0:
+                    self.playerInputList[player].setCandidate(True)
+                    found = True
+                else:
+                    self.playerInputList[player].setCandidate(False)
 
     def reset(self):
         super(SkullKingInputWidget, self).reset()
@@ -432,6 +467,14 @@ class SkullKingInputWidget(GameInputWidget):
                     if bn == sender_type and btn is not sender:
                         btn.setChecked(False)
 
+    # def betTricksChangedAction(self):
+    #     if any([piw.getWonHands() >= 0 for piw in self.playerInputList.values()]):
+    #         for piw in self.playerInputList.values():
+    #             piw.lockBets()
+    #     elif all([piw.getWonHands() < 0 for piw in self.playerInputList.values()]):
+    #         for piw in self.playerInputList.values():
+    #             piw.unlockBets()
+
     def changeRoundMode(self):
         for piw in self.playerInputList.values():
             piw.refreshButtons()
@@ -441,71 +484,36 @@ class SkullKingInputWidget(GameInputWidget):
             piw.updateBonusButtons()
 
 
-class SkullKingPlayerInputWidget(QFrame):
+class SkullKingPlayerInputWidget(QGroupBox):
     winnerSet = QtCore.Signal(str)
     newExpected = QtCore.Signal()
     handsClicked = QtCore.Signal(str, str)
+    betTricksChanged = QtCore.Signal()
 
     def __init__(self, player, engine, colour=QColor(0, 0, 0), parent=None):
         super(SkullKingPlayerInputWidget, self).__init__(parent)
         self.player = player
         self.engine = engine
         self.winner = False
-        self.pcolour = colour
+        self.candidate = False
         self.mainLayout = QVBoxLayout(self)
         self.mainLayout.setSpacing(0)
 
-        self.label = QLabel(self)
-        self.label.setText(self.player)
-        self.mainLayout.addWidget(self.label)
-        self.label.setAutoFillBackground(False)
-        self.setFrameShape(QFrame.Shape.Panel)
-        self.setFrameShadow(QFrame.Shadow.Raised)
-        self.label.setScaledContents(True)
-        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.label.setWordWrap(False)
-        css = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
-        self.label.setStyleSheet(
-            css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
-        )
+        self.setTitle(self.player)
+        self.setColour(colour)
 
-        self.expectedGroupBox = QFrame(self)
-        self.mainLayout.addWidget(self.expectedGroupBox)
-        self.ebLayout = QHBoxLayout(self.expectedGroupBox)
-        self.ebLayout.setSpacing(0)
-        self.ebLayout.setContentsMargins(2, 2, 2, 2)
-        self.expectedGroup = QButtonGroup(self)
-        self.expectedGroup.buttonReleased.connect(self.expectedClickedAction)
-        self.expectedButtons = []
+        self.upperLayout = QHBoxLayout()
+        # self.upperLayout.addStretch()
+        self.mainLayout.addLayout(self.upperLayout)
+        self.btWidget = BetTrickWidget(self.pcolour, self)
+        self.btWidget.changed.connect(self.betTricksChanged)
+        self.upperLayout.addWidget(self.btWidget)
+        # self.upperLayout.addStretch()
 
-        self.wonGroupBox = QFrame(self)
-        self.mainLayout.addWidget(self.wonGroupBox)
-        self.wbLayout = QHBoxLayout(self.wonGroupBox)
-        self.wbLayout.setSpacing(0)
-        self.wbLayout.setContentsMargins(2, 2, 2, 2)
-        self.wonGroup = QButtonGroup(self)
-        self.wonGroup.buttonReleased.connect(self.wonClickedAction)
-        self.wonButtons = []
-        for i in range(-1, 11):
-            button = SkullKingHandsButton(str(i), self)
-            self.expectedGroup.addButton(button, i)
-            self.expectedButtons.append(button)
-            button.toggled.connect(self.enableWonGroup)
-            if i < 0:
-                button.hide()
-            else:
-                self.ebLayout.addWidget(button)
-
-            button = SkullKingHandsButton(str(i), self)
-            self.wonGroup.addButton(button, i)
-            self.wonButtons.append(button)
-            if i < 0:
-                button.hide()
-            else:
-                self.wbLayout.addWidget(button)
-        self.lowerGroup = QFrame(self)
-        self.mainLayout.addWidget(self.lowerGroup)
-        self.lowerLayout = QHBoxLayout(self.lowerGroup)
+        # self.lowerGroup = QFrame(self)
+        # self.mainLayout.addWidget(self.lowerGroup)
+        self.lowerLayout = QHBoxLayout()
+        self.mainLayout.addLayout(self.lowerLayout)
         self.extraPointsGroup = QFrame(self)
         self.extraPointsGroup.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
@@ -518,13 +526,16 @@ class SkullKingPlayerInputWidget(QFrame):
         self.extraFeaturesGroup.setSizePolicy(
             QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
         )
-        self.lowerLayout.addWidget(self.extraFeaturesGroup)
-        self.efLayout = QHBoxLayout(self.extraFeaturesGroup)
-        self.efLayout.setSpacing(0)
-        self.efLayout.setContentsMargins(2, 2, 2, 2)
         self.bonusButtons = {}
         self.updateBonusButtons()
         self.reset()
+
+    def isCandidate(self):
+        return self.candidate
+
+    def setCandidate(self, value=True):
+        self.btWidget.setCandidate(value)
+        self.candidate = value
 
     def updateBonusButtons(self):
         trash = QWidget()
@@ -545,12 +556,16 @@ class SkullKingPlayerInputWidget(QFrame):
         for btype in self.engine.listBonusTypes():
             parent = self.extraPointsGroup
             layout = self.epLayout
+            position = 0
+            alignment = Qt.AlignmentFlag.AlignCenter
             reps = min(
                 len(self.engine.getPlayers()) - 1, self.engine.getBonusReps(btype)
             )
             if btype == "cannonball":
-                parent = self.extraFeaturesGroup
-                layout = self.efLayout
+                parent = self
+                layout = self.upperLayout
+                position = 1
+                alignment = Qt.AlignmentFlag.AlignLeft
             if btype == "fourteen":
                 reps = min(
                     len(self.engine.getPlayers()), self.engine.getBonusReps(btype)
@@ -561,30 +576,19 @@ class SkullKingPlayerInputWidget(QFrame):
                 self.pcolour,
                 parent,
             )
-            layout.addWidget(self.bonusButtons[btype])
+            layout.addWidget(self.bonusButtons[btype], position)
+            layout.setAlignment(self.bonusButtons[btype], alignment)
 
     def reset(self):
-        self.expectedButtons[0].setChecked(True)
-        self.wonButtons[0].setChecked(True)
+        self.btWidget.reset()
+        self.refreshButtons()
         for button in self.bonusButtons.values():
             button.setChecked(False)
-        self.refreshButtons()
-        self.disableWonRow()
         self.disableExtraRow()
 
-    def refreshButtons(self, forbidden=-1):
+    def refreshButtons(self, _forbidden=-1):
         hands = self.engine.getHands()
-        for eb, wb in zip(self.expectedButtons, self.wonButtons):
-            eb.setDisabled(int(eb.text()) > hands)
-            if int(eb.text()) == forbidden:
-                eb.setDisabled(True)
-            wb.setDisabled(int(wb.text()) > hands)
-
-    def disableWonRow(self, disable=True):
-        if self.getExpectedHands() < 0:
-            self.wonGroupBox.setDisabled(True)
-        else:
-            self.wonGroupBox.setDisabled(disable)
+        self.btWidget.setMaxBet(hands)
 
     def disableExtraRow(self, disable=True):
         self.extraPointsGroup.setDisabled(disable)
@@ -605,30 +609,18 @@ class SkullKingPlayerInputWidget(QFrame):
         return self.engine.computePlayerScore(expected, won, bonuses)
 
     def getWonHands(self):
-        return self.wonGroup.checkedId()
+        return self.btWidget.getTricks()
 
     def getExpectedHands(self):
-        return self.expectedGroup.checkedId()
+        return self.btWidget.getBet()
 
     def setExpectedHands(self, number):
-        if number < 0:
-            self.expectedButtons[0].toggle()
-            return True
-        button = self.expectedGroup.button(number)
-        if button.isEnabled():
-            button.toggle()
-            return True
-        return False
+        self.btWidget.setBet(number)
+        return True
 
     def setWonHands(self, number):
-        if number < 0:
-            self.wonButtons[0].toggle()
-            return True
-        button = self.wonGroup.button(number)
-        if button.isEnabled():
-            button.toggle()
-            return True
-        return False
+        self.btWidget.setTricks(number)
+        return True
 
     def expectedClickedAction(self, _):
         self.handsClicked.emit("expected", self.player)
@@ -641,13 +633,250 @@ class SkullKingPlayerInputWidget(QFrame):
 
     def setColour(self, colour):
         self.pcolour = colour
-        css = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
-        self.label.setStyleSheet(
+        # css = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
+        # self.label.setStyleSheet(
+        # css = "QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
+        css = "QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}  QGroupBox:focus-within {{ border: 2px solid #0078d7; background-color: #e6f1fb;}}"
+        self.setStyleSheet(
             css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
         )
 
     def getBonusButtons(self):
         return self.bonusButtons
+
+    def lockBets(self):
+        self.btWidget.lockBets()
+
+    def unlockBets(self):
+        self.btWidget.unlockBets()
+
+
+class ClickableLabel(QLabel):
+    clicked = QtCore.Signal(Qt.MouseButton)
+
+    def __init__(self, text="", pcolour=QColor(255, 255, 255), parent=None):
+        super().__init__(text, parent)
+        self.pcolour = pcolour
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.diameter = 40
+        self.locked = False
+        self.candidate = False
+        self.setFixedSize(self.diameter, self.diameter)
+        # Color animation effect (disabled unless candidate=True)
+        self.effect = QGraphicsColorizeEffect(self)
+        # self.effect.setColor(QColor("#4c8bf5"))  # glow color
+        self.effect.setColor(self.pcolour)  # glow color
+        self.effect.setStrength(0.0)
+        self.setGraphicsEffect(self.effect)
+
+        # Animation: pulse between strength=0 -> 0.6 -> 0
+        self.anim = QPropertyAnimation(self.effect, b"strength")
+        self.anim.setDuration(1800)
+        self.anim.setStartValue(0.0)
+        self.anim.setKeyValueAt(0.5, 0.2)
+        self.anim.setEndValue(0.0)
+        self.anim.setLoopCount(-1)  # infinite
+        self.setStyleSheet(self.normalStyle())
+
+    def isCandidate(self):
+        return self.candidate
+
+    def setCandidate(self, value):
+        if self.candidate == value:
+            return
+        self.candidate = value
+        if value:
+            self.startCandidateAnimation()
+        else:
+            self.stopCandidateAnimation()
+
+    candidateProperty = Property(bool, isCandidate, setCandidate)
+
+    # ------------------------------
+    def startCandidateAnimation(self):
+        self.anim.start()
+
+    def stopCandidateAnimation(self):
+        self.anim.stop()
+        self.effect.setStrength(0.0)
+
+    def normalStyle(self):
+        return f"""
+            QLabel {{
+                background-color: #444444;
+                border: 1px solid #666666;
+                border-radius: {self.diameter // 2}px;
+                font-size: 24px;
+                font-weight: bold;
+                color: rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});
+            }}
+            QLabel:hover {{
+                background-color: #555555;
+            }}
+        """
+
+    def lockStyle(self):
+        return f"""
+            QLabel {{
+                background-color: #444444;
+                border: 1px solid;
+                border-color: rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});
+                border-radius: {self.diameter // 2}px;
+                font-size: 24px;
+                font-weight: bold;
+                color: rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});
+            }}
+            QLabel:hover {{
+                background-color: #555555;
+            }}
+        """
+
+    def pressedStyle(self):
+        return f"""
+            QLabel {{
+                background-color: #333333;
+                border: 1px solid #777777;
+                border-radius: {self.diameter // 2}px;
+                font-size: 24px;
+                font-weight: bold;
+                color: rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});
+            }}
+        """
+
+    def mousePressEvent(self, event):
+        self.highlightChange()
+        self.clicked.emit(event.button())
+
+    def resetStyle(self):
+        self.setStyleSheet(self.normalStyle())
+
+    def highlightChange(self):
+        self.setStyleSheet(self.pressedStyle())
+        QTimer.singleShot(180, self.resetStyle)
+
+    def lock(self):
+        self.setStyleSheet(self.lockStyle())
+        self.locked = True
+
+    def unlock(self):
+        self.setStyleSheet(self.normalStyle())
+        self.locked = False
+
+    def isLocked(self):
+        return self.locked
+
+
+class BetTrickWidget(QWidget):
+    changed = QtCore.Signal()
+
+    def __init__(self, pcolour=QColor(255, 255, 255), parent=None):
+        super().__init__(parent)
+        self.bet = -1
+        self.tricks = -1
+        self.maxBet = 1
+        self.pcolour = pcolour
+
+        self.mainLayout = QHBoxLayout()
+        self.setLayout(self.mainLayout)
+
+        self.betLabel = ClickableLabel("-", self.pcolour, self)
+        self.tricksLabel = ClickableLabel("-", self.pcolour, self)
+
+        self.betLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.tricksLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+
+        self.mainLayout.addWidget(self.betLabel)
+        self.mainLayout.addWidget(self.tricksLabel)
+
+        self.betLabel.mousePressEvent = self.cycleBet
+        self.tricksLabel.mousePressEvent = self.cycleTricks
+
+    def isCandidate(self):
+        return self.betLabel.isCandidate() or self.tricksLabel.isCandidate()
+
+    def setCandidate(self, value):
+        if not value:
+            self.betLabel.setCandidate(False)
+            self.tricksLabel.setCandidate(False)
+        elif self.bet < 0:
+            self.tricksLabel.setCandidate(False)
+            self.betLabel.setCandidate(True)
+        elif self.tricks < 0:
+            self.betLabel.setCandidate(False)
+            self.tricksLabel.setCandidate(True)
+
+    def setMaxBet(self, bet):
+        self.maxBet = bet
+
+    def setBet(self, bet):
+        if self.betLabel.isLocked():
+            return
+        if bet > self.maxBet:
+            bet = self.maxBet
+        self.bet = bet
+        if self.bet < 0:
+            self.betLabel.setText("-")
+            self.tricksLabel.lock()
+        else:
+            self.betLabel.setText(str(self.bet))
+            self.tricksLabel.unlock()
+        self.betLabel.highlightChange()
+        self.changed.emit()
+
+    def resetBet(self):
+        self.setBet(-1)
+        self.tricksLabel.lock()
+
+    def resetTricks(self):
+        self.setTricks(-1)
+        self.betLabel.unlock()
+
+    def reset(self):
+        self.resetTricks()
+        self.resetBet()
+
+    def getBet(self):
+        return self.bet
+
+    def getTricks(self):
+        return self.tricks
+
+    def setTricks(self, tricks):
+        if self.tricksLabel.isLocked():
+            return
+        if tricks > self.maxBet:
+            tricks = self.maxBet
+        self.tricks = tricks
+        if self.tricks < 0:
+            self.tricksLabel.setText("-")
+            self.betLabel.unlock()
+        else:
+            self.tricksLabel.setText(str(self.tricks))
+            self.betLabel.lock()
+        self.tricksLabel.highlightChange()
+        self.changed.emit()
+
+    def cycleBet(self, event):
+        newbet = self.bet
+        if event.button() == Qt.MouseButton.LeftButton:
+            newbet = (self.bet + 1) % (self.maxBet + 1)
+        elif event.button() == Qt.MouseButton.RightButton:
+            newbet = (self.bet - 1) % (self.maxBet + 1)
+        self.setBet(newbet)
+
+    def cycleTricks(self, event):
+        newtricks = self.tricks
+        if event.button() == Qt.MouseButton.LeftButton:
+            newtricks = (self.tricks + 1) % (self.maxBet + 1)
+        if event.button() == Qt.MouseButton.RightButton:
+            newtricks = (self.tricks - 1) % (self.maxBet + 1)
+        self.setTricks(newtricks)
+
+    def lockBets(self):
+        self.betLabel.lock()
+
+    def unlockBets(self):
+        self.betLabel.unlock()
 
 
 class SkullKingHandsButton(QPushButton):

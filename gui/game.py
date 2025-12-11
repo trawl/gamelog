@@ -107,6 +107,7 @@ class GameWidget(Tab):
 
         self.gameStatusLabel = QLabel(self.roundGroup)
         self.gameStatusLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.gameStatusLabel.hide()
         self.roundLayout.addWidget(self.gameStatusLabel)
 
         # Match Group
@@ -154,13 +155,16 @@ class GameWidget(Tab):
         )
         winner = self.engine.getWinner()
         if winner:
+            self.gameStatusLabel.show()
             self.gameStatusLabel.setText(
                 i18n("GameWidget", "{} won this match!").format(winner)
             )
         elif self.engine.isPaused():
             self.gameStatusLabel.setText(i18n("GameWidget", "Game is paused"))
+            self.gameStatusLabel.show()
         else:
             self.gameStatusLabel.setText(i18n("GameWidget", ""))
+            self.gameStatusLabel.hide()
 
     def cancelMatch(self):
         if not self.isFinished():
