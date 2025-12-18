@@ -6,6 +6,7 @@ from typing import cast
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import (
     Property,
+    QCoreApplication,
     QEasingCurve,
     QPropertyAnimation,
     QRectF,
@@ -14,7 +15,6 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath
 from PySide6.QtWidgets import (
-    QApplication,
     QComboBox,
     QFrame,
     QGraphicsColorizeEffect,
@@ -40,13 +40,22 @@ from gui.game import (
     GameWidget,
     PlayerColours,
 )
-from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from gui.progress import StepProgressBar
 
-i18n = QApplication.translate
+i18n = QCoreApplication.translate
 
 
 class SkullKingWidget(GameWidget):
+    QCoreApplication.translate("SkullKingWidget", "classic_scoring")
+    QCoreApplication.translate("SkullKingWidget", "standard_scoring")
+    QCoreApplication.translate("SkullKingWidget", "rascal_scoring")
+    QCoreApplication.translate("SkullKingWidget", "standard_rounds")
+    QCoreApplication.translate("SkullKingWidget", "even")
+    QCoreApplication.translate("SkullKingWidget", "brawl")
+    QCoreApplication.translate("SkullKingWidget", "skirmish")
+    QCoreApplication.translate("SkullKingWidget", "barrage")
+    QCoreApplication.translate("SkullKingWidget", "whirlpool")
+
     def createEngine(self):
         if self.game != "Skull King":
             raise Exception("No engine for game {}".format(self.game))
@@ -67,27 +76,30 @@ class SkullKingWidget(GameWidget):
         self.matchGroupLayout.addLayout(self.configLayout)
         self.dealerPolicyCheckBox.hide()
 
-        self.scoringModeLabel = QLabel(i18n("SkullKingWidget", "Scoring"), self)
-        self.configLayout.addWidget(self.scoringModeLabel, 0, 0)
+        # self.scoringModeLabel = QLabel(self.tr("Scoring"), self)
+        # self.configLayout.addWidget(self.scoringModeLabel, 0, 0)
         self.scoringModeCombo = QComboBox(self)
         self.scoringModeCombo.addItems(
-            list(cast("SkullKingEngine", self.engine).listScoringModes())
+            [
+                self.tr(m)
+                for m in cast("SkullKingEngine", self.engine).listScoringModes()
+            ]
         )
         self.scoringModeCombo.setCurrentText(
-            cast("SkullKingEngine", self.engine).getScoringMode()
+            self.tr(cast("SkullKingEngine", self.engine).getScoringMode())
         )
         self.scoringModeCombo.setDisabled(self.engine.getNumRound() > 1)
         self.scoringModeCombo.currentIndexChanged.connect(self.changeScoringMode)
         self.configLayout.addWidget(self.scoringModeCombo, 0, 1)
 
-        self.roundModeLabel = QLabel(i18n("SkullKingWidget", "Card Counts"), self)
-        self.configLayout.addWidget(self.roundModeLabel, 1, 0)
+        # self.roundModeLabel = QLabel(self.tr("Card Counts"), self)
+        # self.configLayout.addWidget(self.roundModeLabel, 1, 0)
         self.roundModeCombo = QComboBox(self)
         self.roundModeCombo.addItems(
-            list(cast("SkullKingEngine", self.engine).listRoundModes())
+            [self.tr(m) for m in cast("SkullKingEngine", self.engine).listRoundModes()]
         )
         self.roundModeCombo.setCurrentText(
-            cast("SkullKingEngine", self.engine).getRoundMode()
+            self.tr(cast("SkullKingEngine", self.engine).getRoundMode())
         )
         self.roundModeCombo.setDisabled(self.engine.getNumRound() > 1)
         self.roundModeCombo.currentIndexChanged.connect(self.changeRoundMode)
@@ -123,6 +135,14 @@ class SkullKingWidget(GameWidget):
     def retranslateUI(self):
         super(SkullKingWidget, self).retranslateUI()
         self.playerGroup.setTitle(i18n("GameWidget", "Scoreboard"))
+        # self.scoringModeLabel.setText(self.tr("Scoring"))
+        for i, m in enumerate(cast("SkullKingEngine", self.engine).listScoringModes()):
+            self.scoringModeCombo.setItemText(i, self.tr(m))
+
+        # self.roundModeLabel.setText(self.tr("Card Counts"))
+        for i, m in enumerate(cast("SkullKingEngine", self.engine).listRoundModes()):
+            self.roundModeCombo.setItemText(i, self.tr(m))
+
         self.detailGroup.retranslateUI()
 
     def setRoundTitle(self):
@@ -182,9 +202,11 @@ class SkullKingWidget(GameWidget):
                 i18n("PochaWidget", "There are players with no selected won hands."),
             )
             return
-        if hands == won + 1 and self.engine.getScoringMode() != "classic":
+        if hands == won + 1 and self.engine.getScoringMode() != "classic_scoring":
             # Kraken case
-            kraken_msg = i18n("SkullKingWidget", "Has the Kraken appeared?")
+            kraken_msg = QCoreApplication.translate(
+                "SkullKingWidget", "Has the Kraken appeared?"
+            )
             msg = (
                 i18n(
                     "PochaWidget",
@@ -210,7 +232,7 @@ class SkullKingWidget(GameWidget):
             QMessageBox.warning(self, self.game, msg.format(won, hands))
             return
         # Validate bonuses
-        if self.engine.getScoringMode() != "classic":
+        if self.engine.getScoringMode() != "classic_scoring":
             fourteens = 0
             loots = 0
             for piw in self.gameInput.playerInputList.values():
@@ -221,17 +243,14 @@ class SkullKingWidget(GameWidget):
                     if bn == "loot":
                         loots += int(btn.getValue())
             if fourteens > 3:
-                msg = i18n(
+                msg = QCoreApplication.translate(
                     "SkullKingWidget",
                     "There are more than 3 Fourteen bonuses selected.",
                 )
                 QMessageBox.warning(self, self.game, msg)
                 return
             if loots > 4:
-                msg = i18n(
-                    "SkullKingWidget",
-                    "There are more than 4 Loot bonuses selected.",
-                )
+                msg = self.tr("There are more than 4 Loot bonuses selected.")
                 QMessageBox.warning(self, self.game, msg)
                 return
 
@@ -255,7 +274,9 @@ class SkullKingWidget(GameWidget):
         self.detailGroup.updatePlayerOrder()
 
     def changeRoundMode(self, _index):
-        rmode = self.roundModeCombo.currentText()
+        rmode = list(cast("SkullKingEngine", self.engine).listRoundModes())[
+            self.roundModeCombo.currentIndex()
+        ]
         try:
             cast("SkullKingEngine", self.engine).setRoundMode(rmode)
         except ValueError as ve:
@@ -267,7 +288,9 @@ class SkullKingWidget(GameWidget):
         self.gameInput.changeRoundMode()
 
     def changeScoringMode(self, _index):
-        smode = self.scoringModeCombo.currentText()
+        smode = list(cast("SkullKingEngine", self.engine).listScoringModes())[
+            self.scoringModeCombo.currentIndex()
+        ]
         try:
             cast("SkullKingEngine", self.engine).setScoringMode(smode)
         except ValueError as ve:
@@ -286,11 +309,9 @@ class SkullKingInputWidget(GameInputWidget):
     def initUI(self):
         self.widgetLayout = QGridLayout(self)
         players = self.engine.getListPlayers()
-        if len(players) == 4:
-            players_per_column = 2
-        else:
-            players_per_column = 3
         players_per_column = 4
+        if len(players) in (5, 6):
+            players_per_column = 3
 
         for i, player in enumerate(players):
             self.playerInputList[player] = SkullKingPlayerInputWidget(
@@ -319,6 +340,11 @@ class SkullKingInputWidget(GameInputWidget):
         self.lastChoices.append((mode, player))
 
     def updateCandidateAction(self):
+        if self.engine.getWinner():
+            for piw in self.playerInputList.values():
+                piw.lockBets()
+                piw.lockTricks()
+            return
         players = self.engine.getListPlayers()
         expected_hands = self.getExpectedHands()
         won_hands = self.getWonHands()
@@ -341,10 +367,26 @@ class SkullKingInputWidget(GameInputWidget):
                 else:
                     self.playerInputList[player].setCandidate(False)
 
+        expected_set_count = sum(1 for value in expected_hands.values() if value >= 0)
+        won_set_count = sum(1 for value in won_hands.values() if value >= 0)
+        if expected_set_count == len(players) and won_set_count > 0:
+            for piw in self.playerInputList.values():
+                piw.lockBets()
+                piw.unlockTricks()
+        elif expected_set_count == len(players) and won_set_count == 0:
+            for piw in self.playerInputList.values():
+                piw.unlockBets()
+                piw.unlockTricks()
+        else:
+            for piw in self.playerInputList.values():
+                piw.unlockBets()
+                piw.lockTricks()
+
     def reset(self):
         super(SkullKingInputWidget, self).reset()
         self.lastChoices = []
         self.playerInputList[self.engine.getListPlayers()[0]].setFocus()
+        self.updateCandidateAction()
 
     def getScores(self):
         scores = {}
@@ -406,7 +448,7 @@ class SkullKingInputWidget(GameInputWidget):
         except ValueError:
             return super(SkullKingInputWidget, self).keyPressEvent(event)
 
-        if number in range(0, 9):
+        if number in range(0, 10):
             self.feedNumber(number)
 
         return super(SkullKingInputWidget, self).keyPressEvent(event)
@@ -445,10 +487,14 @@ class SkullKingInputWidget(GameInputWidget):
         if trash_layout:
             trash.setLayout(trash_layout)
         self.widgetLayout = QGridLayout(self)
+        ppr = 4
+        nplayers = len(self.engine.getListPlayers())
+        if nplayers in (5, 6):
+            ppr = 3
         for i, player in enumerate(self.engine.getListPlayers()):
             if trash_layout:
                 trash_layout.removeWidget(self.playerInputList[player])
-            self.widgetLayout.addWidget(self.playerInputList[player], i // 4, i % 4)
+            self.widgetLayout.addWidget(self.playerInputList[player], i // ppr, i % ppr)
             self.playerInputList[player].setColour(PlayerColours[i])
 
     def bonusChangedAction(self, sender_type, sender):
@@ -503,12 +549,17 @@ class SkullKingPlayerInputWidget(QGroupBox):
         self.setColour(colour)
 
         self.upperLayout = QHBoxLayout()
-        # self.upperLayout.addStretch()
+        self.upperLayout.addStretch(1)
         self.mainLayout.addLayout(self.upperLayout)
-        self.btWidget = BetTrickWidget(self.pcolour, self)
+        self.btWidget = BetTrickWidget(self.pcolour, 40, self)
         self.btWidget.changed.connect(self.betTricksChanged)
         self.upperLayout.addWidget(self.btWidget)
+        self.rightUpperLayout = QHBoxLayout()
+        self.rightUpperLayout.setContentsMargins(0, 0, 0, 0)
+
+        self.upperLayout.addLayout(self.rightUpperLayout)
         # self.upperLayout.addStretch()
+        self.upperLayout.addStretch(1)
 
         # self.lowerGroup = QFrame(self)
         # self.mainLayout.addWidget(self.lowerGroup)
@@ -544,8 +595,12 @@ class SkullKingPlayerInputWidget(QGroupBox):
             trash.setLayout(trash_layout)
 
         self.epLayout = QHBoxLayout(self.extraPointsGroup)
-        self.epLayout.setSpacing(0)
+        if len(list(self.engine.listBonusTypes())) > 4:
+            self.epLayout.setSpacing(5)
+        else:
+            self.epLayout.setSpacing(20)
         self.epLayout.setContentsMargins(2, 2, 2, 2)
+        self.epLayout.addStretch()
 
         for btn in self.bonusButtons.values():
             trash_layout.removeWidget(btn)
@@ -557,15 +612,17 @@ class SkullKingPlayerInputWidget(QGroupBox):
             parent = self.extraPointsGroup
             layout = self.epLayout
             position = 0
+            size = 25
             alignment = Qt.AlignmentFlag.AlignCenter
             reps = min(
                 len(self.engine.getPlayers()) - 1, self.engine.getBonusReps(btype)
             )
             if btype == "cannonball":
                 parent = self
-                layout = self.upperLayout
-                position = 1
-                alignment = Qt.AlignmentFlag.AlignLeft
+                layout = self.rightUpperLayout
+                position = 0
+                size = 40
+                # alignment = Qt.AlignmentFlag.AlignLeft
             if btype == "fourteen":
                 reps = min(
                     len(self.engine.getPlayers()), self.engine.getBonusReps(btype)
@@ -574,10 +631,13 @@ class SkullKingPlayerInputWidget(QGroupBox):
                 btype,
                 reps,
                 self.pcolour,
+                size,
                 parent,
             )
             layout.addWidget(self.bonusButtons[btype], position)
             layout.setAlignment(self.bonusButtons[btype], alignment)
+
+        self.epLayout.addStretch()
 
     def reset(self):
         self.btWidget.reset()
@@ -636,7 +696,15 @@ class SkullKingPlayerInputWidget(QGroupBox):
         # css = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
         # self.label.setStyleSheet(
         # css = "QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
-        css = "QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}  QGroupBox:focus-within {{ border: 2px solid #0078d7; background-color: #e6f1fb;}}"
+        css = """
+            QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}
+            QGroupBox:focus-within {{ border: 2px solid #0078d7; background-color: #e6f1fb;}}
+            QGroupBox::title {{
+                    subcontrol-origin: margin;
+                    subcontrol-position: top center;
+                    padding: 0 10px;
+            }}
+        """
         self.setStyleSheet(
             css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
         )
@@ -650,15 +718,21 @@ class SkullKingPlayerInputWidget(QGroupBox):
     def unlockBets(self):
         self.btWidget.unlockBets()
 
+    def lockTricks(self):
+        self.btWidget.lockTricks()
+
+    def unlockTricks(self):
+        self.btWidget.unlockTricks()
+
 
 class ClickableLabel(QLabel):
     clicked = QtCore.Signal(Qt.MouseButton)
 
-    def __init__(self, text="", pcolour=QColor(255, 255, 255), parent=None):
+    def __init__(self, text="", pcolour=QColor(255, 255, 255), size=40, parent=None):
         super().__init__(text, parent)
         self.pcolour = pcolour
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.diameter = 40
+        self.diameter = size
         self.locked = False
         self.candidate = False
         self.setFixedSize(self.diameter, self.diameter)
@@ -701,6 +775,9 @@ class ClickableLabel(QLabel):
         self.effect.setStrength(0.0)
 
     def normalStyle(self):
+        if self.locked:
+            return self.lockStyle()
+        hovercolour = "#555555"
         return f"""
             QLabel {{
                 background-color: #444444;
@@ -711,7 +788,7 @@ class ClickableLabel(QLabel):
                 color: rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});
             }}
             QLabel:hover {{
-                background-color: #555555;
+                background-color: {hovercolour};
             }}
         """
 
@@ -727,7 +804,7 @@ class ClickableLabel(QLabel):
                 color: rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});
             }}
             QLabel:hover {{
-                background-color: #555555;
+                background-color: #444444;
             }}
         """
 
@@ -755,12 +832,12 @@ class ClickableLabel(QLabel):
         QTimer.singleShot(180, self.resetStyle)
 
     def lock(self):
-        self.setStyleSheet(self.lockStyle())
         self.locked = True
+        self.setStyleSheet(self.lockStyle())
 
     def unlock(self):
-        self.setStyleSheet(self.normalStyle())
         self.locked = False
+        self.setStyleSheet(self.normalStyle())
 
     def isLocked(self):
         return self.locked
@@ -769,7 +846,7 @@ class ClickableLabel(QLabel):
 class BetTrickWidget(QWidget):
     changed = QtCore.Signal()
 
-    def __init__(self, pcolour=QColor(255, 255, 255), parent=None):
+    def __init__(self, pcolour=QColor(255, 255, 255), size=40, parent=None):
         super().__init__(parent)
         self.bet = -1
         self.tricks = -1
@@ -778,9 +855,10 @@ class BetTrickWidget(QWidget):
 
         self.mainLayout = QHBoxLayout()
         self.setLayout(self.mainLayout)
+        self.mainLayout.setSpacing(20)
 
-        self.betLabel = ClickableLabel("-", self.pcolour, self)
-        self.tricksLabel = ClickableLabel("-", self.pcolour, self)
+        self.betLabel = ClickableLabel("-", self.pcolour, size, self)
+        self.tricksLabel = ClickableLabel("-", self.pcolour, size, self)
 
         self.betLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.tricksLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
@@ -816,20 +894,21 @@ class BetTrickWidget(QWidget):
         self.bet = bet
         if self.bet < 0:
             self.betLabel.setText("-")
-            self.tricksLabel.lock()
+            # self.tricksLabel.lock()
         else:
             self.betLabel.setText(str(self.bet))
-            self.tricksLabel.unlock()
+            # self.tricksLabel.unlock()
         self.betLabel.highlightChange()
         self.changed.emit()
 
     def resetBet(self):
+        self.betLabel.unlock()
         self.setBet(-1)
-        self.tricksLabel.lock()
 
     def resetTricks(self):
+        self.tricksLabel.unlock()
         self.setTricks(-1)
-        self.betLabel.unlock()
+        self.tricksLabel.lock()
 
     def reset(self):
         self.resetTricks()
@@ -849,27 +928,25 @@ class BetTrickWidget(QWidget):
         self.tricks = tricks
         if self.tricks < 0:
             self.tricksLabel.setText("-")
-            self.betLabel.unlock()
         else:
             self.tricksLabel.setText(str(self.tricks))
-            self.betLabel.lock()
         self.tricksLabel.highlightChange()
         self.changed.emit()
 
     def cycleBet(self, event):
         newbet = self.bet
         if event.button() == Qt.MouseButton.LeftButton:
-            newbet = (self.bet + 1) % (self.maxBet + 1)
+            newbet = (self.bet + 2) % (self.maxBet + 2) - 1
         elif event.button() == Qt.MouseButton.RightButton:
-            newbet = (self.bet - 1) % (self.maxBet + 1)
+            newbet = self.bet % (self.maxBet + 2) - 1
         self.setBet(newbet)
 
     def cycleTricks(self, event):
         newtricks = self.tricks
         if event.button() == Qt.MouseButton.LeftButton:
-            newtricks = (self.tricks + 1) % (self.maxBet + 1)
+            newtricks = (self.tricks + 2) % (self.maxBet + 2) - 1
         if event.button() == Qt.MouseButton.RightButton:
-            newtricks = (self.tricks - 1) % (self.maxBet + 1)
+            newtricks = self.tricks % (self.maxBet + 2) - 1
         self.setTricks(newtricks)
 
     def lockBets(self):
@@ -878,49 +955,31 @@ class BetTrickWidget(QWidget):
     def unlockBets(self):
         self.betLabel.unlock()
 
+    def lockTricks(self):
+        self.tricksLabel.lock()
 
-class SkullKingHandsButton(QPushButton):
-    def __init__(self, text="", parent=None):
-        super(SkullKingHandsButton, self).__init__(text, parent)
-        self.setCheckable(True)
-        self.setMinimumSize(25, 25)
-        self.setSizePolicy(
-            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Maximum
-        )
-        self.toggled.connect(self.setColour)
-        self.setColour(False)
-
-    def setColour(self, _toggle):
-        return
-        # if _toggle:
-        #     self.setStyleSheet("background-color: red; font: bold")
-        # else:
-        #     self.setStyleSheet("background-color: green; font: normal")
-
-    def setDisabled(self, disabled=True):
-        if disabled:
-            self.setStyleSheet("background-color: none; font: normal")
-        else:
-            self.setColour(self.isChecked())
-        return super(SkullKingHandsButton, self).setDisabled(disabled)
+    def unlockTricks(self):
+        self.tricksLabel.unlock()
 
 
 class SkullKingBonusButton(QPushButton):
-    BUTTON_SIZE = 32
     bonusChanged = QtCore.Signal(str, object)
 
-    def __init__(self, bonus_name: str, maximum: int = 1, colour=None, parent=None):
+    def __init__(
+        self, bonus_name: str, maximum: int = 1, colour=None, size=32, parent=None
+    ):
         super().__init__(parent)
 
         self.bonus_name = bonus_name
         self.maximum = maximum
         self.count = 0
+        self.button_size = size
         self.highlight_colour = colour if colour else QColor(200, 0, 0)
 
         original_image = QImage(f"icons/{bonus_name}.png")
         self.image = original_image.scaled(
-            self.BUTTON_SIZE,
-            self.BUTTON_SIZE,
+            self.button_size,
+            self.button_size,
             QtCore.Qt.AspectRatioMode.KeepAspectRatio,
             QtCore.Qt.TransformationMode.SmoothTransformation,
         )
@@ -931,7 +990,7 @@ class SkullKingBonusButton(QPushButton):
         self.setFlat(True)
         self.setStyleSheet("border: none;")
 
-        self.setFixedSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
+        self.setFixedSize(self.button_size, self.button_size)
 
         self._fade_alpha = 0.0
 
@@ -980,7 +1039,7 @@ class SkullKingBonusButton(QPushButton):
         super().setChecked(checked)
 
     def sizeHint(self):
-        return QtCore.QSize(self.BUTTON_SIZE, self.BUTTON_SIZE)
+        return QtCore.QSize(self.button_size, self.button_size)
 
     def setMaximum(self, maximum):
         self.maximum = maximum
@@ -1055,6 +1114,7 @@ class SkullKingRoundsDetail(GameRoundsDetail):
     def __init__(self, engine, parent=None):
         self.bgcolors = [0xCCFF99, 0xFFCC99]
         super(SkullKingRoundsDetail, self).__init__(engine, parent)
+        self.container.setCurrentWidget(self.plot)
 
     def createRoundTable(self, engine, parent=None):
         return SkullKingRoundTable(self.engine, self.bgcolors, parent)
@@ -1062,8 +1122,8 @@ class SkullKingRoundsDetail(GameRoundsDetail):
     def createRoundPlot(self, engine, parent=None):
         return SkullKingRoundPlot(self.engine, self)
 
-    def createQSBox(self, parent=None):
-        return SkullKingQSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
+    # def createQSBox(self, parent=None):
+    #     return SkullKingQSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
 
 
 class SkullKingRoundTable(GameRoundTable):
@@ -1125,17 +1185,3 @@ class SkullKingRoundPlot(GameRoundPlot):
             self.canvas.addSeries(scores[player], player)
 
         self.canvas._scene.update()
-
-
-class SkullKingQSTW(QuickStatsTW):
-    def initStatsWidgets(self):
-        self.gs = SkullKingQSBox(self.game, self)
-        self.ps = SkullKingPQSBox(self.game, self)
-
-
-class SkullKingQSBox(GeneralQuickStats):
-    pass
-
-
-class SkullKingPQSBox(SkullKingQSBox, ParticularQuickStats):
-    pass

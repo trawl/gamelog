@@ -7,7 +7,6 @@ from typing import cast
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
     QAbstractItemView,
-    QApplication,
     QComboBox,
     QGroupBox,
     QHBoxLayout,
@@ -27,8 +26,6 @@ from gui.gamewidgetfactory import GameWidgetFactory
 from gui.newplayer import NewPlayerDialog
 from gui.playerlist import PlayerList, PlayerListModel
 from gui.tab import Tab
-
-i18n = QApplication.translate
 
 
 class NewGameWidget(Tab):
@@ -62,13 +59,13 @@ class NewGameWidget(Tab):
     #        self.retranslateUI()
 
     def retranslateUI(self):
-        self.gameGroupBox.setTitle(i18n("NewGameWidget", "Games"))
+        self.gameGroupBox.setTitle(self.tr("Games"))
         self.updateGameInfo()
-        self.playersGroupBox.setTitle(i18n("NewGameWidget", "Players"))
-        self.availablePlayersGroup.setTitle(i18n("NewGameWidget", "Available Players"))
-        self.newPlayerButton.setText(i18n("NewGameWidget", "New Player"))
-        self.inGameGroup.setTitle(i18n("NewGameWidget", "Selected Players"))
-        self.startGameButton.setText(i18n("NewGameWidget", "Play!"))
+        self.playersGroupBox.setTitle(self.tr("Players"))
+        self.availablePlayersGroup.setTitle(self.tr("Available Players"))
+        self.newPlayerButton.setText(self.tr("New Player"))
+        self.inGameGroup.setTitle(self.tr("Selected Players"))
+        self.startGameButton.setText(self.tr("Play!"))
         self.resumeGroup.retranslateUI()
         if self.gameStatsBox:
             self.gameStatsBox.retranslateUI()
@@ -104,7 +101,7 @@ class NewGameWidget(Tab):
         game = str(self.gameComboBox.currentText())
         description = "2 - {} {}\n\n{}".format(
             self.games[game]["maxPlayers"],
-            i18n("NewGameWidget", "players"),
+            self.tr("players"),
             self.games[game]["description"],
         )
         self.gameDescriptionLabel.setText(description)
@@ -182,12 +179,12 @@ class NewGameWidget(Tab):
         players = cast(
             "PlayerListModel", self.playersInGameList.model()
         ).retrievePlayers()
-        tit = i18n("NewGameWidget", "New Match")
+        tit = self.tr("New Match")
         if len(players) < 2:
-            msg = i18n("NewGameWidget", "At least 2 players are needed to play")
+            msg = self.tr("At least 2 players are needed to play")
             QMessageBox.warning(self, tit, msg)
         elif len(players) > maxPlayers:
-            msg = i18n("NewGameWidget", "The maximum number of players is")
+            msg = self.tr("The maximum number of players is")
             QMessageBox.warning(self, tit, "{} {}".format(msg, maxPlayers))
         else:
             matchTab = GameWidgetFactory.createGameWidget(game, players, self._parent)
@@ -197,9 +194,7 @@ class NewGameWidget(Tab):
                     matchTab.closeRequested.connect(self._parent.removeTab)
                     self._parent.newTab(matchTab, game)
             else:
-                QMessageBox.warning(
-                    self, tit, i18n("NewGameWidget", "Widget not implemented")
-                )
+                QMessageBox.warning(self, tit, self.tr("Widget not implemented"))
                 return
 
     def restartGame(self, gamewidget):
@@ -214,9 +209,7 @@ class NewGameWidget(Tab):
                 matchTab.closeRequested.connect(self._parent.removeTab)
                 self._parent.newTab(matchTab, game)
         else:
-            QMessageBox.warning(
-                self, "Warning", i18n("NewGameWidget", "Widget not implemented")
-            )
+            QMessageBox.warning(self, "Warning", self.tr("Widget not implemented"))
             return
 
     def createNewPlayer(self):
@@ -272,10 +265,10 @@ class ResumeBox(QGroupBox):
         self.retranslateUI()
 
     def retranslateUI(self):
-        self.setTitle(i18n("ResumeBox", "Saved Games"))
-        self.resumebutton.setText(i18n("ResumeBox", "Resume"))
-        self.cancelbutton.setText(i18n("ResumeBox", "Cancel"))
-        self.emptyLabel.setText(i18n("ResumeBox", "No matches to be resumed"))
+        self.setTitle(self.tr("Saved Games"))
+        self.resumebutton.setText(self.tr("Resume"))
+        self.cancelbutton.setText(self.tr("Cancel"))
+        self.emptyLabel.setText(self.tr("No matches to be resumed"))
 
     def changeGame(self, game):
         self.game = game
@@ -299,14 +292,14 @@ class ResumeBox(QGroupBox):
                 hours, remainder = divmod(int(candidate["elapsed"]), 3600)
                 minutes, seconds = divmod(remainder, 60)
                 strelapsed = "{0:02}:{1:02}:{2:02}".format(hours, minutes, seconds)
-                msg = i18n("ResumeBox", "Saved on {}. Time played: {}").format(
+                msg = self.tr("Saved on {}. Time played: {}").format(
                     strtime, strelapsed
                 )
                 item = QListWidgetItem(msg, self.savedlist)
                 playerlist = ""
                 for player in candidate["players"]:
                     playerlist += "\n  " + player
-                item.setToolTip(i18n("ResumeBox", "Players: {}").format(playerlist))
+                item.setToolTip(self.tr("Players: {}").format(playerlist))
                 self.savedlist.addItem(item)
             self.savedlist.show()
             self.resumebutton.show()
@@ -335,8 +328,8 @@ class ResumeBox(QGroupBox):
         selected = self.savedlist.selectedIndexes()
         if len(selected) > 0:
             idMatch = self.matches[selected[0].row()]
-            tit = i18n("ResumeBox", "Cancel Saved Game")
-            msg = i18n("ResumeBox", "Are you sure you want to cancel saved game?")
+            tit = self.tr("Cancel Saved Game")
+            msg = self.tr("Are you sure you want to cancel saved game?")
             reply = QMessageBox.question(
                 self,
                 tit,

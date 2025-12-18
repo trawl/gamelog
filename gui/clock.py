@@ -4,7 +4,7 @@
 import datetime
 
 from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import QLCDNumber
+from PySide6.QtWidgets import QFrame, QLCDNumber
 
 
 class GameClock(QLCDNumber):
@@ -20,6 +20,7 @@ class GameClock(QLCDNumber):
         self.setDigitCount(5)
         self.showTime()
         self.timer.timeout.connect(self.showTime)
+        self.setFrameStyle(QFrame.Shape.NoFrame)
 
     def showTime(self):
         now = datetime.datetime.now()

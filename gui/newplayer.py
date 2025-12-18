@@ -3,7 +3,6 @@
 
 from PySide6 import QtCore
 from PySide6.QtWidgets import (
-    QApplication,
     QDialog,
     QGridLayout,
     QLabel,
@@ -14,8 +13,6 @@ from PySide6.QtWidgets import (
 
 from controllers.db import db
 
-i18n = QApplication.translate
-
 
 class NewPlayerDialog(QDialog):
     addedNewPlayer = QtCore.Signal(str)
@@ -23,7 +20,7 @@ class NewPlayerDialog(QDialog):
     def __init__(self, parent=None):
         super(NewPlayerDialog, self).__init__(parent)
         self.initUI()
-        self.setWindowTitle(i18n("NewPlayerDialog", "New Player"))
+        self.setWindowTitle(self.tr("New Player"))
         self.existingplayers = [str(nick).lower() for nick in db.getPlayerNicks()]
 
     def initUI(self):
@@ -31,13 +28,13 @@ class NewPlayerDialog(QDialog):
         self.glayout = QGridLayout()
         self.vlayout.addLayout(self.glayout)
         self.nicklabel = QLabel(self)
-        self.nicklabel.setText(i18n("NewPlayerDialog", "Nick"))
+        self.nicklabel.setText(self.tr("Nick"))
         self.glayout.addWidget(self.nicklabel, 0, 0)
         self.nicklineedit = QLineEdit(self)
         self.nicklineedit.textChanged.connect(self.checkExisting)
         self.glayout.addWidget(self.nicklineedit, 0, 1)
         self.namelabel = QLabel(self)
-        self.namelabel.setText(i18n("NewPlayerDialog", "Name"))
+        self.namelabel.setText(self.tr("Name"))
         self.glayout.addWidget(self.namelabel, 1, 0)
         self.namelineedit = QLineEdit(self)
         self.namelineedit.textChanged.connect(self.checkExisting)
@@ -46,22 +43,20 @@ class NewPlayerDialog(QDialog):
         self.existinglabel.setStyleSheet("QLabel {color: red; }")
         self.vlayout.addWidget(self.existinglabel)
         self.createbutton = QPushButton(self)
-        self.createbutton.setText(i18n("NewPlayerDialog", "Create"))
+        self.createbutton.setText(self.tr("Create"))
         self.createbutton.setDisabled(True)
         self.createbutton.clicked.connect(self.createAction)
         self.vlayout.addWidget(self.createbutton)
         self.show()
 
-    def checkExisting(self, discard):
+    def checkExisting(self, _discard):
         tempnick = str(self.nicklineedit.text())
         if len(tempnick) < 3:
             self.existinglabel.setText("")
             self.createbutton.setDisabled(True)
             return
         if tempnick.lower() in self.existingplayers:
-            self.existinglabel.setText(
-                i18n("NewPlayerDialog", "Player already exists!")
-            )
+            self.existinglabel.setText(self.tr("Player already exists!"))
             self.createbutton.setDisabled(True)
         else:
             self.existinglabel.setText("")

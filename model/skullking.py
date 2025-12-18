@@ -7,18 +7,19 @@ from model.pocha import PochaMatch
 
 class SkullKingMatch(PochaMatch):
     roundModes = {
-        "standard": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "standard_rounds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "even": [2, 4, 6, 8, 10],
         "brawl": [6, 7, 8, 9, 10],
         "skirmish": 5 * [5],
         "barrage": 10 * [10],
         "whirlpool": [9, 7, 5, 3, 1],
     }
     scoringModes = {
-        "classic": {
+        "classic_scoring": {
             "skullking": {"bonus": 50, "reps": 1},
             "pirate": {"bonus": 20, "reps": 6},
         },
-        "standard": {
+        "standard_scoring": {
             "skullking": {"bonus": 40, "reps": 1},
             "pirate": {"bonus": 20, "reps": 6},
             "mermaid": {"bonus": 20, "reps": 2},
@@ -28,7 +29,7 @@ class SkullKingMatch(PochaMatch):
             "roatan": {"bonus": 20, "reps": 1},
         },
     }
-    scoringModes["rascal"] = scoringModes["standard"] | {
+    scoringModes["rascal_scoring"] = scoringModes["standard_scoring"] | {
         "cannonball": {"bonus": 0, "reps": 1}
     }
 
@@ -36,10 +37,8 @@ class SkullKingMatch(PochaMatch):
         super(SkullKingMatch, self).__init__(players)
         self.game = "Skull King"
         self.dealingp = 1
-        self.scoringMode = "classic"
-        self.roundMode = "standard"
-        self.hands = self.roundModes[self.roundMode]
-        self.maxRounds = len(self.hands)
+        self.scoringMode = "classic_scoring"
+        self.setRoundMode("standard_rounds")
 
     def getBonus(self, bonus_name):
         try:
@@ -88,6 +87,8 @@ class SkullKingMatch(PochaMatch):
                 f"Invalid Round Mode type {rmode}. Possible values are: {', '.join(self.roundModes.keys())}"
             )
         self.roundMode = rmode
+        self.hands = self.roundModes[self.roundMode]
+        self.maxRounds = len(self.hands)
 
     def getHands(self):
         return self.roundModes[self.roundMode]

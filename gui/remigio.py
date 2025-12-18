@@ -3,7 +3,6 @@
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
-    QApplication,
     QFrame,
     QGridLayout,
     QGroupBox,
@@ -27,8 +26,6 @@ from gui.game import (
     PlayerColours,
     ScoreSpinBox,
 )
-
-i18n = QApplication.translate
 
 
 class RemigioWidget(GameWidget):
@@ -73,13 +70,13 @@ class RemigioWidget(GameWidget):
         self.leftLayout.addWidget(self.detailGroup)
 
         self.playerGroup = QGroupBox(self)
-        self.setStyleSheet("QGroupBox { font-size: 120%; font-weight: bold; }")
+        # self.setStyleSheet("QGroupBox { font-size: 120%; font-weight: bold; }")
         # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
         self.rightLayout.addWidget(self.playerGroup)
 
-        self.playerGroup.setStyleSheet(
-            "QGroupBox { font-size: 18px; font-weight: bold; }"
-        )
+        # self.playerGroup.setStyleSheet(
+        #     "QGroupBox { font-size: 18px; font-weight: bold; }"
+        # )
         self.playersLayout = QVBoxLayout(self.playerGroup)
         # self.playersLayout.addStretch()
         self.playerGroupBox = {}
@@ -102,21 +99,20 @@ class RemigioWidget(GameWidget):
 
     def retranslateUI(self):
         super(RemigioWidget, self).retranslateUI()
-        self.topPointsLabel.setText(i18n("RemigioWidget", "Score Limit"))
+        self.topPointsLabel.setText(self.tr("Score Limit"))
         #         self.playerGroup.setTitle(i18n("RemigioWidget","Score"))
-        self.playerGroup.setTitle(i18n("GameWidget", "Scoreboard"))
+        self.playerGroup.setTitle(self.tr("Scoreboard"))
         self.detailGroup.retranslateUI()
 
     def updateGameStatusLabel(self):
         super(RemigioWidget, self).updateGameStatusLabel()
         if self.gameStatusLabel.text() == "":
             self.gameStatusLabel.setStyleSheet("QLabel {font-weight:bold;}")
-            msg = i18n(
-                "RemigioWidget",
-                "Warning: real points are computed \
-                        automatically depending on the close type",
+            msg = self.tr(
+                "Warning: real points are computed automatically depending on the close type"
             )
             self.gameStatusLabel.setText(msg)
+            self.gameStatusLabel.show()
 
     def getPlayerExtraInfo(self, player):
         c_type = self.gameInput.getCloseType()
@@ -353,16 +349,17 @@ class RemigioPlayerInputWidget(QFrame):
 
 class RemigioPlayerWidget(GamePlayerWidget):
     def koPlayer(self):
-        self.iconlabel.setPixmap(QtGui.QPixmap("icons/skull.png"))
+        self.background = QtGui.QPixmap("icons/skull.png")
 
     def unKoPlayer(self):
-        self.iconlabel.setPixmap(self.nonDealerPixmap)
+        self.background = None
 
 
 class RemigioRoundsDetail(GameRoundsDetail):
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
         super(RemigioRoundsDetail, self).__init__(engine, parent)
+        self.container.setCurrentWidget(self.plot)
 
     def createRoundTable(self, engine, parent=None):
         return RemigioRoundTable(self.engine, self.bgcolors, parent)
@@ -392,7 +389,7 @@ class RemigioRoundTable(GameRoundTable):
             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
             item.setForeground(QtGui.QBrush(QtGui.QColor(0, 0, 0)))
             if player == winner:
-                text = i18n("RemigioRoundTable", "Winner ({}x)").format(closeType)
+                text = self.tr("Winner ({}x)").format(closeType)
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)

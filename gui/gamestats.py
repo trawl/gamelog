@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from PySide6 import QtCore
+from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import (
-    QApplication,
     QFrame,
     QGroupBox,
     QHeaderView,
@@ -19,8 +19,6 @@ from PySide6.QtWidgets import (
 
 from controllers.enginefactory import StatsEngineFactory
 from gui.tab import Tab
-
-i18n = QApplication.translate
 
 
 class QuickStatsTW(QTabWidget):
@@ -45,8 +43,8 @@ class QuickStatsTW(QTabWidget):
         self.retranslateUI()
 
     def retranslateUI(self):
-        self.setTabText(self.indexOf(self.gs), i18n("QuickStatsTW", "General"))
-        self.setTabText(self.indexOf(self.ps), i18n("QuickStatsTW", "Particular"))
+        self.setTabText(self.indexOf(self.gs), self.tr("General"))
+        self.setTabText(self.indexOf(self.ps), self.tr("Particular"))
         self.gs.retranslateUI()
         self.ps.retranslateUI()
 
@@ -59,19 +57,19 @@ class QuickStatsTW(QTabWidget):
 
 
 class AbstractQuickStatsBox(QGroupBox):
-    i18n("AbstractQuickStatsBox", "Longest")
-    i18n("AbstractQuickStatsBox", "Shortest")
-    i18n("AbstractQuickStatsBox", "Average")
-    i18n("AbstractQuickStatsBox", "Highest")
-    i18n("AbstractQuickStatsBox", "Lowest")
-    i18n("AbstractQuickStatsBox", "Average")
-    i18n("AbstractQuickStatsBox", "Played")
-    i18n("AbstractQuickStatsBox", "Victories")
-    i18n("AbstractQuickStatsBox", "Ratio (%)")
-    i18n("AbstractQuickStatsBox", "Highest")
-    i18n("AbstractQuickStatsBox", "Lowest")
-    i18n("AbstractQuickStatsBox", "Average")
-    i18n("AbstractQuickStatsBox", "Total")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Longest")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Shortest")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Average")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Highest")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Lowest")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Average")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Played")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Victories")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Ratio (%)")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Highest")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Lowest")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Average")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Total")
 
     def __init__(self, game, parent):
         super(AbstractQuickStatsBox, self).__init__(parent)
@@ -154,24 +152,23 @@ class AbstractQuickStatsBox(QGroupBox):
         self.retranslateUI()
 
     def retranslateUI(self):
-        self.gameStatsText = i18n("AbstractQuickStatsBox", "Last winner") + ": {} ({})"
-        #         self.setTitle(i18n("QuickStatsBox", 'Statistics'))
-        self.matchStatsTitleLabel.setText(i18n("AbstractQuickStatsBox", "Matches"))
-        self.playerStatsTitleLabel.setText(i18n("AbstractQuickStatsBox", "Players"))
+        self.gameStatsText = self.tr("Last winner") + ": {} ({})"
+        #         self.setTitle(self.tr('Statistics'))
+        self.matchStatsTitleLabel.setText(self.tr("Matches"))
+        self.playerStatsTitleLabel.setText(self.tr("Players"))
+        self.updateContent()
         self.update()
 
     def updateContent(self, _game=None):
         # if game is not None: self.game = game
-        # self.setTitle(i18n("QuickStatsBox", 'Statistics'))
+        # self.setTitle(self.tr('Statistics'))
         self.stats.update()
         gamestats = self.stats.getGameStats(self.game)
         matchstats = self.stats.getMatchGameStats(self.game)
         playerstats = self.stats.getPlayerGameStats(self.game)
 
         if not gamestats:
-            self.gameStatsLabel.setText(
-                i18n("AbstractQuickStatsBox", "No statistics found")
-            )
+            self.gameStatsLabel.setText(self.tr("No statistics found"))
             self.playerStatsTitleLabel.hide()
             self.matchStatsTitleLabel.hide()
         else:
@@ -182,12 +179,12 @@ class AbstractQuickStatsBox(QGroupBox):
             )
             self.playerStatsTitleLabel.show()
             self.matchStatsTitleLabel.show()
-        headers = [i18n("AbstractQuickStatsBox", h) for h in self.matchStatsHeaders]
+        headers = [self.tr(h) for h in self.matchStatsHeaders]
         self.updateTable(
             self.matchStatsTable, matchstats, self.matchStatsKeys, "nplayers", headers
         )
 
-        headers = [i18n("AbstractQuickStatsBox", h) for h in self.playerStatsHeaders]
+        headers = [self.tr(h) for h in self.playerStatsHeaders]
         self.updateTable(
             self.playerStatsTable, playerstats, self.playerStatsKeys, "nick", headers
         )

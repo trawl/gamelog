@@ -3,9 +3,9 @@
 import ctypes
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QAction
+from PySide6.QtCore import QCoreApplication
+from PySide6.QtGui import QAction, QPainter
 from PySide6.QtWidgets import (
-    QApplication,
     QCheckBox,
     QFrame,
     QGroupBox,
@@ -30,7 +30,7 @@ from gui.playerlist import PlayerOrderDialog
 from gui.plots import PlotView
 from gui.tab import Tab
 
-i18n = QApplication.translate
+# i18n = QApplication.translate
 
 PlayerColours = [
     QtGui.QColor(237, 44, 48),
@@ -46,7 +46,7 @@ PlayerColours = [
 
 
 class GameWidget(Tab):
-    i18n("GameWidget", "Scoreboard")
+    QCoreApplication.translate("GameWidget", "Scoreboard")
 
     def __init__(self, game, players, engine=None, parent=None):
         super(GameWidget, self).__init__(parent)
@@ -111,11 +111,11 @@ class GameWidget(Tab):
         self.roundLayout.addWidget(self.gameStatusLabel)
 
         # Match Group
-        self.matchGroup.setTitle(i18n("GameWidget", "Game Time"))
+        self.matchGroup.setTitle(self.tr("Game Time"))
         self.matchGroupLayout = QVBoxLayout(self.matchGroup)
 
         self.clock = GameClock(self.engine.getGameSeconds(), self)
-        self.clock.setMinimumHeight(100)
+        self.clock.setMinimumHeight(70)
         # Set size policy to Fixed in the vertical direction
         size_policy = self.matchGroup.sizePolicy()
         size_policy.setVerticalPolicy(QSizePolicy.Policy.Fixed)
@@ -136,17 +136,17 @@ class GameWidget(Tab):
 
     def retranslateUI(self):
         self.setRoundTitle()
-        self.matchGroup.setTitle(i18n("GameWidget", "Game Time"))
-        self.pauseMatchButton.setText(i18n("GameWidget", "&Pause/Play"))
-        self.cancelMatchButton.setText(i18n("GameWidget", "&Cancel Match"))
-        self.restartMatchButton.setText(i18n("GameWidget", "Restart &Match"))
-        self.commitRoundButton.setText(i18n("GameWidget", "Commit &Round"))
-        self.playerOrderButton.setText(i18n("GameWidget", "Player &Order"))
+        self.matchGroup.setTitle(self.tr("Game Time"))
+        self.pauseMatchButton.setText(self.tr("&Pause/Play"))
+        self.cancelMatchButton.setText(self.tr("&Cancel Match"))
+        self.restartMatchButton.setText(self.tr("Restart &Match"))
+        self.commitRoundButton.setText(self.tr("Commit &Round"))
+        self.playerOrderButton.setText(self.tr("Player &Order"))
         if self.engine.getDealingPolicy() not in (
             self.engine.NoDealer,
             self.engine.StarterDealer,
         ):
-            self.dealerPolicyCheckBox.setText(i18n("GameWidget", "Winner deals"))
+            self.dealerPolicyCheckBox.setText(self.tr("Winner deals"))
         self.updateGameStatusLabel()
 
     def updateGameStatusLabel(self):
@@ -156,20 +156,18 @@ class GameWidget(Tab):
         winner = self.engine.getWinner()
         if winner:
             self.gameStatusLabel.show()
-            self.gameStatusLabel.setText(
-                i18n("GameWidget", "{} won this match!").format(winner)
-            )
+            self.gameStatusLabel.setText(self.tr("{} won this match!").format(winner))
         elif self.engine.isPaused():
-            self.gameStatusLabel.setText(i18n("GameWidget", "Game is paused"))
+            self.gameStatusLabel.setText(self.tr("Game is paused"))
             self.gameStatusLabel.show()
         else:
-            self.gameStatusLabel.setText(i18n("GameWidget", ""))
+            self.gameStatusLabel.setText(self.tr(""))
             self.gameStatusLabel.hide()
 
     def cancelMatch(self):
         if not self.isFinished():
-            tit = i18n("GameWidget", "Cancel Match")
-            msg = i18n("GameWidget", "Do you want to save the current {} match?")
+            tit = self.tr("Cancel Match")
+            msg = self.tr("Do you want to save the current {} match?")
             msg = msg.format(self.game)
             ret = QMessageBox.question(
                 self,
@@ -193,8 +191,8 @@ class GameWidget(Tab):
 
     def restartMatch(self):
         if not self.isFinished():
-            tit = i18n("GameWidget", "Restart Match")
-            msg = i18n("GameWidget", "Do you want to save the current {} match?")
+            tit = self.tr("Restart Match")
+            msg = self.tr("Do you want to save the current {} match?")
             msg = msg.format(self.game)
             ret = QMessageBox.question(
                 self,
@@ -234,7 +232,7 @@ class GameWidget(Tab):
         self.engine.openRound(nround)
         winner = self.gameInput.getWinner()
         if not winner:
-            msg = i18n("GameWidget", "No winner selected")
+            msg = self.tr("No winner selected")
             QMessageBox.warning(self, self.game, msg)
 
             return
@@ -243,7 +241,7 @@ class GameWidget(Tab):
         scores = self.gameInput.getScores()
         for player, score in scores.items():
             if not self.checkPlayerScore(player, score):
-                msg = i18n("GameWidget", "{0} score is not valid").format(player)
+                msg = self.tr("{} score is not valid").format(player)
                 QMessageBox.warning(self, self.game, msg)
                 return
             extras = self.getPlayerExtraInfo(player)
@@ -252,7 +250,7 @@ class GameWidget(Tab):
             self.engine.addRoundInfo(player, score, extras)
 
         # Everything ok so far, let's confirm
-        # tit = i18n("GameWidget", 'Commit Round')
+        # tit = self.tr('Commit Round')
         # msg = i18n(
         #     "GameWidget", "Are you sure you want to commit the current round?")
         # ret = QMessageBox.question(self, tit, msg,
@@ -291,9 +289,7 @@ class GameWidget(Tab):
     def setRoundTitle(self):
         try:
             nround = self.engine.getNumRound()
-            self.roundGroup.setTitle(
-                i18n("GameWidget", "Round {0}").format(str(nround))
-            )
+            self.roundGroup.setTitle(self.tr("Round {0}").format(str(nround)))
         except AttributeError:
             pass
 
@@ -470,37 +466,30 @@ class GamePlayerWidget(QGroupBox):
         self.initUI()
 
     def initUI(self):
+        self.setTitle(self.player)
         #        self.setMinimumWidth(300)
         self.mainLayout = QHBoxLayout(self)
         #         self.mainLayout.addStretch()
         self.scoreLCD = QLCDNumber(self)
         self.scoreLCD.setSegmentStyle(QLCDNumber.SegmentStyle.Flat)
+        self.scoreLCD.setFrameStyle(QFrame.Shape.NoFrame)
         self.mainLayout.addWidget(self.scoreLCD)
         self.scoreLCD.setDigitCount(3)
-        self.scoreLCD.setFixedSize(100, 60)
+        # self.scoreLCD.setFixedSize(75, 45)
+        # self.scoreLCD.setMaximumHeight(60)
+        self.scoreLCD.setMinimumHeight(45)
+        self.scoreLCD.setMinimumWidth(75)
         self.scoreLCD.display(0)
-        css = "QLCDNumber {{ color:rgb({},{},{});}}"
-        self.scoreLCD.setStyleSheet(
-            css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
-        )
-
-        self.nameLabel = QLabel(self)
-        self.nameLabel.setText(self.player)
-        sh = "QLabel {{ font-size: 32px; font-weight: bold; color:rgb({},{},{});}}"
-        self.nameLabel.setStyleSheet(
-            sh.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
-        )
-        self.mainLayout.addWidget(self.nameLabel)
+        self.setColour(self.pcolour)
 
         self.dealerPixmap = QtGui.QPixmap("icons/cards.png")
         self.nonDealerPixmap = QtGui.QPixmap()
         self.winnerPixmap = QtGui.QPixmap("icons/winner.png")
 
-        self.iconlabel = IconLabel(self)
-        self.iconlabel.setFixedSize(50, 50)
-        self.iconlabel.setScaledContents(True)
-        self.mainLayout.insertWidget(0, self.iconlabel)
-        #         self.mainLayout.addStretch()
+        self.background = None
+        self.bg_opacity = 1
+        self.bg_size = 40
+
         self.unsetDealer()
 
     def updateDisplay(self, points):
@@ -511,13 +500,16 @@ class GamePlayerWidget(QGroupBox):
         self.scoreLCD.display(points)
 
     def setDealer(self):
-        self.iconlabel.setPixmap(self.dealerPixmap)
+        self.background = self.dealerPixmap
+        self.update()
 
     def unsetDealer(self):
-        self.iconlabel.setPixmap(self.nonDealerPixmap)
+        self.background = None
+        self.update()
 
     def setWinner(self):
-        self.iconlabel.setPixmap(self.winnerPixmap)
+        self.background = self.winnerPixmap
+        self.update()
 
     def setColour(self, colour):
         self.pcolour = colour
@@ -525,10 +517,37 @@ class GamePlayerWidget(QGroupBox):
         self.scoreLCD.setStyleSheet(
             css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
         )
-        sh = "QLabel {{ font-size: 32px; font-weight: bold; color:rgb({},{},{});}}"
-        self.nameLabel.setStyleSheet(
+        sh = """
+            QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}
+
+            QGroupBox::title {{
+                subcontrol-origin: margin;
+                subcontrol-position: top center;
+                padding: 0 10px;
+            }}
+        """
+        self.setStyleSheet(
             sh.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
         )
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+
+        if not self.background:
+            return
+
+        painter = QPainter(self)
+        painter.setOpacity(self.bg_opacity)
+
+        scaled = self.background.scaled(
+            self.bg_size,
+            self.bg_size,
+            QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+            QtCore.Qt.TransformationMode.SmoothTransformation,
+        )
+
+        # x = (self.width() - scaled.width()) // 2
+        painter.drawPixmap(0, 0, scaled)
 
 
 class GameRoundsDetail(QGroupBox):
@@ -571,9 +590,9 @@ class GameRoundsDetail(QGroupBox):
 
     def retranslateUI(self):
         # self.setTitle(i18n("GameRoundsDetail",'Details'))
-        self.container.setTabText(0, i18n("GameRoundsDetail", "Table"))
-        self.container.setTabText(1, i18n("GameRoundsDetail", "Plot"))
-        self.container.setTabText(2, i18n("GameRoundsDetail", "Statistics"))
+        self.container.setTabText(0, self.tr("Table"))
+        self.container.setTabText(1, self.tr("Plot"))
+        self.container.setTabText(2, self.tr("Statistics"))
         #        self.container.setItemText(0,i18n(
         #       "CarcassonneEntriesDetail","Table"))
         #        self.container.setItemText(1,i18n(
@@ -583,6 +602,7 @@ class GameRoundsDetail(QGroupBox):
         self.gamestats.retranslateUI()
         self.plot.retranslateUI()
         self.updateRound()
+        # self.updateStats()
 
     def updatePlot(self):
         self.plot.updatePlot()
@@ -646,17 +666,13 @@ class GameRoundTable(QTableWidget):
 
         menu = QMenu()
         ic = QtGui.QIcon("icons/delete.png")
-        msg = i18n("GameRoundTable", "Delete Entry")
+        msg = self.tr("Delete Entry")
         deleteEntryAction = QAction(ic, msg, self)
         menu.addAction(deleteEntryAction)
         action = menu.exec_(self.mapToGlobal(position))
         if action == deleteEntryAction:
-            title = i18n("GameRoundTable", "Delete Entry")
-            msg = i18n(
-                "GameRoundTable",
-                "Are you sure you want to \
-                        delete this entry?",
-            )
+            title = self.tr("Delete Entry")
+            msg = self.tr("Are you sure you want to delete this entry?")
             ret = QMessageBox.question(
                 self,
                 title,

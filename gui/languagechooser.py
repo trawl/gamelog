@@ -2,15 +2,12 @@
 # -*- coding: utf-8 -*-
 from PySide6 import QtCore
 from PySide6.QtWidgets import (
-    QApplication,
     QDialog,
     QDialogButtonBox,
     QLabel,
     QListWidget,
     QVBoxLayout,
 )
-
-i18n = QApplication.translate
 
 
 class LanguageChooser(QDialog):
@@ -22,10 +19,10 @@ class LanguageChooser(QDialog):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle(i18n("LanguageChooser", "Language"))
+        self.setWindowTitle(self.tr("Language"))
         self.widgetLayout = QVBoxLayout(self)
         self.infoLabel = QLabel(self)
-        self.infoLabel.setText(i18n("LanguageChooser", "Select the desired language:"))
+        self.infoLabel.setText(self.tr("Select the desired language:"))
         self.widgetLayout.addWidget(self.infoLabel)
         self.languageListWidget = QListWidget(self)
         self.widgetLayout.addWidget(self.languageListWidget)
