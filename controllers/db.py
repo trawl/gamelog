@@ -92,6 +92,8 @@ class GameLogDB:
 
     def getLastGame(self):
         cur = db.execute("Select Game_name from Match order by idMatch desc limit 1")
+        if not cur:
+            return None
         row = cur.fetchone()
         if not row:
             return None

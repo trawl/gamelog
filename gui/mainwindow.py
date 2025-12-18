@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from PySide6 import QtCore, QtGui
+from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
-    QApplication,
     QDialog,
     QHBoxLayout,
     QLabel,
@@ -16,8 +16,6 @@ from PySide6.QtWidgets import (
 from controllers.db import db
 from gui.languagechooser import LanguageChooser
 from gui.newgame import NewGameWidget
-
-i18n = QApplication.translate
 
 
 class MainWindow(QMainWindow):
@@ -86,16 +84,16 @@ class MainWindow(QMainWindow):
         self.show()
 
     def retranslateUi(self):
-        self.setWindowTitle(i18n("MainWindow", "GameLog"))
-        self.statusBar().showMessage(i18n("MainWindow", "GameLog"))
-        self.fileMenu.setTitle(i18n("MainWindow", "&File"))
-        self.languageAction.setText(i18n("MainWindow", "&Language..."))
-        self.exitAction.setText(i18n("MainWindow", "&Quit"))
-        self.exitAction.setShortcut(i18n("MainWindow", "Ctrl+Q"))
-        self.exitAction.setStatusTip(i18n("MainWindow", "Quit GameLog"))
+        self.setWindowTitle(self.tr("GameLog"))
+        self.statusBar().showMessage(self.tr("GameLog"))
+        self.fileMenu.setTitle(self.tr("&File"))
+        self.languageAction.setText(self.tr("&Language..."))
+        self.exitAction.setText(self.tr("&Quit"))
+        self.exitAction.setShortcut(self.tr("Ctrl+Q"))
+        self.exitAction.setStatusTip(self.tr("Quit GameLog"))
 
-        self.helpMenu.setTitle(i18n("MainWindow", "&Help"))
-        self.aboutAction.setText(i18n("MainWindow", "&About Gamelog..."))
+        self.helpMenu.setTitle(self.tr("&Help"))
+        self.aboutAction.setText(self.tr("&About Gamelog..."))
 
         self.newGameTab.retranslateUI()
         for game in self.openedGames:
@@ -111,12 +109,10 @@ class MainWindow(QMainWindow):
         realopened = [x for x in self.openedGames if not x.isFinished()]
         numgames = len(realopened)
         if numgames > 0:
-            tit = i18n("MainWindow", "Exit")
+            tit = self.tr("Exit")
             if numgames == 1:
-                msg = i18n(
-                    "MainWindow",
-                    "You have an opened {} match. \
-                    Do you want to save it before exiting?",
+                msg = self.tr(
+                    "You have an opened {} match. Do you want to save it before exiting?"
                 )
                 msg = msg.format(realopened[0].getGameName())
                 reply = QMessageBox.question(
@@ -129,11 +125,9 @@ class MainWindow(QMainWindow):
                     QMessageBox.StandardButton.Cancel,
                 )
             else:
-                tit = i18n("MainWindow", "Exit")
-                msg = i18n(
-                    "MainWindow",
-                    "You have {} opened matches. \
-                            Do you want to save them before exiting?",
+                tit = self.tr("Exit")
+                msg = self.tr(
+                    "You have {} opened matches. Do you want to save them before exiting?"
                 )
                 msg = msg.format(numgames)
                 reply = QMessageBox.question(
@@ -155,8 +149,8 @@ class MainWindow(QMainWindow):
                 else:
                     game.saveMatch()
         else:
-            tit = i18n("MainWindow", "Exit")
-            msg = i18n("MainWindow", "Are you sure you want to exit GameLog?")
+            tit = self.tr("Exit")
+            msg = self.tr("Are you sure you want to exit GameLog?")
 
             reply = QMessageBox.question(
                 self,
@@ -209,13 +203,13 @@ class MainWindow(QMainWindow):
         qt_translator.load(qt_qm, "i18n/")
         if ret:
             if self.translator:
-                QApplication.removeTranslator(self.translator)
+                QCoreApplication.removeTranslator(self.translator)
             if self.qt_translator:
-                QApplication.removeTranslator(self.qt_translator)
+                QCoreApplication.removeTranslator(self.qt_translator)
             self.qt_translator = qt_translator
             self.translator = translator
-            QApplication.installTranslator(self.qt_translator)
-            QApplication.installTranslator(self.translator)
+            QCoreApplication.installTranslator(self.qt_translator)
+            QCoreApplication.installTranslator(self.translator)
 
     def changeEvent(self, event):
         if event.type() == QtCore.QEvent.Type.LanguageChange:
@@ -228,7 +222,8 @@ class AboutDialog(QDialog):
     def __init__(self, parent=None):
         super(AboutDialog, self).__init__(parent)
         # self.setFixedSize(QtCore.QSize(450, 350))
-        self.setWindowTitle(i18n("AboutDialog", "About Gamelog"))
+        # self.setWindowTitle(i18n("AboutDialog", "About Gamelog"))
+        self.setWindowTitle(self.tr("About Gamelog"))
         self.widgetlayout = QHBoxLayout(self)
         self.iconlabel = QLabel(self)
         self.iconlabel.setMaximumSize(75, 75)
@@ -241,11 +236,14 @@ class AboutDialog(QDialog):
         self.title.setStyleSheet("QLabel{font-size:18px; font-weight:bold}")
         self.title.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.contentlayout.addWidget(self.title)
+        # self.content = QLabel(
+        #     i18n(
+        #         "AboutDialog",
+        #         "Gamelog is a utility to keep track of the score in board games.",
+        #     )
+        # )
         self.content = QLabel(
-            i18n(
-                "AboutDialog",
-                "Gamelog is a utility to keep track of the score in board games.",
-            )
+            self.tr("Gamelog is a utility to keep track of the score in board games.")
         )
         self.content.setWordWrap(True)
         self.content.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)

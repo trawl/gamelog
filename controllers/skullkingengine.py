@@ -79,11 +79,9 @@ class SkullKingEngine(PochaEngine):
         return 0
 
     def computePlayerScore(self, expected, won, bonuses):
-        if self.getScoringMode() in ("classic", "standard"):
+        if self.getScoringMode() in ("classic_scoring", "standard_scoring"):
             return self.computePlayerScoreClassic(expected, won, bonuses)
-        elif self.getScoringMode() == "standard":
-            return self.computePlayerScoreClassic(expected, won, bonuses)
-        elif self.getScoringMode() == "rascal":
+        elif self.getScoringMode() == "rascal_scoring":
             return self.computePlayerScoreRascal(expected, won, bonuses)
         raise ValueError(f"Unknown scoring mode {self.getScoringMode()}")
 

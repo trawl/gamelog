@@ -5,7 +5,6 @@ from typing import cast
 from PySide6 import QtCore, QtGui
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
-    QApplication,
     QDialog,
     QListView,
     QMenu,
@@ -14,8 +13,6 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.db import db
-
-i18n = QApplication.translate
 
 standardIcon = "icons/player.png"
 favouriteIcon = "icons/fav.png"
@@ -31,7 +28,7 @@ class PlayerOrderDialog(QDialog):
         self.engine = engine
         self.originalOrder = self.engine.getListPlayers()
         self.originalDealer = self.engine.getDealer()
-        self.setWindowTitle(i18n("PlayerOrderDialog", "Player Order"))
+        self.setWindowTitle(self.tr("Player Order"))
         self.widgetlayout = QVBoxLayout(self)
         self.pow = PlayerList(self.engine, self)
         self.okbutton = QPushButton("OK", self)
@@ -110,13 +107,13 @@ class PlayerList(QListView):
             if isfav:
                 favouriteAction = QAction(
                     QtGui.QIcon(standardIcon),
-                    i18n("PlayerList", "Unset Favourite"),
+                    self.tr("Unset Favourite"),
                     self,
                 )
             else:
                 favouriteAction = QAction(
                     QtGui.QIcon(favouriteIcon),
-                    i18n("PlayerList", "Set Favourite"),
+                    self.tr("Set Favourite"),
                     self,
                 )
             menu.addAction(favouriteAction)
@@ -127,7 +124,7 @@ class PlayerList(QListView):
                 and player != self._model.dealer
             ):
                 dealerAction = QAction(
-                    QtGui.QIcon(dealerIcon), i18n("PlayerList", "Set dealer"), self
+                    QtGui.QIcon(dealerIcon), self.tr("Set dealer"), self
                 )
                 menu.addAction(dealerAction)
             action = menu.exec_(self.mapToGlobal(position))
@@ -197,21 +194,3 @@ class PlayerListModel(QtGui.QStandardItemModel):
             if nick == player:
                 return item
         return None
-
-
-if __name__ == "__main__":
-    import sys
-
-    from controllers.db import db
-    from controllers.enginefactory import GameEngineFactory
-
-    db.connectDB()
-    app = QApplication(sys.argv)
-    engine = GameEngineFactory.createMatch("Pocha")
-    players = ["Xavi", "Rosa", "Dani"]
-    for p in players:
-        engine.addPlayer(p)
-    engine.begin()
-    mw = PlayerOrderDialog(engine)
-    mw.show()
-    sys.exit(app.exec_())

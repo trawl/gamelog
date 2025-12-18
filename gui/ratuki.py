@@ -4,7 +4,6 @@
 from PySide6 import QtCore, QtGui
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
-    QApplication,
     QFrame,
     QGridLayout,
     QGroupBox,
@@ -28,8 +27,6 @@ from gui.game import (
     PlayerColours,
     ScoreSpinBox,
 )
-
-i18n = QApplication.translate
 
 
 class RatukiWidget(GameWidget):
@@ -92,9 +89,9 @@ class RatukiWidget(GameWidget):
 
     def retranslateUI(self):
         super(RatukiWidget, self).retranslateUI()
-        self.topPointsLabel.setText(i18n("RatukiWidget", "Score Limit"))
+        self.topPointsLabel.setText(self.tr("Score Limit"))
         #         self.playerGroup.setTitle(i18n("RatukiWidget","Score"))
-        self.playerGroup.setTitle(i18n("GameWidget", "Scoreboard"))
+        self.playerGroup.setTitle(self.tr("Scoreboard"))
         self.detailGroup.retranslateUI()
 
     def checkPlayerScore(self, player, score):
@@ -308,7 +305,7 @@ class RatukiRoundTable(GameRoundTable):
             item.setForeground(QtGui.QBrush(QtGui.QColor(0, 0, 0)))
             text = str(score)
             if player == winner:
-                text += i18n("RatukiRoundTable", " (Winner)")
+                text += self.tr(" (Winner)")
             item.setText(text)
             self.setItem(i, j, item)
         self.scrollToBottom()

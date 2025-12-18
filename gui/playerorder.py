@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from PySide6.QtWidgets import (
-    QApplication,
     QDialog,
     QGroupBox,
     QHBoxLayout,
@@ -15,7 +14,7 @@ class PlayerOrderDialog(QDialog):
     def __init__(self, engine, parent=None):
         super(PlayerOrderDialog, self).__init__(parent)
         self.engine = engine
-        self.setWindowTitle(QApplication.translate("PlayerOrderDialog", "Player Order"))
+        self.setWindowTitle(self.tr("Player Order"))
         self.widgetlayout = QVBoxLayout(self)
         self.pow = PlayerOrderWidget(self.engine, self)
         self.widgetlayout.addWidget(self.pow)
@@ -36,8 +35,8 @@ class PlayerOrderWidget(QWidget):
     def dragEnterEvent(self, event):
         event.accept()
 
-    def dropEvent(self, event):
-        print("'%s' was dropped onto me." % event)
+    # def dropEvent(self, event):
+    #     print("'%s' was dropped onto me." % event)
 
 
 class PlayerTile(QGroupBox):
@@ -51,23 +50,5 @@ class PlayerTile(QGroupBox):
         self.widgetLayout.addWidget(self.playerLabel)
         self.playerLabel.setText(self.player)
 
-    def dragEnterEvent(self, event):
-        print("{} drag enter".format(self.player))
-
-
-if __name__ == "__main__":
-    import sys
-
-    from controllers.db import db
-    from controllers.enginefactory import GameEngineFactory
-
-    db.connectDB()
-    app = QApplication(sys.argv)
-    engine = GameEngineFactory.createMatch("Pocha")
-    players = ["Xavi", "Rosa", "Dani"]
-    for p in players:
-        engine.addPlayer(p)
-    engine.begin()
-    mw = PlayerOrderDialog(engine)
-    mw.show()
-    sys.exit(app.exec_())
+    # def dragEnterEvent(self, event):
+    #     print("{} drag enter".format(self.player))

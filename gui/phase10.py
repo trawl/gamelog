@@ -5,8 +5,8 @@ import re
 from typing import cast
 
 from PySide6 import QtCore, QtGui
+from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import (
-    QApplication,
     QButtonGroup,
     QCheckBox,
     QFrame,
@@ -36,31 +36,43 @@ from gui.game import (
 from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from gui.plots import PlotView
 
-i18n = QApplication.translate
-
 
 def getPhaseNames(phasecodes):
     types = {
         "s": {
-            "2": [i18n("Phase10Widget", "pair"), i18n("Phase10Widget", "pairs")],
+            "2": [
+                QCoreApplication.translate("Phase10Widget", "pair"),
+                QCoreApplication.translate("Phase10Widget", "pairs"),
+            ],
             "3": [
-                i18n("Phase10Widget", "three of a kind", "singular"),
-                i18n("Phase10Widget", "three of a kind", "plural"),
+                QCoreApplication.translate(
+                    "Phase10Widget", "three of a kind", "singular"
+                ),
+                QCoreApplication.translate(
+                    "Phase10Widget", "three of a kind", "plural"
+                ),
             ],
             "4": [
-                i18n("Phase10Widget", "four of a kind", "singular"),
-                i18n("Phase10Widget", "four of a kind", "plural"),
+                QCoreApplication.translate(
+                    "Phase10Widget", "four of a kind", "singular"
+                ),
+                QCoreApplication.translate("Phase10Widget", "four of a kind", "plural"),
             ],
             "5": [
-                i18n("Phase10Widget", "five of a kind", "singular"),
-                i18n("Phase10Widget", "five of a kind", "plural"),
+                QCoreApplication.translate(
+                    "Phase10Widget", "five of a kind", "singular"
+                ),
+                QCoreApplication.translate("Phase10Widget", "five of a kind", "plural"),
             ],
         },
-        "c": i18n("Phase10Widget", "cards of the same colour"),
-        "r": [i18n("Phase10Widget", "run of"), i18n("Phase10Widget", "runs of")],
+        "c": QCoreApplication.translate("Phase10Widget", "cards of the same colour"),
+        "r": [
+            QCoreApplication.translate("Phase10Widget", "run of"),
+            QCoreApplication.translate("Phase10Widget", "runs of"),
+        ],
         "cr": [
-            i18n("Phase10Widget", "colour run of"),
-            i18n("Phase10Widget", "colour runs of"),
+            QCoreApplication.translate("Phase10Widget", "colour run of"),
+            QCoreApplication.translate("Phase10Widget", "colour runs of"),
         ],
     }
     phases = []
@@ -139,9 +151,9 @@ class Phase10Widget(GameWidget):
 
     def retranslateUI(self):
         super(Phase10Widget, self).retranslateUI()
-        self.phasesInOrderCheckBox.setText(i18n("Phase10Widget", "Phases in order"))
+        self.phasesInOrderCheckBox.setText(self.tr("Phases in order"))
         self.gameInput.retranslateUI()
-        self.extraGroup.setTitle(i18n("Phase10RoundPlot", "Phases"))
+        self.extraGroup.setTitle(self.tr("Phases"))
         self.details.retranslateUI()
         phaselabels = zip(getPhaseNames(self.engine.getPhases()), self.phaseLabels)
         for number, (phase, label) in enumerate(phaselabels, start=1):
@@ -417,10 +429,6 @@ class Phase10PlayerWidget(GamePlayerWidget):
         )
 
     def initUI(self):
-        css = "QGroupBox {{ font-size: 28px;font-weight: bold; color:rgb({},{},{});}}"
-        self.setStyleSheet(
-            css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
-        )
         self.setTitle(self.player)
         super(Phase10PlayerWidget, self).initUI()
 
@@ -433,7 +441,10 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.mainLayout.addLayout(self.upperLayout)
         self.upperLayout.addStretch()
         self.phaseNameLabel = QLabel(self)
-        self.phaseNameLabel.setStyleSheet("font-weight: bold; font-size: 24px;")
+        css = "font-weight: bold; font-size: 24px; color:rgb({},{},{});"
+        self.phaseNameLabel.setStyleSheet(
+            css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
+        )
         self.updatePhaseName()
         self.upperLayout.addWidget(self.phaseNameLabel)
         self.upperLayout.addStretch()
@@ -451,18 +462,19 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.mainLayout.addWidget(self.scoreLCD)
         self.scoreLCD.setDigitCount(3)
         self.scoreLCD.setMinimumWidth(100)
+        self.scoreLCD.setFrameStyle(QFrame.Shape.NoFrame)
         css = "QLCDNumber {{ color:rgb({},{},{});}}"
         self.scoreLCD.setStyleSheet(
             css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
         )
 
         # Left part - score
-        self.lowerLayout.addWidget(self.iconlabel)
+        # self.lowerLayout.addWidget(self.iconlabel)
         self.lowerLayout.addWidget(self.scoreLCD)
         self.lowerLayout.addLayout(self.phaseLabelsLayout)
         self.lowerLayout.addLayout(self.checkboxLayout)
 
-        self.iconlabel.setMinimumSize(60, 60)
+        # self.iconlabel.setMinimumSize(60, 60)
 
         #         self.scoreLCD.setMinimumWidth(100)
         #         self.scoreLCD.setMaximumWidth(200)
@@ -510,8 +522,8 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.retranslateUI()
 
     def retranslateUI(self):
-        self.roundWinnerRadioButton.setText(i18n("Phase10PlayerWidget", "Winner"))
-        self.roundPhaseClearedCheckbox.setText(i18n("Phase10PlayerWidget", "Completed"))
+        self.roundWinnerRadioButton.setText(self.tr("Winner"))
+        self.roundPhaseClearedCheckbox.setText(self.tr("Completed"))
         self.updatePhaseName()
 
     def updatePhase10Display(self, points, completed_phases, remaining_phases):
@@ -636,13 +648,6 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.roundPhaseClearedCheckbox.setDisabled(True)
         self.roundScore.setDisabled(True)
 
-    def setColour(self, colour):
-        self.pcolour = colour
-        css = "QGroupBox {{ font-size: 28px; font-weight: bold;color:rgb({},{},{});}}"
-        self.setStyleSheet(
-            css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
-        )
-
 
 class Phase10Label(QLabel):
     def __init__(self, number, parent=None):
@@ -703,10 +708,10 @@ class Phase10RoundsDetail(GameRoundsDetail):
 
     def retranslateUI(self):
         #         self.setTitle(i18n("GameRoundsDetail",'Details'))
-        self.container.setTabText(0, i18n("Phase10Widget", "Score"))
-        self.container.setTabText(1, i18n("GameRoundsDetail", "Table"))
-        self.container.setTabText(2, i18n("GameRoundsDetail", "Plot"))
-        self.container.setTabText(3, i18n("GameRoundsDetail", "Statistics"))
+        self.container.setTabText(0, self.tr("Score"))
+        self.container.setTabText(1, self.tr("Table"))
+        self.container.setTabText(2, self.tr("Plot"))
+        self.container.setTabText(3, self.tr("Statistics"))
         self.gamestats.retranslateUI()
         self.plot.retranslateUI()
         self.updateRound()
@@ -734,7 +739,7 @@ class Phase10RoundTable(GameRoundTable):
                 | QtCore.Qt.AlignmentFlag.AlignCenter
             )
             if player == winner:
-                text = i18n("Phase10RoundTable", "Winner")
+                text = self.tr("Winner")
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)
@@ -742,7 +747,7 @@ class Phase10RoundTable(GameRoundTable):
                 text = str(r.getPlayerScore(player))
             a_phase = r.getPlayerAimedPhase(player)
             c_phase = r.getPlayerCompletedPhase(player)
-            text += i18n("Phase10PlayerWidget", " (Phase {})").format(a_phase)
+            text += self.tr(" (Phase {})").format(a_phase)
             if c_phase != 0:
                 background = 0xCCFF99  # green
             else:
@@ -801,8 +806,8 @@ class Phase10RoundPlot(GameRoundPlot):
 
     def retranslatePlot(self):
         super(Phase10RoundPlot, self).retranslatePlot()
-        self.phasesLabel.setText(i18n("Phase10RoundPlot", "Phases"))
-        self.scoreLabel.setText(i18n("Phase10RoundPlot", "Scores"))
+        self.phasesLabel.setText(self.tr("Phases"))
+        self.scoreLabel.setText(self.tr("Scores"))
 
     #         self.playersTitleLabel.setText(i18n("Phase10RoundPlot",'Players') )
 
@@ -865,8 +870,8 @@ class Phase10QSTW(QuickStatsTW):
 
 
 class Phase10QSBox(GeneralQuickStats):
-    i18n("AbstractQuickStatsBox", "Lowest phases")
-    i18n("AbstractQuickStatsBox", "Damned phase")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Lowest phases")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Damned phase")
 
     def __init__(self, gname, parent):
         super(Phase10QSBox, self).__init__(gname, parent)

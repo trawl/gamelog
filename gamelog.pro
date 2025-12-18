@@ -6,13 +6,15 @@ SOURCES = \
 	gui/phase10.py \
 	gui/remigio.py \
 	gui/ratuki.py \
+	gui/ratuki.py \
 	gui/carcassonne.py \
 	gui/pocha.py \
 	gui/skullking.py \
-	gui/languagechooser.py \ 
+	gui/languagechooser.py \
 	gui/gamestats.py \
+	gui/progress.py \
 	gui/playerlist.py
-   
+
 TRANSLATIONS = \
 	i18n/es_ES.ts \
 	i18n/en_GB.ts \
