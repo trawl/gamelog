@@ -612,7 +612,7 @@ class SkullKingPlayerInputWidget(QGroupBox):
             parent = self.extraPointsGroup
             layout = self.epLayout
             position = 0
-            size = 25
+            size = 30
             alignment = Qt.AlignmentFlag.AlignCenter
             reps = min(
                 len(self.engine.getPlayers()) - 1, self.engine.getBonusReps(btype)

@@ -540,8 +540,8 @@ class GamePlayerWidget(QGroupBox):
         painter.setOpacity(self.bg_opacity)
 
         scaled = self.background.scaled(
-            self.bg_size,
-            self.bg_size,
+            max(self.bg_size, self.height() // 3),
+            max(self.bg_size, self.height() // 3),
             QtCore.Qt.AspectRatioMode.KeepAspectRatio,
             QtCore.Qt.TransformationMode.SmoothTransformation,
         )
