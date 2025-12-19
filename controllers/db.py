@@ -154,7 +154,7 @@ INSERT INTO "Game" VALUES('Ratuki',5,'Ratuki Slap game','Home rules');
 INSERT INTO "Game"
     VALUES('Carcassonne',6,'Carcassonne board game','Home rules');
 INSERT INTO "Game" VALUES('Pocha',6,'Carcassonne board game','Home rules');
-INSERT INTO "Game" VALUES('Skull King',6,'Skull King card game','Home rules');
+INSERT INTO "Game" VALUES('Skull King',8,'Skull King card game','Home rules');
 DROP TABLE IF EXISTS "GameExtras";
 CREATE TABLE `GameExtras` (
   `Game_name` VARCHAR(45) NOT NULL ,

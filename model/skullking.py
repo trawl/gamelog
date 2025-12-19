@@ -38,6 +38,8 @@ class SkullKingMatch(PochaMatch):
         self.game = "Skull King"
         self.dealingp = 1
         self.scoringMode = "classic_scoring"
+        if len(self.players) > 6:
+            self.scoringMode = "standard_scoring"
         self.setRoundMode("standard_rounds")
 
     def getBonus(self, bonus_name):
@@ -55,9 +57,14 @@ class SkullKingMatch(PochaMatch):
     def listBonusTypes(self):
         return self.scoringModes[self.scoringMode].keys()
 
-    @classmethod
-    def listScoringModes(cls):
-        return cls.scoringModes.keys()
+    def listScoringModes(self):
+        return [
+            sm
+            for sm in self.scoringModes.keys()
+            if len(self.players) <= 6
+            or len(self.players) > 7
+            and sm != "classic_scoring"
+        ]
 
     @classmethod
     def listRoundModes(cls):

@@ -112,6 +112,7 @@ class Phase10Widget(GameWidget):
     def initUI(self):
         super(Phase10Widget, self).initUI()
 
+        self.roundTitleLabel.hide()
         self.phasesInOrderCheckBox = QCheckBox(self.matchGroup)
         self.phasesInOrderCheckBox.setChecked(self.engine.getPhasesInOrderFlag())
         self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
@@ -130,6 +131,9 @@ class Phase10Widget(GameWidget):
         self.leftLayout.addWidget(self.details)
 
         self.extraGroup = QGroupBox(self)
+        self.extraGroup.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding
+        )
         self.extraGroup.setStyleSheet(
             "QGroupBox { font-size: 18px; font-weight: bold; }"
         )

@@ -8,7 +8,6 @@ from PySide6.QtWidgets import (
     QButtonGroup,
     QFrame,
     QGridLayout,
-    QGroupBox,
     QHBoxLayout,
     QLabel,
     QMessageBox,
@@ -31,6 +30,7 @@ from gui.game import (
     PlayerColours,
 )
 from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
+from gui.progress import StepProgressBar
 
 
 class PochaWidget(GameWidget):
@@ -59,6 +59,10 @@ class PochaWidget(GameWidget):
         self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
 
+        self.progressBar = StepProgressBar(self.engine.getRoundSequence(), self)
+        self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
+        self.matchGroupLayout.addWidget(self.progressBar)
+
         self.configLayout = QGridLayout()
         self.matchGroupLayout.addLayout(self.configLayout)
         self.suitTypeGroup = QButtonGroup(self)
@@ -80,18 +84,20 @@ class PochaWidget(GameWidget):
         # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
         self.leftLayout.addWidget(self.detailGroup)
 
-        self.playerGroup = QGroupBox(self)
-        # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
-        self.rightLayout.addWidget(self.playerGroup)
+        # self.playerGroup = QGroupBox(self)
+        # # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
+        # self.rightLayout.addWidget(self.playerGroup)
 
-        self.playerGroup.setStyleSheet(
-            "QGroupBox { font-size: 18px; font-weight: bold; }"
-        )
-        self.playersLayout = QVBoxLayout(self.playerGroup)
+        # self.playerGroup.setStyleSheet(
+        #     "QGroupBox { font-size: 18px; font-weight: bold; }"
+        # )
+        # self.playersLayout = QVBoxLayout(self.playerGroup)
         # self.playersLayout.addStretch()
+        self.playersLayout = QVBoxLayout()
+        self.matchGroupLayout.addLayout(self.playersLayout)
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
-            pw = GamePlayerWidget(player, PlayerColours[i], self.playerGroup)
+            pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer():
                 pw.setDealer()
@@ -107,7 +113,7 @@ class PochaWidget(GameWidget):
         #         self.playerGroup.setTitle(i18n("PochaWidget","Score"))
         self.spanishSuitRadio.setText(self.tr("Spanish Deck"))
         self.frenchSuitRadio.setText(self.tr("French Deck"))
-        self.playerGroup.setTitle(self.tr("Scoreboard"))
+        # self.playerGroup.setTitle(self.tr("Scoreboard"))
         self.detailGroup.retranslateUI()
 
     def changeSuit(self, *_args):
@@ -119,21 +125,22 @@ class PochaWidget(GameWidget):
 
     def setRoundTitle(self):
         super(PochaWidget, self).setRoundTitle()
+        nround = self.engine.getNumRound()
         hands = self.engine.getHands()
         direction = self.engine.getDirection()
         if hands == 1:
-            self.roundGroup.setTitle(
+            self.roundTitleLabel.setText(
                 "{} - {} {} {}".format(
-                    self.roundGroup.title(),
+                    self.tr("Round {0}").format(str(nround)),
                     str(hands),
                     self.tr("hand"),
                     self.tr(direction),
                 )
             )
         else:
-            self.roundGroup.setTitle(
+            self.roundTitleLabel.setText(
                 "{} - {} {} {}".format(
-                    self.roundGroup.title(),
+                    self.tr("Round {0}").format(str(nround)),
                     str(hands),
                     self.tr("hands"),
                     self.tr(direction),
@@ -150,6 +157,7 @@ class PochaWidget(GameWidget):
         self.playerGroupBox[self.engine.getDealer()].setDealer()
 
     def updatePanel(self):
+        self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         for player in self.players:
             score = self.engine.getScoreFromPlayer(player)
             self.playerGroupBox[player].updateDisplay(score)
@@ -190,13 +198,11 @@ class PochaWidget(GameWidget):
 
     def updatePlayerOrder(self):
         GameWidget.updatePlayerOrder(self)
-        trash = QWidget()
-        trash.setLayout(self.playersLayout)
-        trash_layout = self.playersLayout
-        self.playersLayout = QVBoxLayout(self.playerGroup)
         # self.playersLayout.addStretch()
+        for player in self.engine.getListPlayers():
+            self.playersLayout.removeWidget(self.playerGroupBox[player])
+
         for i, player in enumerate(self.engine.getListPlayers()):
-            trash_layout.removeWidget(self.playerGroupBox[player])
             self.playersLayout.addWidget(self.playerGroupBox[player])
             self.playerGroupBox[player].setColour(PlayerColours[i])
         # self.playersLayout.addStretch()

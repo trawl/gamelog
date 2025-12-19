@@ -42,6 +42,12 @@ PlayerColours = [
     #  QtGui.QColor(101, 43, 145),
     #  QtGui.QColor(161, 29, 33),
     QtGui.QColor(255, 0, 255),
+    QtGui.QColor(0, 200, 200),  # Cyan / Teal
+    QtGui.QColor(255, 215, 0),  # Gold / Yellow
+    QtGui.QColor(0, 255, 127),  # Spring Green
+    QtGui.QColor(255, 105, 180),  # Hot Pink
+    QtGui.QColor(173, 216, 230),  # Light Blue
+    QtGui.QColor(255, 165, 79),  # Light Orange
 ]
 
 
@@ -78,6 +84,7 @@ class GameWidget(Tab):
         self.roundGroup = QGroupBox(self)
         self.leftLayout.addWidget(self.roundGroup)
         self.matchGroup = QGroupBox(self)
+        self.matchGroup.setMinimumWidth(200)
         self.rightLayout.addWidget(self.matchGroup)
 
         # Round Group
@@ -111,15 +118,35 @@ class GameWidget(Tab):
         self.roundLayout.addWidget(self.gameStatusLabel)
 
         # Match Group
-        self.matchGroup.setTitle(self.tr("Game Time"))
+        # self.matchGroup.setTitle(self.tr("Game Time"))
         self.matchGroupLayout = QVBoxLayout(self.matchGroup)
+
+        self.roundTitleLabel = QLabel(self)
+        self.roundTitleLabel.setSizePolicy(
+            QSizePolicy.Policy.Preferred,  # horizontal
+            QSizePolicy.Policy.Maximum,  # vertical
+        )
+        css = """
+        QLabel {
+            font-size: 18px;
+            font-weight: bold;
+            qproperty-alignment: AlignCenter;
+        }
+        """
+        self.roundTitleLabel.setStyleSheet(css)
+        self.matchGroupLayout.addWidget(self.roundTitleLabel)
 
         self.clock = GameClock(self.engine.getGameSeconds(), self)
         self.clock.setMinimumHeight(70)
+        # self.clock.setMinimumWidth(200)
+        self.clock.setSizePolicy(
+            QSizePolicy.Policy.Preferred,  # horizontal
+            QSizePolicy.Policy.Maximum,  # vertical
+        )
         # Set size policy to Fixed in the vertical direction
-        size_policy = self.matchGroup.sizePolicy()
-        size_policy.setVerticalPolicy(QSizePolicy.Policy.Fixed)
-        self.matchGroup.setSizePolicy(size_policy)
+        # size_policy = self.matchGroup.sizePolicy()
+        # size_policy.setVerticalPolicy(QSizePolicy.Policy.Fixed)
+        # self.matchGroup.setSizePolicy(size_policy)
         self.matchGroupLayout.addWidget(self.clock)
 
         dpolicy = self.engine.getDealingPolicy()
@@ -136,7 +163,7 @@ class GameWidget(Tab):
 
     def retranslateUI(self):
         self.setRoundTitle()
-        self.matchGroup.setTitle(self.tr("Game Time"))
+        # self.matchGroup.setTitle(self.tr("Game Time"))
         self.pauseMatchButton.setText(self.tr("&Pause/Play"))
         self.cancelMatchButton.setText(self.tr("&Cancel Match"))
         self.restartMatchButton.setText(self.tr("Restart &Match"))
@@ -267,6 +294,8 @@ class GameWidget(Tab):
         self.updatePanel()
         if not self.engine.getWinner():
             self.setDealer()
+        else:
+            self.gameInput.hide()
 
     def changeDealingPolicy(self, *args, **kwargs):
         if self.dealerPolicyCheckBox.isChecked():
@@ -289,7 +318,8 @@ class GameWidget(Tab):
     def setRoundTitle(self):
         try:
             nround = self.engine.getNumRound()
-            self.roundGroup.setTitle(self.tr("Round {0}").format(str(nround)))
+            # self.roundGroup.setTitle(self.tr("Round {0}").format(str(nround)))
+            self.roundTitleLabel.setText(self.tr("Round {0}").format(str(nround)))
         except AttributeError:
             pass
 
@@ -477,8 +507,8 @@ class GamePlayerWidget(QGroupBox):
         self.scoreLCD.setDigitCount(3)
         # self.scoreLCD.setFixedSize(75, 45)
         # self.scoreLCD.setMaximumHeight(60)
-        self.scoreLCD.setMinimumHeight(45)
-        self.scoreLCD.setMinimumWidth(75)
+        self.scoreLCD.setMinimumHeight(30)
+        self.scoreLCD.setMinimumWidth(50)
         self.scoreLCD.display(0)
         self.setColour(self.pcolour)
 
@@ -515,7 +545,11 @@ class GamePlayerWidget(QGroupBox):
         self.pcolour = colour
         css = "QLCDNumber {{ color:rgb({},{},{});}}"
         self.scoreLCD.setStyleSheet(
-            css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
+            css.format(
+                self.pcolour.red(),
+                self.pcolour.green(),
+                self.pcolour.blue(),
+            )
         )
         sh = """
             QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}
@@ -524,10 +558,15 @@ class GamePlayerWidget(QGroupBox):
                 subcontrol-origin: margin;
                 subcontrol-position: top center;
                 padding: 0 10px;
+                background-color: transparent;
             }}
         """
         self.setStyleSheet(
-            sh.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
+            sh.format(
+                self.pcolour.red(),
+                self.pcolour.green(),
+                self.pcolour.blue(),
+            )
         )
 
     def paintEvent(self, event):
@@ -540,8 +579,8 @@ class GamePlayerWidget(QGroupBox):
         painter.setOpacity(self.bg_opacity)
 
         scaled = self.background.scaled(
-            max(self.bg_size, self.height() // 3),
-            max(self.bg_size, self.height() // 3),
+            max(self.bg_size, min(self.height() // 4, self.width() // 4)),
+            max(self.bg_size, min(self.height() // 4, self.width() // 4)),
             QtCore.Qt.AspectRatioMode.KeepAspectRatio,
             QtCore.Qt.TransformationMode.SmoothTransformation,
         )
