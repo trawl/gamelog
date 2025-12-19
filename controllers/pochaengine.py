@@ -60,6 +60,9 @@ class PochaEngine(RoundGameEngine):
     def getSuitType(self):
         return self.suitType
 
+    def getRoundSequence(self):
+        return cast("PochaMatch", self.match).getHands()
+
 
 class PochaStatsQueries(object):
     hitsQuery = """

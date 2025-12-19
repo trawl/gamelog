@@ -67,7 +67,7 @@ class SkullKingWidget(GameWidget):
         self.gameInput = SkullKingInputWidget(self.engine, self)
         self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
-
+        self.roundTitleLabel.hide()
         self.progressBar = StepProgressBar(self.engine.getRoundSequence(), self)
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         self.matchGroupLayout.addWidget(self.progressBar)
@@ -110,22 +110,24 @@ class SkullKingWidget(GameWidget):
         # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
         self.leftLayout.addWidget(self.detailGroup)
 
-        self.playerGroup = QGroupBox(self)
+        # self.playerGroup = QGroupBox(self)
+
         # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
-        self.rightLayout.addWidget(self.playerGroup)
+        # self.matchGroupLayout.addWidget(self.playerGroup)
 
         # self.playerGroup.setStyleSheet(
         #     "QGroupBox { font-size: 18px; font-weight: bold; }"
         # )
-        self.playersLayout = QVBoxLayout(self.playerGroup)
+        self.playersLayout = QVBoxLayout()
+        self.matchGroupLayout.addLayout(self.playersLayout)
         # self.playersLayout.addStretch()
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
-            pw = GamePlayerWidget(player, PlayerColours[i], self.playerGroup)
+            pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer():
                 pw.setDealer()
-            self.playersLayout.addWidget(pw)
+            self.matchGroupLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
 
         # self.playersLayout.addStretch()
@@ -134,7 +136,7 @@ class SkullKingWidget(GameWidget):
 
     def retranslateUI(self):
         super(SkullKingWidget, self).retranslateUI()
-        self.playerGroup.setTitle(i18n("GameWidget", "Scoreboard"))
+        # self.playerGroup.setTitle(i18n("GameWidget", "Scoreboard"))
         # self.scoringModeLabel.setText(self.tr("Scoring"))
         for i, m in enumerate(cast("SkullKingEngine", self.engine).listScoringModes()):
             self.scoringModeCombo.setItemText(i, self.tr(m))
@@ -146,6 +148,7 @@ class SkullKingWidget(GameWidget):
         self.detailGroup.retranslateUI()
 
     def setRoundTitle(self):
+        return
         super(SkullKingWidget, self).setRoundTitle()
         hands = self.engine.getHands()
         if hands == 1:
@@ -261,13 +264,11 @@ class SkullKingWidget(GameWidget):
 
     def updatePlayerOrder(self):
         GameWidget.updatePlayerOrder(self)
-        trash = QWidget()
-        trash_layout = self.playersLayout
-        trash.setLayout(trash_layout)
-        self.playersLayout = QVBoxLayout(self.playerGroup)
         # self.playersLayout.addStretch()
+        for player in self.engine.getListPlayers():
+            self.playersLayout.removeWidget(self.playerGroupBox[player])
+
         for i, player in enumerate(self.engine.getListPlayers()):
-            trash_layout.removeWidget(self.playerGroupBox[player])
             self.playersLayout.addWidget(self.playerGroupBox[player])
             self.playerGroupBox[player].setColour(PlayerColours[i])
         # self.playersLayout.addStretch()
@@ -303,8 +304,8 @@ class SkullKingWidget(GameWidget):
 class SkullKingInputWidget(GameInputWidget):
     def __init__(self, engine, parent=None):
         super(SkullKingInputWidget, self).__init__(engine, parent)
-        self.initUI()
         self.lastChoices = []
+        self.initUI()
 
     def initUI(self):
         self.widgetLayout = QGridLayout(self)
@@ -513,14 +514,6 @@ class SkullKingInputWidget(GameInputWidget):
                     if bn == sender_type and btn is not sender:
                         btn.setChecked(False)
 
-    # def betTricksChangedAction(self):
-    #     if any([piw.getWonHands() >= 0 for piw in self.playerInputList.values()]):
-    #         for piw in self.playerInputList.values():
-    #             piw.lockBets()
-    #     elif all([piw.getWonHands() < 0 for piw in self.playerInputList.values()]):
-    #         for piw in self.playerInputList.values():
-    #             piw.unlockBets()
-
     def changeRoundMode(self):
         for piw in self.playerInputList.values():
             piw.refreshButtons()
@@ -546,7 +539,7 @@ class SkullKingPlayerInputWidget(QGroupBox):
         self.mainLayout.setSpacing(0)
 
         self.setTitle(self.player)
-        self.setColour(colour)
+        self.pcolour = colour
 
         self.upperLayout = QHBoxLayout()
         self.upperLayout.addStretch(1)
@@ -558,11 +551,8 @@ class SkullKingPlayerInputWidget(QGroupBox):
         self.rightUpperLayout.setContentsMargins(0, 0, 0, 0)
 
         self.upperLayout.addLayout(self.rightUpperLayout)
-        # self.upperLayout.addStretch()
         self.upperLayout.addStretch(1)
 
-        # self.lowerGroup = QFrame(self)
-        # self.mainLayout.addWidget(self.lowerGroup)
         self.lowerLayout = QHBoxLayout()
         self.mainLayout.addLayout(self.lowerLayout)
         self.extraPointsGroup = QFrame(self)
@@ -578,6 +568,7 @@ class SkullKingPlayerInputWidget(QGroupBox):
             QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
         )
         self.bonusButtons = {}
+        self.setColour(colour)
         self.updateBonusButtons()
         self.reset()
 
@@ -693,9 +684,6 @@ class SkullKingPlayerInputWidget(QGroupBox):
 
     def setColour(self, colour):
         self.pcolour = colour
-        # css = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
-        # self.label.setStyleSheet(
-        # css = "QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
         css = """
             QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}
             QGroupBox:focus-within {{ border: 2px solid #0078d7; background-color: #e6f1fb;}}
@@ -703,11 +691,13 @@ class SkullKingPlayerInputWidget(QGroupBox):
                     subcontrol-origin: margin;
                     subcontrol-position: top center;
                     padding: 0 10px;
+                    background-color: transparent;
             }}
         """
         self.setStyleSheet(
             css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
         )
+        self.btWidget.setColour(self.pcolour)
 
     def getBonusButtons(self):
         return self.bonusButtons
@@ -766,7 +756,6 @@ class ClickableLabel(QLabel):
 
     candidateProperty = Property(bool, isCandidate, setCandidate)
 
-    # ------------------------------
     def startCandidateAnimation(self):
         self.anim.start()
 
@@ -841,6 +830,11 @@ class ClickableLabel(QLabel):
 
     def isLocked(self):
         return self.locked
+
+    def setColour(self, colour):
+        self.pcolour = colour
+        self.effect.setColor(self.pcolour)  # glow color
+        self.resetStyle()
 
 
 class BetTrickWidget(QWidget):
@@ -960,6 +954,11 @@ class BetTrickWidget(QWidget):
 
     def unlockTricks(self):
         self.tricksLabel.unlock()
+
+    def setColour(self, colour):
+        self.pcolour = colour
+        self.betLabel.setColour(colour)
+        self.tricksLabel.setColour(colour)
 
 
 class SkullKingBonusButton(QPushButton):
@@ -1121,9 +1120,6 @@ class SkullKingRoundsDetail(GameRoundsDetail):
 
     def createRoundPlot(self, engine, parent=None):
         return SkullKingRoundPlot(self.engine, self)
-
-    # def createQSBox(self, parent=None):
-    #     return SkullKingQSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
 
 
 class SkullKingRoundTable(GameRoundTable):

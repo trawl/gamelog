@@ -19,7 +19,9 @@ class StepProgressBar(QWidget):
         self.highlight_anim.setDuration(350)
         self.highlight_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
 
-        self.setMinimumHeight(36)
+        self.setMinimumHeight(30)
+        self.setMaximumHeight(30)
+        self.setMinimumWidth(20)
 
         # COLORS ----------------------------------------
         self.color_done_top = QColor(110, 220, 120)
@@ -93,7 +95,6 @@ class StepProgressBar(QWidget):
 
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-
         total = len(self.steps)
         W = self.width()
         H = self.height()
@@ -160,12 +161,14 @@ class StepProgressBar(QWidget):
         # ---------------------------
         # DRAW LABELS
         # ---------------------------
-        painter.setPen(Qt.GlobalColor.white)
-        font = QFont(self.font())
-        font.setBold(True)
-        painter.setFont(font)
 
-        for i, label in enumerate(self.steps):
-            left = i * segW
-            rect = QRectF(left, 0, segW, H)
-            painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, str(label))
+        if len(self.steps) <= 10:
+            painter.setPen(Qt.GlobalColor.white)
+            font = QFont(self.font())
+            font.setBold(True)
+            painter.setFont(font)
+
+            for i, label in enumerate(self.steps):
+                left = i * segW
+                rect = QRectF(left, 0, segW, H)
+                painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, str(label))

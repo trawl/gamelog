@@ -45,7 +45,7 @@ class CarcassonneWidget(GameWidget):
 
     def initUI(self):
         super(CarcassonneWidget, self).initUI()
-
+        self.roundTitleLabel.hide()
         self.finishButton = QPushButton(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.finishButton)
         self.finishButton.clicked.connect(self.finish)
@@ -64,19 +64,20 @@ class CarcassonneWidget(GameWidget):
         self.leftLayout.addWidget(self.detailGroup)
         self.detailGroup.edited.connect(self.updatePanel)
 
-        self.playerGroup = QGroupBox(self)
-        # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
-        self.rightLayout.addWidget(self.playerGroup)
+        # self.playerGroup = QGroupBox(self)
+        # # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
+        # self.rightLayout.addWidget(self.playerGroup)
 
-        self.playerGroup.setStyleSheet(
-            "QGroupBox { font-size: 18px; font-weight: bold; }"
-        )
-        self.playersLayout = QVBoxLayout(self.playerGroup)
+        # self.playerGroup.setStyleSheet(
+        #     "QGroupBox { font-size: 18px; font-weight: bold; }"
+        # )
+        self.playersLayout = QVBoxLayout()
+        self.matchGroupLayout.addLayout(self.playersLayout)
         # self.playersLayout.addStretch()
         self.playerGroupBox = {}
         dealer = self.engine.getDealer()
         for i, player in enumerate(self.engine.getListPlayers()):
-            pw = GamePlayerWidget(player, PlayerColours[i], self.playerGroup)
+            pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
 
             if self.engine.getNumRound() == 1 and player == dealer:
                 pw.setDealer()
@@ -91,7 +92,6 @@ class CarcassonneWidget(GameWidget):
     def retranslateUI(self):
         super(CarcassonneWidget, self).retranslateUI()
         self.finishButton.setText(self.tr("&Finish Game"))
-        self.playerGroup.setTitle(self.tr("Scoreboard"))
         self.gameInput.retranslateUI()
         self.detailGroup.retranslateUI()
 
@@ -194,13 +194,11 @@ class CarcassonneWidget(GameWidget):
 
     def updatePlayerOrder(self):
         GameWidget.updatePlayerOrder(self)
-        trash = QWidget()
-        old_layout = self.playersLayout
-        trash.setLayout(self.playersLayout)
-        self.playersLayout = QVBoxLayout(self.playerGroup)
         # self.playersLayout.addStretch()
+        for player in self.engine.getListPlayers():
+            self.playersLayout.removeWidget(self.playerGroupBox[player])
+
         for i, player in enumerate(self.engine.getListPlayers()):
-            old_layout.removeWidget(self.playerGroupBox[player])
             self.playersLayout.addWidget(self.playerGroupBox[player])
             self.playerGroupBox[player].setColour(PlayerColours[i])
         # self.playersLayout.addStretch()

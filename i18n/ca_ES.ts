@@ -1005,7 +1005,7 @@
     <message>
         <location filename="../gui/skullking.py" line="53"/>
         <source>standard_rounds</source>
-        <translation>Rondes estàndard</translation>
+        <translation>Rondes Estàndard</translation>
     </message>
     <message>
         <location filename="../gui/skullking.py" line="54"/>

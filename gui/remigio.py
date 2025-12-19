@@ -5,7 +5,6 @@ from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
     QFrame,
     QGridLayout,
-    QGroupBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -60,6 +59,7 @@ class RemigioWidget(GameWidget):
         self.topPointsLabel = QLabel(self.matchGroup)
         self.topPointsLabel.setStyleSheet("QLabel {font-weight: bold; }")
         self.configLayout.addWidget(self.topPointsLabel, 0, 1)
+        self.matchGroupLayout.addSpacing(20)
 
         self.detailGroup = RemigioRoundsDetail(
             self.engine, RemigioWidget.bgcolors, self
@@ -69,20 +69,21 @@ class RemigioWidget(GameWidget):
         # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
         self.leftLayout.addWidget(self.detailGroup)
 
-        self.playerGroup = QGroupBox(self)
+        # self.playerGroup = QGroupBox(self)
         # self.setStyleSheet("QGroupBox { font-size: 120%; font-weight: bold; }")
         # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
-        self.rightLayout.addWidget(self.playerGroup)
+        # self.rightLayout.addWidget(self.playerGroup)
 
         # self.playerGroup.setStyleSheet(
         #     "QGroupBox { font-size: 18px; font-weight: bold; }"
         # )
-        self.playersLayout = QVBoxLayout(self.playerGroup)
+        self.playersLayout = QVBoxLayout(self.matchGroup)
+        self.matchGroupLayout.addLayout(self.playersLayout)
         # self.playersLayout.addStretch()
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
             pw = RemigioPlayerWidget(
-                player, PlayerColours[i % len(PlayerColours)], self.playerGroup
+                player, PlayerColours[i % len(PlayerColours)], self.matchGroup
             )
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer():
@@ -101,7 +102,7 @@ class RemigioWidget(GameWidget):
         super(RemigioWidget, self).retranslateUI()
         self.topPointsLabel.setText(self.tr("Score Limit"))
         #         self.playerGroup.setTitle(i18n("RemigioWidget","Score"))
-        self.playerGroup.setTitle(self.tr("Scoreboard"))
+        # self.playerGroup.setTitle(self.tr("Scoreboard"))
         self.detailGroup.retranslateUI()
 
     def updateGameStatusLabel(self):
@@ -163,16 +164,13 @@ class RemigioWidget(GameWidget):
 
     def updatePlayerOrder(self):
         GameWidget.updatePlayerOrder(self)
-        trash = QWidget()
-        trash_layout = self.playersLayout
-        trash.setLayout(trash_layout)
-        self.playersLayout = QVBoxLayout(self.playerGroup)
-        self.playersLayout.addStretch()
+        for player in self.engine.getListPlayers():
+            self.playersLayout.removeWidget(self.playerGroupBox[player])
+
         for i, player in enumerate(self.engine.getListPlayers()):
-            trash_layout.removeWidget(self.playerGroupBox[player])
             self.playersLayout.addWidget(self.playerGroupBox[player])
             self.playerGroupBox[player].setColour(PlayerColours[i])
-        self.playersLayout.addStretch()
+        # self.playersLayout.addStretch()
         self.detailGroup.updatePlayerOrder()
 
 

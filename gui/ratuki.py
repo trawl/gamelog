@@ -6,7 +6,6 @@ from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QFrame,
     QGridLayout,
-    QGroupBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -65,18 +64,12 @@ class RatukiWidget(GameWidget):
         # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
         self.leftLayout.addWidget(self.detailGroup)
 
-        self.playerGroup = QGroupBox(self)
-        # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
-        self.rightLayout.addWidget(self.playerGroup)
-
-        self.playerGroup.setStyleSheet(
-            "QGroupBox { font-size: 18px; font-weight: bold; }"
-        )
-        self.playersLayout = QVBoxLayout(self.playerGroup)
+        self.playersLayout = QVBoxLayout()
+        self.matchGroupLayout.addLayout(self.playersLayout)
         # self.playersLayout.addStretch()
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
-            pw = GamePlayerWidget(player, PlayerColours[i], self.playerGroup)
+            pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer():
                 pw.setDealer()
@@ -91,7 +84,6 @@ class RatukiWidget(GameWidget):
         super(RatukiWidget, self).retranslateUI()
         self.topPointsLabel.setText(self.tr("Score Limit"))
         #         self.playerGroup.setTitle(i18n("RatukiWidget","Score"))
-        self.playerGroup.setTitle(self.tr("Scoreboard"))
         self.detailGroup.retranslateUI()
 
     def checkPlayerScore(self, player, score):
@@ -131,14 +123,10 @@ class RatukiWidget(GameWidget):
 
     def updatePlayerOrder(self):
         GameWidget.updatePlayerOrder(self)
-        trash = QWidget()
-        trash.setLayout(self.playersLayout)
-        self.playersLayout = QVBoxLayout(self.playerGroup)
-        # self.playersLayout.addStretch()
-        trash_layout = trash.layout()
+        for player in self.engine.getListPlayers():
+            self.playersLayout.removeWidget(self.playerGroupBox[player])
+
         for i, player in enumerate(self.engine.getListPlayers()):
-            if trash_layout:
-                trash_layout.removeWidget(self.playerGroupBox[player])
             self.playersLayout.addWidget(self.playerGroupBox[player])
             self.playerGroupBox[player].setColour(PlayerColours[i])
         # self.playersLayout.addStretch()
@@ -265,7 +253,6 @@ class RatukiPlayerInputWidget(QFrame):
             #     subcontrol-position: right; width: 60px; height: 60px; }}
             # """.format(sh)
             self.scoreSpinBox.setStyleSheet(sh)
-            print("Setting stylesheet to the scoreSpinBox")
 
 
 class RatukiRoundsDetail(GameRoundsDetail):
