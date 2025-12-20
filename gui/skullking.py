@@ -3,6 +3,7 @@
 
 from typing import cast
 
+from controllers.skullkingengine import SkullKingEngine
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import (
     Property,
@@ -30,7 +31,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from controllers.skullkingengine import SkullKingEngine
 from gui.game import (
     GameInputWidget,
     GamePlayerWidget,
@@ -72,7 +72,7 @@ class SkullKingWidget(GameWidget):
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         self.matchGroupLayout.addWidget(self.progressBar)
 
-        self.configLayout = QGridLayout()
+        self.configLayout = QVBoxLayout()
         self.matchGroupLayout.addLayout(self.configLayout)
         self.dealerPolicyCheckBox.hide()
 
@@ -88,9 +88,8 @@ class SkullKingWidget(GameWidget):
         self.scoringModeCombo.setCurrentText(
             self.tr(cast("SkullKingEngine", self.engine).getScoringMode())
         )
-        self.scoringModeCombo.setDisabled(self.engine.getNumRound() > 1)
         self.scoringModeCombo.currentIndexChanged.connect(self.changeScoringMode)
-        self.configLayout.addWidget(self.scoringModeCombo, 0, 1)
+        self.configLayout.addWidget(self.scoringModeCombo)
 
         # self.roundModeLabel = QLabel(self.tr("Card Counts"), self)
         # self.configLayout.addWidget(self.roundModeLabel, 1, 0)
@@ -101,9 +100,10 @@ class SkullKingWidget(GameWidget):
         self.roundModeCombo.setCurrentText(
             self.tr(cast("SkullKingEngine", self.engine).getRoundMode())
         )
-        self.roundModeCombo.setDisabled(self.engine.getNumRound() > 1)
         self.roundModeCombo.currentIndexChanged.connect(self.changeRoundMode)
-        self.configLayout.addWidget(self.roundModeCombo, 1, 1)
+        self.configLayout.addWidget(self.roundModeCombo)
+
+        self.enableConfigCombos(self.engine.getNumRound() == 1)
 
         self.detailGroup = SkullKingRoundsDetail(self.engine, self)
         self.detailGroup.edited.connect(self.updatePanel)
@@ -164,6 +164,10 @@ class SkullKingWidget(GameWidget):
                 )
             )
 
+    def enableConfigCombos(self, enable=True):
+        for combo in (self.scoringModeCombo, self.roundModeCombo):
+            combo.view().setEnabled(enable)
+
     def checkPlayerScore(self, player, score):
         return True
 
@@ -175,9 +179,7 @@ class SkullKingWidget(GameWidget):
 
     def updatePanel(self):
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
-        if self.engine.getNumRound() > 1:
-            self.scoringModeCombo.setEnabled(False)
-            self.roundModeCombo.setEnabled(False)
+        self.enableConfigCombos(self.engine.getNumRound() == 1)
         for player in self.players:
             score = self.engine.getScoreFromPlayer(player)
             self.playerGroupBox[player].updateDisplay(score)
@@ -1064,6 +1066,7 @@ class SkullKingBonusButton(QPushButton):
             img_to_draw = self.image
         else:
             img_to_draw = self.grey_image
+            self.setChecked(False)
 
         # --- draw icon ---
         painter.drawImage(self.rect(), img_to_draw)
@@ -1099,7 +1102,8 @@ class SkullKingBonusButton(QPushButton):
 
             # Draw the number
             painter.setPen(QColor(255, 255, 255, 220))
-            font = QFont("Arial", int(circle_diameter * 0.8), QFont.Weight.Bold)
+            painter.setPen(self.highlight_colour)
+            font = QFont("Arial", int(circle_diameter * 0.9), QFont.Weight.Bold)
             painter.setFont(font)
 
             painter.drawText(
