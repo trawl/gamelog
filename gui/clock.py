@@ -3,8 +3,8 @@
 
 import datetime
 
-from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import QFrame, QLCDNumber
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QTimer
+from PySide6.QtWidgets import QFrame, QGraphicsOpacityEffect, QLCDNumber
 
 
 class GameClock(QLCDNumber):
@@ -17,14 +17,23 @@ class GameClock(QLCDNumber):
         self._paintenabled = True
         self.refreshinterval = 50
         self.timer = QTimer(self)
-        self.blinkTimer = QTimer(self)
-        self.blinkTimer.setInterval(500)  # toggle twice per second = 1 Hz blink
-        self.blinkTimer.timeout.connect(self.blink)
         self.timer.start(self.refreshinterval)
         self.setDigitCount(5)
         self.showTime()
         self.timer.timeout.connect(self.showTime)
         self.setFrameStyle(QFrame.Shape.NoFrame)
+
+        self.opacityEffect = QGraphicsOpacityEffect(self)
+        self.setGraphicsEffect(self.opacityEffect)
+        self.opacityEffect.setOpacity(1.0)
+
+        self.blinkAnim = QPropertyAnimation(self.opacityEffect, b"opacity", self)
+        self.blinkAnim.setDuration(1000)  # 1 second cycle
+        self.blinkAnim.setLoopCount(-1)
+        self.blinkAnim.setKeyValueAt(0.0, 1.0)  # fully visible
+        self.blinkAnim.setKeyValueAt(0.5, 0.2)  # fade out midpoint
+        self.blinkAnim.setKeyValueAt(1.0, 1.0)
+        self.blinkAnim.setEasingCurve(QEasingCurve.Type.InOutSine)
 
     def showTime(self):
         now = datetime.datetime.now()
@@ -42,27 +51,17 @@ class GameClock(QLCDNumber):
         now = datetime.datetime.now()
         timediff = now - self.startTime
         self.accumulated += timediff.seconds
-        self.blinkTimer.start()
+        self.blinkAnim.start()
 
     def unpauseTimer(self):
-        self.blinkTimer.stop()
+        self.blinkAnim.stop()
+        self.opacityEffect.setOpacity(1.0)
         self._paintenabled = True
         self.startTime = datetime.datetime.now()
         self.timer.start(self.refreshinterval)
         self.showTime()
-        self.update()
 
     def stopTimer(self):
         self.timer.stop()
-        self.blinkTimer.stop()
         self.starTime = None
         self.accumulated = 0
-
-    def blink(self):
-        self._paintenabled = not self._paintenabled
-        self.update()
-
-    def paintEvent(self, event):
-        if not self._paintenabled:
-            return
-        super().paintEvent(event)
