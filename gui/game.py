@@ -84,7 +84,7 @@ class GameWidget(Tab):
         self.roundGroup = QGroupBox(self)
         self.leftLayout.addWidget(self.roundGroup)
         self.matchGroup = QGroupBox(self)
-        self.matchGroup.setMinimumWidth(200)
+        self.matchGroup.setMinimumWidth(220)
         self.rightLayout.addWidget(self.matchGroup)
 
         # Round Group
