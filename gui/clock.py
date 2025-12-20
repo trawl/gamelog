@@ -14,8 +14,12 @@ class GameClock(QLCDNumber):
         self.startTime = datetime.datetime.now()
         self.accumulated = elapsed
         self.paused = False
+        self._paintenabled = True
         self.refreshinterval = 50
         self.timer = QTimer(self)
+        self.blinkTimer = QTimer(self)
+        self.blinkTimer.setInterval(500)  # toggle twice per second = 1 Hz blink
+        self.blinkTimer.timeout.connect(self.blink)
         self.timer.start(self.refreshinterval)
         self.setDigitCount(5)
         self.showTime()
@@ -38,13 +42,27 @@ class GameClock(QLCDNumber):
         now = datetime.datetime.now()
         timediff = now - self.startTime
         self.accumulated += timediff.seconds
+        self.blinkTimer.start()
 
     def unpauseTimer(self):
+        self.blinkTimer.stop()
+        self._paintenabled = True
         self.startTime = datetime.datetime.now()
         self.timer.start(self.refreshinterval)
         self.showTime()
+        self.update()
 
     def stopTimer(self):
         self.timer.stop()
+        self.blinkTimer.stop()
         self.starTime = None
         self.accumulated = 0
+
+    def blink(self):
+        self._paintenabled = not self._paintenabled
+        self.update()
+
+    def paintEvent(self, event):
+        if not self._paintenabled:
+            return
+        super().paintEvent(event)
