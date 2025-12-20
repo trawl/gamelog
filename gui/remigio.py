@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from controllers.remigioengine import RemigioEngine
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
     QFrame,
@@ -14,7 +15,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from controllers.remigioengine import RemigioEngine
 from gui.game import (
     GameInputWidget,
     GamePlayerWidget,
@@ -348,9 +348,11 @@ class RemigioPlayerInputWidget(QFrame):
 class RemigioPlayerWidget(GamePlayerWidget):
     def koPlayer(self):
         self.background = QtGui.QPixmap("icons/skull.png")
+        self.update()
 
     def unKoPlayer(self):
         self.background = None
+        self.update()
 
 
 class RemigioRoundsDetail(GameRoundsDetail):
