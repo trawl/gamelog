@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import ctypes
+import shutil
+import subprocess
+import sys
+
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QAction
@@ -31,6 +36,8 @@ class MainWindow(QMainWindow):
         self.openedGames = []
         self.translator = translator
         self.qt_translator = qt_translator
+        self.sleep_blocker = SleepBlocker()
+        self.sleep_blocker.start()
         self.initUI()
 
     def initUI(self):
@@ -101,9 +108,14 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         if self.ensureClose():
+            self.sleep_blocker.stop()
             event.accept()
         else:
             event.ignore()
+
+    def showEvent(self, event):
+        self.sleep_blocker.start()
+        super().showEvent(event)
 
     def ensureClose(self):
         realopened = [x for x in self.openedGames if not x.isFinished()]
@@ -214,6 +226,11 @@ class MainWindow(QMainWindow):
     def changeEvent(self, event):
         if event.type() == QtCore.QEvent.Type.LanguageChange:
             self.retranslateUi()
+        elif event.type() == QtCore.QEvent.Type.ActivationChange:
+            if self.isActiveWindow():
+                self.sleep_blocker.start()
+            else:
+                self.sleep_blocker.stop()
 
         return super(MainWindow, self).changeEvent(event)
 
@@ -256,3 +273,74 @@ class AboutDialog(QDialog):
         self.content.setWordWrap(True)
         self.content.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.contentlayout.addWidget(self.content)
+
+
+class SleepBlocker:
+    def __init__(self):
+        self.platform = sys.platform
+        self.proc = None
+        self.active = False
+
+        # Windows constants
+        self.ES_CONTINUOUS = 0x80000000
+        self.ES_SYSTEM_REQUIRED = 0x00000001
+        self.ES_DISPLAY_REQUIRED = 0x00000002
+
+    def start(self):
+        if self.active:
+            return
+
+        if self.platform == "darwin":
+            self._start_macos()
+        elif self.platform.startswith("win"):
+            self._start_windows()
+        elif self.platform.startswith("linux"):
+            self._start_linux()
+
+        self.active = True
+
+    def stop(self):
+        if not self.active:
+            return
+
+        if self.platform == "darwin":
+            self._stop_macos()
+        elif self.platform.startswith("win"):
+            self._stop_windows()
+        elif self.platform.startswith("linux"):
+            self._stop_linux()
+
+        self.active = False
+
+    # -------- macOS --------
+    def _start_macos(self):
+        self.proc = subprocess.Popen(
+            ["caffeinate", "-dims"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+    def _stop_macos(self):
+        if self.proc:
+            self.proc.terminate()
+            self.proc = None
+
+    # -------- Windows --------
+    def _start_windows(self):
+        ctypes.windll.kernel32.SetThreadExecutionState(
+            self.ES_CONTINUOUS | self.ES_SYSTEM_REQUIRED | self.ES_DISPLAY_REQUIRED
+        )
+
+    def _stop_windows(self):
+        ctypes.windll.kernel32.SetThreadExecutionState(self.ES_CONTINUOUS)
+
+    # -------- Linux (X11 only) --------
+    def _start_linux(self):
+        if shutil.which("xset"):
+            subprocess.call(["xset", "s", "off"])
+            subprocess.call(["xset", "-dpms"])
+
+    def _stop_linux(self):
+        if shutil.which("xset"):
+            subprocess.call(["xset", "s", "on"])
+            subprocess.call(["xset", "+dpms"])
