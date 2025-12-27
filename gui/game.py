@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import ctypes
+import shutil
+import subprocess
+import sys
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
@@ -70,6 +73,7 @@ class GameWidget(Tab):
         self.gameInput = GameInputWidget(self.engine)
         self.finished = False
         self.hideInputOnFinish = True
+        self.screen_blocker = SleepBlocker()
         self.toggleScreenLock()
         self.initUI()
 
@@ -385,19 +389,12 @@ class GameWidget(Tab):
         self.gameInput.updatePlayerOrder()
 
     def toggleScreenLock(self, on=False):
-        ES_CONTINUOUS = 0x80000000
-        ES_DISPLAY_REQUIRED = 0x00000002
-        try:
-            if not on:
-                ctypes.windll.kernel32.SetThreadExecutionState(
-                    ES_CONTINUOUS | ES_DISPLAY_REQUIRED
-                )
-                print("Disabled Screensaver")
-            else:
-                ctypes.windll.kernel32.SetThreadExecutionState(0)
-                print("Enabled Screensaver")
-        except Exception:
-            pass
+        if not on:
+            self.screen_blocker.start()
+            print("Enabled Screensaver")
+        else:
+            self.screen_blocker.stop()
+            print("Disabled Screensaver")
 
 
 class GameInputWidget(QWidget):
@@ -764,3 +761,74 @@ class GameRoundPlot(QWidget):
 
     def retranslatePlot(self):
         pass
+
+
+class SleepBlocker:
+    def __init__(self):
+        self.platform = sys.platform
+        self.proc = None
+        self.active = False
+
+        # Windows constants
+        self.ES_CONTINUOUS = 0x80000000
+        self.ES_SYSTEM_REQUIRED = 0x00000001
+        self.ES_DISPLAY_REQUIRED = 0x00000002
+
+    def start(self):
+        if self.active:
+            return
+
+        if self.platform == "darwin":
+            self._start_macos()
+        elif self.platform.startswith("win"):
+            self._start_windows()
+        elif self.platform.startswith("linux"):
+            self._start_linux()
+
+        self.active = True
+
+    def stop(self):
+        if not self.active:
+            return
+
+        if self.platform == "darwin":
+            self._stop_macos()
+        elif self.platform.startswith("win"):
+            self._stop_windows()
+        elif self.platform.startswith("linux"):
+            self._stop_linux()
+
+        self.active = False
+
+    # -------- macOS --------
+    def _start_macos(self):
+        self.proc = subprocess.Popen(
+            ["caffeinate", "-dims"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+    def _stop_macos(self):
+        if self.proc:
+            self.proc.terminate()
+            self.proc = None
+
+    # -------- Windows --------
+    def _start_windows(self):
+        ctypes.windll.kernel32.SetThreadExecutionState(
+            self.ES_CONTINUOUS | self.ES_SYSTEM_REQUIRED | self.ES_DISPLAY_REQUIRED
+        )
+
+    def _stop_windows(self):
+        ctypes.windll.kernel32.SetThreadExecutionState(self.ES_CONTINUOUS)
+
+    # -------- Linux (X11 only) --------
+    def _start_linux(self):
+        if shutil.which("xset"):
+            subprocess.call(["xset", "s", "off"])
+            subprocess.call(["xset", "-dpms"])
+
+    def _stop_linux(self):
+        if shutil.which("xset"):
+            subprocess.call(["xset", "s", "on"])
+            subprocess.call(["xset", "+dpms"])
