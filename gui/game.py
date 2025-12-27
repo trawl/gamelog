@@ -69,6 +69,7 @@ class GameWidget(Tab):
         self.engine.printStats()
         self.gameInput = GameInputWidget(self.engine)
         self.finished = False
+        self.hideInputOnFinish = True
         self.toggleScreenLock()
         self.initUI()
 
@@ -294,7 +295,7 @@ class GameWidget(Tab):
         self.updatePanel()
         if not self.engine.getWinner():
             self.setDealer()
-        else:
+        elif self.hideInputOnFinish:
             self.gameInput.hide()
 
     def changeDealingPolicy(self, *args, **kwargs):
