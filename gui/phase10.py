@@ -111,7 +111,7 @@ class Phase10Widget(GameWidget):
 
     def initUI(self):
         super(Phase10Widget, self).initUI()
-
+        self.hideInputOnFinish = False
         self.roundTitleLabel.hide()
         self.phasesInOrderCheckBox = QCheckBox(self.matchGroup)
         self.phasesInOrderCheckBox.setChecked(self.engine.getPhasesInOrderFlag())
@@ -330,8 +330,8 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
     def __init__(self, parent=None):
         super(Phase10ScoreSpinBox, self).__init__(parent)
         self.setSingleStep(5)
-        self.setRange(0, 200)
-        self.setValue(5)
+        self.setRange(-5, 200)
+        self.setValue(-5)
         self.clear()
         self.fixed = False
         self.setSizePolicy(

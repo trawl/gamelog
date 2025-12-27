@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
+import random
 
 from controllers.db import db
 from model.base import GenericRound, GenericRoundMatch
@@ -49,15 +49,26 @@ class Phase10Match(GenericRoundMatch):
             #             try:
             #                 minScore=sys.maxint
             #             except AttributeError:
-            minScore = sys.maxsize
             # Here we have the players with all phases completed and with the
             # lowest score in case of draw, the player with less points in the
             # last round is the winner
             candidates = wcscores[sorted(wcscores)[0]]
-            for n in candidates:
-                if self.rounds[-1].score[n] < minScore:
-                    self.winner = n
-                    minScore = self.rounds[-1].score[n]
+            if len(candidates) == 1:
+                self.winner = candidates[0]
+                return
+
+            min_last_round_score = min([self.rounds[-1].score[n] for n in candidates])
+            last_round_candidates = [
+                n
+                for n in candidates
+                if self.rounds[-1].score[n] == min_last_round_score
+            ]
+
+            if len(last_round_candidates) == 1:
+                self.winner = last_round_candidates[0]
+                return
+
+            self.winner = random.choice(last_round_candidates)
 
     def createRound(self, numround):
         return Phase10Round(numround)
