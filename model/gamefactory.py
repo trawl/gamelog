@@ -8,6 +8,7 @@ from model.pocha import PochaMatch
 from model.ratuki import RatukiMatch
 from model.remigio import RemigioMatch
 from model.skullking import SkullKingMatch
+from model.toma6 import Toma6Match
 
 
 class GameFactory:
@@ -28,5 +29,7 @@ class GameFactory:
             return PochaMatch(players)
         if gname == "Skull King":
             return SkullKingMatch(players)
+        if gname == "Toma6":
+            return Toma6Match(players)
 
         return GenericMatch(players)

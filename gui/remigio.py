@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from typing import cast
 
-from controllers.remigioengine import RemigioEngine
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
     QFrame,
@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from controllers.remigioengine import RemigioEngine
 from gui.game import (
     GameInputWidget,
     GamePlayerWidget,
@@ -38,7 +39,6 @@ class RemigioWidget(GameWidget):
     def initUI(self):
         super(RemigioWidget, self).initUI()
 
-        self.gameInput = RemigioInputWidget(self.engine, RemigioWidget.bgcolors, self)
         self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
 
@@ -61,25 +61,12 @@ class RemigioWidget(GameWidget):
         self.configLayout.addWidget(self.topPointsLabel, 0, 1)
         self.matchGroupLayout.addSpacing(20)
 
-        self.detailGroup = RemigioRoundsDetail(
-            self.engine, RemigioWidget.bgcolors, self
-        )
+        self.detailGroup = self.createRoundsDetail(self)
         self.detailGroup.edited.connect(self.updatePanel)
-        #         self.detailGroup = GameRoundsDetail(self.engine, self)
-        # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
         self.leftLayout.addWidget(self.detailGroup)
 
-        # self.playerGroup = QGroupBox(self)
-        # self.setStyleSheet("QGroupBox { font-size: 120%; font-weight: bold; }")
-        # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
-        # self.rightLayout.addWidget(self.playerGroup)
-
-        # self.playerGroup.setStyleSheet(
-        #     "QGroupBox { font-size: 18px; font-weight: bold; }"
-        # )
-        self.playersLayout = QVBoxLayout(self.matchGroup)
+        self.playersLayout = QVBoxLayout()
         self.matchGroupLayout.addLayout(self.playersLayout)
-        # self.playersLayout.addStretch()
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
             pw = RemigioPlayerWidget(
@@ -94,16 +81,18 @@ class RemigioWidget(GameWidget):
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
 
-        # self.playersLayout.addStretch()
-
         self.retranslateUI()
 
     def retranslateUI(self):
         super(RemigioWidget, self).retranslateUI()
         self.topPointsLabel.setText(self.tr("Score Limit"))
-        #         self.playerGroup.setTitle(i18n("RemigioWidget","Score"))
-        # self.playerGroup.setTitle(self.tr("Scoreboard"))
         self.detailGroup.retranslateUI()
+
+    def createGameInputWidget(self, parent=None):
+        return RemigioInputWidget(self.engine, RemigioWidget.bgcolors, parent)
+
+    def createRoundsDetail(self, parent=None):
+        return RemigioRoundsDetail(self.engine, RemigioWidget.bgcolors, parent)
 
     def updateGameStatusLabel(self):
         super(RemigioWidget, self).updateGameStatusLabel()
@@ -116,7 +105,7 @@ class RemigioWidget(GameWidget):
             self.gameStatusLabel.show()
 
     def getPlayerExtraInfo(self, player):
-        c_type = self.gameInput.getCloseType()
+        c_type = cast(RemigioInputWidget, self.gameInput).getCloseType()
         if c_type:
             return {"closeType": c_type}
         else:
@@ -143,10 +132,10 @@ class RemigioWidget(GameWidget):
             self.playerGroupBox[player].updateDisplay(score)
             if self.engine.isPlayerOff(player):
                 self.playerGroupBox[player].koPlayer()
-                self.gameInput.koPlayer(player)
+                cast(RemigioInputWidget, self.gameInput).koPlayer(player)
             else:
                 self.playerGroupBox[player].unKoPlayer()
-                self.gameInput.unKoPlayer(player)
+                cast(RemigioInputWidget, self.gameInput).unKoPlayer(player)
 
     def changeTop(self, newtop):
         try:

@@ -6,6 +6,7 @@ from gui.pocha import PochaWidget
 from gui.ratuki import RatukiWidget
 from gui.remigio import RemigioWidget
 from gui.skullking import SkullKingWidget
+from gui.toma6 import Toma6Widget
 
 
 class GameWidgetFactory:
@@ -23,6 +24,8 @@ class GameWidgetFactory:
             return PochaWidget(gname, players, None, parent)
         if gname == "Skull King":
             return SkullKingWidget(gname, players, None, parent)
+        if gname == "Toma6":
+            return Toma6Widget(gname, players, None, parent)
         return None
 
     @classmethod
@@ -39,4 +42,6 @@ class GameWidgetFactory:
             return PochaWidget(gname, None, engine, parent)
         if gname == "Skull King":
             return SkullKingWidget(gname, None, engine, parent)
+        if gname == "Toma6":
+            return Toma6Widget(gname, None, engine, parent)
         return None
