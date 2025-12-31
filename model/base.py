@@ -204,6 +204,12 @@ class GenericMatch(object):
     def isCancelled(self):
         return self.state == self.CANCELLED
 
+    def getActivePlayers(self):
+        return self.getPlayers()
+
+    def isPlayerOff(self, player):
+        return False
+
     # To be implemented in subclasses
     @abstractmethod
     def playerStart(self, player):

@@ -22,6 +22,7 @@ from controllers.ratukiengine import RatukiEngine
 from controllers.remigioengine import RemigioEngine
 from controllers.skullkingengine import SkullKingEngine
 from controllers.statsengine import ParticularStatsEngine, StatsEngine
+from controllers.toma6engine import Toma6Engine
 
 
 class GameEngineFactory:
@@ -41,6 +42,8 @@ class GameEngineFactory:
             return PochaEngine()
         if gname == "Skull King":
             return SkullKingEngine()
+        if gname == "Toma6":
+            return Toma6Engine()
 
         return GameEngine()
 

@@ -70,7 +70,7 @@ class GameWidget(Tab):
                 self.engine.addPlayer(nick)
             self.engine.begin()
         self.engine.printStats()
-        self.gameInput = GameInputWidget(self.engine)
+        self.gameInput = self.createGameInputWidget(self)
         self.finished = False
         self.hideInputOnFinish = True
         self.screen_blocker = SleepBlocker()
@@ -180,6 +180,12 @@ class GameWidget(Tab):
         ):
             self.dealerPolicyCheckBox.setText(self.tr("Winner deals"))
         self.updateGameStatusLabel()
+
+    def createGameInputWidget(self, parent=None):
+        return GameInputWidget(self.engine, parent)
+
+    def createRoundsDetail(self, parent=None):
+        return GameRoundsDetail(self.engine, parent)
 
     def updateGameStatusLabel(self):
         self.gameStatusLabel.setStyleSheet(
