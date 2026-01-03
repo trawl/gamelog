@@ -770,30 +770,29 @@ class Phase10RoundPlot(GameRoundPlot):
         current_layout = self.layout()
         if current_layout is not None:
             QWidget().setLayout(current_layout)
-        self.widgetLayout = QGridLayout()
+        self.widgetLayout = QVBoxLayout()
         self.setLayout(self.widgetLayout)
 
+        self.plotsLayout = QGridLayout()
+        self.widgetLayout.addLayout(self.plotsLayout)
+
         self.phasesLabel = QLabel("", self)
-        self.widgetLayout.addWidget(self.phasesLabel, 0, 0)
+        self.plotsLayout.addWidget(self.phasesLabel, 0, 0)
         self.scoreLabel = QLabel("", self)
-        self.widgetLayout.addWidget(self.scoreLabel, 0, 1)
-        self.playersTitleLabel = QLabel("", self)
-        self.widgetLayout.addWidget(self.playersTitleLabel, 0, 2)
+        self.plotsLayout.addWidget(self.scoreLabel, 0, 1)
 
         self.canvas = PlotView(PlayerColours, self)
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
         self.canvas.addLinePlot()
-        self.widgetLayout.addWidget(self.canvas, 1, 0)
+        self.plotsLayout.addWidget(self.canvas, 1, 0)
         self.scorecanvas = PlotView(PlayerColours, self)
         self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
         self.scorecanvas.addLinePlot()
-        self.widgetLayout.addWidget(self.scorecanvas, 1, 1)
+        self.plotsLayout.addWidget(self.scorecanvas, 1, 1)
 
-        self.playersListLayout = QVBoxLayout()
-        self.widgetLayout.addLayout(self.playersListLayout, 1, 2)
-
+        self.playersListLayout = QHBoxLayout()
+        self.widgetLayout.addLayout(self.playersListLayout)
         self.playersListLayout.addStretch()
-        #         self.playersListLayout.addWidget(self.playersTitleLabel)
 
         for i, player in enumerate(self.engine.getListPlayers()):
             colour = PlayerColours[i]
@@ -801,9 +800,7 @@ class Phase10RoundPlot(GameRoundPlot):
             css = "QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}"
             label.setStyleSheet(css.format(colour.red(), colour.green(), colour.blue()))
             self.playersListLayout.addWidget(label)
-        #             self.playersListLayout.addStretch()
-
-        self.playersListLayout.addStretch()
+            self.playersListLayout.addStretch()
 
         self.retranslatePlot()
         self.updatePlot()
@@ -852,8 +849,8 @@ class Phase10RoundPlot(GameRoundPlot):
         trash = QWidget()
         self.widgetLayout.removeItem(self.playersListLayout)
         trash.setLayout(self.playersListLayout)
-        self.playersListLayout = QVBoxLayout()
-        self.widgetLayout.addLayout(self.playersListLayout, 1, 2)
+        self.playersListLayout = QHBoxLayout()
+        self.widgetLayout.addLayout(self.playersListLayout)
 
         self.playersListLayout.addStretch()
 
@@ -864,7 +861,7 @@ class Phase10RoundPlot(GameRoundPlot):
             label.setStyleSheet(css.format(colour.red(), colour.green(), colour.blue()))
             self.playersListLayout.addWidget(label)
 
-        self.playersListLayout.addStretch()
+            self.playersListLayout.addStretch()
 
 
 class Phase10QSTW(QuickStatsTW):
