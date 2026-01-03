@@ -237,16 +237,17 @@ class LinePlot(QGraphicsItem):
                     )
             else:
                 PlotLine(pxstart - 2, py, pxend, py, 0.5, colour, self)
-            nlabel = QGraphicsSimpleTextItem("{}".format(vy), self)
-            if self.dark_mode:
-                nlabel.setBrush(QtGui.QColor(255, 255, 255))
-            font = nlabel.font()
-            font.setPixelSize(20)
-            nlabel.setFont(font)
-            nlabelrect = nlabel.boundingRect()
-            nlabel.setPos(
-                pxstart - nlabelrect.width() - 5, py - nlabelrect.height() / 2
-            )
+            if vy != 0:
+                nlabel = QGraphicsSimpleTextItem("{}".format(vy), self)
+                if self.dark_mode:
+                    nlabel.setBrush(QtGui.QColor(255, 255, 255))
+                font = nlabel.font()
+                font.setPixelSize(20)
+                nlabel.setFont(font)
+                nlabelrect = nlabel.boundingRect()
+                nlabel.setPos(
+                    pxstart - nlabelrect.width() - 5, py - nlabelrect.height() / 2
+                )
             py -= unitincrement * factor
             vy += factor
 
@@ -295,14 +296,15 @@ class LinePlot(QGraphicsItem):
                 header = self.hheaders[vx]
             except IndexError:
                 header = vx
-            nlabel = QGraphicsSimpleTextItem("{}".format(header), self)
-            if self.dark_mode:
-                nlabel.setBrush(QtGui.QColor(255, 255, 255))
-            font = nlabel.font()
-            font.setPixelSize(20)
-            nlabel.setFont(font)
-            nlabelrect = nlabel.boundingRect()
-            nlabel.setPos(px + 0.5 - nlabelrect.width() / 2, pystart + 3)
+            if vx != 0 and header != 0:
+                nlabel = QGraphicsSimpleTextItem("{}".format(header), self)
+                if self.dark_mode:
+                    nlabel.setBrush(QtGui.QColor(255, 255, 255))
+                font = nlabel.font()
+                font.setPixelSize(20)
+                nlabel.setFont(font)
+                nlabelrect = nlabel.boundingRect()
+                nlabel.setPos(px + 0.5 - nlabelrect.width() / 2, pystart + 7)
             px += unitincrement * factor
             vx += factor
 
@@ -322,7 +324,7 @@ class LinePlot(QGraphicsItem):
         pen.setStyle(QtCore.Qt.PenStyle.DotLine)
         limitline.setPen(pen)
 
-    def paintSeries(self):
+    def paintSeriesOrig(self):
         for i, ser in enumerate(self.seriesData):
             pp = None
             colour = self.colours[i]
@@ -333,6 +335,46 @@ class LinePlot(QGraphicsItem):
                 if vx > 0 and pp is not None:
                     PlotLine(pp.x(), pp.y(), point.x(), point.y(), 5, colour, self)
                 pp = point
+
+    def paintSeries(self):
+        coordinate_colours = {}
+        line_colours = {}
+        pp = (0, 0)
+        for i, ser in enumerate(self.seriesData):
+            for vx, vy in enumerate(ser):
+                if (vx, vy) not in coordinate_colours:
+                    coordinate_colours[(vx, vy)] = [self.colours[i]]
+                else:
+                    coordinate_colours[(vx, vy)].append(self.colours[i])
+                if vx > 0:
+                    line_key = (pp, (vx, vy))
+                    if line_key not in line_colours:
+                        line_colours[line_key] = [self.colours[i]]
+                    else:
+                        line_colours[line_key].append(self.colours[i])
+                pp = (vx, vy)
+
+        for ((px, py), (vx, vy)), colours in line_colours.items():
+            pp = self.value2point(px, py)
+            point = self.value2point(vx, vy)
+            linewidth = max(3, 6 // len(colours))
+            n = len(colours)
+            offsets = [(i - (n - 1) / 2) * linewidth for i in range(n)]
+
+            for colour, offset in zip(colours, offsets):
+                PlotLine(
+                    pp.x(),
+                    pp.y() + offset,
+                    point.x(),
+                    point.y() + offset,
+                    linewidth,
+                    colour,
+                    self,
+                )
+
+        for (vx, vy), colours in coordinate_colours.items():
+            point = self.value2point(vx, vy)
+            PlotDot(point.x(), point.y(), 20, colours, self)
 
     def value2point(self, vx, vy):
         px = self.hmargin + vx * self.awidth / float(self.xvmax - self.xvmin)
@@ -361,17 +403,14 @@ class PlotLine(QGraphicsLineItem):
 
 
 class PlotDot(QGraphicsEllipseItem):
-    def __init__(self, x, y, width, colour=None, parent=None):
+    def __init__(self, x, y, width, colours=[], parent=None):
         radius = width / 2.0
         super(PlotDot, self).__init__(x - radius, y - radius, width, width, parent)
-        brush = self.brush()
-        brush.setStyle(QtCore.Qt.BrushStyle.SolidPattern)
-        if colour:
-            brush.setColor(colour)
-            pen = self.pen()
-            pen.setColor(colour)
-            self.setPen(pen)
-        self.setBrush(brush)
+        try:
+            iter(colours)
+            self.colours = colours
+        except TypeError:
+            self.colours = [colours]
 
     #         self.setAcceptHoverEvents(True)
 
@@ -384,6 +423,19 @@ class PlotDot(QGraphicsEllipseItem):
 
     def paint(self, painter, options, widget=None):
         painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, True)
+        brush = self.brush()
+        brush.setStyle(QtCore.Qt.BrushStyle.SolidPattern)
+        angle_per = 360 / len(self.colours)
+        start_angle = 0.0
+
+        painter.setPen(QtCore.Qt.PenStyle.NoPen)
+
+        for colour in self.colours:
+            painter.setBrush(QtGui.QBrush(colour))
+            painter.drawPie(
+                self.boundingRect(), int(start_angle) * 16, int(angle_per) * 16
+            )
+            start_angle += angle_per
         super(PlotDot, self).paint(painter, options, widget)
         painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, False)
 
