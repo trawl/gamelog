@@ -3,7 +3,6 @@
 
 from typing import cast
 
-from controllers.skullkingengine import SkullKingEngine
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import (
     Property,
@@ -31,6 +30,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from controllers.skullkingengine import SkullKingEngine
 from gui.game import (
     GameInputWidget,
     GamePlayerWidget,
