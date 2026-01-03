@@ -71,7 +71,7 @@ class StepProgressBar(QWidget):
 
     def setCurrentStep(self, step):
         step = int(step)
-        if step == self.current_step or step < 0 or step >= len(self.steps):
+        if step == self.current_step or step < 0 or step >= len(self.steps) + 1:
             return
 
         old_step = self.current_step
