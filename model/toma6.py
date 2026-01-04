@@ -28,6 +28,9 @@ class Toma6Match(GenericRoundMatch):
     def getTop(self):
         return self.top
 
+    def setTop(self, top):
+        self.top = top
+
 
 class Toma6Round(GenericRound):
     pass

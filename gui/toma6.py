@@ -37,8 +37,8 @@ class Toma6Widget(RemigioWidget):
 
     def initUI(self):
         super(Toma6Widget, self).initUI()
-        self.topPointsLabel.hide()
-        self.topPointsLineEdit.hide()
+        # self.topPointsLabel.hide()
+        # self.topPointsLineEdit.hide()
         # self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
 
