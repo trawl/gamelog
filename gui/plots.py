@@ -140,6 +140,7 @@ class LinePlot(QGraphicsItem):
         self.awidth = self.scene().sceneRect().width() - self.hmargin * 2
         self.aheight = self.scene().sceneRect().height() - self.vmargin * 2
         xmax = max([len(ser) - 1 for ser in self.seriesData] + [1])
+        xmax = max(xmax, len(self.hheaders) - 1)
         marginp = 0.05
         gxmargin = self.awidth * marginp * xmax / (self.awidth - self.awidth * marginp)
         self.xvmax = xmax + gxmargin
@@ -286,17 +287,17 @@ class LinePlot(QGraphicsItem):
         #        vx +=factor
 
         while px <= pxend:
-            colour = QtGui.QColor(0, 0, 0, 255)
-            if self.dark_mode:
-                colour = QtGui.QColor(255, 255, 255, 255)
-            else:
-                colour = QtGui.QColor(0, 0, 0, 255)
-            PlotLine(px + 0.5, pystart + 2, px + 0.5, pyend, 1.5, colour, self)
             try:
                 header = self.hheaders[vx]
             except IndexError:
                 header = vx
             if vx != 0 and header != 0:
+                colour = QtGui.QColor(0, 0, 0, 255)
+                if self.dark_mode:
+                    colour = QtGui.QColor(255, 255, 255, 255)
+                else:
+                    colour = QtGui.QColor(0, 0, 0, 255)
+                PlotLine(px + 0.5, pystart + 2, px + 0.5, pyend, 1.5, colour, self)
                 nlabel = QGraphicsSimpleTextItem("{}".format(header), self)
                 if self.dark_mode:
                     nlabel.setBrush(QtGui.QColor(255, 255, 255))

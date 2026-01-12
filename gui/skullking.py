@@ -288,6 +288,7 @@ class SkullKingWidget(GameWidget):
         self.setRoundTitle()
         self.progressBar.setSteps(self.engine.getRoundSequence())
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
+        self.detailGroup.updatePlot()
         self.gameInput.changeRoundMode()
 
     def changeScoringMode(self, _index):
@@ -1170,14 +1171,16 @@ class SkullKingRoundPlot(GameRoundPlot):
         roundNames = [""]
         for player in self.engine.getPlayers():
             scores[player] = [0]
-
-        for rnd in self.engine.getRounds():
-            hands = self.engine.getHands(rnd.getNumRound())
-            roundNames.append("{}".format(hands))
+        for i, roundName in enumerate(cast(SkullKingEngine, self.engine).getRoundSequence()):
+            roundNames.append("{}".format(roundName))
             for player in self.engine.getPlayers():
-                rndscore = rnd.getPlayerScore(player)
-                accumscore = scores[player][-1] + rndscore
-                scores[player].append(accumscore)
+                try:
+                    rnd = self.engine.getRounds()[i]
+                    rndscore = rnd.getPlayerScore(player)
+                    accumscore = scores[player][-1] + rndscore
+                    scores[player].append(accumscore)
+                except IndexError:
+                    pass
 
         self.canvas.addHHeaders(roundNames)
         self.canvas.clearPlotContents()
