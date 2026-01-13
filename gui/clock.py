@@ -15,7 +15,8 @@ class GameClock(QLCDNumber):
         self.accumulated = elapsed
         self.paused = False
         self._paintenabled = True
-        self.refreshinterval = 50
+        self.refreshinterval = 500
+        self.showcolons = True
         self.timer = QTimer(self)
         self.timer.start(self.refreshinterval)
         self.setDigitCount(5)
@@ -41,13 +42,19 @@ class GameClock(QLCDNumber):
         elapsed = timediff.seconds + self.accumulated
         hours, remainder = divmod(elapsed, 3600)
         minutes, seconds = divmod(remainder, 60)
-        text = "{0:02}:{1:02}:{2:02}".format(hours, minutes, seconds)
+        if self.showcolons:
+            text = "{0:02}:{1:02}:{2:02}".format(hours, minutes, seconds)
+        else:
+            text = "{0:02} {1:02} {2:02}".format(hours, minutes, seconds)
         if hours:
             self.setDigitCount(8)
         self.display(text)
+        self.showcolons = not self.showcolons
 
     def pauseTimer(self):
         self.timer.stop()
+        self.showcolons = True
+        self.showTime()
         now = datetime.datetime.now()
         timediff = now - self.startTime
         self.accumulated += timediff.seconds
@@ -59,6 +66,7 @@ class GameClock(QLCDNumber):
         self._paintenabled = True
         self.startTime = datetime.datetime.now()
         self.timer.start(self.refreshinterval)
+        self.showcolons = True
         self.showTime()
 
     def stopTimer(self):
