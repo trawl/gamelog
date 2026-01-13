@@ -44,18 +44,16 @@ class PochaEngine(RoundGameEngine):
 
     def setSuitType(self, st="spanish"):
         self.suitType = st
+        slope = (len(cast("PochaMatch", self.match).getHands()) - 4) // 2
         if st == "french":
-            self.directions = (
-                ["going up"] * 7
-                + ["diamonds", "hearts", "pikes", "clovers"]
-                + ["going down"] * 7
-            )
+            suits = ["diamonds", "hearts", "spades", "clovers"]
         else:
-            self.directions = (
-                ["going up"] * 7
-                + ["coins", "cups", "swords", "clubs"]
-                + ["going down"] * 7
-            )
+            suits = ["coins", "cups", "swords", "clubs"]
+        self.directions = (
+            ["going up"] * slope
+            + suits
+            + ["going down"] * slope
+        )
 
     def getSuitType(self):
         return self.suitType
