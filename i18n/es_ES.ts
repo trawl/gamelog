@@ -758,12 +758,12 @@
     <message>
         <location filename="../gui/pocha.py" line="37"/>
         <source>going up</source>
-        <translation>subiendo</translation>
+        <translation>↑</translation>
     </message>
     <message>
         <location filename="../gui/pocha.py" line="38"/>
         <source>going down</source>
-        <translation>bajando</translation>
+        <translation>↓</translation>
     </message>
     <message>
         <location filename="../gui/pocha.py" line="39"/>
@@ -780,22 +780,22 @@
     <message>
         <location filename="../gui/pocha.py" line="41"/>
         <source>coins</source>
-        <translation>Oros</translation>
+        <translation>◉</translation>
     </message>
     <message>
         <location filename="../gui/pocha.py" line="42"/>
         <source>cups</source>
-        <translation>Copas</translation>
+        <translation>∪</translation>
     </message>
     <message>
         <location filename="../gui/pocha.py" line="43"/>
         <source>swords</source>
-        <translation>Espadas</translation>
+        <translation>⚔</translation>
     </message>
     <message>
         <location filename="../gui/pocha.py" line="44"/>
         <source>clubs</source>
-        <translation>Bastos</translation>
+        <translation>❘</translation>
     </message>
     <message>
         <location filename="../gui/pocha.py" line="110"/>
@@ -820,22 +820,22 @@
     <message>
         <location filename="../gui/pocha.py" line="45"/>
         <source>diamonds</source>
-        <translation>Diamantes</translation>
+        <translation>♦</translation>
     </message>
     <message>
         <location filename="../gui/pocha.py" line="46"/>
         <source>hearts</source>
-        <translation>Corazones</translation>
+        <translation>♥</translation>
     </message>
     <message>
         <location filename="../gui/pocha.py" line="47"/>
-        <source>pikes</source>
-        <translation>Picas</translation>
+        <source>spades</source>
+        <translation>♠</translation>
     </message>
     <message>
         <location filename="../gui/pocha.py" line="48"/>
         <source>clovers</source>
-        <translation>Tréboles</translation>
+        <translation>♣</translation>
     </message>
     <message>
         <location filename="../gui/pocha.py" line="182"/>

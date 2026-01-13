@@ -9,8 +9,8 @@ class PochaMatch(GenericRoundMatch):
         super(PochaMatch, self).__init__(players)
         self.game = "Pocha"
         self.dealingp = 1
-        self.hands = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 12, 11, 10, 9, 8]
-        self.maxRounds = 18
+        self.hands = [1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 8, 7, 6, 5, 4, 3, 2, 1]
+        self.maxRounds = len(self.hands)
 
     def resumeMatch(self, idMatch):
         if not super(PochaMatch, self).resumeMatch(idMatch):

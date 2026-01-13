@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from typing import cast
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
@@ -44,7 +45,7 @@ class PochaWidget(GameWidget):
     QCoreApplication.translate("PochaWidget", "clubs")
     QCoreApplication.translate("PochaWidget", "diamonds")
     QCoreApplication.translate("PochaWidget", "hearts")
-    QCoreApplication.translate("PochaWidget", "pikes")
+    QCoreApplication.translate("PochaWidget", "spades")
     QCoreApplication.translate("PochaWidget", "clovers")
 
     def createEngine(self):
@@ -74,7 +75,6 @@ class PochaWidget(GameWidget):
         self.frenchSuitRadio = QRadioButton(self)
         self.suitTypeGroup.addButton(self.frenchSuitRadio)
         self.configLayout.addWidget(self.frenchSuitRadio)
-        self.frenchSuitRadio.toggled.connect(self.changeSuit)
         self.frenchSuitRadio.setChecked(self.engine.getSuitType() == "french")
 
         self.dealerPolicyCheckBox.hide()
@@ -125,13 +125,11 @@ class PochaWidget(GameWidget):
 
     def setRoundTitle(self):
         super(PochaWidget, self).setRoundTitle()
-        nround = self.engine.getNumRound()
         hands = self.engine.getHands()
         direction = self.engine.getDirection()
         if hands == 1:
             self.roundTitleLabel.setText(
-                "{} - {} {} {}".format(
-                    self.tr("Round {0}").format(str(nround)),
+                "{} {} {}".format(
                     str(hands),
                     self.tr("hand"),
                     self.tr(direction),
@@ -139,8 +137,7 @@ class PochaWidget(GameWidget):
             )
         else:
             self.roundTitleLabel.setText(
-                "{} - {} {} {}".format(
-                    self.tr("Round {0}").format(str(nround)),
+                "{} {} {}".format(
                     str(hands),
                     self.tr("hands"),
                     self.tr(direction),
@@ -525,6 +522,7 @@ class PochaRoundsDetail(GameRoundsDetail):
     def __init__(self, engine, parent=None):
         self.bgcolors = [0xCCFF99, 0xFFCC99]
         super(PochaRoundsDetail, self).__init__(engine, parent)
+        self.container.setCurrentWidget(self.plot)
 
     def createRoundTable(self, engine, parent=None):
         return PochaRoundTable(self.engine, self.bgcolors, parent)
@@ -547,7 +545,9 @@ class PochaRoundTable(GameRoundTable):
         self.insertRow(i)
         hands = self.engine.getHands(r.getNumRound())
         direction = self.engine.getDirection(r.getNumRound())
-        hitem = QTableWidgetItem("{} {}".format(hands, self.tr(direction)))
+        hitem = QTableWidgetItem(
+            "{} {}".format(hands, QCoreApplication.translate("PochaWidget", direction))
+        )
         self.setVerticalHeaderItem(i, hitem)
 
         for j, player in enumerate(self.engine.getListPlayers()):
@@ -573,6 +573,9 @@ class PochaRoundTable(GameRoundTable):
 
 
 class PochaRoundPlot(GameRoundPlot):
+    def retranslatePlot(self):
+        self.updatePlot()
+
     def updatePlot(self):
         super(PochaRoundPlot, self).updatePlot()
         if not self.isPlotInited():
@@ -582,10 +585,15 @@ class PochaRoundPlot(GameRoundPlot):
         for player in self.engine.getPlayers():
             scores[player] = [0]
 
+        for i, hands in enumerate(cast(PochaEngine, self.engine).getRoundSequence()):
+            direction = self.engine.getDirection(i + 1)
+            roundNames.append(
+                "{} {}".format(
+                    hands, QCoreApplication.translate("PochaWidget", direction)
+                )
+            )
+
         for rnd in self.engine.getRounds():
-            hands = self.engine.getHands(rnd.getNumRound())
-            direction = self.engine.getDirection(rnd.getNumRound())
-            roundNames.append("{} {}".format(hands, self.tr(direction))[:3])
             for player in self.engine.getPlayers():
                 rndscore = rnd.getPlayerScore(player)
                 accumscore = scores[player][-1] + rndscore
@@ -595,6 +603,8 @@ class PochaRoundPlot(GameRoundPlot):
         self.canvas.clearPlotContents()
         for player in self.engine.getListPlayers():
             self.canvas.addSeries(scores[player], player)
+
+        self.canvas._scene.update()
 
 
 class PochaQSTW(QuickStatsTW):
