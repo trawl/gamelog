@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from controllers.db import db
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QAction
@@ -13,7 +14,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from controllers.db import db
 from gui.languagechooser import LanguageChooser
 from gui.newgame import NewGameWidget
 
@@ -144,6 +144,7 @@ class MainWindow(QMainWindow):
                 return False
 
             for game in realopened:
+                game.toggleScreenLock(True)
                 if reply == QMessageBox.StandardButton.No:
                     game.closeMatch()
                 else:
