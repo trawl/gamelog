@@ -7,7 +7,6 @@ from typing import cast
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import (
-    QButtonGroup,
     QCheckBox,
     QFrame,
     QGridLayout,
@@ -15,8 +14,9 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLCDNumber,
-    QRadioButton,
+    QPushButton,
     QSizePolicy,
+    QSpinBox,
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
@@ -31,7 +31,6 @@ from gui.game import (
     GameRoundTable,
     GameWidget,
     PlayerColours,
-    ScoreSpinBox,
 )
 from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from gui.plots import PlotView
@@ -192,8 +191,6 @@ class Phase10Widget(GameWidget):
         if self.engine.getWinner():
             self.details.updateStats()
 
-    #         self.plot.updatePlot()
-
     def unsetDealer(self):
         self.gameInput.unsetDealer()
 
@@ -223,12 +220,6 @@ class Phase10InputWidget(GameInputWidget):
         self.initUI()
 
     def initUI(self):
-        self.winnerButtonGroup = QButtonGroup()
-        self.nobodyWinnerRadioButton = QRadioButton(self)
-        self.nobodyWinnerRadioButton.hide()
-        self.nobodyWinnerRadioButton.setChecked(True)
-        self.winnerButtonGroup.addButton(self.nobodyWinnerRadioButton)
-
         players = self.engine.getListPlayers()
         if len(players) >= 4:
             players_grid = True
@@ -236,11 +227,10 @@ class Phase10InputWidget(GameInputWidget):
         else:
             players_grid = False
             self.widgetLayout = QVBoxLayout(self)
-        #             self.widgetLayout.addStretch()
 
         for np, player in enumerate(players):
             self.playerInputList[player] = Phase10PlayerWidget(
-                player, self.engine, self.winnerButtonGroup, self
+                player, self.engine, self
             )
             self.playerInputList[player].roundWinnerSet.connect(self.changedWinner)
             if players_grid:
@@ -252,7 +242,11 @@ class Phase10InputWidget(GameInputWidget):
                     self.playerInputList[player]
                 )
 
-    #         if not players_grid: self.widgetLayout.addStretch()
+    def changedWinner(self, winner):
+        super().changedWinner(winner)
+        for player, piw in self.playerInputList.items():
+            if player != winner and piw.getScore() == 0:
+                piw.setScore(5)
 
     def retranslateUI(self):
         for piw in self.playerInputList.values():
@@ -269,7 +263,6 @@ class Phase10InputWidget(GameInputWidget):
         return self.playerInputList[player].getRoundPhase()
 
     def updatePanel(self):
-        self.nobodyWinnerRadioButton.setChecked(True)
         for player in self.engine.getListPlayers():
             score = self.engine.getScoreFromPlayer(player)
             completed = self.engine.getCompletedPhasesFromPlayer(player)
@@ -298,7 +291,6 @@ class Phase10InputWidget(GameInputWidget):
         return None
 
     def updatePlayerOrder(self):
-        #         QWidget().setLayout(self.layout())
         trash = QWidget()
         current_layout = self.layout()
         if current_layout is not None:
@@ -325,25 +317,27 @@ class Phase10InputWidget(GameInputWidget):
                 )
             self.playerInputList[player].setColour(PlayerColours[i])
 
+    def mousePressEvent(self, event):
+        return QWidget.mousePressEvent(self, event)
 
-class Phase10ScoreSpinBox(ScoreSpinBox):
+
+class Phase10ScoreSpinBox(QSpinBox):
     def __init__(self, parent=None):
         super(Phase10ScoreSpinBox, self).__init__(parent)
         self.setSingleStep(5)
-        self.setRange(-5, 200)
-        self.setValue(-5)
-        self.clear()
+        self.setRange(0, 200)
+        self.setValue(5)
+        # self.clear()
         self.fixed = False
         self.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.MinimumExpanding
         )
         self.setFixedWidth(60)
         self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.editingFinished.connect(self.clearFixed)
         self.setValidDisplay()
 
     def validate(self, text, pos):
-        self.valueChanged.emit(self.value())
+        # self.valueChanged.emit(self.value())
         res = QtGui.QValidator.State.Acceptable
         if text == "":
             res = QtGui.QValidator.State.Intermediate
@@ -359,39 +353,24 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
 
     def fixup(self, inp: str):
         if not inp:
-            return "0"
+            return "-5"
         if not self.hasAcceptableInput():
-            self.setValue(5)
+            newvalue = round(int(inp) / 5) * 5
+            self.setValue(newvalue)
             self.fixed = True
-            return "5"
+            return str(newvalue)
         return inp
-
-    def clearFixed(self):
-        self.valueChanged.emit(self.value())
-        if self.fixed:
-            self.setInvalidDisplay()
-            self.fixed = False
-            self.clear()
 
     def setDisabled(self, disable):
         if disable:
-            self.setValue(0)
+            self.clear()
         else:
             self.setValue(5)
         self.setValidDisplay()
-        self.clear()
-        self.valueChanged.emit(self.value())
         super(Phase10ScoreSpinBox, self).setDisabled(disable)
 
     def setEnabled(self, enable):
-        if enable:
-            self.setValue(5)
-        else:
-            self.setValue(0)
-        self.setValidDisplay()
-        self.clear()
-        self.valueChanged.emit(self.value())
-        super(Phase10ScoreSpinBox, self).setEnabled(enable)
+        self.setDisabled(not enable)
 
     def setValidDisplay(self):
         sh = "font-size: 24px; font-weight: bold;"
@@ -406,28 +385,15 @@ class Phase10ScoreSpinBox(ScoreSpinBox):
         """.format(sh)
         self.setStyleSheet(sh)
 
-    def setInvalidDisplay(self):
-        sh = "font-size: 24px; font-weight: bold; background-color: #FF5E5E"
-        sh = """
-        QSpinBox {{ {} }}
-        QSpinBox::up-button  {{subcontrol-origin: margin;
-                               subcontrol-position: top; min-width: 60px;
-                               max-width:100px; height: 30px; }}
-        QSpinBox::down-button  {{subcontrol-origin: margin;
-                                 subcontrol-position: bottom; min-width: 60px;
-                                 max-width:100px; height: 30px; }}
-        """.format(sh)
-        self.setStyleSheet(sh)
-
 
 class Phase10PlayerWidget(GamePlayerWidget):
     roundWinnerSet = QtCore.Signal(str)
+    playerScoreChanged = QtCore.Signal()
 
-    def __init__(self, nick, engine, bgroup=None, parent=None):
+    def __init__(self, nick, engine, parent=None):
         self.engine = engine
         self.current_phase = min(self.engine.getRemainingPhasesFromPlayer(nick))
         self.phases_in_order = self.engine.getPhasesInOrderFlag()
-        self.bgroup = bgroup
         super(Phase10PlayerWidget, self).__init__(
             nick, PlayerColours[self.engine.getListPlayers().index(nick)], parent
         )
@@ -459,8 +425,6 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.phaseLabelsLayout = QGridLayout()
         self.phaseLabelsLayout.setSpacing(5)
 
-        self.checkboxLayout = QVBoxLayout()
-
         self.scoreLCD = QLCDNumber(self)
         self.scoreLCD.setSegmentStyle(QLCDNumber.SegmentStyle.Flat)
         self.mainLayout.addWidget(self.scoreLCD)
@@ -472,18 +436,8 @@ class Phase10PlayerWidget(GamePlayerWidget):
             css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
         )
 
-        # Left part - score
-        # self.lowerLayout.addWidget(self.iconlabel)
         self.lowerLayout.addWidget(self.scoreLCD)
         self.lowerLayout.addLayout(self.phaseLabelsLayout)
-        self.lowerLayout.addLayout(self.checkboxLayout)
-
-        # self.iconlabel.setMinimumSize(60, 60)
-
-        #         self.scoreLCD.setMinimumWidth(100)
-        #         self.scoreLCD.setMaximumWidth(200)
-        #         self.scoreLCD.setMinimumHeight(60)
-        #         self.scoreLCD.setMaximumHeight(80)
 
         self.scoreLCD.display(self.engine.getScoreFromPlayer(self.player))
 
@@ -501,48 +455,36 @@ class Phase10PlayerWidget(GamePlayerWidget):
             )
 
         # Middle part - Inputs
-        self.roundWinnerRadioButton = QRadioButton()
-        if self.bgroup:
-            self.bgroup.addButton(self.roundWinnerRadioButton)
-        self.checkboxLayout.addWidget(self.roundWinnerRadioButton)
-
-        self.roundPhaseClearedCheckbox = QCheckBox(self)
-        self.checkboxLayout.addWidget(self.roundPhaseClearedCheckbox)
-
         self.roundScore = Phase10ScoreSpinBox(self)
         self.roundScore.setMaximumWidth(90)
         self.roundScore.valueChanged.connect(self.updateRoundPhaseCleared)
         self.lowerLayout.addWidget(self.roundScore)
 
-        self.roundWinnerRadioButton.toggled.connect(self.roundScore.setDisabled)
-        self.roundWinnerRadioButton.toggled.connect(
-            self.roundPhaseClearedCheckbox.setDisabled
-        )
-        self.roundWinnerRadioButton.toggled.connect(
-            self.roundPhaseClearedCheckbox.setChecked
-        )
-        self.roundWinnerRadioButton.toggled.connect(self.roundWinnerSetAction)
+        self.roundPhaseClearedCheckbox = Phase10ClearedCheckBox(self)
+        self.roundPhaseClearedCheckbox.setChecked(True)
+        self.roundPhaseClearedCheckbox.setEnabled(False)
+        self.roundPhaseClearedCheckbox.setMinimumSize(40, 40)
+        self.lowerLayout.addWidget(self.roundPhaseClearedCheckbox)
 
         self.retranslateUI()
 
     def retranslateUI(self):
-        self.roundWinnerRadioButton.setText(self.tr("Winner"))
-        self.roundPhaseClearedCheckbox.setText(self.tr("Completed"))
+        # self.roundWinnerRadioButton.setText(self.tr("Winner"))
+        # self.roundPhaseClearedCheckbox.setText(self.tr("Completed"))
         self.updatePhaseName()
 
     def updatePhase10Display(self, points, completed_phases, remaining_phases):
-        if len(remaining_phases) == 0:
-            self.current_phase = 0
-        else:
-            self.current_phase = min(remaining_phases)
-
-        self.roundWinnerRadioButton.setDown(True)
         if points >= 1000:
             self.scoreLCD.setDigitCount(4)
         self.scoreLCD.display(points)
         self.roundScore.setValue(5)
-        self.roundScore.clear()
-        self.roundPhaseClearedCheckbox.setChecked(False)
+        self.roundPhaseClearedCheckbox.setChecked(True)
+        if len(remaining_phases) == 0:
+            self.current_phase = 0
+            self.roundScore.clear()
+        else:
+            self.current_phase = min(remaining_phases)
+        self.roundPhaseClearedCheckbox.setEnabled(False)
 
         for phase, label in enumerate(self.phaseLabels, start=1):
             if phase == self.current_phase and not self.engine.getWinner():
@@ -563,6 +505,9 @@ class Phase10PlayerWidget(GamePlayerWidget):
             return int(self.roundScore.value())
         except Exception:
             return -1
+
+    def setScore(self, score):
+        self.roundScore.setValue(score)
 
     def switchPhasesInOrder(self, in_order):
         self.phases_in_order = in_order
@@ -588,30 +533,30 @@ class Phase10PlayerWidget(GamePlayerWidget):
         phasenames = getPhaseNames(self.engine.getPhases())
         self.phaseNameLabel.setText(phasenames[self.current_phase - 1])
 
-    def updateRoundPhaseCleared(self, _):
+    def updateRoundPhaseCleared(self, score):
         try:
-            score = int(self.roundScore.text())
+            score = int(score)
         except Exception:
             self.roundPhaseClearedCheckbox.setChecked(False)
             return
 
         if score < 0:
-            if not self.roundWinnerRadioButton.isChecked():
-                self.roundPhaseClearedCheckbox.setChecked(False)
+            self.roundPhaseClearedCheckbox.setChecked(False)
             return
 
         if score % 5 != 0:
             return
 
         if score >= 50:
-            self.roundWinnerRadioButton.setChecked(False)
+            self.roundPhaseClearedCheckbox.setEnabled(True)
             self.roundPhaseClearedCheckbox.setChecked(False)
         elif score == 0:
-            self.roundWinnerRadioButton.setChecked(True)
             self.roundPhaseClearedCheckbox.setChecked(True)
+            self.roundPhaseClearedCheckbox.setEnabled(False)
+            self.roundWinnerSet.emit(self.player)
         else:
-            self.roundWinnerRadioButton.setChecked(False)
             self.roundPhaseClearedCheckbox.setChecked(True)
+            self.roundPhaseClearedCheckbox.setEnabled(False)
 
     def mousePressEvent(self, event):
         child = self.childAt(event.pos())
@@ -624,7 +569,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
     #
 
     def isRoundWinner(self):
-        return self.roundWinnerRadioButton.isChecked()
+        return self.roundScore.value() == 0
 
     def getRoundPhase(self):
         return self.current_phase
@@ -633,24 +578,61 @@ class Phase10PlayerWidget(GamePlayerWidget):
         return self.roundPhaseClearedCheckbox.isChecked()
 
     def roundWinnerSetAction(self, isset):
+        self.roundPhaseClearedCheckbox.setChecked(True)
         if isset:
             self.roundWinnerSet.emit(self.player)
+            self.roundScore.setValue(0)
+        else:
+            self.roundScore.setValue(5)
 
     def reset(self):
         pass
 
     def finish(self):
-        self.roundWinnerRadioButton.toggled.disconnect(self.roundScore.setDisabled)
-        self.roundWinnerRadioButton.toggled.disconnect(
-            self.roundPhaseClearedCheckbox.setDisabled
-        )
-        self.roundWinnerRadioButton.toggled.disconnect(
-            self.roundPhaseClearedCheckbox.setChecked
-        )
-        self.roundWinnerRadioButton.toggled.disconnect(self.roundWinnerSetAction)
-        self.roundWinnerRadioButton.setDisabled(True)
         self.roundPhaseClearedCheckbox.setDisabled(True)
         self.roundScore.setDisabled(True)
+
+
+class Phase10ClearedCheckBox(QPushButton):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setCheckable(True)
+        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self._checked_text = "✓"
+        self._unchecked_text = "✕"
+
+        self._update_text()
+        # Update text automatically when state changes
+        self.toggled.connect(self._update_text)
+
+    def setChecked(self, checked):
+        super().setChecked(checked)
+        self._update_text()
+
+    def _update_text(self, _=None):
+        if self.isChecked():
+            self.setText(self._checked_text)
+            self.setStyleSheet("""
+            QPushButton {
+                border: 2px solid green;
+                border-radius: 6px;
+                background: green;
+                font-size: 26px;
+                font-weight: bold;
+            }
+            """)
+        else:
+            self.setText(self._unchecked_text)
+            self.setStyleSheet("""
+            QPushButton {
+                border: 2px solid red;
+                border-radius: 6px;
+                background: red;
+                font-size: 26px;
+                font-weight: bold;
+            }
+            """)
 
 
 class Phase10Label(QLabel):
@@ -683,17 +665,17 @@ class Phase10Label(QLabel):
 
     def setPassed(self):
         self.state = 1
-        css = "QLabel { background-color: green;font-weight: bold; color:white }"
+        css = "QLabel { background-color: green;font-weight: bold; color:white; border-radius: 6px }"
         self.setStyleSheet(css)
 
     def setCurrent(self):
         self.state = 2
-        css = "QLabel { background-color: orange; font-weight: bold; color:white }"
+        css = "QLabel { background-color: orange; font-weight: bold; color:white; border-radius: 6px  }"
         self.setStyleSheet(css)
 
     def setRemaining(self):
         self.state = 0
-        css = "QLabel { background-color: red; font-weight: bold; color:white }"
+        css = "QLabel { background-color: red; font-weight: bold; color:white; border-radius: 6px  }"
         self.setStyleSheet(css)
 
     def getNumber(self):
@@ -842,8 +824,23 @@ class Phase10RoundPlot(GameRoundPlot):
         for player in self.engine.getListPlayers():
             self.canvas.addSeries(phases[player], player)
             self.scorecanvas.addSeries(scores[player], player)
-
+        roundNames = self.getRoundNames()
+        self.canvas.addHHeaders(roundNames)
+        self.scorecanvas.addHHeaders(roundNames)
         self.updatePlayerOrder()
+
+    def getRoundNames(self):
+        return list(
+            range(
+                1,
+                10
+                + self.engine.getNumRound()
+                - max(
+                    len(self.engine.getCompletedPhasesFromPlayer(player))
+                    for player in self.engine.getPlayers()
+                ),
+            )
+        )
 
     def updatePlayerOrder(self):
         trash = QWidget()
