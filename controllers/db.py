@@ -105,7 +105,9 @@ class GameLogDB:
 
     def getPlayers(self):
         cur = db.execute("Select * from Player order by nick")
-        return cur
+        if cur:
+            return cur
+        return []
 
     def addPlayer(self, nick, fullname):
         db.execute(
