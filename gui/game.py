@@ -730,7 +730,8 @@ class ScoreSpinBox(QWidget):
 
     def setDisabled(self, o):
         super().setDisabled(o)
-        self.setValue(self._minimum)
+        if o:
+            self.setValue(self._minimum)
 
 
 class IconLabel(QLabel):
