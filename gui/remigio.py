@@ -5,10 +5,10 @@ from typing import cast
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
     QFrame,
+    QGraphicsOpacityEffect,
     QGridLayout,
     QHBoxLayout,
     QLabel,
-    QLineEdit,
     QSizePolicy,
     QTableWidgetItem,
     QVBoxLayout,
@@ -42,30 +42,63 @@ class RemigioWidget(GameWidget):
         self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
 
-        self.configLayout = QGridLayout()
-        self.matchGroupLayout.addLayout(self.configLayout)
-        self.topPointsLineEdit = QLineEdit(self.matchGroup)
-        self.topPointsLineEdit.setText(str(self.engine.getTop()))
-        self.topPointsLineEdit.setValidator(
-            QtGui.QIntValidator(1, 10000, self.topPointsLineEdit)
+        # self.configLayout = QHBoxLayout()
+        # self.matchGroupLayout.addLayout(self.configLayout)
+        # self.topPointsLineEdit = QLineEdit(self.matchGroup)
+        # self.topPointsLineEdit.setText(str(self.engine.getTop()))
+        # self.topPointsLineEdit.setValidator(
+        #     QtGui.QIntValidator(1, 10000, self.topPointsLineEdit)
+        # )
+        # self.topPointsLineEdit.setFixedWidth(50)
+        # sp = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        # self.topPointsLineEdit.setSizePolicy(sp)
+        # self.topPointsLineEdit.editingFinished.connect(self.changeTop)
+        # self.topPointsLineEdit.setDisabled(self.engine.getNumRound() > 1)
+        # self.topPointsLineEdit.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        # self.topPointsLineEdit.setStyleSheet("""
+        #     QLineEdit {
+        #         padding: 2px;
+        #         border-radius: 6px;
+        #         border: 1px solid #555555;
+        #         background: transparent;
+        #     }
+        #     QLineEdit:focus {
+        #         border: 2px solid #ffffff;   /* highlight color */
+        #     }
+        # """)
+        self.topPointsLineEdit = ScoreSpinBox(self.matchGroup)
+        self.topPointsLineEdit.setValue(self.engine.getTop())
+        self.topPointsLineEdit.lineEdit().setFocusPolicy(
+            QtCore.Qt.FocusPolicy.ClickFocus
         )
-        self.topPointsLineEdit.setFixedWidth(50)
-        sp = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.topPointsLineEdit.setSizePolicy(sp)
-        self.topPointsLineEdit.textChanged.connect(self.changeTop)
         self.topPointsLineEdit.setDisabled(self.engine.getNumRound() > 1)
-        self.configLayout.addWidget(self.topPointsLineEdit, 0, 0)
+        self.topPointsLineEdit.valueChanged.connect(self.changeTop)
+        # self.topPointsLineEdit.setMaximumWidth(200)
+        # self.topPointsLineEdit.setFixedSize(140, 50)
+        self.topPointsLineEdit.setSizePolicy(
+            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Maximum
+        )
+        self.matchGroupLayout.addWidget(
+            self.topPointsLineEdit, alignment=QtCore.Qt.AlignmentFlag.AlignLeft
+        )
+        # self.topPointsLineEdit.hide()
 
         self.topPointsLabel = QLabel(self.matchGroup)
         self.topPointsLabel.setStyleSheet("QLabel {font-weight: bold; }")
-        self.configLayout.addWidget(self.topPointsLabel, 0, 1)
-        self.matchGroupLayout.addSpacing(20)
+        self.topPointsLabel.hide()
+        # self.configLayout.addWidget(self.topPointsLabel)
+        # self.matchGroupLayout.addSpacing(20)
 
         self.detailGroup = self.createRoundsDetail(self)
         self.detailGroup.edited.connect(self.updatePanel)
         self.leftLayout.addWidget(self.detailGroup)
 
-        self.playersLayout = QVBoxLayout()
+        np = len(self.players)
+        if np <= 6:
+            self.playersLayout = QVBoxLayout()
+        else:
+            self.playersLayout = QGridLayout()
+            self.matchGroup.setMinimumWidth(int(self.matchGroup.minimumWidth() * 1.5))
         self.matchGroupLayout.addLayout(self.playersLayout)
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
@@ -78,7 +111,10 @@ class RemigioWidget(GameWidget):
             if self.engine.isPlayerOff(player):
                 print("Should set {} to ko...".format(player))
                 pw.koPlayer()
-            self.playersLayout.addWidget(pw)
+            if np < 8:
+                self.playersLayout.addWidget(pw)
+            else:
+                self.playersLayout.addWidget(pw, i // 2, i % 2)  # pyright: ignore[reportArgumentType]
             self.playerGroupBox[player] = pw
 
         self.retranslateUI()
@@ -137,7 +173,9 @@ class RemigioWidget(GameWidget):
                 self.playerGroupBox[player].unKoPlayer()
                 cast(RemigioInputWidget, self.gameInput).unKoPlayer(player)
 
-    def changeTop(self, newtop):
+    def changeTop(self, newtop=None):
+        if newtop is None:
+            newtop = self.topPointsLineEdit.value()
         try:
             newtop = int(newtop)
             self.engine.setTop(newtop)
@@ -170,16 +208,25 @@ class RemigioInputWidget(GameInputWidget):
         self.initUI()
 
     def initUI(self):
-        self.widgetLayout = QHBoxLayout(self)
-
         for i, player in enumerate(self.engine.getListPlayers()):
             self.playerInputList[player] = RemigioPlayerInputWidget(
                 player, self.bgcolors, PlayerColours[i], self
             )
             if self.engine.isPlayerOff(player):
                 self.koPlayer(player)
-            self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
+
+        nplayers = len(self.engine.getListPlayers())
+        if nplayers < 8:
+            self.widgetLayout = QHBoxLayout(self)
+            for piw in self.playerInputList.values():
+                self.widgetLayout.addWidget(piw)
+        else:
+            self.widgetLayout = QGridLayout(self)
+            for i, piw in enumerate(self.playerInputList.values()):
+                self.widgetLayout.addWidget(
+                    piw, i // ((nplayers + 1) // 2), i % ((nplayers + 1) // 2)
+                )
 
     def getCloseType(self):
         try:
@@ -216,6 +263,38 @@ class RemigioInputWidget(GameInputWidget):
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].setColour(PlayerColours[i])
 
+    # def updatePlayersLayout(self):
+    #     active_players = self.engine.getActivePlayers()
+    #     nactive = len(active_players)
+    #     trash_layout = self.layout()
+    #     if trash_layout:
+    #         QWidget().setLayout(trash_layout)
+    #         # while trash_layout.count():
+    #         #     trash_layout.takeAt(0)
+    #         # trash_layout.deleteLater()
+
+    #     for player, piw in self.playerInputList.items():
+    #         if piw.isKo():
+    #             self.widgetLayout.removeWidget(piw)
+    #             self.koplayersLayout.addWidget(piw)
+    #         if not piw.isKo():
+    #             self.koplayersLayout.removeWidget(piw)
+
+    #     if nactive < 8:
+    #         self.widgetLayout = QHBoxLayout()
+    #         for player in active_players:
+    #             self.widgetLayout.addWidget(self.playerInputList[player])  # pyright: ignore[reportArgumentType]
+    #     else:
+    #         print(f"Creating Grid layout for {nactive}")
+    #         self.widgetLayout = QGridLayout()
+    #         for i, player in enumerate(active_players):
+    #             self.widgetLayout.addWidget(
+    #                 self.playerInputList[player],
+    #                 i // ((nactive + 1) // 2),
+    #                 i % ((nactive + 1) // 2),
+    #             )  # pyright: ignore[reportArgumentType]
+    #     self.setLayout(self.widgetLayout)
+
 
 class RemigioPlayerInputWidget(QFrame):
     winnerSet = QtCore.Signal(str)
@@ -239,10 +318,11 @@ class RemigioPlayerInputWidget(QFrame):
         self.label.setWordWrap(False)
 
         self.scoreSpinBox = ScoreSpinBox(self)
-        self.scoreSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        # self.scoreSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         #         self.scoreSpinBox.setMaximumWidth(150)
         self.scoreSpinBox.setRange(-1, 100)
         self.setColour(colour)
+        self.scoreSpinBox.spacePressed.connect(self.setWinner)
 
         self.lowerLayout = QHBoxLayout()
         self.mainLayout.addLayout(self.lowerLayout)
@@ -256,19 +336,14 @@ class RemigioPlayerInputWidget(QFrame):
 
     def setColour(self, colour):
         self.pcolour = colour
-        sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(
-            self.pcolour.red(), self.pcolour.green(), self.pcolour.blue()
+        sh = "font-size: 24px; font-weight: bold; color:rgba({},{},{},{});".format(
+            self.pcolour.red(),
+            self.pcolour.green(),
+            self.pcolour.blue(),
+            self.pcolour.alpha(),
         )
         self.label.setStyleSheet(sh)
-        sh = "QSpinBox {{ {} }}".format(sh)
-        # sh = """
-        # QSpinBox {{ {} }}
-        # QSpinBox::up-button  {{subcontrol-origin: border;
-        #     subcontrol-position: left; width: 20px; height: 20px; }}
-        # QSpinBox::down-button  {{subcontrol-origin: border;
-        #     subcontrol-position: right; width: 20px; height: 20px; }}
-        # """.format(sh)
-        self.scoreSpinBox.setStyleSheet(sh)
+        self.scoreSpinBox.setColour(self.pcolour)
 
     def increaseCloseType(self):
         self.closeType = (self.closeType) % 4 + 1
@@ -284,12 +359,14 @@ class RemigioPlayerInputWidget(QFrame):
             )
             self.setFrameShadow(QFrame.Shadow.Sunken)
             self.scoreSpinBox.setValue(0)
-            self.scoreSpinBox.setDisabled(True)
+            self.scoreSpinBox.setReadOnly(True)
+            # self.scoreSpinBox.setDisabled(True)
 
         else:
             self.setFrameShadow(QFrame.Shadow.Raised)
             self.scoreSpinBox.setValue(-1)
-            self.scoreSpinBox.setEnabled(True)
+            self.scoreSpinBox.setReadOnly(False)
+            # self.scoreSpinBox.setEnabled(True)
 
         self.label.setText(text)
         self.setStyleSheet("QFrame {{ {} }}".format(css))
@@ -306,6 +383,17 @@ class RemigioPlayerInputWidget(QFrame):
             self.increaseCloseType()
         else:
             super(RemigioPlayerInputWidget, self).mouseDoubleClickEvent(event)
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key.Key_Space:
+            event.accept()
+            self.setWinner()
+        return super().keyPressEvent(event)
+
+    def setWinner(self):
+        if not self.isWinner():
+            self.winnerSet.emit(self.player)
+        self.increaseCloseType()
 
     def getScore(self):
         if self.isWinner():
@@ -328,19 +416,33 @@ class RemigioPlayerInputWidget(QFrame):
     def setKo(self):
         self.ko = True
         self.setDisabled(True)
+        self.hide()
 
     def unsetKo(self):
         self.ko = False
         self.setDisabled(False)
+        self.show()
 
 
 class RemigioPlayerWidget(GamePlayerWidget):
+    def __init__(self, nick, colour, parent):
+        super().__init__(nick, colour, parent)
+        self.lcdOpacity = QGraphicsOpacityEffect(self.scoreLCD)
+        self.lcdOpacity.setOpacity(1.0)
+        self.scoreLCD.setGraphicsEffect(self.lcdOpacity)
+
     def koPlayer(self):
         self.background = QtGui.QPixmap("icons/skull.png")
+        self.setProperty("ko", True)
+        self.style().polish(self)
+        self.lcdOpacity.setOpacity(0.3)
         self.update()
 
     def unKoPlayer(self):
         self.background = None
+        self.setProperty("ko", False)
+        self.lcdOpacity.setOpacity(1.0)
+        self.style().polish(self)
         self.update()
 
 

@@ -16,7 +16,6 @@ from PySide6.QtWidgets import (
     QLCDNumber,
     QPushButton,
     QSizePolicy,
-    QSpinBox,
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
@@ -31,6 +30,7 @@ from gui.game import (
     GameRoundTable,
     GameWidget,
     PlayerColours,
+    ScoreSpinBox,
 )
 from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from gui.plots import PlotView
@@ -321,71 +321,6 @@ class Phase10InputWidget(GameInputWidget):
         return QWidget.mousePressEvent(self, event)
 
 
-class Phase10ScoreSpinBox(QSpinBox):
-    def __init__(self, parent=None):
-        super(Phase10ScoreSpinBox, self).__init__(parent)
-        self.setSingleStep(5)
-        self.setRange(0, 200)
-        self.setValue(5)
-        # self.clear()
-        self.fixed = False
-        self.setSizePolicy(
-            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.MinimumExpanding
-        )
-        self.setFixedWidth(60)
-        self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.setValidDisplay()
-
-    def validate(self, text, pos):
-        # self.valueChanged.emit(self.value())
-        res = QtGui.QValidator.State.Acceptable
-        if text == "":
-            res = QtGui.QValidator.State.Intermediate
-        else:
-            try:
-                score = int(text)
-                self.setValidDisplay()
-                if score % 5 != 0:
-                    res = QtGui.QValidator.State.Intermediate
-            except ValueError:
-                res = QtGui.QValidator.State.Invalid
-        return (res, text, pos)
-
-    def fixup(self, inp: str):
-        if not inp:
-            return "-5"
-        if not self.hasAcceptableInput():
-            newvalue = round(int(inp) / 5) * 5
-            self.setValue(newvalue)
-            self.fixed = True
-            return str(newvalue)
-        return inp
-
-    def setDisabled(self, disable):
-        if disable:
-            self.clear()
-        else:
-            self.setValue(5)
-        self.setValidDisplay()
-        super(Phase10ScoreSpinBox, self).setDisabled(disable)
-
-    def setEnabled(self, enable):
-        self.setDisabled(not enable)
-
-    def setValidDisplay(self):
-        sh = "font-size: 24px; font-weight: bold;"
-        sh = """
-        QSpinBox {{ padding-top: 30px; padding-bottom: 30px; {} }}
-        QSpinBox::up-button  {{subcontrol-origin: margin;
-                               subcontrol-position: top; min-width: 60px;
-                               max-width:100px; height: 30px; }}
-        QSpinBox::down-button  {{subcontrol-origin: margin;
-                                 subcontrol-position: bottom; min-width: 60px;
-                                 max-width:100px; height: 30px; }}
-        """.format(sh)
-        self.setStyleSheet(sh)
-
-
 class Phase10PlayerWidget(GamePlayerWidget):
     roundWinnerSet = QtCore.Signal(str)
     playerScoreChanged = QtCore.Signal()
@@ -406,9 +341,10 @@ class Phase10PlayerWidget(GamePlayerWidget):
         trashWidget.setLayout(self.mainLayout)
 
         self.mainLayout = QVBoxLayout(self)
-        self.mainLayout.addStretch()
         self.upperLayout = QHBoxLayout()
+        self.mainLayout.addStretch()
         self.mainLayout.addLayout(self.upperLayout)
+        self.mainLayout.addStretch()
         self.upperLayout.addStretch()
         self.phaseNameLabel = QLabel(self)
         css = "font-weight: bold; font-size: 24px; color:rgb({},{},{});"
@@ -455,8 +391,12 @@ class Phase10PlayerWidget(GamePlayerWidget):
             )
 
         # Middle part - Inputs
-        self.roundScore = Phase10ScoreSpinBox(self)
-        self.roundScore.setMaximumWidth(90)
+        self.roundScore = ScoreSpinBox(self)
+        self.roundScore.setMaximumWidth(150)
+        self.roundScore.setStep(5)
+        self.roundScore.setHideMinimum(False)
+        self.roundScore.setValue(5)
+        self.roundScore.setColour(self.pcolour)
         self.roundScore.valueChanged.connect(self.updateRoundPhaseCleared)
         self.lowerLayout.addWidget(self.roundScore)
 
@@ -464,6 +404,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.roundPhaseClearedCheckbox.setChecked(True)
         self.roundPhaseClearedCheckbox.setEnabled(False)
         self.roundPhaseClearedCheckbox.setMinimumSize(40, 40)
+        # self.roundPhaseClearedCheckbox.hide()
         self.lowerLayout.addWidget(self.roundPhaseClearedCheckbox)
 
         self.retranslateUI()
@@ -477,12 +418,12 @@ class Phase10PlayerWidget(GamePlayerWidget):
         if points >= 1000:
             self.scoreLCD.setDigitCount(4)
         self.scoreLCD.display(points)
-        self.roundScore.setValue(5)
         self.roundPhaseClearedCheckbox.setChecked(True)
-        if len(remaining_phases) == 0:
+        if len(remaining_phases) == 0 or self.engine.getWinner():
             self.current_phase = 0
             self.roundScore.clear()
         else:
+            self.roundScore.setValue(5)
             self.current_phase = min(remaining_phases)
         self.roundPhaseClearedCheckbox.setEnabled(False)
 
@@ -647,7 +588,7 @@ class Phase10Label(QLabel):
         self.setScaledContents(True)
         self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.setWordWrap(False)
-        self.setMinimumSize(20, 20)
+        self.setMinimumSize(30, 30)
         self.setSizePolicy(
             QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding
         )

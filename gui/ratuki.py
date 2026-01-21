@@ -189,7 +189,7 @@ class RatukiPlayerInputWidget(QFrame):
         self.label.setWordWrap(False)
 
         self.scoreSpinBox = ScoreSpinBox(self)
-        self.scoreSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        # self.scoreSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         #         self.scoreSpinBox.setMaximumWidth(60)
         self.scoreSpinBox.setRange(-100, 100)
         #         self.mainLayout.addWidget(self.scoreSpinBox)
@@ -244,7 +244,6 @@ class RatukiPlayerInputWidget(QFrame):
                 self.pcolour.red(), self.pcolour.green(), self.pcolour.blue()
             )
             self.label.setStyleSheet(sh)
-            sh = "QSpinBox {{ {} }}".format(sh)
             # sh = """
             # QSpinBox {{ {} }}
             # QSpinBox::up-button  {{subcontrol-origin: border;
@@ -252,7 +251,7 @@ class RatukiPlayerInputWidget(QFrame):
             # QSpinBox::down-button  {{subcontrol-origin: border;
             #     subcontrol-position: right; width: 60px; height: 60px; }}
             # """.format(sh)
-            self.scoreSpinBox.setStyleSheet(sh)
+            self.scoreSpinBox.setColour(self.pcolour)
 
 
 class RatukiRoundsDetail(GameRoundsDetail):

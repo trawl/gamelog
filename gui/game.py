@@ -16,13 +16,14 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QLabel,
     QLCDNumber,
+    QLineEdit,
     QMenu,
     QMessageBox,
     QPushButton,
     QSizePolicy,
-    QSpinBox,
     QTableWidget,
     QTabWidget,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -164,7 +165,13 @@ class GameWidget(Tab):
             self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
             self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
             self.dealerPolicyCheckBox.setDisabled(self.engine.getNumRound() > 1)
-            self.matchGroupLayout.addWidget(self.dealerPolicyCheckBox)
+            self.dealerPolicyCheckBox.setSizePolicy(
+                QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed
+            )
+            self.matchGroupLayout.addWidget(
+                self.dealerPolicyCheckBox,
+                alignment=QtCore.Qt.AlignmentFlag.AlignHCenter,
+            )
 
     def retranslateUI(self):
         self.setRoundTitle()
@@ -452,22 +459,241 @@ class GameInputWidget(QWidget):
         pass
 
 
-class ScoreSpinBox(QSpinBox):
-    def __init__(self, *args, **kwargs):
-        super(ScoreSpinBox, self).__init__(*args, **kwargs)
-        self.setAccelerated(True)
+class SpaceFilter(QtCore.QObject):
+    spacePressed = QtCore.Signal()
 
-    def valueFromText(self, text):
-        if text == "":
-            return self.minimum()
-        else:
-            return super(ScoreSpinBox, self).valueFromText(text)
+    def eventFilter(self, obj, event):
+        if (
+            event.type() == QtCore.QEvent.Type.KeyPress
+            and event.key() == QtCore.Qt.Key.Key_Space
+        ):
+            self.spacePressed.emit()
+            return True  # swallow the event
+        return False
 
-    def textFromValue(self, value):
-        if value == self.minimum():
-            return ""
+
+class ScoreSpinBox(QWidget):
+    valueChanged = QtCore.Signal(int)
+    spacePressed = QtCore.Signal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._value = 0
+        self._minimum = 0
+        self._maximum = 200
+        self._step = 1
+        self._hideMinimum = True
+        self.pcolour = QtGui.QColor(255, 255, 255)
+        self.initUI()
+
+    def initUI(self):
+        self.line_edit = QLineEdit()
+        self.line_edit.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.line_edit.setInputMethodHints(QtCore.Qt.InputMethodHint.ImhDigitsOnly)
+        self.line_edit.setMinimumWidth(40)
+        self.line_edit.setSizePolicy(
+            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
+        )
+        # self.line_edit.installEventFilter(self)
+        # self.line_edit.setMaximumWidth(120)
+
+        self._validator = QtGui.QIntValidator(self._minimum, self._maximum, self)
+        self.line_edit.setValidator(self._validator)
+
+        self.space_filter = SpaceFilter()
+        self.line_edit.installEventFilter(self.space_filter)
+        self.space_filter.spacePressed.connect(self.onSpacePressed)
+
+        self.up_button = QToolButton()
+        self.down_button = QToolButton()
+        self.up_button.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        self.down_button.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        # self.down_button.setMaximumWidth(120)
+        # self.up_button.setMaximumWidth(120)
+
+        self.up_button.setText("▲")
+        self.down_button.setText("▼")
+
+        self.up_button.setAutoRepeat(True)
+        self.down_button.setAutoRepeat(True)
+
+        group = QHBoxLayout()
+        group.setSpacing(4)
+        group.setContentsMargins(0, 0, 0, 0)
+        group.addWidget(self.down_button, stretch=1)
+        group.addWidget(self.line_edit, stretch=2)
+        group.addWidget(self.up_button, stretch=1)
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(4, 4, 4, 4)
+        # layout.addStretch()
+        layout.addLayout(group)
+        # layout.addStretch()
+        # ---- Styling (safe defaults) ----
+        self._text_css = """
+            QLineEdit {{
+                font-size: 24px;
+                font-weight: bold;
+                padding: 2px;
+                border-radius: 6px;
+                border: 1px solid #555555 ;
+                background: transparent;
+                color:rgb({0},{1},{2});
+            }}
+            QLineEdit:focus {{
+                border: 2px solid rgb({0},{1},{2}) ;   /* highlight color */
+            }}
+        """
+        self._updateStyle()
+
+        self.up_button.setStyleSheet(self._button_style())
+        self.down_button.setStyleSheet(self._button_style())
+
+        # ---- Connections ----
+        self.up_button.clicked.connect(self.step_up)
+        self.down_button.clicked.connect(self.step_down)
+        self.line_edit.editingFinished.connect(self._commit_text)
+        self.line_edit.textChanged.connect(self.textChangedAction)
+
+        if self._value is not None:
+            self.setValue(self._value)
+
+    # ------------------------------------------------------------------
+    # Styling helper
+    # ------------------------------------------------------------------
+    def _button_style(self):
+        return """
+        QToolButton {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;              /* arrow color */
+            background-color: #333333;  /* dark background */
+            border: 1px solid #555555;
+            border-radius: 6px;
+        }
+        QToolButton:hover {
+            background-color: #444444;
+        }
+        QToolButton:pressed {
+            background-color: #555555;
+        }
+        QToolButton:disabled {
+            background-color: #222222;
+            color: #777777;
+            border-color: #444444;
+        }
+        """
+
+    def setHideMinimum(self, hidemin):
+        self._hideMinimum = hidemin
+
+    def setColour(self, colour):
+        self.pcolour = colour
+        self._updateStyle()
+
+    def _updateStyle(self):
+        self.line_edit.setStyleSheet(
+            self._text_css.format(
+                self.pcolour.red(), self.pcolour.green(), self.pcolour.blue()
+            )
+        )
+
+    def value(self):
+        return self._value
+
+    def setValue(self, value: int):
+        value = max(self._minimum, min(self._maximum, value))
+        if value != self._value:
+            self._value = value
+            if self._hideMinimum and value == self._minimum:
+                self.line_edit.setText("")
+            else:
+                self.line_edit.setText(str(value))
+            self.valueChanged.emit(value)
+        self._update_buttons()
+
+    def setStep(self, step):
+        self._step = step
+
+    def setFocus(self, reason=QtCore.Qt.FocusReason.OtherFocusReason):
+        self.line_edit.setFocus(reason)
+
+    def _snap_to_step(self, value: int) -> int:
+        if self._step > 1:
+            offset = value - self._minimum
+            value = self._minimum + (offset // self._step) * self._step
+        return value
+
+    def step_up(self):
+        self.line_edit.setFocus()
+        self.setValue(self._value + self._step)
+
+    def step_down(self):
+        self.line_edit.setFocus()
+        self.setValue(self._value - self._step)
+
+    def _commit_text(self):
+        try:
+            value = int(self.line_edit.text())
+        except ValueError:
+            value = self._value
+
+        self.setValue(self._snap_to_step(value))
+
+    def setRange(self, minimum: int, maximum: int):
+        self._minimum = minimum
+        self._maximum = maximum
+        self.setValue(self._value)
+
+    def setMinimum(self, minimum: int):
+        self.setRange(minimum, self._maximum)
+
+    def setMaximum(self, maximum: int):
+        self.setRange(self._minimum, maximum)
+
+    def setSingleStep(self, step: int):
+        self._step = max(1, step)
+
+    def clear(self):
+        self.line_edit.clear()
+
+    def setReadOnly(self, ro):
+        self.line_edit.setReadOnly(ro)
+        self.up_button.setDisabled(ro)
+        self.down_button.setDisabled(ro)
+
+    def lineEdit(self):
+        return self.line_edit
+
+    def _update_buttons(self):
+        if not self.line_edit.isReadOnly():
+            self.up_button.setEnabled(self._value < self._maximum)
+            self.down_button.setEnabled(self._value > self._minimum)
+
+    def wheelEvent(self, event):
+        if self.line_edit.isReadOnly():
+            return
+        if event.angleDelta().y() > 0:
+            self.step_up()
         else:
-            return super(ScoreSpinBox, self).textFromValue(value)
+            self.step_down()
+        event.accept()
+
+    def textChangedAction(self, text):
+        try:
+            self.valueChanged.emit(int(text))
+        except ValueError:
+            pass
+
+    def onSpacePressed(self):
+        self.spacePressed.emit()
+
+    def setDisabled(self, o):
+        super().setDisabled(o)
+        self.setValue(self._minimum)
 
 
 class IconLabel(QLabel):
@@ -511,9 +737,25 @@ class GamePlayerWidget(QGroupBox):
         self.scoreLCD.setDigitCount(3)
         # self.scoreLCD.setFixedSize(75, 45)
         # self.scoreLCD.setMaximumHeight(60)
-        self.scoreLCD.setMinimumHeight(30)
+        # self.scoreLCD.setMinimumHeight(30)
         self.scoreLCD.setMinimumWidth(50)
         self.scoreLCD.display(0)
+        self.title_size = 28
+        self.css = """
+            QGroupBox {{ font-size: {3}px; font-weight: bold; color:rgb({0},{1},{2});}}
+
+            QGroupBox[ko="true"] {{
+                color: rgba({0},{1},{2},70);   /* lower alpha */
+            }}
+
+            QGroupBox::title {{
+                subcontrol-origin: margin;
+                subcontrol-position: top center;
+                padding: 0 {4}px;
+                background-color: transparent;
+            }}
+            QGroupBox QLCDNumber {{ color:rgb({0},{1},{2});}}
+        """
         self.setColour(self.pcolour)
 
         self.dealerPixmap = QtGui.QPixmap("icons/cards.png")
@@ -523,7 +765,6 @@ class GamePlayerWidget(QGroupBox):
         self.background = None
         self.bg_opacity = 1
         self.bg_size = 40
-
         self.unsetDealer()
 
     def updateDisplay(self, points):
@@ -545,40 +786,23 @@ class GamePlayerWidget(QGroupBox):
         self.background = self.winnerPixmap
         self.update()
 
-    def setColour(self, colour):
-        self.pcolour = colour
-        css = "QLCDNumber {{ color:rgb({},{},{});}}"
-        self.scoreLCD.setStyleSheet(
-            css.format(
-                self.pcolour.red(),
-                self.pcolour.green(),
-                self.pcolour.blue(),
-            )
-        )
-        sh = """
-            QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}
-
-            QGroupBox::title {{
-                subcontrol-origin: margin;
-                subcontrol-position: top center;
-                padding: 0 10px;
-                background-color: transparent;
-            }}
-        """
+    def setColour(self, colour=None):
+        if colour:
+            self.pcolour = colour
         self.setStyleSheet(
-            sh.format(
+            self.css.format(
                 self.pcolour.red(),
                 self.pcolour.green(),
                 self.pcolour.blue(),
+                self.title_size,
+                self.title_size,
             )
         )
 
     def paintEvent(self, event):
         super().paintEvent(event)
-
         if not self.background:
             return
-
         painter = QPainter(self)
         painter.setOpacity(self.bg_opacity)
 

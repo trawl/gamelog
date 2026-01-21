@@ -107,6 +107,7 @@ class CarcassonneWidget(GameWidget):
         self.updateScores()
         if self.engine.getWinner():
             self.finishButton.setDisabled(True)
+            self.gameInput.hide()
             self.detailGroup.updateStats()
         else:
             self.detailGroup.updateRound()
@@ -256,8 +257,8 @@ class CarcassonneInputWidget(QWidget):
         b.hide()
 
         self.scoreSpinBox = ScoreSpinBox(self)
-        self.scoreSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.scoreSpinBox.setMaximumWidth(60)
+        # self.scoreSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        # self.scoreSpinBox.setMaximumWidth(120)
         self.scoreSpinBox.setRange(0, 300)
 
         for i, kind in enumerate(self.engine.getEntryKinds(), 1):
@@ -265,7 +266,7 @@ class CarcassonneInputWidget(QWidget):
             b = QRadioButton("{}. {}".format(i, lbl), self.kindGroup)
             self.kindGroupLayout.addWidget(b, (i - 1) % 2, (i - 1) // 2)
             self.kindButtonGroup.addButton(b, i)
-            b.clicked.connect(self.scoreSpinBox.setFocus)
+            b.clicked.connect(lambda x: self.scoreSpinBox.setFocus())
             self.kindButtons.append(b)
 
         self.kindButtons[3].toggled.connect(self.setCloisterPoints)
@@ -348,7 +349,7 @@ class CarcassonneInputWidget(QWidget):
         if doit:
             self.scoreSpinBox.setValue(9)
             self.scoreSpinBox.setMaximum(9)
-            self.scoreSpinBox.lineEdit().selectAll()
+            # self.scoreSpinBox.lineEdit().selectAll()
         else:
             self.scoreSpinBox.setValue(0)
             self.scoreSpinBox.setMaximum(300)
@@ -544,6 +545,8 @@ class CarcassonneEntriesPlot(GameRoundPlot):
 
         for player in self.engine.getListPlayers():
             self.canvas.addSeries(scores[player], player)
+
+        self.canvas._scene.update()
 
 
 class CarcassonneQSTW(QuickStatsTW):
