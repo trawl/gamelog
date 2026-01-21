@@ -67,6 +67,7 @@ class RemigioWidget(GameWidget):
         #     }
         # """)
         self.topPointsLineEdit = ScoreSpinBox(self.matchGroup)
+        self.topPointsLineEdit.setMaximum(1000)
         self.topPointsLineEdit.setValue(self.engine.getTop())
         self.topPointsLineEdit.lineEdit().setFocusPolicy(
             QtCore.Qt.FocusPolicy.ClickFocus
@@ -121,7 +122,7 @@ class RemigioWidget(GameWidget):
 
     def retranslateUI(self):
         super(RemigioWidget, self).retranslateUI()
-        self.topPointsLabel.setText(self.tr("Score Limit"))
+        # self.topPointsLabel.setText(self.tr("Score Limit"))
         self.detailGroup.retranslateUI()
 
     def createGameInputWidget(self, parent=None):
