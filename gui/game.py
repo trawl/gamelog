@@ -9,7 +9,6 @@ from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QAction, QPainter
 from PySide6.QtWidgets import (
-    QCheckBox,
     QFrame,
     QGroupBox,
     QHBoxLayout,
@@ -157,20 +156,56 @@ class GameWidget(Tab):
 
         dpolicy = self.engine.getDealingPolicy()
         if dpolicy not in (self.engine.NoDealer, self.engine.StarterDealer):
-            self.dealerPolicyCheckBox = QCheckBox(self.matchGroup)
+            # self.dealerPolicyCheckBox = QCheckBox(self.matchGroup)
+            self.dealerPolicyCheckBox = QPushButton(self.matchGroup)
+            self.dealerPolicyCheckBox.setCheckable(True)
             if self.engine.getDealingPolicy() == self.engine.WinnerDealer:
                 self.dealerPolicyCheckBox.setChecked(True)
             else:
                 self.dealerPolicyCheckBox.setChecked(False)
             self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
-            self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
+            # self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
+            self.dealerPolicyCheckBox.toggled.connect(self.changeDealingPolicy)
             self.dealerPolicyCheckBox.setDisabled(self.engine.getNumRound() > 1)
+            # self.dealerPolicyCheckBox.setSizePolicy(
+            #     QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed
+            # )
             self.dealerPolicyCheckBox.setSizePolicy(
-                QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed
+                QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Maximum
             )
+            self.dealerPolicyCheckBox.setStyleSheet("""
+                QPushButton {
+                    border: 2px solid #888;
+                    border-radius: 6px;
+                    padding: 6px 6px;
+                    background: transparent;
+                    color: white;
+                }
+
+                /* Checked (enabled) */
+                QPushButton:checked:enabled {
+                    background: #888;
+                }
+
+                /* Unchecked (enabled) */
+                QPushButton:!checked:enabled {
+                    background: transparent;
+                }
+
+                /* Disabled but checked */
+                QPushButton:checked:disabled {
+                    background: #666;
+                    border-color: #666;
+                }
+
+                /* Disabled and unchecked */
+                QPushButton:disabled:!checked {
+                    border-color: #555;
+                }
+                """)
             self.matchGroupLayout.addWidget(
                 self.dealerPolicyCheckBox,
-                alignment=QtCore.Qt.AlignmentFlag.AlignHCenter,
+                # alignment=QtCore.Qt.AlignmentFlag.AlignHCenter,
             )
 
     def retranslateUI(self):
@@ -185,7 +220,7 @@ class GameWidget(Tab):
             self.engine.NoDealer,
             self.engine.StarterDealer,
         ):
-            self.dealerPolicyCheckBox.setText(self.tr("Winner deals"))
+            self.changeDealingPolicy()
         self.updateGameStatusLabel()
 
     def createGameInputWidget(self, parent=None):
@@ -317,8 +352,10 @@ class GameWidget(Tab):
 
     def changeDealingPolicy(self, *args, **kwargs):
         if self.dealerPolicyCheckBox.isChecked():
+            self.dealerPolicyCheckBox.setText(self.tr("Winner deals"))
             self.engine.setDealingPolicy(self.engine.WinnerDealer)
         else:
+            self.dealerPolicyCheckBox.setText(self.tr("Next player deals"))
             self.engine.setDealingPolicy(self.engine.RRDealer)
 
     def closeMatch(self):

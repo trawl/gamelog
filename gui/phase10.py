@@ -7,7 +7,6 @@ from typing import cast
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import (
-    QCheckBox,
     QFrame,
     QGridLayout,
     QGroupBox,
@@ -112,15 +111,15 @@ class Phase10Widget(GameWidget):
         super(Phase10Widget, self).initUI()
         self.hideInputOnFinish = False
         self.roundTitleLabel.hide()
-        self.phasesInOrderCheckBox = QCheckBox(self.matchGroup)
+        # self.phasesInOrderCheckBox = QCheckBox(self.matchGroup)
+        self.phasesInOrderCheckBox = QPushButton(self.matchGroup)
+        self.phasesInOrderCheckBox.setCheckable(True)
         self.phasesInOrderCheckBox.setChecked(self.engine.getPhasesInOrderFlag())
-        self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
+        # self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
         self.phasesInOrderCheckBox.setDisabled(self.engine.getNumRound() > 1)
-        self.phasesInOrderCheckBox.stateChanged.connect(self.phasesInOrderChanged)
-        self.matchGroupLayout.addWidget(
-            self.phasesInOrderCheckBox,
-            alignment=QtCore.Qt.AlignmentFlag.AlignHCenter,
-        )
+        self.phasesInOrderCheckBox.toggled.connect(self.phasesInOrderChanged)
+        self.phasesInOrderCheckBox.setStyleSheet(self.dealerPolicyCheckBox.styleSheet())
+        self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
 
         self.gameInput = Phase10InputWidget(self.engine, self)
         self.gameInput.setAutoFillBackground(True)
@@ -157,7 +156,7 @@ class Phase10Widget(GameWidget):
 
     def retranslateUI(self):
         super(Phase10Widget, self).retranslateUI()
-        self.phasesInOrderCheckBox.setText(self.tr("Phases in order"))
+        self.phasesInOrderChanged()
         self.gameInput.retranslateUI()
         self.extraGroup.setTitle(self.tr("Phases"))
         self.details.retranslateUI()
@@ -179,12 +178,6 @@ class Phase10Widget(GameWidget):
         else:
             return {}
 
-    def changeDealingPolicy(self, *args, **kwargs):
-        if self.dealerPolicyCheckBox.isChecked():
-            self.engine.setDealingPolicy(self.engine.WinnerDealer)
-        else:
-            self.engine.setDealingPolicy(self.engine.RRDealer)
-
     def updatePanel(self):
         super(Phase10Widget, self).updatePanel()
         self.phasesInOrderCheckBox.setEnabled(False)
@@ -205,11 +198,13 @@ class Phase10Widget(GameWidget):
         self.gameInput.setEnabled(True)
         self.gameInput.setWinner()
 
-    def phasesInOrderChanged(self, state):
-        if state == QtCore.Qt.CheckState.Unchecked:
-            self.engine.setPhasesInOrderFlag(False)
-        elif state == QtCore.Qt.CheckState.Checked:
+    def phasesInOrderChanged(self, _=None):
+        if self.phasesInOrderCheckBox.isChecked():
             self.engine.setPhasesInOrderFlag(True)
+            self.phasesInOrderCheckBox.setText(self.tr("Phases in order"))
+        else:
+            self.engine.setPhasesInOrderFlag(False)
+            self.phasesInOrderCheckBox.setText(self.tr("Free phase order"))
         self.gameInput.updatePanel()
 
     def updatePlayerOrder(self):
