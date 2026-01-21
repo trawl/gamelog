@@ -71,5 +71,7 @@ class GameClock(QLCDNumber):
 
     def stopTimer(self):
         self.timer.stop()
+        self.showcolons = True
+        self.showTime()
         self.starTime = None
         self.accumulated = 0
