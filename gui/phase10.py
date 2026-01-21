@@ -117,7 +117,10 @@ class Phase10Widget(GameWidget):
         self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
         self.phasesInOrderCheckBox.setDisabled(self.engine.getNumRound() > 1)
         self.phasesInOrderCheckBox.stateChanged.connect(self.phasesInOrderChanged)
-        self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
+        self.matchGroupLayout.addWidget(
+            self.phasesInOrderCheckBox,
+            alignment=QtCore.Qt.AlignmentFlag.AlignHCenter,
+        )
 
         self.gameInput = Phase10InputWidget(self.engine, self)
         self.gameInput.setAutoFillBackground(True)
