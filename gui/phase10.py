@@ -110,7 +110,7 @@ class Phase10Widget(GameWidget):
     def initUI(self):
         super(Phase10Widget, self).initUI()
         self.hideInputOnFinish = False
-        self.roundTitleLabel.hide()
+        # self.roundTitleLabel.hide()
         # self.phasesInOrderCheckBox = QCheckBox(self.matchGroup)
         self.phasesInOrderCheckBox = QPushButton(self.matchGroup)
         self.phasesInOrderCheckBox.setCheckable(True)
@@ -163,6 +163,12 @@ class Phase10Widget(GameWidget):
         phaselabels = zip(getPhaseNames(self.engine.getPhases()), self.phaseLabels)
         for number, (phase, label) in enumerate(phaselabels, start=1):
             label.setText(f"{number} : {phase}")
+
+    def setRoundTitle(self):
+        game = self.engine.getGame()
+        if game is None:
+            game = ""
+        self.roundTitleLabel.setText(game)
 
     def checkPlayerScore(self, player, score):
         return super(Phase10Widget, self).checkPlayerScore(self, score) and not (

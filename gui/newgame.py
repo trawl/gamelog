@@ -15,13 +15,13 @@ from PySide6.QtWidgets import (
     QListWidgetItem,
     QMessageBox,
     QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
 from controllers.db import db
 from controllers.resumeengine import ResumeEngine
-from gui.collapsiblegroup import CollapsibleGroupBox
 from gui.gamestatsfactory import QSFactory
 from gui.gamewidgetfactory import GameWidgetFactory
 from gui.newplayer import NewPlayerDialog
@@ -249,7 +249,25 @@ class ResumeBox(QGroupBox):
     def initUI(self):
         self.widgetLayout = QHBoxLayout(self)
         self.savedlist = QListWidget(self)
+        self.savedlist.setStyleSheet("""
+        QListView {
+            background: transparent;
+        }
+        QListView::viewport {
+            background: transparent;
+        }
+        QListView::item {
+            padding: 5px 5px;
+        }
+        QListView::item:selected {
+            background: rgba(255,255,255,100);
+            border-radius: 6px;
+        }
+        """)
         self.savedlist.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.savedlist.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum
+        )
         self.savedlist.hide()
         self.widgetLayout.addWidget(self.savedlist)
         self.buttonLayout = QVBoxLayout()
@@ -262,6 +280,7 @@ class ResumeBox(QGroupBox):
         self.cancelbutton.clicked.connect(self.deleteGame)
         self.cancelbutton.hide()
         self.buttonLayout.addWidget(self.cancelbutton)
+        self.buttonLayout.addStretch()
         self.emptyLabel = QLabel(self)
         self.widgetLayout.addWidget(self.emptyLabel)
         self.retranslateUI()

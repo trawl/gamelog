@@ -45,7 +45,7 @@ class CarcassonneWidget(GameWidget):
 
     def initUI(self):
         super(CarcassonneWidget, self).initUI()
-        self.roundTitleLabel.hide()
+        # self.roundTitleLabel.hide()
         self.finishButton = QPushButton(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.finishButton)
         self.finishButton.clicked.connect(self.finish)
@@ -94,6 +94,9 @@ class CarcassonneWidget(GameWidget):
         self.finishButton.setText(self.tr("&Finish Game"))
         self.gameInput.retranslateUI()
         self.detailGroup.retranslateUI()
+
+    def setRoundTitle(self):
+        self.roundTitleLabel.setText(self.engine.getGame())
 
     def getPlayerExtraInfo(self, player):
         kind = self.gameInput.getKind()

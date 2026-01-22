@@ -374,9 +374,11 @@ class GameWidget(Tab):
         try:
             nround = self.engine.getNumRound()
             # self.roundGroup.setTitle(self.tr("Round {0}").format(str(nround)))
-            self.roundTitleLabel.setText(self.tr("Round {0}").format(str(nround)))
+            self.roundTitleLabel.setText(
+                self.tr("{} - Round {}").format(self.engine.getGame(), str(nround))
+            )
         except AttributeError:
-            pass
+            self.roundTitleLabel.setText(self.engine.getGame())
 
     def updatePanel(self):
         self.gameInput.reset()

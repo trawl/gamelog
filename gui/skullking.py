@@ -67,7 +67,7 @@ class SkullKingWidget(GameWidget):
         self.gameInput = SkullKingInputWidget(self.engine, self)
         self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
-        self.roundTitleLabel.hide()
+        # self.roundTitleLabel.hide()
         self.progressBar = StepProgressBar(self.engine.getRoundSequence(), self)
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         self.matchGroupLayout.addWidget(self.progressBar)
@@ -148,19 +148,18 @@ class SkullKingWidget(GameWidget):
         self.detailGroup.retranslateUI()
 
     def setRoundTitle(self):
-        return
         super(SkullKingWidget, self).setRoundTitle()
         hands = self.engine.getHands()
         if hands == 1:
-            self.roundGroup.setTitle(
+            self.roundTitleLabel.setText(
                 "{} - {} {}".format(
-                    self.roundGroup.title(), str(hands), i18n("PochaWidget", "hand")
+                    self.engine.getGame(), str(hands), i18n("PochaWidget", "hand")
                 )
             )
         else:
-            self.roundGroup.setTitle(
+            self.roundTitleLabel.setText(
                 "{} - {} {}".format(
-                    self.roundGroup.title(), str(hands), i18n("PochaWidget", "hands")
+                    self.engine.getGame(), str(hands), i18n("PochaWidget", "hands")
                 )
             )
 
@@ -1171,7 +1170,9 @@ class SkullKingRoundPlot(GameRoundPlot):
         roundNames = [""]
         for player in self.engine.getPlayers():
             scores[player] = [0]
-        for i, roundName in enumerate(cast(SkullKingEngine, self.engine).getRoundSequence()):
+        for i, roundName in enumerate(
+            cast(SkullKingEngine, self.engine).getRoundSequence()
+        ):
             roundNames.append("{}".format(roundName))
             for player in self.engine.getPlayers():
                 try:
