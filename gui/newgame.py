@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
 
 from controllers.db import db
 from controllers.resumeengine import ResumeEngine
+from gui.collapsiblegroup import CollapsibleGroupBox
 from gui.gamestatsfactory import QSFactory
 from gui.gamewidgetfactory import GameWidgetFactory
 from gui.newplayer import NewPlayerDialog
@@ -136,20 +137,14 @@ class NewGameWidget(Tab):
         self.startGameButton = QPushButton(self)
         self.startGameButton.clicked.connect(self.createNewGame)
         self.playersGroupBoxLayout.addWidget(self.startGameButton)
+        self.playersGroupBoxLayout.addSpacing(30)
 
         self.inGameGroup = QGroupBox(self)
         self.playersGroupBoxLayout.addWidget(self.inGameGroup)
         self.inGameGroupLayout = QVBoxLayout(self.inGameGroup)
         self.playersInGameList = PlayerList(None, self.inGameGroup)
-        self.inGameGroup.setMaximumHeight(280)
+        # self.inGameGroup.setMaximumHeight(230)
         self.inGameGroupLayout.addWidget(self.playersInGameList)
-
-        self.playersButtonsLayout = QHBoxLayout()
-        self.playersGroupBoxLayout.addLayout(self.playersButtonsLayout)
-
-        self.newPlayerButton = QPushButton(self.playersGroupBox)
-        self.newPlayerButton.clicked.connect(self.createNewPlayer)
-        self.playersButtonsLayout.addWidget(self.newPlayerButton)
 
         self.availablePlayersGroup = QGroupBox(self)
         self.playersGroupBoxLayout.addWidget(self.availablePlayersGroup)
@@ -172,6 +167,13 @@ class NewGameWidget(Tab):
                 self.playersInGameList.addItem(p["nick"])
             else:
                 self.playersAvailableList.addItem(p["nick"])
+
+        self.playersButtonsLayout = QHBoxLayout()
+        self.playersGroupBoxLayout.addLayout(self.playersButtonsLayout)
+
+        self.newPlayerButton = QPushButton(self.playersGroupBox)
+        self.newPlayerButton.clicked.connect(self.createNewPlayer)
+        self.playersButtonsLayout.addWidget(self.newPlayerButton)
 
     def createNewGame(self):
         game = str(self.gameComboBox.currentText())
@@ -245,12 +247,12 @@ class ResumeBox(QGroupBox):
         self.initUI()
 
     def initUI(self):
-        self.widgetLayout = QVBoxLayout(self)
+        self.widgetLayout = QHBoxLayout(self)
         self.savedlist = QListWidget(self)
         self.savedlist.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.savedlist.hide()
         self.widgetLayout.addWidget(self.savedlist)
-        self.buttonLayout = QHBoxLayout()
+        self.buttonLayout = QVBoxLayout()
         self.widgetLayout.addLayout(self.buttonLayout)
         self.resumebutton = QPushButton(self)
         self.resumebutton.clicked.connect(self.resumeGame)
@@ -267,7 +269,7 @@ class ResumeBox(QGroupBox):
     def retranslateUI(self):
         self.setTitle(self.tr("Saved Games"))
         self.resumebutton.setText(self.tr("Resume"))
-        self.cancelbutton.setText(self.tr("Cancel"))
+        self.cancelbutton.setText(self.tr("Delete"))
         self.emptyLabel.setText(self.tr("No matches to be resumed"))
 
     def changeGame(self, game):
@@ -288,18 +290,12 @@ class ResumeBox(QGroupBox):
                 savedtime = datetime.datetime.strptime(
                     candidate["started"], "%Y-%m-%d %H:%M:%S.%f"
                 )
-                strtime = savedtime.strftime("%Y-%m-%d %H:%M:%S")
+                strtime = savedtime.strftime("%Y-%m-%d %H:%M")
                 hours, remainder = divmod(int(candidate["elapsed"]), 3600)
-                minutes, seconds = divmod(remainder, 60)
-                strelapsed = "{0:02}:{1:02}:{2:02}".format(hours, minutes, seconds)
-                msg = self.tr("Saved on {}. Time played: {}").format(
-                    strtime, strelapsed
-                )
+                minutes, _ = divmod(remainder, 60)
+                strelapsed = "{0:02}:{1:02}".format(hours, minutes)
+                msg = f"{strtime} | {strelapsed} | {', '.join(candidate['players'])}"
                 item = QListWidgetItem(msg, self.savedlist)
-                playerlist = ""
-                for player in candidate["players"]:
-                    playerlist += "\n  " + player
-                item.setToolTip(self.tr("Players: {}").format(playerlist))
                 self.savedlist.addItem(item)
             self.savedlist.show()
             self.resumebutton.show()

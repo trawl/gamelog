@@ -5,6 +5,7 @@ from typing import cast
 from PySide6 import QtCore, QtGui
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
+    QAbstractItemView,
     QDialog,
     QListView,
     QMenu,
@@ -58,9 +59,29 @@ class PlayerList(QListView):
     def __init__(self, engine=None, parent=None):
         super(PlayerList, self).__init__(parent)
         self.engine = engine
+        self.setStyleSheet("""
+        QListView {
+            background: transparent;
+        }
+        QListView::viewport {
+            background: transparent;
+        }
+        QListView::item {
+            padding: 5px 5px;
+        }
+        QListView::item:selected {
+            background: transparent;
+            border-radius: 6px;
+        }
+        """)
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
+        # self.setDropIndicatorShown(True)
+
+        self.setDragDropMode(QAbstractItemView.DragDropMode.DragDrop)
         self.setDefaultDropAction(QtCore.Qt.DropAction.MoveAction)
+
+        self.setSpacing(3)
         self.setModel(PlayerListModel(engine))
         self._model = cast("PlayerListModel", self.model())
 
@@ -127,7 +148,10 @@ class PlayerList(QListView):
                     QtGui.QIcon(dealerIcon), self.tr("Set dealer"), self
                 )
                 menu.addAction(dealerAction)
-            action = menu.exec_(self.mapToGlobal(position))
+            if dealerAction is not None:
+                action = menu.exec_(self.mapToGlobal(position))
+            else:
+                action = favouriteAction
             if action is None:
                 return
             elif action == favouriteAction:
