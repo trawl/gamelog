@@ -215,12 +215,12 @@ class AbstractQuickStatsBox(QGroupBox):
                     item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
                     table.setItem(i, j, item)
 
-            table.horizontalHeader().setSectionResizeMode(
-                QHeaderView.ResizeMode.Stretch
-            )
+            # table.horizontalHeader().setSectionResizeMode(
+            #     QHeaderView.ResizeMode.Stretch
+            # )
             #            table.setMaximumHeight(table.sizeHint().height())
             #            table.setMinimumHeight(table.rowHeight(0)*2)
-            table.setFixedHeight(table.sizeHint().height())
+            table.setFixedHeight(table.sizeHint().height() + 10)
             table.setMinimumWidth(table.sizeHint().width())
 
         else:
@@ -299,7 +299,7 @@ class StatsTable(QTableWidget):
                 background: rgba(255, 255, 255, 20);
             }
             """)
-        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
         # self.setSortingEnabled(True)
 
