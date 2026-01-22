@@ -129,7 +129,8 @@ class PochaWidget(GameWidget):
         direction = self.engine.getDirection()
         if hands == 1:
             self.roundTitleLabel.setText(
-                "{} {} {}".format(
+                "{} - {} {} {}".format(
+                    self.engine.getGame(),
                     str(hands),
                     self.tr("hand"),
                     self.tr(direction),
@@ -137,7 +138,8 @@ class PochaWidget(GameWidget):
             )
         else:
             self.roundTitleLabel.setText(
-                "{} {} {}".format(
+                "{} - {} {} {}".format(
+                    self.engine.getGame(),
                     str(hands),
                     self.tr("hands"),
                     self.tr(direction),
