@@ -197,11 +197,15 @@ class AbstractQuickStatsBox(QGroupBox):
             table.setRowCount(len(displayed))
             table.setColumnCount(len(cheaders))
             table.setHorizontalHeaderLabels(cheaders)
+            # table.verticalHeader().setVisible(False)
             vheaders = [str(row[rowheaderkey]) for row in displayed]
             table.setVerticalHeaderLabels(vheaders)
 
             for i, row in enumerate(displayed):
                 keys = keyorder
+                # keys = [
+                #     rowheaderkey,
+                # ] + keyorder
                 for j, key in enumerate(keys):
                     item = QTableWidgetItem(str(row[key]))
                     item.setTextAlignment(
@@ -237,6 +241,68 @@ class ParticularQuickStats(AbstractQuickStatsBox):
 
 
 class StatsTable(QTableWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setStyleSheet("""
+            QTableView {
+                background: transparent;
+                gridline-color: rgba(255, 255, 255, 120);
+                color: white;
+                selection-background-color: rgba(120, 180, 255, 80);
+                selection-color: white;
+            }
+
+            QTableView::viewport {
+                background: transparent;
+            }
+
+            /* Cells */
+            QTableView::item {
+                background: transparent;
+                padding: 4px 6px;
+            }
+
+            /* Selected cell
+            QTableView::item:selected {
+                background: rgba(255, 255, 255, 40);
+            } */
+
+            /* Headers */
+            QHeaderView::section {
+                background: qlineargradient(
+                    x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(255, 255, 255, 60),
+                    stop:1 rgba(255, 255, 255, 20)
+                );
+                color: white;
+                padding: 6px 8px;
+                border-top: 1px solid rgba(255, 255, 255, 120);
+                border-bottom: 1px solid rgba(255, 255, 255, 180);
+                border-left: 1px solid rgba(255, 255, 255, 80);
+                border-right: 1px solid rgba(255, 255, 255, 80);
+                font-weight: 600;
+            }
+
+            /* Remove double border between adjacent headers */
+            QHeaderView::section:horizontal {
+                margin-left: -1px;
+            }
+
+            /* Corner button (top-left square) */
+            QTableCornerButton::section {
+                background: rgba(255, 255, 255, 30);
+                border: 1px solid rgba(255, 255, 255, 120);
+            }
+
+            /* Optional: hover feedback */
+            QTableView::item:hover {
+                background: rgba(255, 255, 255, 20);
+            }
+            """)
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
+        self.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
+        # self.setSortingEnabled(True)
+
     def sizeHint(self):
         s = QtCore.QSize()
         s.setWidth(super(StatsTable, self).sizeHint().width())
