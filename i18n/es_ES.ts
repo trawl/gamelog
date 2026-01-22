@@ -228,13 +228,13 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="../gui/game.py" line="973"/>
-        <location filename="../gui/game.py" line="978"/>
+        <location filename="../gui/game.py" line="974"/>
+        <location filename="../gui/game.py" line="979"/>
         <source>Delete Entry</source>
         <translation>Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="979"/>
+        <location filename="../gui/game.py" line="980"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>¿Estás seguro que quieres eliminar esta entrada?</translation>
     </message>
@@ -246,17 +246,17 @@
 <context>
     <name>GameRoundsDetail</name>
     <message>
-        <location filename="../gui/game.py" line="897"/>
+        <location filename="../gui/game.py" line="898"/>
         <source>Table</source>
         <translation>Tabla</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="898"/>
+        <location filename="../gui/game.py" line="899"/>
         <source>Plot</source>
         <translation>Gráfico</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="899"/>
+        <location filename="../gui/game.py" line="900"/>
         <source>Statistics</source>
         <translation>Estadísticas</translation>
     </message>
@@ -373,17 +373,17 @@
 <context>
     <name>GeneralQuickStats</name>
     <message>
-        <location filename="../gui/pocha.py" line="617"/>
+        <location filename="../gui/pocha.py" line="625"/>
         <source>Max Hits</source>
         <translation>Max Aciertos</translation>
     </message>
     <message>
-        <location filename="../gui/pocha.py" line="618"/>
+        <location filename="../gui/pocha.py" line="626"/>
         <source>Min Hits</source>
         <translation>Min Aciertos</translation>
     </message>
     <message>
-        <location filename="../gui/pocha.py" line="619"/>
+        <location filename="../gui/pocha.py" line="627"/>
         <source>Best Round</source>
         <translation>Mejor Ronda</translation>
     </message>
@@ -753,7 +753,7 @@
 <context>
     <name>PochaRoundTable</name>
     <message>
-        <location filename="../gui/pocha.py" line="569"/>
+        <location filename="../gui/pocha.py" line="577"/>
         <source> (Winner)</source>
         <translation> (Ganador)</translation>
     </message>
@@ -906,7 +906,7 @@
 <context>
     <name>RemigioRoundTable</name>
     <message>
-        <location filename="../gui/remigio.py" line="483"/>
+        <location filename="../gui/remigio.py" line="484"/>
         <source>Winner ({}x)</source>
         <translation>Ganador ({}x)</translation>
     </message>
@@ -914,16 +914,15 @@
 <context>
     <name>RemigioWidget</name>
     <message>
-        <location filename="../gui/remigio.py" line="124"/>
         <source>Score Limit</source>
-        <translation>Límite de puntos</translation>
+        <translation type="vanished">Límite de puntos</translation>
     </message>
     <message>
         <source>Scoreboard</source>
         <translation type="vanished">Marcador</translation>
     </message>
     <message>
-        <location filename="../gui/remigio.py" line="138"/>
+        <location filename="../gui/remigio.py" line="139"/>
         <source>Warning: real points are computed automatically depending on the close type</source>
         <translation>Atención: el programa calula los puntos reales según el tipo de cierre</translation>
     </message>
@@ -945,34 +944,36 @@
         <translation>Restaurar</translation>
     </message>
     <message>
+        <location filename="../gui/newgame.py" line="270"/>
+        <source>Delete</source>
+        <translation>Eliminar</translation>
+    </message>
+    <message>
         <location filename="../gui/newgame.py" line="271"/>
         <source>No matches to be resumed</source>
         <translation>No hay ninguna partida guardada</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="270"/>
         <source>Cancel</source>
-        <translation>Cancelar</translation>
+        <translation type="vanished">Cancelar</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="331"/>
+        <location filename="../gui/newgame.py" line="325"/>
         <source>Cancel Saved Game</source>
         <translation>Cancelar Partida Guardada</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="332"/>
+        <location filename="../gui/newgame.py" line="326"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>¿Estás seguro que quieres cancelar la partida guardada?</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="295"/>
         <source>Saved on {}. Time played: {}</source>
-        <translation>Guardado el {}. Tiempo jugado: {}</translation>
+        <translation type="vanished">Guardado el {}. Tiempo jugado: {}</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="302"/>
         <source>Players: {}</source>
-        <translation>Jugadores: {}</translation>
+        <translation type="vanished">Jugadores: {}</translation>
     </message>
 </context>
 <context>
