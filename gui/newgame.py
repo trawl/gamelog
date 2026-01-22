@@ -54,7 +54,7 @@ class NewGameWidget(Tab):
         # Game GroupBox
         self.gameGroupBox = QGroupBox(self)
         self.leftColumnLayout.addWidget(self.gameGroupBox)
-        self.widgetLayout.setStretchFactor(self.leftColumnLayout, 3)
+        self.widgetLayout.setStretchFactor(self.leftColumnLayout, 4)
         self.populateGamesGroupBox()
 
     #        self.retranslateUI()
