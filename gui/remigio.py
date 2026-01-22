@@ -4,9 +4,9 @@ from typing import cast
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
-    QFrame,
     QGraphicsOpacityEffect,
     QGridLayout,
+    QGroupBox,
     QHBoxLayout,
     QLabel,
     QSizePolicy,
@@ -297,7 +297,7 @@ class RemigioInputWidget(GameInputWidget):
     #     self.setLayout(self.widgetLayout)
 
 
-class RemigioPlayerInputWidget(QFrame):
+class RemigioPlayerInputWidget(QGroupBox):
     winnerSet = QtCore.Signal(str)
 
     def __init__(self, player, bgcolors, colour=None, parent=None):
@@ -312,8 +312,6 @@ class RemigioPlayerInputWidget(QFrame):
         self.label = QLabel(self)
         self.mainLayout.addWidget(self.label)
         self.label.setAutoFillBackground(False)
-        self.setFrameShape(QFrame.Shape.Panel)
-        self.setFrameShadow(QFrame.Shadow.Raised)
         self.label.setScaledContents(True)
         self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.label.setWordWrap(False)
@@ -355,22 +353,20 @@ class RemigioPlayerInputWidget(QFrame):
         css = ""
         if self.closeType > 0:
             text = text + " ({}x)".format(self.closeType)
-            css = "font-weight: bold; background-color: #{0:X}".format(
+            css = "font-weight: bold; border-radius: 4px; background-color: #{0:X}".format(
                 self.bgcolors[self.closeType]
             )
-            self.setFrameShadow(QFrame.Shadow.Sunken)
             self.scoreSpinBox.setValue(0)
             self.scoreSpinBox.setReadOnly(True)
             # self.scoreSpinBox.setDisabled(True)
 
         else:
-            self.setFrameShadow(QFrame.Shadow.Raised)
             self.scoreSpinBox.setValue(-1)
             self.scoreSpinBox.setReadOnly(False)
             # self.scoreSpinBox.setEnabled(True)
 
         self.label.setText(text)
-        self.setStyleSheet("QFrame {{ {} }}".format(css))
+        self.setStyleSheet("QGroupBox {{ {} }}".format(css))
 
     def mousePressEvent(self, event):
         if self.isWinner():
