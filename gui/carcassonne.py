@@ -96,7 +96,10 @@ class CarcassonneWidget(GameWidget):
         self.detailGroup.retranslateUI()
 
     def setRoundTitle(self):
-        self.roundTitleLabel.setText(self.engine.getGame())
+        game = self.engine.getGame()
+        if game is None:
+            game = ""
+        self.roundTitleLabel.setText(game)
 
     def getPlayerExtraInfo(self, player):
         kind = self.gameInput.getKind()
@@ -412,9 +415,6 @@ class CarcassonneEntriesDetail(GameRoundsDetail):
         )
         self.tableContainerLayout.addWidget(self.totals)
         self.totals.setHorizontalHeaderLabels(self.engine.getListPlayers())
-        self.totals.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Stretch
-        )
         self.totals.setMaximumHeight(self.totals.sizeHint().height())
 
     def retranslateUI(self):
