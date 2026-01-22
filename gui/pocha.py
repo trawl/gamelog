@@ -423,6 +423,14 @@ class PochaPlayerInputWidget(QFrame):
     def refreshButtons(self, forbidden=-1):
         hands = self.engine.getHands()
         for eb, wb in zip(self.expectedButtons, self.wonButtons):
+            if int(eb.text()) > hands or int(eb.text()) < 0:
+                eb.hide()
+            else:
+                eb.show()
+            if int(wb.text()) > hands or int(eb.text()) < 0:
+                wb.hide()
+            else:
+                wb.show()
             eb.setDisabled(int(eb.text()) > hands)
             if int(eb.text()) == forbidden:
                 eb.setDisabled(True)
