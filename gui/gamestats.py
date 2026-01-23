@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from controllers.enginefactory import StatsEngineFactory
 from PySide6 import QtCore
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import (
@@ -18,6 +16,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from controllers.enginefactory import StatsEngineFactory
 from gui.tab import Tab
 
 
@@ -205,14 +204,17 @@ class AbstractQuickStatsBox(QGroupBox):
             # table.verticalHeader().setVisible(False)
             vheaders = [str(row[rowheaderkey]) for row in displayed]
             table.setVerticalHeaderLabels(vheaders)
-
             for i, row in enumerate(displayed):
                 keys = keyorder
                 # keys = [
                 #     rowheaderkey,
                 # ] + keyorder
                 for j, key in enumerate(keys):
-                    item = QTableWidgetItem(str(row[key]))
+                    try:
+                        text = str(row[key])
+                    except KeyError:
+                        text = "-"
+                    item = QTableWidgetItem(text)
                     item.setTextAlignment(
                         QtCore.Qt.AlignmentFlag.AlignVCenter
                         | QtCore.Qt.AlignmentFlag.AlignHCenter

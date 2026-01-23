@@ -20,7 +20,11 @@ from controllers.pochaengine import (
 )
 from controllers.ratukiengine import RatukiEngine
 from controllers.remigioengine import RemigioEngine
-from controllers.skullkingengine import SkullKingEngine
+from controllers.skullkingengine import (
+    SkullKingEngine,
+    SkullKingParticularStatsEngine,
+    SkullKingStatsEngine,
+)
 from controllers.statsengine import ParticularStatsEngine, StatsEngine
 from controllers.toma6engine import Toma6Engine
 
@@ -57,6 +61,8 @@ class StatsEngineFactory:
             return Phase10StatsEngine()
         if gname == "Pocha":
             return PochaStatsEngine()
+        if gname == "Skull King":
+            return SkullKingStatsEngine()
         return StatsEngine()
 
     @classmethod
@@ -67,4 +73,6 @@ class StatsEngineFactory:
             return Phase10ParticularStatsEngine()
         if gname == "Pocha":
             return PochaParticularStatsEngine()
+        if gname == "Skull King":
+            return SkullKingParticularStatsEngine()
         return ParticularStatsEngine()

@@ -86,15 +86,50 @@ class SkullKingEngine(PochaEngine):
         raise ValueError(f"Unknown scoring mode {self.getScoringMode()}")
 
 
+class SkullKingStatsQueries(object):
+    hitsQuery = """
+    SELECT player, max(hits) as "max_hits", min(hits) as "min_hits" from (
+        SELECT Round.idMatch as idm, Round.nick as "player",
+            COUNT(Round.idRound) as "hits"
+        FROM Round,Match
+        WHERE Match.idMatch = Round.idMatch
+            and Match.state = 1
+            and Game_name="#GAMENAME#"
+            and Round.score > 0
+        group by idm, player
+    ) as tmp
+    group by player
+    order by player
+    """
+
+    extremeRounds = """
+    SELECT Round.nick as "player", max(score) as "max_round_score",
+        min(score) as "min_round_score"
+    FROM Round,Match
+    WHERE Match.idMatch = Round.idMatch
+        and Match.state = 1
+        and Game_name="#GAMENAME#"
+    group by player
+   """
+
+
 class SkullKingStatsEngine(PochaStatsEngine):
     def __init__(self):
         super(SkullKingStatsEngine, self).__init__()
         self.game = "Skull King"
         self.define_queries()
 
+    def define_queries(self):
+        q = SkullKingStatsQueries()
+        self._hitsQuery = q.hitsQuery.replace("#GAMENAME#", self.game)
+        self._extremeRounds = q.extremeRounds.replace("#GAMENAME#", self.game)
+
 
 class SkullKingParticularStatsEngine(PochaParticularStatsEngine):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.game = "Skull King"
+        self.define_queries()
 
 
 if __name__ == "__main__":
