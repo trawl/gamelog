@@ -694,6 +694,8 @@ class ScoreSpinBox(QWidget):
     def setRange(self, minimum: int, maximum: int):
         self._minimum = minimum
         self._maximum = maximum
+        self._validator = QtGui.QIntValidator(self._minimum, self._maximum, self)
+        self.line_edit.setValidator(self._validator)
         self.setValue(self._value)
 
     def setMinimum(self, minimum: int):
