@@ -49,11 +49,7 @@ class PochaEngine(RoundGameEngine):
             suits = ["diamonds", "hearts", "spades", "clovers"]
         else:
             suits = ["coins", "cups", "swords", "clubs"]
-        self.directions = (
-            ["going up"] * slope
-            + suits
-            + ["going down"] * slope
-        )
+        self.directions = ["going up"] * slope + suits + ["going down"] * slope
 
     def getSuitType(self):
         return self.suitType
@@ -103,6 +99,7 @@ class PochaStatsEngine(StatsEngine):
 
     def update(self, players=None):
         super(PochaStatsEngine, self).update()
+        # print(f"Updating {self.game} stats...")
         self.hitsRecord = db.queryDict(self._hitsQuery)
         self.extremeRoundsRecord = db.queryDict(self._extremeRounds)
 

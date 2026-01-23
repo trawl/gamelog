@@ -4,6 +4,7 @@ from gui.carcassonne import CarcassonneQSTW
 from gui.gamestats import QuickStatsTW
 from gui.phase10 import Phase10QSTW
 from gui.pocha import PochaQSTW
+from gui.skullking import SkullKingQSTW
 
 
 class QSFactory:
@@ -15,4 +16,6 @@ class QSFactory:
             return Phase10QSTW(gname, players, parent)
         if gname == "Pocha":
             return PochaQSTW(gname, players, parent)
+        if gname == "Skull King":
+            return SkullKingQSTW(gname, players, parent)
         return QuickStatsTW(gname, players, parent)

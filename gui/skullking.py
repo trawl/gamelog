@@ -40,6 +40,7 @@ from gui.game import (
     GameWidget,
     PlayerColours,
 )
+from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from gui.progress import StepProgressBar
 
 i18n = QCoreApplication.translate
@@ -1125,6 +1126,10 @@ class SkullKingRoundsDetail(GameRoundsDetail):
     def createRoundPlot(self, engine, parent=None):
         return SkullKingRoundPlot(self.engine, self)
 
+    def createQSBox(self, parent=None):
+        print("Creating SkullKingQSTW")
+        return SkullKingQSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
+
 
 class SkullKingRoundTable(GameRoundTable):
     def __init__(self, engine, bgcolors, parent=None):
@@ -1189,3 +1194,28 @@ class SkullKingRoundPlot(GameRoundPlot):
             self.canvas.addSeries(scores[player], player)
 
         self.canvas._scene.update()
+
+
+class SkullKingQSTW(QuickStatsTW):
+    def initStatsWidgets(self):
+        self.gs = SkullKingQSBox(self.game, self)
+        self.ps = SkullKingPQSBox(self.game, self)
+
+
+class SkullKingQSBox(GeneralQuickStats):
+    QCoreApplication.translate("GeneralQuickStats", "Max Hits")
+    QCoreApplication.translate("GeneralQuickStats", "Min Hits")
+    QCoreApplication.translate("GeneralQuickStats", "Best Round")
+
+    def __init__(self, gname, parent):
+        super(SkullKingQSBox, self).__init__(gname, parent)
+        self.playerStatsKeys.append("max_hits")
+        self.playerStatsHeaders.append("Max Hits")
+        self.playerStatsKeys.append("min_hits")
+        self.playerStatsHeaders.append("Min Hits")
+        self.playerStatsKeys.append("max_round_score")
+        self.playerStatsHeaders.append("Best Round")
+
+
+class SkullKingPQSBox(SkullKingQSBox, ParticularQuickStats):
+    pass
