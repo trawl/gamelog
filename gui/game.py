@@ -29,6 +29,7 @@ from PySide6.QtWidgets import (
 
 from gui.clock import GameClock
 from gui.gamestats import QuickStatsTW
+from gui.languagechooser import LanguageButton
 from gui.playerlist import PlayerOrderDialog
 from gui.plots import PlotView
 from gui.tab import Tab
@@ -117,6 +118,9 @@ class GameWidget(Tab):
         self.buttonGroupLayout.addWidget(self.commitRoundButton)
         self.commitRoundButton.clicked.connect(self.commitRound)
 
+        self.languageButton = LanguageButton(self.roundGroup)
+        self.buttonGroupLayout.addWidget(self.languageButton)
+
         self.gameStatusLabel = QLabel(self.roundGroup)
         self.gameStatusLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.gameStatusLabel.hide()
@@ -163,7 +167,6 @@ class GameWidget(Tab):
                 self.dealerPolicyCheckBox.setChecked(True)
             else:
                 self.dealerPolicyCheckBox.setChecked(False)
-            self.dealerPolicyCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
             # self.dealerPolicyCheckBox.stateChanged.connect(self.changeDealingPolicy)
             self.dealerPolicyCheckBox.toggled.connect(self.changeDealingPolicy)
             self.dealerPolicyCheckBox.setDisabled(self.engine.getNumRound() > 1)
@@ -584,6 +587,12 @@ class ScoreSpinBox(QWidget):
             }}
             QLineEdit:focus {{
                 border: 2px solid rgb({0},{1},{2}) ;   /* highlight color */
+            }}
+            QLineEdit:focus:hover {{
+                border: 2px solid rgb({0},{1},{2}) ;   /* highlight color */
+            }}
+            QLineEdit:hover {{
+                border: 1px solid rgba({0},{1},{2},150) ;   /* highlight color */
             }}
         """
         self._updateStyle()

@@ -59,24 +59,19 @@ class PlayerList(QListView):
     def __init__(self, engine=None, parent=None):
         super(PlayerList, self).__init__(parent)
         self.engine = engine
+        self.max_players = None
+        self.twin_list = None
         self.setStyleSheet("""
-        QListView {
-            background: transparent;
-        }
-        QListView::viewport {
-            background: transparent;
-        }
-        QListView::item {
-            padding: 5px 5px;
-        }
         QListView::item:selected {
             background: transparent;
-            border-radius: 6px;
+        }
+        QListView::item:selected:hover {
+            background: rgba(102,102,102,100);
         }
         """)
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
-        # self.setDropIndicatorShown(True)
+        self.setDropIndicatorShown(True)
 
         self.setDragDropMode(QAbstractItemView.DragDropMode.DragDrop)
         self.setDefaultDropAction(QtCore.Qt.DropAction.MoveAction)
@@ -94,8 +89,37 @@ class PlayerList(QListView):
         self.customContextMenuRequested.connect(self.openMenu)
 
     def addItem(self, text):
-        self._model.addPlayer(text)
-        self.changed.emit()
+        if self._canAcceptItem() and not any(
+            self._model.item(i).text() == text for i in range(self._model.rowCount())
+        ):
+            self._model.addPlayer(str(text))
+            self.changed.emit()
+            return True
+        return False
+
+    def _canAcceptItem(self):
+        model = self.model()
+        return self.max_players is None or model.rowCount() < self.max_players
+
+    def dragEnterEvent(self, event):
+        super().dragEnterEvent(event)
+        if self._canAcceptItem():
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        super().dragMoveEvent(event)
+        if self._canAcceptItem():
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    def setMaxPlayers(self, maxp):
+        self.max_players = maxp
+
+    def setTwinList(self, tl):
+        self.twin_list = tl
 
     def mouseDoubleClickEvent(self, event):
         item = self.indexAt(event.pos())
@@ -104,13 +128,15 @@ class PlayerList(QListView):
         except AttributeError:
             player = str(item.data())
         if player != str(None):
-            self.doubleclickeditem.emit(player)
-
             if self.engine:
                 if self._model.dealer:
                     self.setDealer(item, player)
-            else:
-                self._model.removeRows(item.row(), 1)
+                    self.changed.emit()
+            elif self.twin_list:
+                if self.twin_list.addItem(player):
+                    self._model.removeRows(item.row(), 1)
+                    self.twin_list.clearSelection()
+                    self.clearSelection()
                 self.changed.emit()
         return QListView.mouseDoubleClickEvent(self, event)
 
@@ -123,46 +149,15 @@ class PlayerList(QListView):
         except AttributeError:
             player = str(item.data())
         if player:
-            menu = QMenu()
-            isfav = db.isPlayerFavourite(player)
-            if isfav:
-                favouriteAction = QAction(
-                    QtGui.QIcon(standardIcon),
-                    self.tr("Unset Favourite"),
-                    self,
-                )
-            else:
-                favouriteAction = QAction(
-                    QtGui.QIcon(favouriteIcon),
-                    self.tr("Set Favourite"),
-                    self,
-                )
-            menu.addAction(favouriteAction)
-            dealerAction = None
-            if (
-                self.engine
-                and self.engine.getDealer() is not None
-                and player != self._model.dealer
-            ):
-                dealerAction = QAction(
-                    QtGui.QIcon(dealerIcon), self.tr("Set dealer"), self
-                )
-                menu.addAction(dealerAction)
-            if dealerAction is not None:
-                action = menu.exec_(self.mapToGlobal(position))
-            else:
-                action = favouriteAction
-            if action is None:
-                return
-            elif action == favouriteAction:
-                isfav = not isfav
+            if self.engine and self.engine.getDealer() is not None:
+                self.setDealer(item, player)
+            elif not self.engine:
+                isfav = not db.isPlayerFavourite(player)
                 db.setPlayerFavourite(player, isfav)
                 icon = standardIcon
                 if isfav:
                     icon = favouriteIcon
                 self._model.addIcon(self._model.itemFromIndex(item), icon)
-            elif self.engine and action == dealerAction:
-                self.setDealer(item, player)
 
     def setDealer(self, item, player):
         icon = standardIcon
