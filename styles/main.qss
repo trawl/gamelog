@@ -1,0 +1,185 @@
+QPushButton {
+    border-radius: 6px;
+    padding: 6px 10px;
+    background: #555;
+    color: white;
+}
+
+/* Pressed */
+QPushButton:pressed {
+    background: #555;
+    border-color: #777;
+    padding-top: 7px;
+    padding-bottom: 5px;
+}
+
+QPushButton:pressed:hover {
+    background: #555;
+    border-color: #777;
+    padding-top: 7px;
+    padding-bottom: 5px;
+}
+/* Hover */
+QPushButton:hover {
+    background: #666;
+    border-color: #aaa;
+}
+
+/* Checked (active / toggled on) */
+QPushButton:checked {
+    background: #6fa8dc; /* light blue */
+    border-color: #9fc5e8;
+    color: #102030;
+}
+
+/* Checked + hover */
+QPushButton:checked:hover {
+    background: #7fb6e8;
+}
+
+/* Checked + pressed */
+QPushButton:checked:pressed {
+    background: #5f98cc;
+}
+
+QPushButton:disabled {
+    background: #444;
+    color: #999;
+    border-color: #555;
+}
+
+QComboBox {
+    border-radius: 6px;
+    padding: 6px 10px;
+    background: #555;
+    color: white;
+}
+
+/* Hover: slightly lighter + stronger border */
+QComboBox:hover {
+    background: #666;
+    border-color: #aaa;
+}
+
+/* Pressed: darker + subtle "sunken" effect */
+QComboBox:pressed,
+QComboBox:!editable:on {
+    background: #444;
+    border-color: #666;
+    padding-top: 7px; /* fake press */
+    padding-bottom: 5px;
+}
+
+/* Dropdown button area */
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 28px;
+    border-left: 0px solid rgba(255, 255, 255, 80);
+}
+
+/* Arrow */
+QComboBox::down-arrow {
+    width: 12px;
+    height: 12px;
+}
+
+/* Disabled */
+QComboBox:disabled {
+    background: #444;
+    border-color: #555;
+    color: rgba(255, 255, 255, 120);
+}
+
+QComboBox QAbstractItemView {
+    background: rgba(40, 40, 40, 240);
+    color: white;
+    selection-background-color: rgba(120, 180, 255, 120);
+    outline: none;
+}
+
+/* Bigger items = easier to tap */
+QComboBox QAbstractItemView::item {
+    padding: 10px 12px;
+    min-height: 28px;
+}
+
+/* Hover */
+QComboBox QAbstractItemView::item:hover {
+    background: rgba(255, 255, 255, 40);
+}
+
+QListView {
+    background: transparent;
+}
+QListView::viewport {
+    background: transparent;
+}
+QListView::item {
+    padding: 5px 5px;
+}
+QListView::item:selected {
+    background: rgba(255, 255, 255, 100);
+    border-radius: 6px;
+}
+QListView::item:hover {
+    background: rgba(102, 102, 102, 100);
+    border-radius: 6px;
+}
+QListView::item:selected:hover {
+    background: rgba(255, 255, 255, 100);
+    border-radius: 6px;
+}
+QTableView {
+    background: transparent;
+    gridline-color: rgba(255, 255, 255, 120);
+    selection-background-color: rgba(120, 180, 255, 80);
+}
+
+QTableView::viewport {
+    background: transparent;
+}
+
+/* Cells */
+QTableView::item {
+    padding: 4px 6px;
+}
+
+/* Selected cell
+QTableView::item:selected {
+    background: rgba(255, 255, 255, 40);
+} */
+
+/* Headers */
+QHeaderView::section {
+    background: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 rgba(255, 255, 255, 60),
+        stop: 1 rgba(255, 255, 255, 20)
+    );
+    padding: 6px 8px;
+    border-top: 1px solid rgba(255, 255, 255, 120);
+    border-bottom: 1px solid rgba(255, 255, 255, 180);
+    border-left: 1px solid rgba(255, 255, 255, 80);
+    border-right: 1px solid rgba(255, 255, 255, 80);
+    font-weight: 600;
+}
+
+/* Remove double border between adjacent headers */
+QHeaderView::section:horizontal {
+    margin-left: -1px;
+}
+
+/* Corner button (top-left square) */
+QTableCornerButton::section {
+    background: rgba(255, 255, 255, 30);
+    border: 1px solid rgba(255, 255, 255, 120);
+}
+
+/* Optional: hover feedback */
+QTableView::item:hover {
+    background: rgba(255, 255, 255, 20);
+}

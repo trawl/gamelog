@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from controllers.db import db
 from PySide6 import QtCore, QtGui
-from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QDialog,
@@ -14,7 +12,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from gui.languagechooser import LanguageChooser
+from controllers.db import db
 from gui.newgame import NewGameWidget
 
 
@@ -25,12 +23,10 @@ class MainWindow(QMainWindow):
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "OK")
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "Cancel")
 
-    def __init__(self, translator=None, qt_translator=None, parent=None):
+    def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         db.connectDB()
         self.openedGames = []
-        self.translator = translator
-        self.qt_translator = qt_translator
         self.initUI()
 
     def initUI(self):
@@ -44,10 +40,6 @@ class MainWindow(QMainWindow):
         # Menu settings
         self.menubar = self.menuBar()
         self.fileMenu = self.menubar.addMenu("")
-
-        self.languageAction = QAction(self)
-        self.languageAction.triggered.connect(self.chooseLanguage)
-        self.fileMenu.addAction(self.languageAction)
 
         self.exitAction = QAction(self)
         self.exitAction.triggered.connect(self.close)
@@ -87,7 +79,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(self.tr("GameLog"))
         self.statusBar().showMessage(self.tr("GameLog"))
         self.fileMenu.setTitle(self.tr("&File"))
-        self.languageAction.setText(self.tr("&Language..."))
+        # self.languageAction.setText(self.tr("&Language..."))
         self.exitAction.setText(self.tr("&Quit"))
         self.exitAction.setShortcut(self.tr("Ctrl+Q"))
         self.exitAction.setStatusTip(self.tr("Quit GameLog"))
@@ -187,30 +179,9 @@ class MainWindow(QMainWindow):
 
     #        self.tabWidget.removeTab(self.tabWidget.indexOf(tab))
 
-    def chooseLanguage(self):
-        lc = LanguageChooser(self)
-        lc.newQM.connect(self.loadTranslator)
-        lc.exec_()
-
     def about(self):
         self.abdialog = AboutDialog(self)
         self.abdialog.exec_()
-
-    def loadTranslator(self, lang):
-        translator = QtCore.QTranslator()
-        ret = translator.load(lang, "i18n/")
-        qt_translator = QtCore.QTranslator()
-        qt_qm = "qtbase_" + lang.split("_")[0]
-        qt_translator.load(qt_qm, "i18n/")
-        if ret:
-            if self.translator:
-                QCoreApplication.removeTranslator(self.translator)
-            if self.qt_translator:
-                QCoreApplication.removeTranslator(self.qt_translator)
-            self.qt_translator = qt_translator
-            self.translator = translator
-            QCoreApplication.installTranslator(self.qt_translator)
-            QCoreApplication.installTranslator(self.translator)
 
     def changeEvent(self, event):
         if event.type() == QtCore.QEvent.Type.LanguageChange:
@@ -236,12 +207,6 @@ class AboutDialog(QDialog):
         self.title.setStyleSheet("QLabel{font-size:18px; font-weight:bold}")
         self.title.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.contentlayout.addWidget(self.title)
-        # self.content = QLabel(
-        #     i18n(
-        #         "AboutDialog",
-        #         "Gamelog is a utility to keep track of the score in board games.",
-        #     )
-        # )
         self.content = QLabel(
             self.tr("Gamelog is a utility to keep track of the score in board games.")
         )

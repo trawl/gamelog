@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from controllers.toma6engine import Toma6Engine
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
     QFrame,
@@ -8,7 +9,6 @@ from PySide6.QtWidgets import (
     QTableWidgetItem,
 )
 
-from controllers.toma6engine import Toma6Engine
 from gui.game import (
     GamePlayerWidget,
     PlayerColours,
@@ -83,7 +83,6 @@ class Toma6PlayerInputWidget(RemigioPlayerInputWidget):
     def updatePanel(self):
         text = "{}".format(self.player)
         css = ""
-        self.setFrameShadow(QFrame.Shadow.Raised)
         self.scoreSpinBox.setValue(-1)
         self.scoreSpinBox.setEnabled(True)
 

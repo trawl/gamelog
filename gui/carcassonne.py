@@ -46,7 +46,9 @@ class CarcassonneWidget(GameWidget):
         super(CarcassonneWidget, self).initUI()
         # self.roundTitleLabel.hide()
         self.finishButton = QPushButton(self.roundGroup)
-        self.buttonGroupLayout.addWidget(self.finishButton)
+        self.buttonGroupLayout.insertWidget(
+            self.buttonGroupLayout.count() - 1, self.finishButton
+        )
         self.finishButton.clicked.connect(self.finish)
 
         self.gameInput = CarcassonneInputWidget(self.engine, self.bgcolors, self)
@@ -404,6 +406,14 @@ class CarcassonneEntriesDetail(GameRoundsDetail):
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
         super(CarcassonneEntriesDetail, self).__init__(engine, parent)
+        self.setStyleSheet("""
+            QTableView::item:hover {
+                background: transparent;
+            }
+            QTableView::item:selected {
+                background: transparent;
+            }
+        """)
 
     def initUI(self):
         super(CarcassonneEntriesDetail, self).initUI()
@@ -500,7 +510,7 @@ class CarcassonneRoundTable(GameRoundTable):
         kind = entry.getKind()
         kinds = self.engine.getEntryKinds()
         background = self.bgcolors[kinds.index(kind)]
-        kind = QCoreApplication.translate("CarcassonInputWidget", kind)
+        kind = QCoreApplication.translate("CarcassonneInputWidget", kind)
         i = entry.getNumRound() - 1
         self.insertRow(i)
         for j, player in enumerate(self.engine.getListPlayers()):

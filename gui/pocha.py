@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from typing import cast
 
+from controllers.pochaengine import PochaEngine
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QColor
@@ -20,7 +21,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from controllers.pochaengine import PochaEngine
 from gui.game import (
     GameInputWidget,
     GamePlayerWidget,
@@ -396,8 +396,17 @@ class PochaPlayerInputWidget(QFrame):
         self.wonGroup = QButtonGroup(self)
         self.wonGroup.buttonReleased.connect(self.wonClickedAction)
         self.wonButtons = []
+        button_css = f"""
+            QPushButton:checked {{
+                background: {self.pcolour.name()};
+            }}
+
+            QPushButton:checked:hover {{
+                background: {self.pcolour.name()};
+            }}"""
         for i in range(-1, 9):
             button = PochaHandsButton(str(i), self)
+            button.setStyleSheet(button_css)
             self.expectedGroup.addButton(button, i)
             self.expectedButtons.append(button)
             button.toggled.connect(self.enableWonGroup)
@@ -407,6 +416,7 @@ class PochaPlayerInputWidget(QFrame):
                 self.ebLayout.addWidget(button)
 
             button = PochaHandsButton(str(i), self)
+            button.setStyleSheet(button_css)
             self.wonGroup.addButton(button, i)
             self.wonButtons.append(button)
             if i < 0:
@@ -521,6 +531,7 @@ class PochaHandsButton(QPushButton):
         #     self.setStyleSheet("background-color: lightgreen; font: normal")
 
     def setDisabled(self, disabled=True):
+        return super(PochaHandsButton, self).setDisabled(disabled)
         if disabled:
             self.setStyleSheet("background-color: none; font: normal")
         else:

@@ -407,7 +407,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.roundPhaseClearedCheckbox = Phase10ClearedCheckBox(self)
         self.roundPhaseClearedCheckbox.setChecked(True)
         self.roundPhaseClearedCheckbox.setEnabled(False)
-        self.roundPhaseClearedCheckbox.setMinimumSize(40, 40)
+        self.roundPhaseClearedCheckbox.setMinimumSize(60, 60)
         # self.roundPhaseClearedCheckbox.hide()
         self.lowerLayout.addWidget(self.roundPhaseClearedCheckbox)
 
@@ -542,7 +542,7 @@ class Phase10ClearedCheckBox(QPushButton):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setCheckable(True)
-        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
 
         self._checked_text = "✓"
         self._unchecked_text = "✕"
@@ -813,15 +813,12 @@ class Phase10QSTW(QuickStatsTW):
 
 
 class Phase10QSBox(GeneralQuickStats):
-    QCoreApplication.translate("AbstractQuickStatsBox", "Lowest phases")
-    QCoreApplication.translate("AbstractQuickStatsBox", "Damned phase")
-
     def __init__(self, gname, parent):
         super(Phase10QSBox, self).__init__(gname, parent)
         self.playerStatsKeys.append("min_phases")
-        self.playerStatsHeaders.append("Lowest phases")
+        self.playerStatsHeaders.append(self.tr("Lowest Ph"))
         self.playerStatsKeys.append("damned_phase")
-        self.playerStatsHeaders.append("Damned phase")
+        self.playerStatsHeaders.append(self.tr("Damned"))
 
 
 class Phase10PQSBox(Phase10QSBox, ParticularQuickStats):

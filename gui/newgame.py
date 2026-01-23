@@ -10,7 +10,6 @@ from PySide6.QtWidgets import (
     QComboBox,
     QGroupBox,
     QHBoxLayout,
-    QLabel,
     QListWidget,
     QListWidgetItem,
     QMessageBox,
@@ -24,6 +23,7 @@ from controllers.db import db
 from controllers.resumeengine import ResumeEngine
 from gui.gamestatsfactory import QSFactory
 from gui.gamewidgetfactory import GameWidgetFactory
+from gui.languagechooser import LanguageButton
 from gui.newplayer import NewPlayerDialog
 from gui.playerlist import PlayerList, PlayerListModel
 from gui.tab import Tab
@@ -60,27 +60,65 @@ class NewGameWidget(Tab):
     #        self.retranslateUI()
 
     def retranslateUI(self):
-        self.gameGroupBox.setTitle(self.tr("Games"))
+        # self.gameGroupBox.setTitle(self.tr("Games"))
         self.updateGameInfo()
-        self.playersGroupBox.setTitle(self.tr("Players"))
+        # self.playersGroupBox.setTitle(self.tr("Players"))
         self.availablePlayersGroup.setTitle(self.tr("Available Players"))
         self.newPlayerButton.setText(self.tr("New Player"))
-        self.inGameGroup.setTitle(self.tr("Selected Players"))
-        self.startGameButton.setText(self.tr("Play!"))
+        game = str(self.gameComboBox.currentText())
+        self.inGameGroup.setTitle(
+            self.tr("Selected Players (max {})").format(self.games[game]["maxPlayers"])
+        )
+        self.startGameButton.setText("▶")
         self.resumeGroup.retranslateUI()
         if self.gameStatsBox:
             self.gameStatsBox.retranslateUI()
 
     def populateGamesGroupBox(self):
         self.gameGroupBoxLayout = QVBoxLayout(self.gameGroupBox)
+        self.gameNameLayout = QHBoxLayout()
+        self.gameGroupBoxLayout.addLayout(self.gameNameLayout)
+        self.gameGroupBoxLayout.setStretchFactor(self.gameNameLayout, 1)
         self.gameComboBox = QComboBox(self.gameGroupBox)
-        self.gameGroupBoxLayout.addWidget(self.gameComboBox)
-        self.gameDescriptionLabel = QLabel(self.gameGroupBox)
+        self.gameComboBox.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding
+        )
+
+        self.gameComboBox.setStyleSheet("""
+            QComboBox {
+                font-size: 24px;
+                font-weight: bold;
+            }
+        """)
+        # self.gameComboBox.setSizePolicy(
+        #     QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding
+        # )
+        self.gameNameLayout.addWidget(self.gameComboBox)
+
+        self.languageChooser = LanguageButton(self)
+        self.languageChooser.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+        )
+        self.gameNameLayout.addWidget(self.languageChooser)
+        self.startGameButton = QPushButton(self)
+        self.startGameButton.setSizePolicy(
+            QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
+        )
+        self.startGameButton.setStyleSheet("""
+            QPushButton {
+                font-size: 48px;
+                font-weight: bold;
+            }
+            """)
+        self.startGameButton.clicked.connect(self.createNewGame)
+        self.gameNameLayout.addWidget(self.startGameButton)
+
+        # self.gameDescriptionLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.resumeGroup = ResumeBox(self._parent)
         self.resumeGroup.restartRequested.connect(self.restartGame)
         #        self.gameRulesBrowser = QTextBrowser(self.gameGroupBox)
-        self.gameGroupBoxLayout.addWidget(self.gameDescriptionLabel)
         self.gameGroupBoxLayout.addWidget(self.resumeGroup)
+        self.gameGroupBoxLayout.setStretchFactor(self.resumeGroup, 1)
         #        self.gameGroupBoxLayout.addWidget(self.gameRulesBrowser)
 
         #        self.gameGroupBoxLayout.addStretch()
@@ -100,12 +138,11 @@ class NewGameWidget(Tab):
 
     def updateGameInfo(self, _foo=0):
         game = str(self.gameComboBox.currentText())
-        description = "2 - {} {}\n\n{}".format(
-            self.games[game]["maxPlayers"],
-            self.tr("players"),
-            self.games[game]["description"],
+        max_players = self.games[game]["maxPlayers"]
+        self.playersInGameList.setMaxPlayers(max_players)
+        self.inGameGroup.setTitle(
+            self.tr("Selected Players (max {})").format(max_players)
         )
-        self.gameDescriptionLabel.setText(description)
         #        self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
         #         self.gameStatsBox.update(game)
         if self.gameStatsBox is not None:
@@ -115,6 +152,7 @@ class NewGameWidget(Tab):
 
         self.gameStatsBox = QSFactory.createQS(game, None, self)
         self.gameGroupBoxLayout.addWidget(self.gameStatsBox)
+        self.gameGroupBoxLayout.setStretchFactor(self.gameStatsBox, 10)
         self.updateStats()
         self.resumeGroup.changeGame(game)
 
@@ -134,10 +172,6 @@ class NewGameWidget(Tab):
     def populatePlayersGroupBox(self):
         self.playersGroupBoxLayout = QVBoxLayout(self.playersGroupBox)
         # Start button
-        self.startGameButton = QPushButton(self)
-        self.startGameButton.clicked.connect(self.createNewGame)
-        self.playersGroupBoxLayout.addWidget(self.startGameButton)
-        self.playersGroupBoxLayout.addSpacing(30)
 
         self.inGameGroup = QGroupBox(self)
         self.playersGroupBoxLayout.addWidget(self.inGameGroup)
@@ -154,12 +188,8 @@ class NewGameWidget(Tab):
 
         #        self.availablePlayersGroupLayout.addStretch()
 
-        self.playersAvailableList.doubleclickeditem.connect(
-            self.playersInGameList.addItem
-        )
-        self.playersInGameList.doubleclickeditem.connect(
-            self.playersAvailableList.addItem
-        )
+        self.playersAvailableList.setTwinList(self.playersInGameList)
+        self.playersInGameList.setTwinList(self.playersAvailableList)
         self.playersInGameList.changed.connect(self.updateStats)
 
         for p in db.getPlayers():
@@ -249,26 +279,10 @@ class ResumeBox(QGroupBox):
     def initUI(self):
         self.widgetLayout = QHBoxLayout(self)
         self.savedlist = QListWidget(self)
-        self.savedlist.setStyleSheet("""
-        QListView {
-            background: transparent;
-        }
-        QListView::viewport {
-            background: transparent;
-        }
-        QListView::item {
-            padding: 5px 5px;
-        }
-        QListView::item:selected {
-            background: rgba(255,255,255,100);
-            border-radius: 6px;
-        }
-        """)
         self.savedlist.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.savedlist.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum
         )
-        self.savedlist.hide()
         self.widgetLayout.addWidget(self.savedlist)
         self.buttonLayout = QVBoxLayout()
         self.widgetLayout.addLayout(self.buttonLayout)
@@ -281,15 +295,12 @@ class ResumeBox(QGroupBox):
         self.cancelbutton.hide()
         self.buttonLayout.addWidget(self.cancelbutton)
         self.buttonLayout.addStretch()
-        self.emptyLabel = QLabel(self)
-        self.widgetLayout.addWidget(self.emptyLabel)
         self.retranslateUI()
 
     def retranslateUI(self):
         self.setTitle(self.tr("Saved Games"))
         self.resumebutton.setText(self.tr("Resume"))
         self.cancelbutton.setText(self.tr("Delete"))
-        self.emptyLabel.setText(self.tr("No matches to be resumed"))
 
     def changeGame(self, game):
         self.game = game
@@ -298,12 +309,10 @@ class ResumeBox(QGroupBox):
         self.matches = []
         candidates = self.engine.getCandidates()
         if not candidates:
-            self.savedlist.hide()
+            self.hide()
             self.resumebutton.hide()
             self.cancelbutton.hide()
-            self.emptyLabel.show()
         else:
-            self.emptyLabel.hide()
             for idMatch, candidate in candidates.items():
                 self.matches.append(idMatch)
                 savedtime = datetime.datetime.strptime(
@@ -316,7 +325,7 @@ class ResumeBox(QGroupBox):
                 msg = f"{strtime} | {strelapsed} | {', '.join(candidate['players'])}"
                 item = QListWidgetItem(msg, self.savedlist)
                 self.savedlist.addItem(item)
-            self.savedlist.show()
+            self.show()
             self.resumebutton.show()
             self.cancelbutton.show()
 
