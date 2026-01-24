@@ -110,8 +110,9 @@ class PochaStatsEngine(StatsEngine):
             player = row["player"]
             for r2 in self.generalplayerstats:
                 if r2["nick"] == player and r2["game"] == self.game:
-                    r2["max_hits"] = row["max_hits"]
-                    r2["min_hits"] = row["min_hits"]
+                    for k in ("avg_hits", "max_hits", "min_hits"):
+                        if k in row:
+                            r2[k] = row[k]
                     break
         for row in self.extremeRoundsRecord:
             player = row["player"]
@@ -126,13 +127,14 @@ class PochaParticularStatsEngine(PochaStatsEngine, ParticularStatsEngine):
     def updatePlayers(self, players):
         super(PochaParticularStatsEngine, self).updatePlayers(players)
         if players:
-            q = PochaStatsQueries()
-            self._hitsQuery = q.hitsQuery.replace(
+            self.define_queries()
+            self._hitsQuery = self._hitsQuery.replace(
                 "WHERE", "WHERE {} AND".format("Match." + self._newclause)
-            )
-            self._extremeRounds = q.extremeRounds.replace(
+            ).replace("#GAMENAME#", self.game)
+            self._extremeRounds = self._extremeRounds.replace(
                 "WHERE", "WHERE {} AND".format("Match." + self._newclause)
-            )
+            ).replace("#GAMENAME#", self.game)
+            # print(self._hitsQuery)
 
 
 if __name__ == "__main__":

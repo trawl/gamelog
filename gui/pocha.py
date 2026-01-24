@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from typing import cast
 
-from controllers.pochaengine import PochaEngine
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QColor
@@ -21,6 +20,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from controllers.pochaengine import PochaEngine
 from gui.game import (
     GameInputWidget,
     GamePlayerWidget,
@@ -647,6 +647,16 @@ class PochaQSBox(GeneralQuickStats):
         self.playerStatsHeaders.append("Min Hits")
         self.playerStatsKeys.append("max_round_score")
         self.playerStatsHeaders.append("Best Round")
+        for i in ("minscore", "sumscore"):
+            try:
+                self.playerStatsKeys.remove(i)
+            except KeyError:
+                pass
+        for i in ("Lowest", "Total"):
+            try:
+                self.playerStatsHeaders.remove(i)
+            except KeyError:
+                pass
 
 
 class PochaPQSBox(PochaQSBox, ParticularQuickStats):

@@ -88,7 +88,7 @@ class SkullKingEngine(PochaEngine):
 
 class SkullKingStatsQueries(object):
     hitsQuery = """
-    SELECT player, max(hits) as "max_hits", min(hits) as "min_hits" from (
+    SELECT player, max(hits) as "max_hits", min(hits) as "min_hits", round(avg(hits),2) as "avg_hits" from (
         SELECT Round.idMatch as idm, Round.nick as "player",
             COUNT(Round.idRound) as "hits"
         FROM Round,Match
@@ -130,6 +130,11 @@ class SkullKingParticularStatsEngine(PochaParticularStatsEngine):
         super().__init__()
         self.game = "Skull King"
         self.define_queries()
+
+    def define_queries(self):
+        q = SkullKingStatsQueries()
+        self._hitsQuery = q.hitsQuery.replace("#GAMENAME#", self.game)
+        self._extremeRounds = q.extremeRounds.replace("#GAMENAME#", self.game)
 
 
 if __name__ == "__main__":
