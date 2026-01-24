@@ -584,6 +584,8 @@ class CarcassonneQSBox(GeneralQuickStats):
         self.widgetLayout.insertWidget(index + 1, self.singleRecordsTable)
         self.widgetLayout.insertWidget(index + 2, self.matchRecordsLabel)
         self.widgetLayout.insertWidget(index + 3, self.matchRecordsTable)
+        self.singleRecordsLabel.setStyleSheet(self.titlecss)
+        self.matchRecordsLabel.setStyleSheet(self.titlecss)
 
     def retranslateUI(self):
         self.singleRecordsLabel.setText(self.tr("Individual Records"))
