@@ -88,15 +88,27 @@ class SkullKingEngine(PochaEngine):
 
 class SkullKingStatsQueries(object):
     hitsQuery = """
-    SELECT player, max(hits) as "max_hits", min(hits) as "min_hits", round(avg(hits),2) as "avg_hits" from (
+    SELECT player, max(hitp) as "max_hits", min(hitp) as "min_hits", round(avg(hitp),2) as "avg_hits" from (
         SELECT Round.idMatch as idm, Round.nick as "player",
-            COUNT(Round.idRound) as "hits"
-        FROM Round,Match
-        WHERE Match.idMatch = Round.idMatch
-            and Match.state = 1
-            and Game_name="#GAMENAME#"
-            and Round.score > 0
-        group by idm, player
+                COUNT(Round.idRound) as "hits", CASE WHEN
+        COALESCE(MatchExtras.value, 'standard_rounds') IN ('standard_rounds', 'barrage') THEN 10
+            ELSE 5 END AS hands,     ROUND(
+            COUNT(Round.idRound) * 100.0 /
+            CASE
+                WHEN COALESCE(MatchExtras.value, 'standard_rounds')
+                    IN ('standard_rounds', 'barrage')
+                THEN 10
+                ELSE 5
+            END,
+            2
+        ) AS hitp
+            FROM Round,Match LEFT JOIN MatchExtras ON MatchExtras.idMatch = Match.idMatch
+        AND MatchExtras.key = 'roundMode'
+            WHERE Match.idMatch = Round.idMatch
+                and Match.state = 1
+                and Game_name="Skull King"
+                and Round.score > 0
+            group by idm, player
     ) as tmp
     group by player
     order by player

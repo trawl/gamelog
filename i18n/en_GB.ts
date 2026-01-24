@@ -4,12 +4,12 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../gui/mainwindow.py" line="206"/>
+        <location filename="../gui/mainwindow.py" line="197"/>
         <source>About Gamelog</source>
         <translation>About Gamelog</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="226"/>
+        <location filename="../gui/mainwindow.py" line="211"/>
         <source>Gamelog is a utility to keep track of the score in board games.</source>
         <translation>Gamelog is a utility to keep track of the score in board games.</translation>
     </message>
@@ -17,71 +17,71 @@
 <context>
     <name>AbstractQuickStatsBox</name>
     <message>
-        <location filename="../gui/gamestats.py" line="60"/>
+        <location filename="../gui/gamestats.py" line="59"/>
         <source>Longest</source>
         <translation>Longest</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="61"/>
+        <location filename="../gui/gamestats.py" line="60"/>
         <source>Shortest</source>
         <translation>Shortest</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="62"/>
-        <location filename="../gui/gamestats.py" line="65"/>
-        <location filename="../gui/gamestats.py" line="71"/>
+        <location filename="../gui/gamestats.py" line="61"/>
+        <location filename="../gui/gamestats.py" line="64"/>
+        <location filename="../gui/gamestats.py" line="70"/>
         <source>Average</source>
         <translation>Average</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="63"/>
-        <location filename="../gui/gamestats.py" line="69"/>
+        <location filename="../gui/gamestats.py" line="62"/>
+        <location filename="../gui/gamestats.py" line="68"/>
         <source>Highest</source>
         <translation>Highest</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="64"/>
-        <location filename="../gui/gamestats.py" line="70"/>
+        <location filename="../gui/gamestats.py" line="63"/>
+        <location filename="../gui/gamestats.py" line="69"/>
         <source>Lowest</source>
         <translation>Lowest</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="66"/>
+        <location filename="../gui/gamestats.py" line="65"/>
         <source>Played</source>
         <translation>Played</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="67"/>
+        <location filename="../gui/gamestats.py" line="66"/>
         <source>Victories</source>
         <translation>Victories</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="68"/>
+        <location filename="../gui/gamestats.py" line="67"/>
         <source>Ratio (%)</source>
         <translation>Ratio(%)</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="72"/>
+        <location filename="../gui/gamestats.py" line="71"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="160"/>
+        <location filename="../gui/gamestats.py" line="159"/>
         <source>Last winner</source>
         <translation>Last winner</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="162"/>
+        <location filename="../gui/gamestats.py" line="161"/>
         <source>Matches</source>
         <translation>Matches</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="163"/>
+        <location filename="../gui/gamestats.py" line="162"/>
         <source>Players</source>
         <translation>Players</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="176"/>
+        <location filename="../gui/gamestats.py" line="175"/>
         <source>No statistics found</source>
         <translation>No statistics found</translation>
     </message>
@@ -153,27 +153,27 @@
 <context>
     <name>CarcassonneQSBox</name>
     <message>
-        <location filename="../gui/carcassonne.py" line="620"/>
+        <location filename="../gui/carcassonne.py" line="622"/>
         <source>Record</source>
         <translation>Records</translation>
     </message>
     <message>
-        <location filename="../gui/carcassonne.py" line="621"/>
+        <location filename="../gui/carcassonne.py" line="623"/>
         <source>Player</source>
         <translation>Player</translation>
     </message>
     <message>
-        <location filename="../gui/carcassonne.py" line="622"/>
+        <location filename="../gui/carcassonne.py" line="624"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../gui/carcassonne.py" line="590"/>
+        <location filename="../gui/carcassonne.py" line="592"/>
         <source>Match Records</source>
         <translation>Match Records</translation>
     </message>
     <message>
-        <location filename="../gui/carcassonne.py" line="589"/>
+        <location filename="../gui/carcassonne.py" line="591"/>
         <source>Individual Records</source>
         <translation>Individual Records</translation>
     </message>
@@ -226,13 +226,13 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="../gui/game.py" line="979"/>
-        <location filename="../gui/game.py" line="984"/>
+        <location filename="../gui/game.py" line="987"/>
+        <location filename="../gui/game.py" line="992"/>
         <source>Delete Entry</source>
         <translation>Delete Entry</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="985"/>
+        <location filename="../gui/game.py" line="993"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>Are you sure you want to delete this entry?</translation>
     </message>
@@ -244,17 +244,17 @@
 <context>
     <name>GameRoundsDetail</name>
     <message>
-        <location filename="../gui/game.py" line="903"/>
+        <location filename="../gui/game.py" line="911"/>
         <source>Table</source>
         <translation>Table</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="904"/>
+        <location filename="../gui/game.py" line="912"/>
         <source>Plot</source>
         <translation>Plot</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="905"/>
+        <location filename="../gui/game.py" line="913"/>
         <source>Statistics</source>
         <translation>Statistics</translation>
     </message>
@@ -393,12 +393,12 @@
 <context>
     <name>LanguageChooser</name>
     <message>
-        <location filename="../gui/languagechooser.py" line="116"/>
+        <location filename="../gui/languagechooser.py" line="139"/>
         <source>Select the desired language:</source>
         <translation>Select the desired language:</translation>
     </message>
     <message>
-        <location filename="../gui/languagechooser.py" line="113"/>
+        <location filename="../gui/languagechooser.py" line="136"/>
         <source>Language</source>
         <translation>Language</translation>
     </message>
@@ -406,35 +406,35 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../gui/mainwindow.py" line="83"/>
-        <location filename="../gui/mainwindow.py" line="84"/>
+        <location filename="../gui/mainwindow.py" line="79"/>
+        <location filename="../gui/mainwindow.py" line="80"/>
         <source>GameLog</source>
         <translation>GameLog</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="85"/>
+        <location filename="../gui/mainwindow.py" line="81"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="87"/>
+        <location filename="../gui/mainwindow.py" line="83"/>
         <source>&amp;Quit</source>
         <translation>&amp;Quit</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="88"/>
+        <location filename="../gui/mainwindow.py" line="84"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="89"/>
+        <location filename="../gui/mainwindow.py" line="85"/>
         <source>Quit GameLog</source>
         <translation>Quit GameLog</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="108"/>
-        <location filename="../gui/mainwindow.py" line="124"/>
-        <location filename="../gui/mainwindow.py" line="149"/>
+        <location filename="../gui/mainwindow.py" line="104"/>
+        <location filename="../gui/mainwindow.py" line="120"/>
+        <location filename="../gui/mainwindow.py" line="145"/>
         <source>Exit</source>
         <translation>Exit</translation>
     </message>
@@ -443,27 +443,27 @@
         <translation type="vanished">&amp;Language...</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="91"/>
+        <location filename="../gui/mainwindow.py" line="87"/>
         <source>&amp;Help</source>
         <translation>&amp;Help</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="92"/>
+        <location filename="../gui/mainwindow.py" line="88"/>
         <source>&amp;About Gamelog...</source>
         <translation>&amp;About Gamelog...</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="111"/>
+        <location filename="../gui/mainwindow.py" line="107"/>
         <source>You have an opened {} match. Do you want to save it before exiting?</source>
         <translation>Do you want to save the current {} match before exiting?</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="126"/>
+        <location filename="../gui/mainwindow.py" line="122"/>
         <source>You have {} opened matches. Do you want to save them before exiting?</source>
         <translation>You have {} open matches. Do you want to save them before exiting?</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.py" line="150"/>
+        <location filename="../gui/mainwindow.py" line="146"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Are you sure you want to exit Gamelog?</translation>
     </message>
@@ -885,12 +885,12 @@
 <context>
     <name>QuickStatsTW</name>
     <message>
-        <location filename="../gui/gamestats.py" line="46"/>
+        <location filename="../gui/gamestats.py" line="45"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="47"/>
+        <location filename="../gui/gamestats.py" line="46"/>
         <source>Particular</source>
         <translation>Particular</translation>
     </message>
@@ -988,6 +988,24 @@
     </message>
 </context>
 <context>
+    <name>SkullKingQSBox</name>
+    <message>
+        <location filename="../gui/skullking.py" line="1209"/>
+        <source>Max Hit %</source>
+        <translation>Max Hit %</translation>
+    </message>
+    <message>
+        <location filename="../gui/skullking.py" line="1211"/>
+        <source>Avg Hit %</source>
+        <translation>Avg Hit %</translation>
+    </message>
+    <message>
+        <location filename="../gui/skullking.py" line="1213"/>
+        <source>Best Round</source>
+        <translation>Best Round</translation>
+    </message>
+</context>
+<context>
     <name>SkullKingWidget</name>
     <message>
         <source>classic</source>
@@ -1002,47 +1020,47 @@
         <translation type="vanished">Rascal</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="49"/>
+        <location filename="../gui/skullking.py" line="50"/>
         <source>classic_scoring</source>
         <translation>Classic Scoring</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="50"/>
+        <location filename="../gui/skullking.py" line="51"/>
         <source>standard_scoring</source>
         <translation>Standard Scoring</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="51"/>
+        <location filename="../gui/skullking.py" line="52"/>
         <source>rascal_scoring</source>
         <translation>Rascal Scoring</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="52"/>
+        <location filename="../gui/skullking.py" line="53"/>
         <source>standard_rounds</source>
         <translation>Standard Rounds</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="53"/>
+        <location filename="../gui/skullking.py" line="54"/>
         <source>even</source>
         <translation>Even Keeled</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="54"/>
+        <location filename="../gui/skullking.py" line="55"/>
         <source>brawl</source>
         <translation>Skip to the Brawl</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="55"/>
+        <location filename="../gui/skullking.py" line="56"/>
         <source>skirmish</source>
         <translation>Swift-n-Salty Skirmish</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="56"/>
+        <location filename="../gui/skullking.py" line="57"/>
         <source>barrage</source>
         <translation>Broadside Barrage</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="57"/>
+        <location filename="../gui/skullking.py" line="58"/>
         <source>whirlpool</source>
         <translation>Whirlpool</translation>
     </message>
@@ -1055,17 +1073,17 @@
         <translation type="vanished">Card Counts</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="211"/>
+        <location filename="../gui/skullking.py" line="212"/>
         <source>Has the Kraken appeared?</source>
         <translation>Has the Kraken appeared?</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="250"/>
+        <location filename="../gui/skullking.py" line="251"/>
         <source>There are more than 3 Fourteen bonuses selected.</source>
         <translation>There are more than 3 Fourteen bonuses selected.</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="257"/>
+        <location filename="../gui/skullking.py" line="258"/>
         <source>There are more than 4 Loot bonuses selected.</source>
         <translation>There are more than 4 Loot bonuses selected.</translation>
     </message>
