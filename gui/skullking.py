@@ -1203,18 +1203,14 @@ class SkullKingQSTW(QuickStatsTW):
 
 
 class SkullKingQSBox(GeneralQuickStats):
-    QCoreApplication.translate("GeneralQuickStats", "Max Hits")
-    QCoreApplication.translate("GeneralQuickStats", "Avg Hits")
-    QCoreApplication.translate("GeneralQuickStats", "Best Round")
-
     def __init__(self, gname, parent):
         super(SkullKingQSBox, self).__init__(gname, parent)
         self.playerStatsKeys.append("max_hits")
-        self.playerStatsHeaders.append("Max Hits")
+        self.playerStatsHeaders.append(self.tr("Max Hit %"))
         self.playerStatsKeys.append("avg_hits")
-        self.playerStatsHeaders.append("Avg Hits")
+        self.playerStatsHeaders.append(self.tr("Avg Hit %"))
         self.playerStatsKeys.append("max_round_score")
-        self.playerStatsHeaders.append("Best Round")
+        self.playerStatsHeaders.append(self.tr("Best Round"))
         for i in ("minscore", "sumscore"):
             try:
                 self.playerStatsKeys.remove(i)
