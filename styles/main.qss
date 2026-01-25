@@ -134,16 +134,13 @@ QTableView {
     background: transparent;
     gridline-color: rgba(255, 255, 255, 120);
     selection-background-color: rgba(120, 180, 255, 80);
-}
-
-QTableView::viewport {
-    background: transparent;
+    /*border-radius: 6px;*/
 }
 
 /* Cells */
-QTableView::item {
+/*QTableView::item {
     padding: 4px 6px;
-}
+}*/
 
 /* Selected cell
 QTableView::item:selected {
@@ -161,6 +158,7 @@ QHeaderView::section {
         stop: 1 rgba(255, 255, 255, 20)
     );
     padding: 6px 8px;
+    border: none;
     border-top: 1px solid rgba(255, 255, 255, 120);
     border-bottom: 1px solid rgba(255, 255, 255, 180);
     border-left: 1px solid rgba(255, 255, 255, 80);
@@ -180,6 +178,14 @@ QTableCornerButton::section {
 }
 
 /* Optional: hover feedback */
-QTableView::item:hover {
+/*QTableView::item:hover {
     background: rgba(255, 255, 255, 20);
+}*/
+/* Optional: round top corners of the header */
+/*QHeaderView::section:first {
+    border-top-left-radius: 6px;
 }
+QHeaderView::section:last {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}*/

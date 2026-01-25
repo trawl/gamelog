@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from PySide6 import QtCore
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import (
@@ -77,6 +78,7 @@ class AbstractQuickStatsBox(QGroupBox):
         self.initEngine()
 
         self.matchStatsKeys = [
+            "nplayers",
             "maxduration",
             "minduration",
             "avgduration",
@@ -85,6 +87,7 @@ class AbstractQuickStatsBox(QGroupBox):
             "avgscore",
         ]
         self.matchStatsHeaders = [
+            "# Players",
             "Longest",
             "Shortest",
             "Average",
@@ -94,6 +97,7 @@ class AbstractQuickStatsBox(QGroupBox):
         ]
 
         self.playerStatsKeys = [
+            "nick",
             "played",
             "victories",
             "victoryp",
@@ -103,6 +107,7 @@ class AbstractQuickStatsBox(QGroupBox):
             "sumscore",
         ]
         self.playerStatsHeaders = [
+            "Player",
             "Played",
             "Victories",
             "Ratio (%)",
@@ -198,23 +203,28 @@ class AbstractQuickStatsBox(QGroupBox):
         if contents and len(contents[0]) > 1:
             table.show()
             displayed = contents  # [:10]
+            if rowheaderkey in keyorder:
+                vheaders = ["" for _ in displayed]
+                table.verticalHeader().setFixedWidth(1)
+                table.setSortingEnabled(True)
+            else:
+                vheaders = [str(row[rowheaderkey]) for row in displayed]
+            table.setVerticalHeaderLabels(vheaders)
             table.setRowCount(len(displayed))
             table.setColumnCount(len(cheaders))
             table.setHorizontalHeaderLabels(cheaders)
-            # table.verticalHeader().setVisible(False)
-            vheaders = [str(row[rowheaderkey]) for row in displayed]
-            table.setVerticalHeaderLabels(vheaders)
             for i, row in enumerate(displayed):
                 keys = keyorder
-                # keys = [
-                #     rowheaderkey,
-                # ] + keyorder
                 for j, key in enumerate(keys):
                     try:
-                        text = str(row[key])
+                        value = row[key]
                     except KeyError:
-                        text = "-"
-                    item = QTableWidgetItem(text)
+                        value = "-"
+                    item = QTableWidgetItem()
+                    if isinstance(value, (int, float)):
+                        item.setData(QtCore.Qt.ItemDataRole.DisplayRole, value)
+                    else:
+                        item.setData(QtCore.Qt.ItemDataRole.DisplayRole, str(value))
                     item.setTextAlignment(
                         QtCore.Qt.AlignmentFlag.AlignVCenter
                         | QtCore.Qt.AlignmentFlag.AlignHCenter
