@@ -978,7 +978,7 @@ class SkullKingBonusButton(QPushButton):
         self.button_size = size
         self.highlight_colour = colour if colour else QColor(200, 0, 0)
 
-        original_image = QImage(f"icons/{bonus_name}.png")
+        original_image = QImage(f":/icons/{bonus_name}.png")
         self.image = original_image.scaled(
             self.button_size,
             self.button_size,

@@ -1,0 +1,25 @@
+<!-- Update resources_rc with pyside6-rcc resources.qrc -o  resources_rc.py -->
+<RCC>
+    <qresource prefix="/">
+        <file>icons/blackfourteen.png</file>
+        <file>icons/cannonball.png</file>
+        <file>icons/cards.ico</file>
+        <file>icons/cards.png</file>
+        <file>icons/catalan.svg</file>
+        <file>icons/delete.png</file>
+        <file>icons/english.svg</file>
+        <file>icons/fav.png</file>
+        <file>icons/fourteen.png</file>
+        <file>icons/kraken.png</file>
+        <file>icons/loot.png</file>
+        <file>icons/mermaid.png</file>
+        <file>icons/pirate.png</file>
+        <file>icons/player.png</file>
+        <file>icons/roatan.png</file>
+        <file>icons/skull.png</file>
+        <file>icons/skullking.png</file>
+        <file>icons/spanish.svg</file>
+        <file>icons/winner.png</file>
+        <file>styles/main.qss</file>
+    </qresource>
+</RCC>

@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
 
         self.setGeometry(100, 50, 1024, 600)
 
-        self.icon = QtGui.QIcon("icons/cards.png")
+        self.icon = QtGui.QIcon(":/icons/cards.png")
         self.setWindowIcon(self.icon)
 
         # Menu settings
@@ -199,7 +199,7 @@ class AboutDialog(QDialog):
         self.iconlabel = QLabel(self)
         self.iconlabel.setMaximumSize(75, 75)
         self.iconlabel.setScaledContents(True)
-        self.iconlabel.setPixmap(QtGui.QPixmap("icons/cards.png"))
+        self.iconlabel.setPixmap(QtGui.QPixmap(":/icons/cards.png"))
         self.widgetlayout.addWidget(self.iconlabel)
         self.contentlayout = QVBoxLayout()
         self.widgetlayout.addLayout(self.contentlayout)

@@ -429,7 +429,7 @@ class RemigioPlayerWidget(GamePlayerWidget):
         self.scoreLCD.setGraphicsEffect(self.lcdOpacity)
 
     def koPlayer(self):
-        self.background = QtGui.QPixmap("icons/skull.png")
+        self.background = QtGui.QPixmap(":/icons/skull.png")
         self.setProperty("ko", True)
         self.style().polish(self)
         self.lcdOpacity.setOpacity(0.3)
