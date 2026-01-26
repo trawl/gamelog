@@ -112,7 +112,7 @@ class LanguageButton(QToolButton):
         )
         if not icon:
             icon = "english.svg"
-        self.setIcon(QIcon(f"icons/{icon}"))
+        self.setIcon(QIcon(f":/icons/{icon}"))
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -143,7 +143,7 @@ class LanguageChooser(QDialog):
         self.langGroupBoxLayout.addWidget(self.languageListWidget)
         for language in self.supportedLanguages.keys():
             item = QListWidgetItem(
-                QIcon(f"icons/{self.supportedLanguages[language]['icon']}"), language
+                QIcon(f":/icons/{self.supportedLanguages[language]['icon']}"), language
             )
             self.languageListWidget.addItem(item)
 

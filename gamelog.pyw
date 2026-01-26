@@ -5,8 +5,10 @@ import ctypes
 import os
 import sys
 
+from PySide6.QtCore import QFile, QTextStream
 from PySide6.QtWidgets import QApplication
 
+import resources_rc  # noqa: F401
 from gui.languagechooser import LanguageManager
 from gui.mainwindow import MainWindow
 
@@ -20,11 +22,11 @@ if __name__ == "__main__":
         sys.stderr = f
 
     app = QApplication(sys.argv)
-    try:
-        with open("styles/main.qss", "r") as f:
-            app.setStyleSheet(f.read())
-    except FileNotFoundError:
-        pass
+    file = QFile(":/styles/main.qss")
+    if file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+        stream = QTextStream(file)
+        app.setStyleSheet(stream.readAll())
+        print("Loaded Style styles/main.qss")
 
     app.setDesktopFileName("gamelog")
 

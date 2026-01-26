@@ -15,9 +15,9 @@ from PySide6.QtWidgets import (
 
 from controllers.db import db
 
-standardIcon = "icons/player.png"
-favouriteIcon = "icons/fav.png"
-dealerIcon = "icons/cards.png"
+standardIcon = ":/icons/player.png"
+favouriteIcon = ":/icons/fav.png"
+dealerIcon = ":/icons/cards.png"
 
 
 class PlayerOrderDialog(QDialog):

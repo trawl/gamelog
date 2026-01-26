@@ -809,9 +809,9 @@ class GamePlayerWidget(QGroupBox):
         """
         self.setColour(self.pcolour)
 
-        self.dealerPixmap = QtGui.QPixmap("icons/cards.png")
+        self.dealerPixmap = QtGui.QPixmap(":/icons/cards.png")
         self.nonDealerPixmap = QtGui.QPixmap()
-        self.winnerPixmap = QtGui.QPixmap("icons/winner.png")
+        self.winnerPixmap = QtGui.QPixmap(":/icons/winner.png")
 
         self.background = None
         self.bg_opacity = 1
@@ -983,7 +983,7 @@ class GameRoundTable(QTableWidget):
             return
 
         menu = QMenu()
-        ic = QtGui.QIcon("icons/delete.png")
+        ic = QtGui.QIcon(":/icons/delete.png")
         msg = self.tr("Delete Entry")
         deleteEntryAction = QAction(ic, msg, self)
         menu.addAction(deleteEntryAction)
