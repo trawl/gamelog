@@ -603,8 +603,8 @@ class ScoreSpinBox(QWidget):
         # ---- Connections ----
         self.up_button.clicked.connect(self.step_up)
         self.down_button.clicked.connect(self.step_down)
-        self.line_edit.editingFinished.connect(self._commit_text)
-        self.line_edit.textChanged.connect(self.textChangedAction)
+        self.line_edit.textChanged.connect(self._commit_text)
+        self.line_edit.editingFinished.connect(self._snap_to_step)
 
         if self._value is not None:
             self.setValue(self._value)
@@ -669,11 +669,12 @@ class ScoreSpinBox(QWidget):
     def setFocus(self, reason=QtCore.Qt.FocusReason.OtherFocusReason):
         self.line_edit.setFocus(reason)
 
-    def _snap_to_step(self, value: int) -> int:
+    def _snap_to_step(self):
         if self._step > 1:
-            offset = value - self._minimum
-            value = self._minimum + (offset // self._step) * self._step
-        return value
+            offset = self._value - self._minimum
+            new_value = self._minimum + (offset // self._step) * self._step
+            if self._value != new_value:
+                self.setValue(new_value)
 
     def step_up(self):
         self.line_edit.setFocus()
@@ -688,8 +689,7 @@ class ScoreSpinBox(QWidget):
             value = int(self.line_edit.text())
         except ValueError:
             value = self._value
-
-        self.setValue(self._snap_to_step(value))
+        self.setValue(value)
 
     def setRange(self, minimum: int, maximum: int):
         self._minimum = minimum
