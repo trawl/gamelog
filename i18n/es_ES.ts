@@ -936,7 +936,7 @@
     <message>
         <location filename="../gui/remigio.py" line="139"/>
         <source>Warning: real points are computed automatically depending on the close type</source>
-        <translation>Atención: el programa calula los puntos reales según el tipo de cierre</translation>
+        <translation type="unfinished">Atención: el programa calcula los puntos reales según el tipo de cierre</translation>
     </message>
     <message>
         <source>Warning: real points are computed                         automatically depending on the close type</source>
