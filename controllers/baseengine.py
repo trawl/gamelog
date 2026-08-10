@@ -103,8 +103,21 @@ class GameEngine(object):
     def isPaused(self):
         return self.match.isPaused()
 
+    def getStartTime(self):
+        return self.match.getStartTime()
+
+    def getFinishTime(self):
+        return self.match.getFinishTime()
+
     def getGameSeconds(self):
         return self.match.getGameSeconds()
+
+    def updateTimes(self, start, finish, seconds):
+        self.match.setStartTime(start)
+        self.match.setFinishTime(finish)
+        self.match.setGameSeconds(seconds)
+        print(f"UPDATED TIMES: {start} | {finish} | {seconds}")
+        self.match.flushToDB()
 
     def cancelMatch(self):
         self.match.cancel()

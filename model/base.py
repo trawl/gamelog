@@ -183,6 +183,18 @@ class GenericMatch(object):
     def getStartTime(self):
         return self.start
 
+    def getFinishTime(self):
+        return self.finish
+
+    def setStartTime(self, start):
+        self.start = start
+
+    def setFinishTime(self, finish):
+        self.finish = finish
+
+    def setGameSeconds(self, seconds):
+        self.elapsed = seconds
+
     def getPlayers(self):
         return self.players
 

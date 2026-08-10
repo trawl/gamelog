@@ -17,71 +17,71 @@
 <context>
     <name>AbstractQuickStatsBox</name>
     <message>
-        <location filename="../gui/gamestats.py" line="59"/>
+        <location filename="../gui/gamestats.py" line="60"/>
         <source>Longest</source>
         <translation>Más Larga</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="60"/>
+        <location filename="../gui/gamestats.py" line="61"/>
         <source>Shortest</source>
         <translation>Más Corta</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="61"/>
-        <location filename="../gui/gamestats.py" line="64"/>
-        <location filename="../gui/gamestats.py" line="70"/>
+        <location filename="../gui/gamestats.py" line="62"/>
+        <location filename="../gui/gamestats.py" line="65"/>
+        <location filename="../gui/gamestats.py" line="71"/>
         <source>Average</source>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="62"/>
-        <location filename="../gui/gamestats.py" line="68"/>
+        <location filename="../gui/gamestats.py" line="63"/>
+        <location filename="../gui/gamestats.py" line="69"/>
         <source>Highest</source>
         <translation>Más Alta</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="63"/>
-        <location filename="../gui/gamestats.py" line="69"/>
+        <location filename="../gui/gamestats.py" line="64"/>
+        <location filename="../gui/gamestats.py" line="70"/>
         <source>Lowest</source>
         <translation>Más Baja</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="65"/>
+        <location filename="../gui/gamestats.py" line="66"/>
         <source>Played</source>
         <translation>Jugadas</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="66"/>
+        <location filename="../gui/gamestats.py" line="67"/>
         <source>Victories</source>
         <translation>Victorias</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="67"/>
+        <location filename="../gui/gamestats.py" line="68"/>
         <source>Ratio (%)</source>
         <translation>Ratio (%)</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="71"/>
+        <location filename="../gui/gamestats.py" line="72"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="159"/>
+        <location filename="../gui/gamestats.py" line="164"/>
         <source>Last winner</source>
         <translation>Último ganador</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="161"/>
+        <location filename="../gui/gamestats.py" line="166"/>
         <source>Matches</source>
         <translation>Partidas</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="162"/>
+        <location filename="../gui/gamestats.py" line="167"/>
         <source>Players</source>
         <translation>Jugadores</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="175"/>
+        <location filename="../gui/gamestats.py" line="180"/>
         <source>No statistics found</source>
         <translation>No hay estadísticas</translation>
     </message>
@@ -226,13 +226,13 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="../gui/game.py" line="987"/>
-        <location filename="../gui/game.py" line="992"/>
+        <location filename="../gui/game.py" line="994"/>
+        <location filename="../gui/game.py" line="999"/>
         <source>Delete Entry</source>
         <translation>Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="993"/>
+        <location filename="../gui/game.py" line="1000"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>¿Estás seguro que quieres eliminar esta entrada?</translation>
     </message>
@@ -244,17 +244,17 @@
 <context>
     <name>GameRoundsDetail</name>
     <message>
-        <location filename="../gui/game.py" line="911"/>
+        <location filename="../gui/game.py" line="918"/>
         <source>Table</source>
         <translation>Tabla</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="912"/>
+        <location filename="../gui/game.py" line="919"/>
         <source>Plot</source>
         <translation>Gráfico</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="913"/>
+        <location filename="../gui/game.py" line="920"/>
         <source>Statistics</source>
         <translation>Estadísticas</translation>
     </message>
@@ -262,7 +262,7 @@
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="../gui/game.py" line="59"/>
+        <location filename="../gui/game.py" line="60"/>
         <source>Scoreboard</source>
         <translation>Marcador</translation>
     </message>
@@ -271,62 +271,62 @@
         <translation type="vanished">Tiempo de Juego</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="252"/>
+        <location filename="../gui/game.py" line="254"/>
         <source>Cancel Match</source>
         <translation>Salir del Juego</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="217"/>
+        <location filename="../gui/game.py" line="219"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pausar/Reanudar</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="218"/>
+        <location filename="../gui/game.py" line="220"/>
         <source>&amp;Cancel Match</source>
         <translation>&amp;Salir del Juego</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="220"/>
+        <location filename="../gui/game.py" line="222"/>
         <source>Commit &amp;Round</source>
         <translation>Cerrar &amp;Ronda</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="358"/>
+        <location filename="../gui/game.py" line="360"/>
         <source>Winner deals</source>
         <translation>El ganador reparte</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="242"/>
+        <location filename="../gui/game.py" line="244"/>
         <source>{} won this match!</source>
         <translation>¡{} ha ganado la partida!</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="244"/>
+        <location filename="../gui/game.py" line="246"/>
         <source>Game is paused</source>
         <translation>El juego está pausado</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="247"/>
+        <location filename="../gui/game.py" line="249"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="318"/>
+        <location filename="../gui/game.py" line="320"/>
         <source>No winner selected</source>
         <translation>No se ha seleccionado ningún ganador</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="327"/>
+        <location filename="../gui/game.py" line="329"/>
         <source>{} score is not valid</source>
         <translation>La puntuación de {} no es válida</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="361"/>
+        <location filename="../gui/game.py" line="363"/>
         <source>Next player deals</source>
         <translation>El siguiente reparte</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="381"/>
+        <location filename="../gui/game.py" line="383"/>
         <source>{} - Round {}</source>
         <translation>{} - Ronda {}</translation>
     </message>
@@ -347,8 +347,8 @@
         <translation type="vanished">Ronda {0}</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="253"/>
-        <location filename="../gui/game.py" line="278"/>
+        <location filename="../gui/game.py" line="255"/>
+        <location filename="../gui/game.py" line="280"/>
         <source>Do you want to save the current {} match?</source>
         <translation>¿Quieres guardar la partida de {} actual?</translation>
     </message>
@@ -357,17 +357,17 @@
         <translation type="vanished">&amp;Finalizar Partida</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="221"/>
+        <location filename="../gui/game.py" line="223"/>
         <source>Player &amp;Order</source>
         <translation>&amp;Orden Jugadores</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="219"/>
+        <location filename="../gui/game.py" line="221"/>
         <source>Restart &amp;Match</source>
         <translation>Nueva &amp;Partida</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="277"/>
+        <location filename="../gui/game.py" line="279"/>
         <source>Restart Match</source>
         <translation>Nueva Partida</translation>
     </message>
@@ -474,6 +474,29 @@
     <message>
         <source>You have {} opened matches.                             Do you want to save them before exiting?</source>
         <translation type="vanished">Hay {} partidas abiertas. ¿Quieres guardarlas antes de salir?</translation>
+    </message>
+</context>
+<context>
+    <name>MatchTimesEditDialog</name>
+    <message>
+        <location filename="../gui/matchedit.py" line="18"/>
+        <source>Match Times Edit</source>
+        <translation>Cambiar Tiempos</translation>
+    </message>
+    <message>
+        <location filename="../gui/matchedit.py" line="27"/>
+        <source>Start</source>
+        <translation>Inicio</translation>
+    </message>
+    <message>
+        <location filename="../gui/matchedit.py" line="33"/>
+        <source>Finish</source>
+        <translation>Final</translation>
+    </message>
+    <message>
+        <location filename="../gui/matchedit.py" line="37"/>
+        <source>Duration</source>
+        <translation>Duración</translation>
     </message>
 </context>
 <context>
@@ -885,12 +908,12 @@
 <context>
     <name>QuickStatsTW</name>
     <message>
-        <location filename="../gui/gamestats.py" line="45"/>
+        <location filename="../gui/gamestats.py" line="46"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="46"/>
+        <location filename="../gui/gamestats.py" line="47"/>
         <source>Particular</source>
         <translation>Particular</translation>
     </message>
