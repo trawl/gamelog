@@ -28,6 +28,7 @@ from PySide6.QtWidgets import (
 )
 
 from gui.clock import GameClock
+from gui.matchedit import MatchTimesEditDialog
 from gui.gamestats import QuickStatsTW
 from gui.languagechooser import LanguageButton
 from gui.playerlist import PlayerOrderDialog
@@ -147,6 +148,7 @@ class GameWidget(Tab):
 
         self.clock = GameClock(self.engine.getGameSeconds(), self)
         self.clock.setMinimumHeight(70)
+        self.clock.doubleClicked.connect(self.editGameTime)
         # self.clock.setMinimumWidth(200)
         self.clock.setSizePolicy(
             QSizePolicy.Policy.Preferred,  # horizontal
@@ -450,6 +452,11 @@ class GameWidget(Tab):
         else:
             self.screen_blocker.stop()
             print("Disabled Screensaver")
+
+    def editGameTime(self):
+        if self.finished:
+            mted = MatchTimesEditDialog(self.engine, self)
+            mted.exec_()
 
 
 class GameInputWidget(QWidget):

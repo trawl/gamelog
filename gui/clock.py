@@ -3,11 +3,14 @@
 
 import datetime
 
-from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QTimer
+from PySide6 import QtCore
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QTimer, Signal
 from PySide6.QtWidgets import QFrame, QGraphicsOpacityEffect, QLCDNumber
 
 
 class GameClock(QLCDNumber):
+    doubleClicked = QtCore.Signal()
+
     def __init__(self, elapsed=0, parent=None):
         super(GameClock, self).__init__(parent)
         self.setSegmentStyle(QLCDNumber.SegmentStyle.Filled)
@@ -35,6 +38,7 @@ class GameClock(QLCDNumber):
         self.blinkAnim.setKeyValueAt(0.5, 0.2)  # fade out midpoint
         self.blinkAnim.setKeyValueAt(1.0, 1.0)
         self.blinkAnim.setEasingCurve(QEasingCurve.Type.InOutSine)
+
 
     def showTime(self):
         now = datetime.datetime.now()
@@ -75,3 +79,7 @@ class GameClock(QLCDNumber):
         self.showTime()
         self.starTime = None
         self.accumulated = 0
+
+    def mouseDoubleClickEvent(self, event):
+        self.doubleClicked.emit()
+        super().mouseDoubleClickEvent(event)
