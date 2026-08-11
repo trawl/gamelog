@@ -457,6 +457,7 @@ class GameWidget(Tab):
         if self.finished:
             mted = MatchTimesEditDialog(self.engine, self)
             mted.exec_()
+            self.clock.showTime(self.engine.getGameSeconds())
 
 
 class GameInputWidget(QWidget):
