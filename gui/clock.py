@@ -40,10 +40,13 @@ class GameClock(QLCDNumber):
         self.blinkAnim.setEasingCurve(QEasingCurve.Type.InOutSine)
 
 
-    def showTime(self):
-        now = datetime.datetime.now()
-        timediff = now - self.startTime
-        elapsed = timediff.seconds + self.accumulated
+    def showTime(self, elapsed=None):
+        if not elapsed:
+            now = datetime.datetime.now()
+            timediff = now - self.startTime
+            elapsed = timediff.seconds + self.accumulated
+        else:
+            self.showcolons = True
         hours, remainder = divmod(elapsed, 3600)
         minutes, seconds = divmod(remainder, 60)
         if self.showcolons:
@@ -53,6 +56,7 @@ class GameClock(QLCDNumber):
         if hours:
             self.setDigitCount(8)
         self.display(text)
+
         self.showcolons = not self.showcolons
 
     def pauseTimer(self):

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from PySide6.QtCore import QTime, QDateTime
 from PySide6.QtWidgets import (
     QDialog,
