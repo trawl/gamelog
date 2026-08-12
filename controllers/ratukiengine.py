@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from typing import cast
 
 from controllers.baseengine import RoundGameEngine, readInput
@@ -10,7 +8,7 @@ class RatukiEngine(RoundGameEngine):
     def __init__(self):
         if not hasattr(self, "game"):
             self.game = "Ratuki"
-        super(RatukiEngine, self).__init__()
+        super().__init__()
 
     def getTop(self):
         return cast("RatukiMatch", self.match).getTop()
@@ -19,7 +17,7 @@ class RatukiEngine(RoundGameEngine):
         cast("RatukiMatch", self.match).setTop(top)
 
     def printExtraStats(self):
-        print("Match top: {}".format(self.getTop()))
+        print(f"Match top: {self.getTop()}")
 
     def extraStubConfig(self):
         top = readInput("Top score: ", int, lambda x: x > 0)
@@ -27,7 +25,7 @@ class RatukiEngine(RoundGameEngine):
 
     def runRoundPlayer(self, player, winner=None):
         score = readInput(
-            "{} round score: ".format(player),
+            f"{player} round score: ",
             int,
             lambda x: True,
             "Sorry, invalid score number.",

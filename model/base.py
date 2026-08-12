@@ -1,27 +1,24 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import datetime
 from abc import abstractmethod
 
 from controllers.db import db
 
 
-class Player(object):
+class Player:
     def __init__(self):
         self.nick = ""
         self.fullName = ""
         self.dateCreation = None
 
 
-class GenericMatch(object):
+class GenericMatch:
     RUNNING = 0
     FINISHED = 1
     CANCELLED = 2
     PAUSED = 3
     SAVED = 4
 
-    def __init__(self, players=[]):
+    def __init__(self, players=()):
         self.game = "Generic"
         self.players = players
         self.winner = None
@@ -29,7 +26,7 @@ class GenericMatch(object):
         self.resumed = datetime.datetime.now()
         self.finish = None
         self.elapsed = 0
-        self.totalScores = dict()
+        self.totalScores = {}
         self.idMatch = -1
         self.state = self.CANCELLED
         self.dealer = None
@@ -42,7 +39,7 @@ class GenericMatch(object):
             return False
         cur = db.execute(
             "SELECT Game_name,state,started,elapsed "
-            "FROM Match WHERE idMatch ={};".format(idMatch)
+            f"FROM Match WHERE idMatch ={idMatch};"
         )
         if not cur:
             return False
@@ -58,7 +55,7 @@ class GenericMatch(object):
         self.players = []
         cur = db.execute(
             "SELECT rowid,nick,totalScore FROM MatchPlayer "
-            "WHERE idMatch ={} ORDER BY rowid;".format(idMatch)
+            f"WHERE idMatch ={idMatch} ORDER BY rowid;"
         )
         for row in cur:
             player = str(row["nick"])
@@ -111,50 +108,37 @@ class GenericMatch(object):
     def cancel(self):
         if not self.isCancelled() and not self.winner:
             self.flushState(self.CANCELLED)
-            print("{} Match Cancelled at {}".format(self.game, self.finish))
+            print(f"{self.game} Match Cancelled at {self.finish}")
 
     def save(self):
         self.flushState(self.SAVED)
-        print("{} Saved at {}".format(self.game, self.finish))
+        print(f"{self.game} Saved at {self.finish}")
 
     def pause(self):
         if not self.isPaused():
             self.updateElapsed()
             self.state = self.PAUSED
-            print("{} Paused at {}".format(self.game, self.finish))
+            print(f"{self.game} Paused at {self.finish}")
 
     def unpause(self):
         if self.isPaused():
             self.resumed = datetime.datetime.now()
             self.state = self.RUNNING
-            print("{} Resumed at {}".format(self.game, self.resumed))
+            print(f"{self.game} Resumed at {self.resumed}")
 
     def flushToDB(self):
         if self.idMatch is not None and self.idMatch < 0:
             cur = db.execute(
                 "INSERT INTO Match (Game_name, state, started,"
                 "finished,elapsed) "
-                "VALUES ('{}',{},'{}','{}',{});".format(
-                    self.game,
-                    self.state,
-                    str(self.start),
-                    str(self.finish),
-                    self.elapsed,
-                )
+                f"VALUES ('{self.game}',{self.state},'{self.start!s}','{self.finish!s}',{self.elapsed});"
             )
             self.idMatch = cur.lastrowid
         else:
             cur = db.execute(
                 "INSERT OR REPLACE INTO Match (idMatch,Game_name,"
                 "state,started,finished,elapsed) "
-                "VALUES ({},'{}',{},'{}','{}',{});".format(
-                    self.idMatch,
-                    self.game,
-                    self.state,
-                    str(self.start),
-                    str(self.finish),
-                    self.elapsed,
-                )
+                f"VALUES ({self.idMatch},'{self.game}',{self.state},'{self.start!s}','{self.finish!s}',{self.elapsed});"
             )
         for p in self.players:
             winner = 0
@@ -163,15 +147,13 @@ class GenericMatch(object):
             db.execute(
                 "INSERT OR REPLACE INTO MatchPlayer"
                 "(idMatch,nick,totalScore,winner) "
-                "VALUES ({},'{}',{},{});".format(
-                    str(self.idMatch), str(p), self.getScoreFromPlayer(str(p)), winner
-                )
+                f"VALUES ({self.idMatch!s},'{p!s}',{self.getScoreFromPlayer(str(p))},{winner});"
             )
 
     def getGameTime(self):
         hours, remainder = divmod(self.getGameSeconds(), 3600)
         minutes, seconds = divmod(remainder, 60)
-        return "{0:02}:{1:02}:{2:02}".format(hours, minutes, seconds)
+        return f"{hours:02}:{minutes:02}:{seconds:02}"
 
     def getGameSeconds(self):
         if self.isPaused() or self.winner:
@@ -219,7 +201,7 @@ class GenericMatch(object):
     def getActivePlayers(self):
         return self.getPlayers()
 
-    def isPlayerOff(self, player):
+    def isPlayerOff(self, player) -> bool:
         return False
 
     # To be implemented in subclasses
@@ -233,19 +215,19 @@ class GenericMatch(object):
 
 
 class GenericRoundMatch(GenericMatch):
-    def __init__(self, players=[]):
-        super(GenericRoundMatch, self).__init__(players)
-        self.rounds = list()
+    def __init__(self, players=()):
+        super().__init__(players)
+        self.rounds = []
         self.dealer = None
         self.dealingp = 2
         self.updatewinnereveryround = True
 
     def resumeMatch(self, idMatch):
-        if not super(GenericRoundMatch, self).resumeMatch(idMatch):
+        if not super().resumeMatch(idMatch):
             return False
         cur = db.execute(
             "SELECT idRound,nick,winner,score FROM Round "
-            "WHERE idMatch ={} ORDER BY idRound;".format(idMatch)
+            f"WHERE idMatch ={idMatch} ORDER BY idRound;"
         )
         current = 0
         rnd = None
@@ -264,9 +246,7 @@ class GenericRoundMatch(GenericMatch):
             self.rounds.append(rnd)
 
         cur = db.execute(
-            "SELECT value FROM MatchExtras WHERE idMatch ={} and key='Dealer';".format(
-                idMatch
-            )
+            f"SELECT value FROM MatchExtras WHERE idMatch ={idMatch} and key='Dealer';"
         )
         row = cur.fetchone()
         if row:
@@ -274,7 +254,7 @@ class GenericRoundMatch(GenericMatch):
 
         cur = db.execute(
             "SELECT value FROM MatchExtras "
-            "WHERE idMatch ={} and key='DealingPolicy';".format(idMatch)
+            f"WHERE idMatch ={idMatch} and key='DealingPolicy';"
         )
         row = cur.fetchone()
         if row:
@@ -282,8 +262,8 @@ class GenericRoundMatch(GenericMatch):
 
         cur = db.execute(
             "SELECT idRound,nick,key,value FROM RoundStatistics "
-            "WHERE idMatch ={} "
-            "ORDER BY idRound,nick,key,value;".format(idMatch)
+            f"WHERE idMatch ={idMatch} "
+            "ORDER BY idRound,nick,key,value;"
         )
 
         currentr = 0
@@ -313,21 +293,19 @@ class GenericRoundMatch(GenericMatch):
         return True
 
     def flushToDB(self):
-        super(GenericRoundMatch, self).flushToDB()
+        super().flushToDB()
 
         #         db.execute("BEGIN")
-        db.execute("DELETE FROM Round where idMatch={};".format(self.idMatch))
-        db.execute("DELETE FROM RoundStatistics where idMatch={};".format(self.idMatch))
+        db.execute(f"DELETE FROM Round where idMatch={self.idMatch};")
+        db.execute(f"DELETE FROM RoundStatistics where idMatch={self.idMatch};")
 
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            "VALUES ({},'Dealer','{}');".format(self.idMatch, self.getDealer())
+            f"VALUES ({self.idMatch},'Dealer','{self.getDealer()}');"
         )
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            "VALUES ({},'DealingPolicy','{}');".format(
-                self.idMatch, self.getDealingPolicy()
-            )
+            f"VALUES ({self.idMatch},'DealingPolicy','{self.getDealingPolicy()}');"
         )
 
         for rnd in self.rounds:
@@ -338,9 +316,7 @@ class GenericRoundMatch(GenericMatch):
                 db.execute(
                     "INSERT OR REPLACE INTO Round (idMatch, nick, "
                     "idRound, winner,score) "
-                    "VALUES ({},'{}',{},{},{});".format(
-                        self.idMatch, str(player), rnd.getNumRound(), winner, score
-                    )
+                    f"VALUES ({self.idMatch},'{player!s}',{rnd.getNumRound()},{winner},{score});"
                 )
 
     #         db.execute("COMMIT")
@@ -394,10 +370,10 @@ class GenericRoundMatch(GenericMatch):
         return GenericRound(numround)
 
 
-class GenericRound(object):
+class GenericRound:
     def __init__(self, numround):
         self.numround = numround
-        self.score = dict()  # nick -> points
+        self.score = {}
         self.winner = None
 
     def getNumRound(self):
@@ -440,7 +416,7 @@ class GenericRound(object):
 
 class GenericEntry(GenericRound):
     def __init__(self, numround):
-        super(GenericEntry, self).__init__(numround)
+        super().__init__(numround)
         self.getNumEntry = self.getNumRound
         self.setNumEntry = self.setNumRound
 
@@ -453,5 +429,5 @@ class GenericEntry(GenericRound):
     def getPlayer(self):
         if len(self.score) == 0:
             return -1
-        for player in self.score.keys():
+        for player in self.score:
             return player

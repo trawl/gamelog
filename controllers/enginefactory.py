@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from controllers.baseengine import GameEngine
 from controllers.carcassonneengine import (
     CarcassonneEngine,
@@ -17,6 +14,11 @@ from controllers.pochaengine import (
     PochaEngine,
     PochaParticularStatsEngine,
     PochaStatsEngine,
+)
+from controllers.qwirkleengine import (
+    QwirkleEngine,
+    QwirkleParticularStatsEngine,
+    QwirkleStatsEngine,
 )
 from controllers.ratukiengine import RatukiEngine
 from controllers.remigioengine import RemigioEngine
@@ -48,6 +50,8 @@ class GameEngineFactory:
             return SkullKingEngine()
         if gname == "Toma6":
             return Toma6Engine()
+        if gname == "Qwirkle":
+            return QwirkleEngine()
 
         return GameEngine()
 
@@ -63,6 +67,8 @@ class StatsEngineFactory:
             return PochaStatsEngine()
         if gname == "Skull King":
             return SkullKingStatsEngine()
+        if gname == "Qwirkle":
+            return QwirkleStatsEngine()
         return StatsEngine()
 
     @classmethod
@@ -75,4 +81,6 @@ class StatsEngineFactory:
             return PochaParticularStatsEngine()
         if gname == "Skull King":
             return SkullKingParticularStatsEngine()
+        if gname == "Qwirkle":
+            return QwirkleParticularStatsEngine()
         return ParticularStatsEngine()

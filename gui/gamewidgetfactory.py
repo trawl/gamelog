@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from gui.carcassonne import CarcassonneWidget
 from gui.phase10 import Phase10Widget
 from gui.pocha import PochaWidget
+from gui.qwirkle import QwirkleWidget
 from gui.ratuki import RatukiWidget
 from gui.remigio import RemigioWidget
 from gui.skullking import SkullKingWidget
@@ -26,6 +25,8 @@ class GameWidgetFactory:
             return SkullKingWidget(gname, players, None, parent)
         if gname == "Toma6":
             return Toma6Widget(gname, players, None, parent)
+        if gname == "Qwirkle":
+            return QwirkleWidget(gname, players, None, parent)
         return None
 
     @classmethod
@@ -44,4 +45,6 @@ class GameWidgetFactory:
             return SkullKingWidget(gname, None, engine, parent)
         if gname == "Toma6":
             return Toma6Widget(gname, None, engine, parent)
+        if gname == "Qwirkle":
+            return QwirkleWidget(gname, None, engine, parent)
         return None

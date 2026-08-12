@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from typing import cast
 
 from PySide6 import QtCore, QtGui
@@ -18,6 +16,7 @@ from PySide6.QtWidgets import (
 from controllers.remigioengine import RemigioEngine
 from gui.game import (
     GameInputWidget,
+    GameNotImplementedException,
     GamePlayerWidget,
     GameRoundPlot,
     GameRoundsDetail,
@@ -29,15 +28,15 @@ from gui.game import (
 
 
 class RemigioWidget(GameWidget):
-    bgcolors = [0, 0xCCFF99, 0xFFFF99, 0xFFCC99, 0xFFCCFF]
+    bgcolors = (0, 0xCCFF99, 0xFFFF99, 0xFFCC99, 0xFFCCFF)
 
     def createEngine(self):
         if self.game != "Remigio":
-            raise Exception("No engine for game {}".format(self.game))
+            raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = RemigioEngine()
 
     def initUI(self):
-        super(RemigioWidget, self).initUI()
+        super().initUI()
 
         self.gameInput.enterPressed.connect(self.commitRound)
         self.roundLayout.addWidget(self.gameInput)
@@ -110,7 +109,7 @@ class RemigioWidget(GameWidget):
             if player == self.engine.getDealer():
                 pw.setDealer()
             if self.engine.isPlayerOff(player):
-                print("Should set {} to ko...".format(player))
+                print(f"Should set {player} to ko...")
                 pw.koPlayer()
             if np < 8:
                 self.playersLayout.addWidget(pw)
@@ -121,7 +120,7 @@ class RemigioWidget(GameWidget):
         self.retranslateUI()
 
     def retranslateUI(self):
-        super(RemigioWidget, self).retranslateUI()
+        super().retranslateUI()
         # self.topPointsLabel.setText(self.tr("Score Limit"))
         self.detailGroup.retranslateUI()
 
@@ -132,7 +131,7 @@ class RemigioWidget(GameWidget):
         return RemigioRoundsDetail(self.engine, RemigioWidget.bgcolors, parent)
 
     def updateGameStatusLabel(self):
-        super(RemigioWidget, self).updateGameStatusLabel()
+        super().updateGameStatusLabel()
         if self.gameStatusLabel.text() == "":
             self.gameStatusLabel.setStyleSheet("QLabel {font-weight:bold;}")
             msg = self.tr(
@@ -161,7 +160,7 @@ class RemigioWidget(GameWidget):
         if self.engine.getWinner():
             self.detailGroup.updateStats()
         self.detailGroup.updateRound()
-        super(RemigioWidget, self).updatePanel()
+        super().updatePanel()
 
     def updateScores(self):
         for player in self.players:
@@ -185,7 +184,7 @@ class RemigioWidget(GameWidget):
             pass
 
     def setWinner(self):
-        super(RemigioWidget, self).setWinner()
+        super().setWinner()
         winner = self.engine.getWinner()
         if winner in self.players:
             self.playerGroupBox[winner].setWinner()
@@ -204,7 +203,7 @@ class RemigioWidget(GameWidget):
 
 class RemigioInputWidget(GameInputWidget):
     def __init__(self, engine, bgcolors, parent=None):
-        super(RemigioInputWidget, self).__init__(engine, parent)
+        super().__init__(engine, parent)
         self.bgcolors = bgcolors
         self.initUI()
 
@@ -301,7 +300,7 @@ class RemigioPlayerInputWidget(QGroupBox):
     winnerSet = QtCore.Signal(str)
 
     def __init__(self, player, bgcolors, colour=None, parent=None):
-        super(RemigioPlayerInputWidget, self).__init__(parent)
+        super().__init__(parent)
         self.player = player
         self.pcolour = colour
         self.ko = False
@@ -335,12 +334,7 @@ class RemigioPlayerInputWidget(QGroupBox):
 
     def setColour(self, colour):
         self.pcolour = colour
-        sh = "font-size: 24px; font-weight: bold; color:rgba({},{},{},{});".format(
-            self.pcolour.red(),
-            self.pcolour.green(),
-            self.pcolour.blue(),
-            self.pcolour.alpha(),
-        )
+        sh = f"font-size: 24px; font-weight: bold; color:rgba({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()},{self.pcolour.alpha()});"
         self.label.setStyleSheet(sh)
         self.scoreSpinBox.setColour(self.pcolour)
 
@@ -349,13 +343,11 @@ class RemigioPlayerInputWidget(QGroupBox):
         self.updatePanel()
 
     def updatePanel(self):
-        text = "{}".format(self.player)
+        text = f"{self.player}"
         css = ""
         if self.closeType > 0:
-            text = text + " ({}x)".format(self.closeType)
-            css = "font-weight: bold; border-radius: 4px; background-color: #{0:X}".format(
-                self.bgcolors[self.closeType]
-            )
+            text = text + f" ({self.closeType}x)"
+            css = f"font-weight: bold; border-radius: 4px; background-color: #{self.bgcolors[self.closeType]:X}"
             self.scoreSpinBox.setValue(0)
             self.scoreSpinBox.setReadOnly(True)
             # self.scoreSpinBox.setDisabled(True)
@@ -366,7 +358,7 @@ class RemigioPlayerInputWidget(QGroupBox):
             # self.scoreSpinBox.setEnabled(True)
 
         self.label.setText(text)
-        self.setStyleSheet("QGroupBox {{ {} }}".format(css))
+        self.setStyleSheet(f"QGroupBox {{ {css} }}")
 
     def mousePressEvent(self, event):
         if self.isWinner():
@@ -379,7 +371,7 @@ class RemigioPlayerInputWidget(QGroupBox):
             self.winnerSet.emit(self.player)
             self.increaseCloseType()
         else:
-            super(RemigioPlayerInputWidget, self).mouseDoubleClickEvent(event)
+            super().mouseDoubleClickEvent(event)
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key.Key_Space:
@@ -446,7 +438,7 @@ class RemigioPlayerWidget(GamePlayerWidget):
 class RemigioRoundsDetail(GameRoundsDetail):
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
-        super(RemigioRoundsDetail, self).__init__(engine, parent)
+        super().__init__(engine, parent)
         self.container.setCurrentWidget(self.plot)
 
     def createRoundTable(self, engine, parent=None):
@@ -459,7 +451,7 @@ class RemigioRoundsDetail(GameRoundsDetail):
 class RemigioRoundTable(GameRoundTable):
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
-        super(RemigioRoundTable, self).__init__(engine, parent)
+        super().__init__(engine, parent)
 
     def insertRound(self, r):
         closeType = r.getCloseType()
@@ -500,7 +492,7 @@ class RemigioRoundTable(GameRoundTable):
 
 class RemigioRoundPlot(GameRoundPlot):
     def updatePlot(self):
-        super(RemigioRoundPlot, self).updatePlot()
+        super().updatePlot()
         if not self.isPlotInited():
             return
         scores = {}

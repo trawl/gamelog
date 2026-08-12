@@ -1,13 +1,10 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from controllers.db import db
 from model.base import GenericRound, GenericRoundMatch
 
 
 class RemigioMatch(GenericRoundMatch):
-    def __init__(self, players=[]):
-        super(RemigioMatch, self).__init__(players)
+    def __init__(self, players=()):
+        super().__init__(players)
         self.game = "Remigio"
         self.activeplayers = []
         self.playersoff = []
@@ -22,12 +19,12 @@ class RemigioMatch(GenericRoundMatch):
     def addRound(self, rnd):
         closeType = rnd.getCloseType()
         if closeType > 1:
-            for player in rnd.getScore().keys():
+            for player in rnd.getScore().keys():  # noqa: SIM118
                 rnd.setPlayerScore(player, closeType * rnd.getPlayerScore(player))
         GenericRoundMatch.addRound(self, rnd)
 
     def deleteRound(self, nrnd):
-        super(RemigioMatch, self).deleteRound(nrnd)
+        super().deleteRound(nrnd)
         for player in self.playersoff[:]:
             if self.totalScores[player] < self.top:
                 self.activeplayers.append(player)
@@ -43,13 +40,11 @@ class RemigioMatch(GenericRoundMatch):
             self.winner = self.activeplayers[0]
 
     def resumeMatch(self, idMatch):
-        if not super(RemigioMatch, self).resumeMatch(idMatch):
+        if not super().resumeMatch(idMatch):
             return False
 
         cur = db.execute(
-            "SELECT value FROM MatchExtras WHERE idMatch ={} and key='Top';".format(
-                idMatch
-            )
+            f"SELECT value FROM MatchExtras WHERE idMatch ={idMatch} and key='Top';"
         )
         if cur:
             row = cur.fetchone()
@@ -87,28 +82,23 @@ class RemigioMatch(GenericRoundMatch):
             return
         self.top = top
 
-    #        db.execute("INSERT OR REPLACE INTO MatchExtras (idMatch,key,value)
-    #               VALUES ({},'Top','{}');".format(self.idMatch,top))
-
     def flushToDB(self):
-        super(RemigioMatch, self).flushToDB()
+        super().flushToDB()
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            "VALUES ({},'Top','{}');".format(self.idMatch, self.top)
+            f"VALUES ({self.idMatch},'Top','{self.top}');"
         )
         for rnd in self.rounds:
             db.execute(
                 "INSERT OR REPLACE INTO RoundStatistics "
                 "(idMatch,nick,idRound,key,value) "
-                "VALUES ({},'{}',{},'closeType','{}');".format(
-                    self.idMatch, rnd.getWinner(), rnd.getNumRound(), rnd.closeType
-                )
+                f"VALUES ({self.idMatch},'{rnd.getWinner()}',{rnd.getNumRound()},'closeType','{rnd.closeType}');"
             )
 
 
 class RemigioRound(GenericRound):
     def __init__(self, numround):
-        super(RemigioRound, self).__init__(numround)
+        super().__init__(numround)
         self.closeType = 1
 
     def addExtraInfo(self, player, extras):

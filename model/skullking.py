@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from controllers.db import db
 from model.pocha import PochaMatch
 
@@ -33,8 +30,8 @@ class SkullKingMatch(PochaMatch):
         "cannonball": {"bonus": 0, "reps": 1}
     }
 
-    def __init__(self, players=[]):
-        super(SkullKingMatch, self).__init__(players)
+    def __init__(self, players=()):
+        super().__init__(players)
         self.game = "Skull King"
         self.dealingp = 1
         self.scoringMode = "classic_scoring"
@@ -60,7 +57,7 @@ class SkullKingMatch(PochaMatch):
     def listScoringModes(self):
         return [
             sm
-            for sm in self.scoringModes.keys()
+            for sm in self.scoringModes
             if len(self.players) <= 6
             or len(self.players) > 7
             and sm != "classic_scoring"
@@ -101,13 +98,11 @@ class SkullKingMatch(PochaMatch):
         return self.roundModes[self.roundMode]
 
     def resumeMatch(self, idMatch):
-        if not super(SkullKingMatch, self).resumeMatch(idMatch):
+        if not super().resumeMatch(idMatch):
             return False
 
         cur = db.execute(
-            "SELECT value FROM MatchExtras WHERE idMatch ={} and key='scoringMode';".format(
-                idMatch
-            )
+            f"SELECT value FROM MatchExtras WHERE idMatch ={idMatch} and key='scoringMode';"
         )
         if cur:
             row = cur.fetchone()
@@ -115,9 +110,7 @@ class SkullKingMatch(PochaMatch):
                 self.scoringMode = row["value"]
 
         cur = db.execute(
-            "SELECT value FROM MatchExtras WHERE idMatch ={} and key='roundMode';".format(
-                idMatch
-            )
+            f"SELECT value FROM MatchExtras WHERE idMatch ={idMatch} and key='roundMode';"
         )
         if cur:
             row = cur.fetchone()
@@ -130,12 +123,12 @@ class SkullKingMatch(PochaMatch):
         return True
 
     def flushToDB(self):
-        super(SkullKingMatch, self).flushToDB()
+        super().flushToDB()
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            "VALUES ({},'scoringMode','{}');".format(self.idMatch, self.scoringMode)
+            f"VALUES ({self.idMatch},'scoringMode','{self.scoringMode}');"
         )
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            "VALUES ({},'roundMode','{}');".format(self.idMatch, self.roundMode)
+            f"VALUES ({self.idMatch},'roundMode','{self.roundMode}');"
         )

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from PySide6 import QtCore, QtGui
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
@@ -24,7 +22,7 @@ class MainWindow(QMainWindow):
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "Cancel")
 
     def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
+        super().__init__(parent)
         db.connectDB()
         self.openedGames = []
         self.initUI()
@@ -163,7 +161,7 @@ class MainWindow(QMainWindow):
     def newTab(self, matchTab, title):
         self.newGameTab.hide()
         self.verticalLayout.addWidget(matchTab)
-        self.setWindowTitle("Gamelog - {}".format(title))
+        self.setWindowTitle(f"Gamelog - {title}")
         matchTab.show()
         matchTab.setFocus()
         self.openedGames.append(matchTab)
@@ -186,12 +184,12 @@ class MainWindow(QMainWindow):
     def changeEvent(self, event):
         if event.type() == QtCore.QEvent.Type.LanguageChange:
             self.retranslateUi()
-        return super(MainWindow, self).changeEvent(event)
+        return super().changeEvent(event)
 
 
 class AboutDialog(QDialog):
     def __init__(self, parent=None):
-        super(AboutDialog, self).__init__(parent)
+        super().__init__(parent)
         # self.setFixedSize(QtCore.QSize(450, 350))
         # self.setWindowTitle(i18n("AboutDialog", "About Gamelog"))
         self.setWindowTitle(self.tr("About Gamelog"))

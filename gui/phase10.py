@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import re
 from typing import cast
 
@@ -23,6 +20,7 @@ from PySide6.QtWidgets import (
 from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
 from gui.game import (
     GameInputWidget,
+    GameNotImplementedException,
     GamePlayerWidget,
     GameRoundPlot,
     GameRoundsDetail,
@@ -89,11 +87,11 @@ def getPhaseNames(phasecodes):
                     phase += " + "
                 first = False
                 if tcode == "s":
-                    phase += "{} {}".format(n, types[tcode][cards][plural])
+                    phase += f"{n} {types[tcode][cards][plural]}"
                 elif tcode == "c":
-                    phase += "{} {}".format(cards, types[tcode])
+                    phase += f"{cards} {types[tcode]}"
                 elif tcode in ["r", "cr"]:
-                    phase += "{} {} {}".format(n, types[tcode][plural], cards)
+                    phase += f"{n} {types[tcode][plural]} {cards}"
         phases.append(phase)
     return phases
 
@@ -105,10 +103,10 @@ class Phase10Widget(GameWidget):
         elif self.game == "Phase10":
             self.engine = Phase10Engine()
         else:
-            raise Exception("No engine for game {}".format(self.game))
+            raise GameNotImplementedException(f"No engine for game {self.game}")
 
     def initUI(self):
-        super(Phase10Widget, self).initUI()
+        super().initUI()
         self.hideInputOnFinish = False
         # self.roundTitleLabel.hide()
         # self.phasesInOrderCheckBox = QCheckBox(self.matchGroup)
@@ -155,7 +153,7 @@ class Phase10Widget(GameWidget):
         self.retranslateUI()
 
     def retranslateUI(self):
-        super(Phase10Widget, self).retranslateUI()
+        super().retranslateUI()
         self.phasesInOrderChanged()
         self.gameInput.retranslateUI()
         self.extraGroup.setTitle(self.tr("Phases"))
@@ -170,8 +168,8 @@ class Phase10Widget(GameWidget):
             game = ""
         self.roundTitleLabel.setText(game)
 
-    def checkPlayerScore(self, player, score):
-        return super(Phase10Widget, self).checkPlayerScore(self, score) and not (
+    def checkPlayerScore(self, player, score, extras=None):
+        return super().checkPlayerScore(self, score) and not (
             score % 5 != 0
             or (score < 50 and not self.gameInput.hasPlayerCleared(player))
         )
@@ -185,7 +183,7 @@ class Phase10Widget(GameWidget):
             return {}
 
     def updatePanel(self):
-        super(Phase10Widget, self).updatePanel()
+        super().updatePanel()
         self.phasesInOrderCheckBox.setEnabled(False)
         self.dealerPolicyCheckBox.setEnabled(False)
         self.gameInput.updatePanel()
@@ -200,7 +198,7 @@ class Phase10Widget(GameWidget):
         self.gameInput.setDealer()
 
     def setWinner(self):
-        super(Phase10Widget, self).setWinner()
+        super().setWinner()
         self.gameInput.setEnabled(True)
         self.gameInput.setWinner()
 
@@ -220,7 +218,7 @@ class Phase10Widget(GameWidget):
 
 class Phase10InputWidget(GameInputWidget):
     def __init__(self, engine, parent=None):
-        super(Phase10InputWidget, self).__init__(engine, parent)
+        super().__init__(engine, parent)
         self.initUI()
 
     def initUI(self):
@@ -333,13 +331,13 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.engine = engine
         self.current_phase = min(self.engine.getRemainingPhasesFromPlayer(nick))
         self.phases_in_order = self.engine.getPhasesInOrderFlag()
-        super(Phase10PlayerWidget, self).__init__(
+        super().__init__(
             nick, PlayerColours[self.engine.getListPlayers().index(nick)], parent
         )
 
     def initUI(self):
         self.setTitle(self.player)
-        super(Phase10PlayerWidget, self).initUI()
+        super().initUI()
 
         trashWidget = QWidget()
         trashWidget.setLayout(self.mainLayout)
@@ -382,7 +380,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.scoreLCD.display(self.engine.getScoreFromPlayer(self.player))
 
         # Middle part - Phase list
-        self.phaseLabels = list()
+        self.phaseLabels = []
         for phase in range(1, 11):
             label = Phase10Label(phase, self)
             if phase == self.current_phase:
@@ -511,8 +509,6 @@ class Phase10PlayerWidget(GamePlayerWidget):
             self.updatePhaseSelected(child)
         return QGroupBox.mousePressEvent(self, event)
 
-    #
-
     def isRoundWinner(self):
         return self.roundScore.value() == 0
 
@@ -582,7 +578,7 @@ class Phase10ClearedCheckBox(QPushButton):
 
 class Phase10Label(QLabel):
     def __init__(self, number, parent=None):
-        super(Phase10Label, self).__init__(parent)
+        super().__init__(parent)
         # self.setText(str(number).zfill(2))
         self.setText(str(number))
         self.setAutoFillBackground(False)
@@ -630,10 +626,10 @@ class Phase10Label(QLabel):
 class Phase10RoundsDetail(GameRoundsDetail):
     def __init__(self, engine, iw, parent=None):
         self.iw = iw
-        super(Phase10RoundsDetail, self).__init__(engine, parent)
+        super().__init__(engine, parent)
 
     def initUI(self):
-        super(Phase10RoundsDetail, self).initUI()
+        super().initUI()
         self.container.insertTab(0, self.iw, "")
         self.container.setCurrentIndex(0)
 
@@ -692,7 +688,7 @@ class Phase10RoundTable(GameRoundTable):
 
 class Phase10RoundPlot(GameRoundPlot):
     def initUI(self):
-        super(Phase10RoundPlot, self).initUI()
+        super().initUI()
         # self.setStyleSheet("QLabel {font-size: 18px; }")
         current_layout = self.layout()
         if current_layout is not None:
@@ -733,14 +729,14 @@ class Phase10RoundPlot(GameRoundPlot):
         self.updatePlot()
 
     def retranslatePlot(self):
-        super(Phase10RoundPlot, self).retranslatePlot()
+        super().retranslatePlot()
         self.phasesLabel.setText(self.tr("Phases"))
         self.scoreLabel.setText(self.tr("Scores"))
 
     #         self.playersTitleLabel.setText(i18n("Phase10RoundPlot",'Players') )
 
     def updatePlot(self):
-        super(Phase10RoundPlot, self).updatePlot()
+        super().updatePlot()
         if not self.isPlotInited():
             return
         scores = {}
@@ -814,7 +810,7 @@ class Phase10QSTW(QuickStatsTW):
 
 class Phase10QSBox(GeneralQuickStats):
     def __init__(self, gname, parent):
-        super(Phase10QSBox, self).__init__(gname, parent)
+        super().__init__(gname, parent)
         self.playerStatsKeys.append("min_phases")
         self.playerStatsHeaders.append(self.tr("Lowest Ph"))
         self.playerStatsKeys.append("damned_phase")

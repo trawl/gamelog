@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from PySide6 import QtCore, QtGui
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
@@ -18,6 +15,7 @@ from PySide6.QtWidgets import (
 from controllers.ratukiengine import RatukiEngine
 from gui.game import (
     GameInputWidget,
+    GameNotImplementedException,
     GamePlayerWidget,
     GameRoundPlot,
     GameRoundsDetail,
@@ -31,11 +29,11 @@ from gui.game import (
 class RatukiWidget(GameWidget):
     def createEngine(self):
         if self.game != "Ratuki":
-            raise Exception("No engine for game {}".format(self.game))
+            raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = RatukiEngine()
 
     def initUI(self):
-        super(RatukiWidget, self).initUI()
+        super().initUI()
 
         self.gameInput = RatukiInputWidget(self.engine, self)
         self.gameInput.enterPressed.connect(self.commitRound)
@@ -81,12 +79,12 @@ class RatukiWidget(GameWidget):
         self.retranslateUI()
 
     def retranslateUI(self):
-        super(RatukiWidget, self).retranslateUI()
+        super().retranslateUI()
         self.topPointsLabel.setText(self.tr("Score Limit"))
         #         self.playerGroup.setTitle(i18n("RatukiWidget","Score"))
         self.detailGroup.retranslateUI()
 
-    def checkPlayerScore(self, player, score):
+    def checkPlayerScore(self, player, score, extras=None):
         return True
 
     def unsetDealer(self):
@@ -105,7 +103,7 @@ class RatukiWidget(GameWidget):
         if self.engine.getWinner():
             self.detailGroup.updateStats()
         self.detailGroup.updateRound()
-        super(RatukiWidget, self).updatePanel()
+        super().updatePanel()
 
     def changeTop(self, newtop):
         try:
@@ -116,7 +114,7 @@ class RatukiWidget(GameWidget):
             pass
 
     def setWinner(self):
-        super(RatukiWidget, self).setWinner()
+        super().setWinner()
         winner = self.engine.getWinner()
         if winner in self.players:
             self.playerGroupBox[winner].setWinner()
@@ -135,7 +133,7 @@ class RatukiWidget(GameWidget):
 
 class RatukiInputWidget(GameInputWidget):
     def __init__(self, engine, parent=None):
-        super(RatukiInputWidget, self).__init__(engine, parent)
+        super().__init__(engine, parent)
         self.initUI()
 
     def initUI(self):
@@ -171,11 +169,11 @@ class RatukiInputWidget(GameInputWidget):
 class RatukiPlayerInputWidget(QFrame):
     winnerSet = QtCore.Signal(str)
 
-    def __init__(self, player, colour=QColor(0, 0, 0), parent=None):
-        super(RatukiPlayerInputWidget, self).__init__(parent)
+    def __init__(self, player, colour=None, parent=None):
+        super().__init__(parent)
         self.player = player
         self.winner = False
-        self.pcolour = colour
+        self.pcolour = colour if colour else QColor(0, 0, 0)
         self.mainLayout = QVBoxLayout(self)
 
         self.label = QLabel(self)
@@ -211,11 +209,11 @@ class RatukiPlayerInputWidget(QFrame):
     def updatePanel(self):
         css = ""
         if self.winner:
-            css = "font-weight: bold; background-color: #{0:X}".format(0xFFFF99)
+            css = f"font-weight: bold; background-color: #{0xFFFF99:X}"
             self.setFrameShadow(QFrame.Shadow.Sunken)
         else:
             self.setFrameShadow(QFrame.Shadow.Raised)
-        self.setStyleSheet("QFrame {{ {} }}".format(css))
+        self.setStyleSheet(f"QFrame {{ {css} }}")
 
     def mousePressEvent(self, event):
         self.scoreSpinBox.setFocus()
@@ -226,7 +224,7 @@ class RatukiPlayerInputWidget(QFrame):
             self.updatePanel()
             self.winnerSet.emit(self.player)
         else:
-            super(RatukiPlayerInputWidget, self).mouseDoubleClickEvent(event)
+            super().mouseDoubleClickEvent(event)
 
     def isWinner(self):
         return self.winner
@@ -237,27 +235,24 @@ class RatukiPlayerInputWidget(QFrame):
     def getScore(self):
         return self.scoreSpinBox.value()
 
-    def setColour(self, colour=QColor(0, 0, 0)):
-        if colour is not None:
-            self.pcolour = colour
-            sh = "font-size: 24px; font-weight: bold; color:rgb({},{},{});".format(
-                self.pcolour.red(), self.pcolour.green(), self.pcolour.blue()
-            )
-            self.label.setStyleSheet(sh)
-            # sh = """
-            # QSpinBox {{ {} }}
-            # QSpinBox::up-button  {{subcontrol-origin: border;
-            #     subcontrol-position: left; width: 60px; height: 60px; }}
-            # QSpinBox::down-button  {{subcontrol-origin: border;
-            #     subcontrol-position: right; width: 60px; height: 60px; }}
-            # """.format(sh)
-            self.scoreSpinBox.setColour(self.pcolour)
+    def setColour(self, colour):
+        self.pcolour = colour if colour else QColor(0, 0, 0)
+        sh = f"font-size: 24px; font-weight: bold; color:rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});"
+        self.label.setStyleSheet(sh)
+        # sh = """
+        # QSpinBox {{ {} }}
+        # QSpinBox::up-button  {{subcontrol-origin: border;
+        #     subcontrol-position: left; width: 60px; height: 60px; }}
+        # QSpinBox::down-button  {{subcontrol-origin: border;
+        #     subcontrol-position: right; width: 60px; height: 60px; }}
+        # """.format(sh)
+        self.scoreSpinBox.setColour(self.pcolour)
 
 
 class RatukiRoundsDetail(GameRoundsDetail):
     def __init__(self, engine, parent=None):
         self.bgcolors = [0xCCFF99, 0xFFCC99]
-        super(RatukiRoundsDetail, self).__init__(engine, parent)
+        super().__init__(engine, parent)
 
     def createRoundTable(self, engine, parent=None):
         return RatukiRoundTable(self.engine, self.bgcolors, parent)
@@ -269,7 +264,7 @@ class RatukiRoundsDetail(GameRoundsDetail):
 class RatukiRoundTable(GameRoundTable):
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
-        super(RatukiRoundTable, self).__init__(engine, parent)
+        super().__init__(engine, parent)
 
     def insertRound(self, r):
         winner = r.getWinner()
@@ -299,7 +294,7 @@ class RatukiRoundTable(GameRoundTable):
 
 class RatukiRoundPlot(GameRoundPlot):
     def updatePlot(self):
-        super(RatukiRoundPlot, self).updatePlot()
+        super().updatePlot()
         if not self.isPlotInited():
             return
         scores = {}

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from typing import cast
 
 from controllers.baseengine import RoundGameEngine, readInput
@@ -41,7 +38,7 @@ class RemigioEngine(RoundGameEngine):
             print("   Player Down!")
 
     def printExtraStats(self):
-        print("Match top: {}".format(self.getTop()))
+        print(f"Match top: {self.getTop()}")
 
     def updateRRDealer(self):
         candidate = self.porder.index(self.getDealer())
@@ -57,14 +54,14 @@ class RemigioEngine(RoundGameEngine):
         closeType = 1
         if winner == player:
             closeType = readInput(
-                "{} close type: ".format(player),
+                f"{player} close type: ",
                 int,
                 lambda x: x in [1, 2, 3, 4],
                 "Sorry, invalid Close Type number [1,2,3,4].",
             )
         else:
             score = readInput(
-                "{} round score: ".format(player),
+                f"{player} round score: ",
                 int,
                 lambda x: x > 0,
                 "Sorry, invalid score number.",

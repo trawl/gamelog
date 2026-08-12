@@ -1,9 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from gui.carcassonne import CarcassonneQSTW
 from gui.gamestats import QuickStatsTW
 from gui.phase10 import Phase10QSTW
 from gui.pocha import PochaQSTW
+from gui.qwirkle import QwirkleQSTW
 from gui.skullking import SkullKingQSTW
 
 
@@ -18,4 +17,6 @@ class QSFactory:
             return PochaQSTW(gname, players, parent)
         if gname == "Skull King":
             return SkullKingQSTW(gname, players, parent)
+        if gname == "Qwirkle":
+            return QwirkleQSTW(gname, players, parent)
         return QuickStatsTW(gname, players, parent)

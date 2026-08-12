@@ -1,17 +1,14 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from controllers.db import db
 from model.base import GenericEntry, GenericRoundMatch
 
 
 class CarcassonneMatch(GenericRoundMatch):
-    def __init__(self, players=[]):
-        super(CarcassonneMatch, self).__init__(players)
+    def __init__(self, players=()):
+        super().__init__(players)
         self.game = "Carcassonne"
         cur = db.execute(
             "SELECT value FROM GameExtras "
-            "WHERE Game_name = '{}' and key='Kinds';".format(self.game)
+            f"WHERE Game_name = '{self.game}' and key='Kinds';"
         )
         row = cur.fetchone()
         self.entry_kinds = [str(kind) for kind in row["value"].split(",")]
@@ -37,17 +34,12 @@ class CarcassonneMatch(GenericRoundMatch):
             self.playerAddRound(player, rnd)
 
     def flushToDB(self):
-        super(CarcassonneMatch, self).flushToDB()
+        super().flushToDB()
         for entry in self.rounds:
             db.execute(
                 "INSERT OR REPLACE INTO RoundStatistics "
                 "(idMatch,nick,idRound,key,value) "
-                "VALUES ({},'{}',{},'kind','{}');".format(
-                    self.idMatch,
-                    entry.getPlayer(),
-                    entry.getNumEntry(),
-                    entry.getKind(),
-                )
+                f"VALUES ({self.idMatch},'{entry.getPlayer()}',{entry.getNumEntry()},'kind','{entry.getKind()}');"
             )
 
     def computeWinner(self):
@@ -80,7 +72,7 @@ class CarcassonneMatch(GenericRoundMatch):
                 self.winner = candidates.pop()
                 return
 
-            for k in details.keys():
+            for k in details:
                 for player in removed:
                     del details[k][player]
 
@@ -91,7 +83,7 @@ class CarcassonneMatch(GenericRoundMatch):
 
 class CarcassonneEntry(GenericEntry):
     def __init__(self, numround):
-        super(CarcassonneEntry, self).__init__(numround)
+        super().__init__(numround)
         self.kind = None
 
     def addExtraInfo(self, player, extras):

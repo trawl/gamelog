@@ -1,7 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+import sys
+from typing import cast
 
-from controllers.baseengine import readInput
+from controllers.baseengine import RoundGameEngine, readInput
 from controllers.db import db
 from controllers.enginefactory import GameEngineFactory
 
@@ -12,7 +12,7 @@ class ResumeEngine:
         self.candidates = {}
         cur = db.execute(
             "SELECT idMatch, started, finished, elapsed "
-            "FROM Match WHERE state=4 and Game_name='{}'".format(self.game)
+            f"FROM Match WHERE state=4 and Game_name='{self.game}'"
         )
         for row in cur:
             self.candidates[row["idMatch"]] = {}
@@ -22,9 +22,7 @@ class ResumeEngine:
             self.candidates[row["idMatch"]]["players"] = []
 
         for idMatch, match in self.candidates.items():
-            cur = db.execute(
-                "SELECT nick FROM MatchPlayer WHERE idMatch={}".format(idMatch)
-            )
+            cur = db.execute(f"SELECT nick FROM MatchPlayer WHERE idMatch={idMatch}")
             for row in cur:
                 match["players"].append(str(row["nick"]))
 
@@ -50,8 +48,8 @@ if __name__ == "__main__":
     re = ResumeEngine(game)
     candidates = re.getCandidates()
     if not len(candidates):
-        print("No {} matches to restore found".format(game))
-        exit()
+        print(f"No {game} matches to restore found")
+        sys.exit()
     else:
         print("Matches to restore:")
         for idMatch, match in candidates.items():
@@ -65,14 +63,12 @@ if __name__ == "__main__":
                     match["players"],
                 )
             )
-        print("")
-        idMatch = readInput(
-            "idMatch to resume: ", int, lambda x: x in candidates.keys()
-        )
-        print("Restoring match #{}".format(idMatch))
+        print()
+        idMatch = readInput("idMatch to resume: ", int, lambda x: x in candidates)
+        print(f"Restoring match #{idMatch}")
         engine = re.resume(idMatch)
         if not engine:
-            print("Could not restore match #{}".format(idMatch))
-            exit()
+            print(f"Could not restore match #{idMatch}")
+            sys.exit()
         else:
-            engine.runStubRoundLoop()
+            cast(RoundGameEngine, engine).runStubRoundLoop()

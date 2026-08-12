@@ -1,10 +1,7 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 import datetime
 
 from PySide6 import QtCore
-from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QTimer, Signal
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QTimer
 from PySide6.QtWidgets import QFrame, QGraphicsOpacityEffect, QLCDNumber
 
 
@@ -12,7 +9,7 @@ class GameClock(QLCDNumber):
     doubleClicked = QtCore.Signal()
 
     def __init__(self, elapsed=0, parent=None):
-        super(GameClock, self).__init__(parent)
+        super().__init__(parent)
         self.setSegmentStyle(QLCDNumber.SegmentStyle.Filled)
         self.startTime = datetime.datetime.now()
         self.accumulated = elapsed
@@ -39,7 +36,6 @@ class GameClock(QLCDNumber):
         self.blinkAnim.setKeyValueAt(1.0, 1.0)
         self.blinkAnim.setEasingCurve(QEasingCurve.Type.InOutSine)
 
-
     def showTime(self, elapsed=None):
         if not elapsed:
             now = datetime.datetime.now()
@@ -50,9 +46,9 @@ class GameClock(QLCDNumber):
         hours, remainder = divmod(elapsed, 3600)
         minutes, seconds = divmod(remainder, 60)
         if self.showcolons:
-            text = "{0:02}:{1:02}:{2:02}".format(hours, minutes, seconds)
+            text = f"{hours:02}:{minutes:02}:{seconds:02}"
         else:
-            text = "{0:02} {1:02} {2:02}".format(hours, minutes, seconds)
+            text = f"{hours:02} {minutes:02} {seconds:02}"
         if hours:
             self.setDigitCount(8)
         self.display(text)

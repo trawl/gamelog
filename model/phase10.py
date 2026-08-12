@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import random
 
 from controllers.db import db
@@ -8,14 +5,14 @@ from model.base import GenericRound, GenericRoundMatch
 
 
 class Phase10Match(GenericRoundMatch):
-    def __init__(self, players=[]):
-        super(Phase10Match, self).__init__(players)
+    def __init__(self, players=()):
+        super().__init__(players)
         self.game = "Phase10"
         self.phasesinorder = True
-        self.phasesCleared = dict()  # player -> list of phases cleared
+        self.phasesCleared = {}  # player -> list of phases cleared
 
     def playerStart(self, player):
-        self.phasesCleared[player] = list()
+        self.phasesCleared[player] = []
 
     def playerAddRound(self, player, rnd):
         if rnd.completedPhase[player]:
@@ -29,21 +26,21 @@ class Phase10Match(GenericRoundMatch):
         for player in self.getPlayers():
             if rnd.completedPhase[player]:
                 self.phasesCleared[player].remove(rnd.completedPhase[player])
-        super(Phase10Match, self).deleteRound(nrnd)
+        super().deleteRound(nrnd)
 
     def computeWinner(self):
-        playersIn10 = list()
+        playersIn10 = []
         for p, pc in self.phasesCleared.items():
             if len(pc) == 10:
                 playersIn10.append(p)
         if playersIn10:
             # Ok, there are some players with all phases completed
             self.winner = None
-            wcscores = dict()
+            wcscores = {}
             # Let's see their scores, and select the ones with the lowest one
             for p in playersIn10:
                 if self.totalScores[p] not in wcscores:
-                    wcscores[self.totalScores[p]] = list()
+                    wcscores[self.totalScores[p]] = []
                 wcscores[self.totalScores[p]].append(p)
 
             #             try:
@@ -52,7 +49,7 @@ class Phase10Match(GenericRoundMatch):
             # Here we have the players with all phases completed and with the
             # lowest score in case of draw, the player with less points in the
             # last round is the winner
-            candidates = wcscores[sorted(wcscores)[0]]
+            candidates = wcscores[min(wcscores)]
             if len(candidates) == 1:
                 self.winner = candidates[0]
                 return
@@ -74,12 +71,12 @@ class Phase10Match(GenericRoundMatch):
         return Phase10Round(numround)
 
     def resumeMatch(self, idMatch):
-        if not super(Phase10Match, self).resumeMatch(idMatch):
+        if not super().resumeMatch(idMatch):
             return False
 
         cur = db.execute(
             "SELECT value FROM MatchExtras "
-            "WHERE idMatch ={} and key='PhasesInOrder';".format(idMatch)
+            f"WHERE idMatch ={idMatch} and key='PhasesInOrder';"
         )
         if cur:
             row = cur.fetchone()
@@ -108,33 +105,26 @@ class Phase10Match(GenericRoundMatch):
         return extra
 
     def flushToDB(self):
-        super(Phase10Match, self).flushToDB()
+        super().flushToDB()
         if self.phasesinorder:
             inorderflag = 1
         else:
             inorderflag = 0
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            "VALUES ({},'PhasesInOrder','{}');".format(self.idMatch, inorderflag)
+            f"VALUES ({self.idMatch},'PhasesInOrder','{inorderflag}');"
         )
         for rnd in self.rounds:
-            for player in rnd.score.keys():
+            for player in rnd.score.keys():  # noqa: SIM118
                 db.execute(
                     "INSERT OR REPLACE INTO RoundStatistics "
                     "(idMatch,nick,idRound,key,value) "
-                    "VALUES ({},'{}',{},'PhaseAimed','{}');".format(
-                        self.idMatch, player, rnd.getNumRound(), rnd.aimedPhase[player]
-                    )
+                    f"VALUES ({self.idMatch},'{player}',{rnd.getNumRound()},'PhaseAimed','{rnd.aimedPhase[player]}');"
                 )
                 db.execute(
                     "INSERT OR REPLACE INTO RoundStatistics "
                     "(idMatch,nick,idRound,key,value) "
-                    "VALUES ({},'{}',{},'PhaseCompleted','{}');".format(
-                        self.idMatch,
-                        player,
-                        rnd.getNumRound(),
-                        rnd.completedPhase[player],
-                    )
+                    f"VALUES ({self.idMatch},'{player}',{rnd.getNumRound()},'PhaseCompleted','{rnd.completedPhase[player]}');"
                 )
 
     def getPhasesInOrderFlag(self):
@@ -143,15 +133,15 @@ class Phase10Match(GenericRoundMatch):
     def setPhasesInOrderFlag(self, flag):
         if flag not in [True, False]:
             return
-        print("Setting phases in order flag to {}".format(flag))
+        print(f"Setting phases in order flag to {flag}")
         self.phasesinorder = flag
 
 
 class Phase10Round(GenericRound):
     def __init__(self, numround):
         GenericRound.__init__(self, numround)
-        self.completedPhase = dict()  # nick -> Phase idx or 0
-        self.aimedPhase = dict()
+        self.completedPhase = {}
+        self.aimedPhase = {}
 
     def addExtraInfo(self, player, extras):
         try:
@@ -177,6 +167,6 @@ class Phase10Round(GenericRound):
 
 
 class Phase10MasterMatch(Phase10Match):
-    def __init__(self, players=[]):
-        super(Phase10MasterMatch, self).__init__(players)
+    def __init__(self, players=()):
+        super().__init__(players)
         self.game = "Phase10Master"

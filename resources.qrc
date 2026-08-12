@@ -20,6 +20,7 @@
         <file>icons/skullking.png</file>
         <file>icons/spanish.svg</file>
         <file>icons/winner.png</file>
+        <file>icons/qwirkle.png</file>
         <file>styles/main.qss</file>
     </qresource>
 </RCC>

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from typing import cast
 
 from PySide6 import QtCore, QtGui
@@ -22,6 +19,7 @@ from PySide6.QtWidgets import (
 
 from controllers.carcassonneengine import CarcassonneEngine, CarcassonneStatsEngine
 from gui.game import (
+    GameNotImplementedException,
     GamePlayerWidget,
     GameRoundPlot,
     GameRoundsDetail,
@@ -35,15 +33,15 @@ from gui.gamestats import GeneralQuickStats, ParticularQuickStats, StatsTable
 
 
 class CarcassonneWidget(GameWidget):
-    bgcolors = [0xFFCC99, 0xCCCCCC, 0xFFFF99, 0xCCFF99, 0xCCFFCC, 0xFFB6C1]
+    bgcolors = (0xFFCC99, 0xCCCCCC, 0xFFFF99, 0xCCFF99, 0xCCFFCC, 0xFFB6C1)
 
     def createEngine(self):
         if self.game != "Carcassonne":
-            raise Exception("No engine for game {}".format(self.game))
+            raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = CarcassonneEngine()
 
     def initUI(self):
-        super(CarcassonneWidget, self).initUI()
+        super().initUI()
         # self.roundTitleLabel.hide()
         self.finishButton = QPushButton(self.roundGroup)
         self.buttonGroupLayout.insertWidget(
@@ -91,7 +89,7 @@ class CarcassonneWidget(GameWidget):
         QtCore.QTimer.singleShot(1000, self.gameInput.setFocus)
 
     def retranslateUI(self):
-        super(CarcassonneWidget, self).retranslateUI()
+        super().retranslateUI()
         self.finishButton.setText(self.tr("&Finish Game"))
         self.gameInput.retranslateUI()
         self.detailGroup.retranslateUI()
@@ -110,7 +108,7 @@ class CarcassonneWidget(GameWidget):
             return {}
 
     def updatePanel(self):
-        super(CarcassonneWidget, self).updatePanel()
+        super().updatePanel()
         self.updateScores()
         if self.engine.getWinner():
             self.finishButton.setDisabled(True)
@@ -119,11 +117,8 @@ class CarcassonneWidget(GameWidget):
         else:
             self.detailGroup.updateRound()
 
-    def checkPlayerScore(self, player, score):
-        if score > 0:
-            return True
-        else:
-            return False
+    def checkPlayerScore(self, player, score, extras=None):
+        return score > 0
 
     def commitRound(self):
         player = self.gameInput.getPlayer()
@@ -189,7 +184,7 @@ class CarcassonneWidget(GameWidget):
             self.playerGroupBox[player].updateDisplay(score)
 
     def setWinner(self):
-        super(CarcassonneWidget, self).setWinner()
+        super().setWinner()
         winner = self.engine.getWinner()
         if winner in self.players:
             self.playerGroupBox[winner].setWinner()
@@ -224,7 +219,7 @@ class CarcassonneInputWidget(QWidget):
     QCoreApplication.translate("CarcassonneInputWidget", "Fair")
 
     def __init__(self, engine, bgcolors, parent):
-        super(CarcassonneInputWidget, self).__init__(parent)
+        super().__init__(parent)
         self.engine = engine
         self.parent = parent
         self.bgcolors = bgcolors
@@ -244,7 +239,7 @@ class CarcassonneInputWidget(QWidget):
         self.playerButtons = [b]
         b.hide()
         for i, player in enumerate(self.engine.getListPlayers(), 1):
-            b = QRadioButton("{}. {}".format(i, player), self.playerGroup)
+            b = QRadioButton(f"{i}. {player}", self.playerGroup)
             if len(self.engine.getListPlayers()) > 2:
                 self.playerGroupLayout.addWidget(b, (i - 1) % 2, (i - 1) // 2)
             else:
@@ -270,7 +265,7 @@ class CarcassonneInputWidget(QWidget):
 
         for i, kind in enumerate(self.engine.getEntryKinds(), 1):
             lbl = self.tr(kind)
-            b = QRadioButton("{}. {}".format(i, lbl), self.kindGroup)
+            b = QRadioButton(f"{i}. {lbl}", self.kindGroup)
             self.kindGroupLayout.addWidget(b, (i - 1) % 2, (i - 1) // 2)
             self.kindButtonGroup.addButton(b, i)
             b.clicked.connect(lambda x: self.scoreSpinBox.setFocus())
@@ -295,7 +290,7 @@ class CarcassonneInputWidget(QWidget):
         self.scoreGroup.setTitle(self.tr("Points"))
         for i, kind in enumerate(self.engine.getEntryKinds(), 1):
             text = self.tr(kind)
-            self.kindButtons[i].setText("{}. {}".format(i, text))
+            self.kindButtons[i].setText(f"{i}. {text}")
 
     def placeCommitButton(self, cb):
         self.scoreGroupLayout.addWidget(cb)
@@ -345,12 +340,11 @@ class CarcassonneInputWidget(QWidget):
             if not self.getPlayer():
                 if number <= len(self.engine.getPlayers()):
                     self.playerButtons[number].setChecked(True)
-            elif not self.getKind():
-                if number <= len(self.engine.getEntryKinds()):
-                    self.kindButtons[number].setChecked(True)
-                    self.scoreSpinBox.setFocus()
+            elif not self.getKind() and number <= len(self.engine.getEntryKinds()):
+                self.kindButtons[number].setChecked(True)
+                self.scoreSpinBox.setFocus()
 
-        return super(CarcassonneInputWidget, self).keyPressEvent(event)
+        return super().keyPressEvent(event)
 
     def setCloisterPoints(self, doit):
         if doit:
@@ -391,7 +385,7 @@ class CarcassonneInputWidget(QWidget):
         b.hide()
 
         for i, player in enumerate(self.engine.getListPlayers(), 1):
-            b = QRadioButton("{}. {}".format(i, player), self.playerGroup)
+            b = QRadioButton(f"{i}. {player}", self.playerGroup)
             if len(self.engine.getListPlayers()) > 2:
                 self.playerGroupLayout.addWidget(b, (i - 1) % 2, (i - 1) // 2)
             else:
@@ -405,7 +399,7 @@ class CarcassonneInputWidget(QWidget):
 class CarcassonneEntriesDetail(GameRoundsDetail):
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
-        super(CarcassonneEntriesDetail, self).__init__(engine, parent)
+        super().__init__(engine, parent)
         self.setStyleSheet("""
             QTableView::item:hover {
                 background: transparent;
@@ -416,7 +410,7 @@ class CarcassonneEntriesDetail(GameRoundsDetail):
         """)
 
     def initUI(self):
-        super(CarcassonneEntriesDetail, self).initUI()
+        super().initUI()
         self.totalsLabel = QLabel("", self)
         self.tableContainerLayout.addWidget(self.totalsLabel)
         self.totals = StatsTable(
@@ -434,7 +428,7 @@ class CarcassonneEntriesDetail(GameRoundsDetail):
             ]
         )
         self.totalsLabel.setText(self.tr("Totals"))
-        super(CarcassonneEntriesDetail, self).retranslateUI()
+        super().retranslateUI()
         self.updateRound()
 
     def resetTotals(self):
@@ -455,7 +449,7 @@ class CarcassonneEntriesDetail(GameRoundsDetail):
                 self.totals.setItem(row, col, item)
 
     def updateRound(self):
-        super(CarcassonneEntriesDetail, self).updateRound()
+        super().updateRound()
         self.resetTotals()
         for r in self.engine.getRounds():
             self.updateTotal(r)
@@ -479,8 +473,7 @@ class CarcassonneEntriesDetail(GameRoundsDetail):
                 item = self.totals.item(row, col)
                 if item:
                     total = int(item.text())
-                    if total > maxvalue:
-                        maxvalue = total
+                    maxvalue = max(maxvalue, total)
 
             for col in range(len(players)):
                 item = self.totals.item(row, col)
@@ -504,7 +497,7 @@ class CarcassonneEntriesDetail(GameRoundsDetail):
 class CarcassonneRoundTable(GameRoundTable):
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
-        super(CarcassonneRoundTable, self).__init__(engine, parent)
+        super().__init__(engine, parent)
 
     def insertRound(self, entry):
         kind = entry.getKind()
@@ -524,7 +517,7 @@ class CarcassonneRoundTable(GameRoundTable):
             item.setForeground(QtGui.QBrush(QtGui.QColor(0, 0, 0)))
 
             if player == entry.getPlayer():
-                text = "{} ({})".format(entry.getPlayerScore(), kind)
+                text = f"{entry.getPlayerScore()} ({kind})"
                 font = item.font()
                 font.setBold(True)
                 item.setFont(font)
@@ -539,7 +532,7 @@ class CarcassonneEntriesPlot(GameRoundPlot):
     def updatePlot(self):
         if not self.isPlotInited():
             return
-        super(CarcassonneEntriesPlot, self).updatePlot()
+        super().updatePlot()
         scores = {}
         for player in self.engine.getPlayers():
             scores[player] = [0]
@@ -570,7 +563,7 @@ class CarcassonneQSTW(QuickStatsTW):
 class CarcassonneQSBox(GeneralQuickStats):
     def __init__(self, parent=None):
         self.game = "Carcassonne"
-        super(CarcassonneQSBox, self).__init__(self.game, parent)
+        super().__init__(self.game, parent)
 
     def initUI(self):
         self.singleRecordsLabel = QLabel(self)
@@ -578,7 +571,7 @@ class CarcassonneQSBox(GeneralQuickStats):
         self.matchRecordsLabel = QLabel(self)
         self.matchRecordsTable = StatsTable(self)
 
-        super(CarcassonneQSBox, self).initUI()
+        super().initUI()
         index = self.widgetLayout.count() - 1
         self.widgetLayout.insertWidget(index, self.singleRecordsLabel)
         self.widgetLayout.insertWidget(index + 1, self.singleRecordsTable)
@@ -590,10 +583,10 @@ class CarcassonneQSBox(GeneralQuickStats):
     def retranslateUI(self):
         self.singleRecordsLabel.setText(self.tr("Individual Records"))
         self.matchRecordsLabel.setText(self.tr("Match Records"))
-        super(CarcassonneQSBox, self).retranslateUI()
+        super().retranslateUI()
 
     def updateContent(self, game=None):
-        super(CarcassonneQSBox, self).updateContent(self.game)
+        super().updateContent(self.game)
         singleRecordStats = cast(
             "CarcassonneStatsEngine", self.stats
         ).getSingleKindRecords()

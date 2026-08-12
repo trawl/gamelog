@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from PySide6.QtCore import Property, QEasingCurve, QPropertyAnimation, QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QLinearGradient, QPainter
 from PySide6.QtWidgets import QWidget

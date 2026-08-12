@@ -1,19 +1,14 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from typing import cast
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import (
     Property,
     QCoreApplication,
-    QEasingCurve,
     QPropertyAnimation,
-    QRectF,
     Qt,
     QTimer,
 )
-from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath
+from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QComboBox,
     QFrame,
@@ -23,7 +18,6 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMessageBox,
-    QPushButton,
     QSizePolicy,
     QTableWidgetItem,
     QVBoxLayout,
@@ -32,7 +26,9 @@ from PySide6.QtWidgets import (
 
 from controllers.skullkingengine import SkullKingEngine
 from gui.game import (
+    BonusButton,
     GameInputWidget,
+    GameNotImplementedException,
     GamePlayerWidget,
     GameRoundPlot,
     GameRoundsDetail,
@@ -59,11 +55,11 @@ class SkullKingWidget(GameWidget):
 
     def createEngine(self):
         if self.game != "Skull King":
-            raise Exception("No engine for game {}".format(self.game))
+            raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = SkullKingEngine()
 
     def initUI(self):
-        super(SkullKingWidget, self).initUI()
+        super().initUI()
 
         self.gameInput = SkullKingInputWidget(self.engine, self)
         self.gameInput.enterPressed.connect(self.commitRound)
@@ -136,7 +132,7 @@ class SkullKingWidget(GameWidget):
         self.retranslateUI()
 
     def retranslateUI(self):
-        super(SkullKingWidget, self).retranslateUI()
+        super().retranslateUI()
         # self.playerGroup.setTitle(i18n("GameWidget", "Scoreboard"))
         # self.scoringModeLabel.setText(self.tr("Scoring"))
         for i, m in enumerate(cast("SkullKingEngine", self.engine).listScoringModes()):
@@ -149,7 +145,7 @@ class SkullKingWidget(GameWidget):
         self.detailGroup.retranslateUI()
 
     def setRoundTitle(self):
-        super(SkullKingWidget, self).setRoundTitle()
+        super().setRoundTitle()
         hands = self.engine.getHands()
         if hands == 1:
             self.roundTitleLabel.setText(
@@ -168,7 +164,7 @@ class SkullKingWidget(GameWidget):
         for combo in (self.scoringModeCombo, self.roundModeCombo):
             combo.view().setEnabled(enable)
 
-    def checkPlayerScore(self, player, score):
+    def checkPlayerScore(self, player, score, extras=None):
         return True
 
     def unsetDealer(self):
@@ -187,11 +183,11 @@ class SkullKingWidget(GameWidget):
         if self.engine.getWinner():
             self.detailGroup.updateStats()
         self.detailGroup.updateRound()
-        super(SkullKingWidget, self).updatePanel()
+        super().updatePanel()
         self.gameInput.setFocus()
 
     def setWinner(self):
-        super(SkullKingWidget, self).setWinner()
+        super().setWinner()
         winner = self.engine.getWinner()
         if winner in self.players:
             self.playerGroupBox[winner].setWinner()
@@ -259,7 +255,7 @@ class SkullKingWidget(GameWidget):
                 QMessageBox.warning(self, self.game, msg)
                 return
 
-        super(SkullKingWidget, self).commitRound()
+        super().commitRound()
 
     def setFocus(self, reason=None):
         self.gameInput.setFocus()
@@ -306,7 +302,7 @@ class SkullKingWidget(GameWidget):
 
 class SkullKingInputWidget(GameInputWidget):
     def __init__(self, engine, parent=None):
-        super(SkullKingInputWidget, self).__init__(engine, parent)
+        super().__init__(engine, parent)
         self.lastChoices = []
         self.initUI()
 
@@ -356,7 +352,7 @@ class SkullKingInputWidget(GameInputWidget):
         first_player = (players.index(dealer) + 1) % len(players)
         hand_player_order = players[first_player:] + players[0:first_player]
         found = False
-        if any([value < 0 for value in expected_hands.values()]):
+        if any(value < 0 for value in expected_hands.values()):
             for player in hand_player_order:
                 if not found and expected_hands[player] < 0:
                     self.playerInputList[player].setCandidate(True)
@@ -387,7 +383,7 @@ class SkullKingInputWidget(GameInputWidget):
                 piw.lockTricks()
 
     def reset(self):
-        super(SkullKingInputWidget, self).reset()
+        super().reset()
         self.lastChoices = []
         self.playerInputList[self.engine.getListPlayers()[0]].setFocus()
         self.updateCandidateAction()
@@ -443,19 +439,19 @@ class SkullKingInputWidget(GameInputWidget):
                         or pil.getExpectedHands() < 1
                     )
                 event.accept()
-                return super(SkullKingInputWidget, self).keyPressEvent(event)
+                return super().keyPressEvent(event)
             except IndexError:
                 pass
 
         try:
             number = numberkeys.index(event.key())
         except ValueError:
-            return super(SkullKingInputWidget, self).keyPressEvent(event)
+            return super().keyPressEvent(event)
 
-        if number in range(0, 10):
+        if number in range(10):
             self.feedNumber(number)
 
-        return super(SkullKingInputWidget, self).keyPressEvent(event)
+        return super().keyPressEvent(event)
 
     def feedNumber(self, number):
         players = self.engine.getListPlayers()
@@ -464,7 +460,7 @@ class SkullKingInputWidget(GameInputWidget):
         dealer = self.engine.getDealer()
         first_player = (players.index(dealer) + 1) % len(players)
         hand_player_order = players[first_player:] + players[0:first_player]
-        if any([value < 0 for value in expected_hands.values()]):
+        if any(value < 0 for value in expected_hands.values()):
             for player in hand_player_order:
                 if expected_hands[player] < 0:
                     if self.playerInputList[player].setExpectedHands(number):
@@ -505,17 +501,19 @@ class SkullKingInputWidget(GameInputWidget):
         for player in self.engine.getListPlayers():
             for bn, btn in self.playerInputList[player].getBonusButtons().items():
                 trifecta = ("skullking", "pirate", "mermaid")
-                if sender_type in trifecta:
-                    if (
-                        bn == sender_type
-                        and btn is not sender
-                        or bn != sender_type
-                        and bn in trifecta
-                    ):
-                        btn.setChecked(False)
-                if sender_type in ("blackfourteen", "roatan"):
-                    if bn == sender_type and btn is not sender:
-                        btn.setChecked(False)
+                if sender_type in trifecta and (
+                    bn == sender_type
+                    and btn is not sender
+                    or bn != sender_type
+                    and bn in trifecta
+                ):
+                    btn.setChecked(False)
+                if (
+                    sender_type in ("blackfourteen", "roatan")
+                    and bn == sender_type
+                    and btn is not sender
+                ):
+                    btn.setChecked(False)
 
     def changeRoundMode(self):
         for piw in self.playerInputList.values():
@@ -532,8 +530,8 @@ class SkullKingPlayerInputWidget(QGroupBox):
     handsClicked = QtCore.Signal(str, str)
     betTricksChanged = QtCore.Signal()
 
-    def __init__(self, player, engine, colour=QColor(0, 0, 0), parent=None):
-        super(SkullKingPlayerInputWidget, self).__init__(parent)
+    def __init__(self, player, engine, colour=None, parent=None):
+        super().__init__(parent)
         self.player = player
         self.engine = engine
         self.winner = False
@@ -542,7 +540,7 @@ class SkullKingPlayerInputWidget(QGroupBox):
         self.mainLayout.setSpacing(0)
 
         self.setTitle(self.player)
-        self.pcolour = colour
+        self.pcolour = colour if colour else QColor(0, 0, 0)
 
         self.upperLayout = QHBoxLayout()
         self.upperLayout.addStretch(1)
@@ -721,9 +719,9 @@ class SkullKingPlayerInputWidget(QGroupBox):
 class ClickableLabel(QLabel):
     clicked = QtCore.Signal(Qt.MouseButton)
 
-    def __init__(self, text="", pcolour=QColor(255, 255, 255), size=40, parent=None):
+    def __init__(self, text="", pcolour=None, size=40, parent=None):
         super().__init__(text, parent)
-        self.pcolour = pcolour
+        self.pcolour = pcolour if pcolour else QColor(255, 255, 255)
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.diameter = size
         self.locked = False
@@ -843,12 +841,12 @@ class ClickableLabel(QLabel):
 class BetTrickWidget(QWidget):
     changed = QtCore.Signal()
 
-    def __init__(self, pcolour=QColor(255, 255, 255), size=40, parent=None):
+    def __init__(self, pcolour=None, size=40, parent=None):
         super().__init__(parent)
         self.bet = -1
         self.tricks = -1
         self.maxBet = 1
-        self.pcolour = pcolour
+        self.pcolour = pcolour if pcolour else QColor(255, 255, 255)
 
         self.mainLayout = QHBoxLayout()
         self.setLayout(self.mainLayout)
@@ -886,8 +884,7 @@ class BetTrickWidget(QWidget):
     def setBet(self, bet):
         if self.betLabel.isLocked():
             return
-        if bet > self.maxBet:
-            bet = self.maxBet
+        bet = min(bet, self.maxBet)
         self.bet = bet
         if self.bet < 0:
             self.betLabel.setText("-")
@@ -920,8 +917,7 @@ class BetTrickWidget(QWidget):
     def setTricks(self, tricks):
         if self.tricksLabel.isLocked():
             return
-        if tricks > self.maxBet:
-            tricks = self.maxBet
+        tricks = min(tricks, self.maxBet)
         self.tricks = tricks
         if self.tricks < 0:
             self.tricksLabel.setText("-")
@@ -964,160 +960,14 @@ class BetTrickWidget(QWidget):
         self.tricksLabel.setColour(colour)
 
 
-class SkullKingBonusButton(QPushButton):
-    bonusChanged = QtCore.Signal(str, object)
-
-    def __init__(
-        self, bonus_name: str, maximum: int = 1, colour=None, size=32, parent=None
-    ):
-        super().__init__(parent)
-
-        self.bonus_name = bonus_name
-        self.maximum = maximum
-        self.count = 0
-        self.button_size = size
-        self.highlight_colour = colour if colour else QColor(200, 0, 0)
-
-        original_image = QImage(f":/icons/{bonus_name}.png")
-        self.image = original_image.scaled(
-            self.button_size,
-            self.button_size,
-            QtCore.Qt.AspectRatioMode.KeepAspectRatio,
-            QtCore.Qt.TransformationMode.SmoothTransformation,
-        )
-
-        self.grey_image = self.image.convertToFormat(QImage.Format.Format_Grayscale8)
-
-        self.setCheckable(True)
-        self.setFlat(True)
-        self.setStyleSheet("border: none;")
-
-        self.setFixedSize(self.button_size, self.button_size)
-
-        self._fade_alpha = 0.0
-
-        self.fade_anim = QPropertyAnimation(self, b"fade_alpha")
-        self.fade_anim.setDuration(400)
-        self.fade_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
-
-        self.clicked.connect(self._on_pressed)
-
-    def _on_pressed(self):
-        old_value = self.count
-        self.count = (self.count + 1) % (self.maximum + 1)
-        self.setChecked(
-            self.count > 0
-        )  # trigger pulse animation only when transitioning 0 -> >0
-
-        if old_value == 0 and self.count > 0:
-            self.fade_anim.stop()
-            self.fade_anim.setStartValue(0.0)
-            self.fade_anim.setEndValue(1.0)
-            self.fade_anim.start()
-            self.bonusChanged.emit(self.bonus_name, self)
-
-        elif old_value > 0 and self.count == 0:
-            self.fade_anim.stop()
-            self.fade_anim.setStartValue(1.0)
-            self.fade_anim.setEndValue(0.0)
-            self.fade_anim.start()
-        self.update()
-
-    def get_fade_alpha(self):
-        return self._fade_alpha
-
-    def set_fade_alpha(self, value):
-        self._fade_alpha = float(value)
-        self.update()
-
-    fade_alpha = QtCore.Property(float, get_fade_alpha, set_fade_alpha)
-
-    def getValue(self):
-        return self.count
-
-    def setChecked(self, checked):
-        if not checked:
-            self.count = 0
-        super().setChecked(checked)
-
-    def sizeHint(self):
-        return QtCore.QSize(self.button_size, self.button_size)
-
-    def setMaximum(self, maximum):
-        self.maximum = maximum
-        if self.count > self.maximum:
-            self.count = self.maximum
-            if self.count == 0:
-                self.setChecked(False)
-            self.update()
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-
-        # --- circular clipping ---
-        path = QPainterPath()
-        radius = min(self.width(), self.height()) / 2
-        center = self.rect().center()
-        path.addEllipse(center, radius, radius)
-        painter.setClipPath(path)
-
-        # --- choose image (normal or greyscale if disabled) ---
-        if self.isEnabled():
-            img_to_draw = self.image
-        else:
-            img_to_draw = self.grey_image
-            self.setChecked(False)
-
-        # --- draw icon ---
-        painter.drawImage(self.rect(), img_to_draw)
-
-        # --- active outline (red circular ring) ---
-        if self.count > 0:
-            alpha = int(255 * self._fade_alpha)
-            ring_radius = radius - 2
-            pen = painter.pen()
-            colour = QColor(self.highlight_colour)
-            colour.setAlpha(alpha)
-            pen.setColor(colour)  # red
-            pen.setWidth(4)
-            painter.setPen(pen)
-            painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
-            painter.drawEllipse(center, ring_radius, ring_radius)
-
-        # --- text overlay when count > 1 ---
-        if self.count >= 1 and self.maximum > 1:
-            # Semi-transparent dark circle behind the number
-            overlay_color = QColor(0, 0, 0, 120)
-            painter.setBrush(overlay_color)
-            painter.setPen(QtCore.Qt.PenStyle.NoPen)
-
-            circle_diameter = min(self.width(), self.height()) * 0.45
-            circle_rect = QRectF(
-                (self.width() - circle_diameter) / 2,
-                (self.height() - circle_diameter) / 2,
-                circle_diameter,
-                circle_diameter,
-            )
-            painter.drawEllipse(circle_rect)
-
-            # Draw the number
-            painter.setPen(QColor(255, 255, 255, 220))
-            painter.setPen(self.highlight_colour)
-            font = QFont("Arial", int(circle_diameter * 0.9), QFont.Weight.Bold)
-            painter.setFont(font)
-
-            painter.drawText(
-                self.rect(), QtCore.Qt.AlignmentFlag.AlignCenter, str(self.count)
-            )
-
-        painter.end()
+class SkullKingBonusButton(BonusButton):
+    pass
 
 
 class SkullKingRoundsDetail(GameRoundsDetail):
     def __init__(self, engine, parent=None):
         self.bgcolors = [0xCCFF99, 0xFFCC99]
-        super(SkullKingRoundsDetail, self).__init__(engine, parent)
+        super().__init__(engine, parent)
         self.container.setCurrentWidget(self.plot)
 
     def createRoundTable(self, engine, parent=None):
@@ -1134,14 +984,14 @@ class SkullKingRoundsDetail(GameRoundsDetail):
 class SkullKingRoundTable(GameRoundTable):
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
-        super(SkullKingRoundTable, self).__init__(engine, parent)
+        super().__init__(engine, parent)
 
     def insertRound(self, rnd):
         winner = rnd.getWinner()
         i = rnd.getNumRound() - 1
         self.insertRow(i)
         hands = self.engine.getHands(rnd.getNumRound())
-        hitem = QTableWidgetItem("{}".format(hands))
+        hitem = QTableWidgetItem(f"{hands}")
         self.setVerticalHeaderItem(i, hitem)
 
         for j, player in enumerate(self.engine.getListPlayers()):
@@ -1168,7 +1018,7 @@ class SkullKingRoundTable(GameRoundTable):
 
 class SkullKingRoundPlot(GameRoundPlot):
     def updatePlot(self):
-        super(SkullKingRoundPlot, self).updatePlot()
+        super().updatePlot()
         if not self.isPlotInited():
             return
         scores = {}
@@ -1178,7 +1028,7 @@ class SkullKingRoundPlot(GameRoundPlot):
         for i, roundName in enumerate(
             cast(SkullKingEngine, self.engine).getRoundSequence()
         ):
-            roundNames.append("{}".format(roundName))
+            roundNames.append(f"{roundName}")
             for player in self.engine.getPlayers():
                 try:
                     rnd = self.engine.getRounds()[i]
@@ -1204,7 +1054,7 @@ class SkullKingQSTW(QuickStatsTW):
 
 class SkullKingQSBox(GeneralQuickStats):
     def __init__(self, gname, parent):
-        super(SkullKingQSBox, self).__init__(gname, parent)
+        super().__init__(gname, parent)
         self.playerStatsKeys.append("max_hits")
         self.playerStatsHeaders.append(self.tr("Max Hit %"))
         self.playerStatsKeys.append("avg_hits")
