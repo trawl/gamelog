@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 import ctypes
 import os
@@ -16,7 +15,7 @@ if __name__ == "__main__":
     if sys.platform.startswith("win"):
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("GameLog")
     # Disable output on windows when using pythonw to avoid filling buffers
-    if os.path.basename((sys.executable)) == "pythonw.exe":
+    if os.path.basename(sys.executable) == "pythonw.exe":
         f = open(os.devnull, "w")
         sys.stdout = f
         sys.stderr = f

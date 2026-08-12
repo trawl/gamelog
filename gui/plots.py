@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import sys
 
 from PySide6 import QtCore, QtGui
@@ -66,8 +63,8 @@ class PlotView(QGraphicsView):
 
 
 class LinePlot(QGraphicsItem):
-    def __init__(self, clrs=[], parent=None):
-        super(LinePlot, self).__init__(parent)
+    def __init__(self, clrs=(), parent=None):
+        super().__init__(parent)
         self.hmargin = 50
         self.vmargin = 40
         self.awidth = 400
@@ -149,10 +146,8 @@ class LinePlot(QGraphicsItem):
         ymin = 0
         for ser in self.seriesData:
             for vy in ser:
-                if vy > ymax:
-                    ymax = vy
-                if vy < ymin:
-                    ymin = vy
+                ymax = max(ymax, vy)
+                ymin = min(ymin, vy)
         if self.limitvalue is not None:
             ymax = max([ymax, self.limitvalue])
             ymin = min([ymin, self.limitvalue])
@@ -239,7 +234,7 @@ class LinePlot(QGraphicsItem):
             else:
                 PlotLine(pxstart - 2, py, pxend, py, 0.5, colour, self)
             if vy != 0:
-                nlabel = QGraphicsSimpleTextItem("{}".format(vy), self)
+                nlabel = QGraphicsSimpleTextItem(f"{vy}", self)
                 if self.dark_mode:
                     nlabel.setBrush(QtGui.QColor(255, 255, 255))
                 font = nlabel.font()
@@ -298,7 +293,7 @@ class LinePlot(QGraphicsItem):
                 else:
                     colour = QtGui.QColor(0, 0, 0, 255)
                 PlotLine(px + 0.5, pystart + 2, px + 0.5, pyend, 1.5, colour, self)
-                nlabel = QGraphicsSimpleTextItem("{}".format(header), self)
+                nlabel = QGraphicsSimpleTextItem(f"{header}", self)
                 if self.dark_mode:
                     nlabel.setBrush(QtGui.QColor(255, 255, 255))
                 font = nlabel.font()
@@ -389,7 +384,7 @@ class LinePlot(QGraphicsItem):
 
 class PlotLine(QGraphicsLineItem):
     def __init__(self, x1, y1, x2, y2, linewidth=None, colour=None, parent=None):
-        super(PlotLine, self).__init__(x1, y1, x2, y2, parent)
+        super().__init__(x1, y1, x2, y2, parent)
         pen = self.pen()
         if linewidth:
             pen.setWidthF(linewidth)
@@ -399,14 +394,14 @@ class PlotLine(QGraphicsLineItem):
 
     def paint(self, painter, options, widget=None):
         painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, True)
-        super(PlotLine, self).paint(painter, options, widget)
+        super().paint(painter, options, widget)
         painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, False)
 
 
 class PlotDot(QGraphicsEllipseItem):
-    def __init__(self, x, y, width, colours=[], parent=None):
+    def __init__(self, x, y, width, colours=(), parent=None):
         radius = width / 2.0
-        super(PlotDot, self).__init__(x - radius, y - radius, width, width, parent)
+        super().__init__(x - radius, y - radius, width, width, parent)
         try:
             iter(colours)
             self.colours = colours
@@ -437,7 +432,7 @@ class PlotDot(QGraphicsEllipseItem):
                 self.boundingRect(), int(start_angle) * 16, int(angle_per) * 16
             )
             start_angle += angle_per
-        super(PlotDot, self).paint(painter, options, widget)
+        super().paint(painter, options, widget)
         painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, False)
 
 

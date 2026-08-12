@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from typing import cast
 
 from controllers.baseengine import RoundGameEngine, readInput
@@ -12,12 +10,12 @@ class PochaEngine(RoundGameEngine):
     def __init__(self):
         if not hasattr(self, "game"):
             self.game = "Pocha"
-        super(PochaEngine, self).__init__()
+        super().__init__()
         self.setSuitType()
 
     def runRoundPlayer(self, player, winner=None):
         score = readInput(
-            "{} round score: ".format(player),
+            f"{player} round score: ",
             int,
             lambda x: True,
             "Sorry, invalid score number.",
@@ -58,7 +56,7 @@ class PochaEngine(RoundGameEngine):
         return cast("PochaMatch", self.match).getHands()
 
 
-class PochaStatsQueries(object):
+class PochaStatsQueries:
     hitsQuery = """
     SELECT player, max(hits) as "max_hits", min(hits) as "min_hits" from (
         SELECT Round.idMatch as idm, Round.nick as "player",
@@ -87,7 +85,7 @@ class PochaStatsQueries(object):
 
 class PochaStatsEngine(StatsEngine):
     def __init__(self):
-        super(PochaStatsEngine, self).__init__()
+        super().__init__()
         self.singleKindRecord = None
         self.game = "Pocha"
         self.define_queries()
@@ -98,7 +96,7 @@ class PochaStatsEngine(StatsEngine):
         self._extremeRounds = q.extremeRounds.replace("#GAMENAME#", self.game)
 
     def update(self, players=None):
-        super(PochaStatsEngine, self).update()
+        super().update()
         # print(f"Updating {self.game} stats...")
         self.hitsRecord = db.queryDict(self._hitsQuery)
         self.extremeRoundsRecord = db.queryDict(self._extremeRounds)
@@ -125,7 +123,7 @@ class PochaStatsEngine(StatsEngine):
 
 class PochaParticularStatsEngine(PochaStatsEngine, ParticularStatsEngine):
     def updatePlayers(self, players):
-        super(PochaParticularStatsEngine, self).updatePlayers(players)
+        super().updatePlayers(players)
         if players:
             self.define_queries()
             self._hitsQuery = self._hitsQuery.replace(

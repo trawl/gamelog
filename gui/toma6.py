@@ -1,18 +1,11 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from controllers.toma6engine import Toma6Engine
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
-    QFrame,
     QHBoxLayout,
     QTableWidgetItem,
 )
 
-from gui.game import (
-    GamePlayerWidget,
-    PlayerColours,
-)
+from controllers.toma6engine import Toma6Engine
+from gui.game import GameNotImplementedException, GamePlayerWidget, PlayerColours
 from gui.remigio import (
     RemigioInputWidget,
     RemigioPlayerInputWidget,
@@ -26,7 +19,7 @@ from gui.remigio import (
 class Toma6Widget(RemigioWidget):
     def createEngine(self):
         if self.game != "Toma6":
-            raise Exception("No engine for game {}".format(self.game))
+            raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = Toma6Engine()
 
     def createGameInputWidget(self, parent=None):
@@ -36,7 +29,7 @@ class Toma6Widget(RemigioWidget):
         return Toma6RoundsDetail(self.engine, parent)
 
     def initUI(self):
-        super(Toma6Widget, self).initUI()
+        super().initUI()
         # self.topPointsLabel.hide()
         # self.topPointsLineEdit.hide()
         # self.gameInput.enterPressed.connect(self.commitRound)
@@ -81,13 +74,13 @@ class Toma6PlayerInputWidget(RemigioPlayerInputWidget):
         pass
 
     def updatePanel(self):
-        text = "{}".format(self.player)
+        text = f"{self.player}"
         css = ""
         self.scoreSpinBox.setValue(-1)
         self.scoreSpinBox.setEnabled(True)
 
         self.label.setText(text)
-        self.setStyleSheet("QFrame {{ {} }}".format(css))
+        self.setStyleSheet(f"QFrame {{ {css} }}")
 
     def mousePressEvent(self, event):
         self.scoreSpinBox.setFocus()
@@ -106,7 +99,7 @@ class Toma6PlayerWidget(GamePlayerWidget):
 class Toma6RoundsDetail(RemigioRoundsDetail):
     def __init__(self, engine, parent=None):
         self.bgcolors = [0xCCFF99, 0xFFCC99]
-        super(Toma6RoundsDetail, self).__init__(engine, self.bgcolors, parent)
+        super().__init__(engine, self.bgcolors, parent)
         self.container.setCurrentWidget(self.plot)
 
     def createRoundTable(self, engine, parent=None):
@@ -119,7 +112,7 @@ class Toma6RoundsDetail(RemigioRoundsDetail):
 class Toma6RoundTable(RemigioRoundTable):
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
-        super(Toma6RoundTable, self).__init__(engine, self.bgcolors, parent)
+        super().__init__(engine, self.bgcolors, parent)
 
     def insertRound(self, r):
         i = r.getNumRound() - 1

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from typing import cast
 
 from controllers.baseengine import EntryGameEngine, readInput
@@ -17,7 +15,7 @@ class CarcassonneEngine(EntryGameEngine):
     def runStubRoundPlayer(self, player, winner=None):
         entry_kinds = self.getEntryKinds()
         score = readInput(
-            "{} score: ".format(player),
+            f"{player} score: ",
             int,
             lambda x: x > 0,
             "Sorry, invalid score number.",
@@ -36,7 +34,7 @@ if __name__ == "__main__":
     re.gameStub()
 
 
-class CarcassonneStatsQueries(object):
+class CarcassonneStatsQueries:
     singleKindRecordQuery = """
     SELECT value as "record",
         Round.score as "points",
@@ -80,14 +78,14 @@ class CarcassonneStatsQueries(object):
 
 class CarcassonneStatsEngine(StatsEngine):
     def __init__(self):
-        super(CarcassonneStatsEngine, self).__init__()
+        super().__init__()
         self.singleKindRecord = []
         q = CarcassonneStatsQueries()
         self._singleKindRecordQuery = q.singleKindRecordQuery
         self._matchKindRecordQuery = q.matchKindRecordQuery
 
     def update(self, players=None):
-        super(CarcassonneStatsEngine, self).update()
+        super().update()
         self.singleKindRecord = []
         self.matchKindRecord = []
 
@@ -110,7 +108,7 @@ class CarcassonneStatsEngine(StatsEngine):
 
 class CarcassonneParticularStatsEngine(CarcassonneStatsEngine, ParticularStatsEngine):
     def updatePlayers(self, players):
-        super(CarcassonneParticularStatsEngine, self).updatePlayers(players)
+        super().updatePlayers(players)
         if players:
             q = CarcassonneStatsQueries()
             self._singleKindRecordQuery = q.singleKindRecordQuery.replace(

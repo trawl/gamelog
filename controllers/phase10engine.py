@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from typing import cast
 
 from controllers.baseengine import RoundGameEngine, readInput
@@ -12,13 +10,13 @@ class Phase10Engine(RoundGameEngine):
     def __init__(self):
         if not hasattr(self, "game"):
             self.game = "Phase10"
-        super(Phase10Engine, self).__init__()
+        super().__init__()
 
     def getPhases(self):
         cur = db.execute(
             "Select key,value from GameExtras "
-            "where Game_name='{}' and key like 'Phase %' "
-            "order by key asc".format(self.game)
+            f"where Game_name='{self.game}' and key like 'Phase %' "
+            "order by key asc"
         )
         if cur:
             return [row["value"] for row in cur]
@@ -38,28 +36,22 @@ class Phase10Engine(RoundGameEngine):
         if player in cast("Phase10Match", self.match).phasesCleared:
             return cast("Phase10Match", self.match).phasesCleared[player]
         else:
-            return list()
+            return []
 
     def hasPhaseCompleted(self, player, phase):
-        if phase in self.getCompletedPhasesFromPlayer(player):
-            return True
-        else:
-            return False
+        return phase in self.getCompletedPhasesFromPlayer(player)
 
     def hasPhaseRemaining(self, player, phase):
-        if phase in self.getRemainingPhasesFromPlayer(player):
-            return True
-        else:
-            return False
+        return phase in self.getRemainingPhasesFromPlayer(player)
 
     def printExtraPlayerStats(self, player):
-        print("Phases completed: {}".format(self.getCompletedPhasesFromPlayer(player)))
+        print(f"Phases completed: {self.getCompletedPhasesFromPlayer(player)}")
 
     def printExtraStats(self):
         print("Phases:")
         print("====================")
         for n, phase in enumerate(self.getPhases(), start=1):
-            print("  Phase {0:02}: {1}".format(n, phase))
+            print(f"  Phase {n:02}: {phase}")
         print("====================")
         print("  Quick desc: s=set, r=run, c=colour, cr=colour run")
         print("  Example: 2s4 = 2 sets of 4 cards")
@@ -74,21 +66,21 @@ class Phase10Engine(RoundGameEngine):
                 a_phase = 1
         else:
             a_phase = readInput(
-                "{} aimed phase number: ".format(player),
+                f"{player} aimed phase number: ",
                 int,
                 lambda x: x > 0 and self.hasPhaseRemaining(player, x),
                 "Sorry, phase not valid or already completed.",
             )
-        if not winner == player:
+        if winner != player:
             score = readInput(
-                "{} round score: ".format(player),
+                f"{player} round score: ",
                 int,
                 lambda x: x > 0,
                 "Sorry, invalid score number.",
             )
             if score >= 50:
                 cleared = readInput(
-                    "Did {} complete phase {}?[1/0]: ".format(player, a_phase),
+                    f"Did {player} complete phase {a_phase}?[1/0]: ",
                     int,
                     lambda x: x in [0, 1],
                 )
@@ -111,7 +103,7 @@ class Phase10MasterEngine(Phase10Engine):
     def __init__(self):
         if not hasattr(self, "game"):
             self.game = "Phase10Master"
-        super(Phase10MasterEngine, self).__init__()
+        super().__init__()
 
 
 if __name__ == "__main__":
@@ -127,7 +119,7 @@ if __name__ == "__main__":
     pe.gameStub()
 
 
-class Phase10StatsQueries(object):
+class Phase10StatsQueries:
     worst_phases = """
         SELECT game, nick, min(pc) AS min_phases from (
             SELECT Match.Game_name as game,Match.idMatch AS match,
@@ -155,13 +147,13 @@ class Phase10StatsQueries(object):
 
 class Phase10StatsEngine(StatsEngine):
     def __init__(self):
-        super(Phase10StatsEngine, self).__init__()
+        super().__init__()
         q = Phase10StatsQueries()
         self._worst_phases = q.worst_phases
         self._damned_phases = q.damned_phases
 
     def update(self, players=None):
-        super(Phase10StatsEngine, self).update()
+        super().update()
         self.wphases = db.queryDict(self._worst_phases)
         for row in self.wphases:
             game = row["game"]
@@ -182,16 +174,15 @@ class Phase10StatsEngine(StatsEngine):
             attempts[row["game"]][row["player"]][int(row["phase"]) - 1] = row["times"]
         if self.generalplayerstats:
             for row in self.generalplayerstats:
-                if row["game"] in attempts:
-                    if row["nick"] in attempts[row["game"]]:
-                        times = attempts[row["game"]][row["nick"]]
-                        max_times = max(times)
-                        row["damned_phase"] = times.index(max_times) + 1
+                if row["game"] in attempts and row["nick"] in attempts[row["game"]]:
+                    times = attempts[row["game"]][row["nick"]]
+                    max_times = max(times)
+                    row["damned_phase"] = times.index(max_times) + 1
 
 
 class Phase10ParticularStatsEngine(Phase10StatsEngine, ParticularStatsEngine):
     def updatePlayers(self, players):
-        super(Phase10ParticularStatsEngine, self).updatePlayers(players)
+        super().updatePlayers(players)
         if players:
             q = Phase10StatsQueries()
             self._worst_phases = q.worst_phases.replace(

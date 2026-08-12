@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from typing import cast
 
 from controllers.baseengine import readInput
@@ -12,18 +9,18 @@ class Toma6Engine(RemigioEngine):
     def __init__(self):
         if not hasattr(self, "game"):
             self.game = "Toma6"
-        super(Toma6Engine, self).__init__()
+        super().__init__()
 
     def getTop(self):
         return cast("Toma6Match", self.match).getTop()
 
     def printExtraStats(self):
-        print("Match top: {}".format(self.getTop()))
+        print(f"Match top: {self.getTop()}")
 
     def runRoundPlayer(self, player, winner=None):
         score = 0
         score = readInput(
-            "{} round score: ".format(player),
+            f"{player} round score: ",
             int,
             lambda x: x > 0,
             "Sorry, invalid score number.",

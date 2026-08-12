@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import datetime
 from typing import cast
 
@@ -31,7 +28,7 @@ from gui.tab import Tab
 
 class NewGameWidget(Tab):
     def __init__(self, parent=None):
-        super(NewGameWidget, self).__init__(parent)
+        super().__init__(parent)
         self._parent = parent
         self.initUI()
 
@@ -217,7 +214,7 @@ class NewGameWidget(Tab):
             QMessageBox.warning(self, tit, msg)
         elif len(players) > maxPlayers:
             msg = self.tr("The maximum number of players is")
-            QMessageBox.warning(self, tit, "{} {}".format(msg, maxPlayers))
+            QMessageBox.warning(self, tit, f"{msg} {maxPlayers}")
         else:
             matchTab = GameWidgetFactory.createGameWidget(game, players, self._parent)
             if matchTab:
@@ -269,7 +266,7 @@ class ResumeBox(QGroupBox):
     restartRequested = Signal(QWidget)
 
     def __init__(self, parent):
-        super(ResumeBox, self).__init__(parent)
+        super().__init__(parent)
         self.engine = None
         self.game = None
         self._parent = parent
@@ -321,7 +318,7 @@ class ResumeBox(QGroupBox):
                 strtime = savedtime.strftime("%Y-%m-%d %H:%M")
                 hours, remainder = divmod(int(candidate["elapsed"]), 3600)
                 minutes, _ = divmod(remainder, 60)
-                strelapsed = "{0:02}:{1:02}".format(hours, minutes)
+                strelapsed = f"{hours:02}:{minutes:02}"
                 msg = f"{strtime} | {strelapsed} | {', '.join(candidate['players'])}"
                 item = QListWidgetItem(msg, self.savedlist)
                 self.savedlist.addItem(item)

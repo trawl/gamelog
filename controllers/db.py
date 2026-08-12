@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import datetime
 import os.path
 import sqlite3 as lite
@@ -21,14 +18,14 @@ class GameLogDB:
         if not os.path.isdir(dbdir):
             try:
                 os.makedirs(dbdir)
-            except os.error as e:
-                self._printError("Error creating DB: {}".format(e.args[0]))
+            except OSError as e:
+                self._printError(f"Error creating DB: {e.args[0]}")
                 sys.exit(1)
         try:
             self.con = lite.connect(dbname)
             self._checkDB()
         except Exception as e:
-            self._printError("Error connecting to DB: {}".format(e.args[0]))
+            self._printError(f"Error connecting to DB: {e.args[0]}")
 
         db.execute("PRAGMA synchronous=OFF")
 
@@ -49,14 +46,14 @@ class GameLogDB:
                 cur.execute(query)
                 return cur
         except lite.Error as e:
-            self._printError("Error running query {}\n {}".format(query, e.args[0]))
+            self._printError(f"Error running query {query}\n {e.args[0]}")
             sys.exit(1)
 
     def queryDict(self, query):
         result = []
         for row in self.execute(query):
             entry = {}
-            for key in row.keys():
+            for key in row.keys():  # noqa: SIM118
                 entry[key] = row[key]
             result.append(entry)
         return result
@@ -70,21 +67,21 @@ class GameLogDB:
                 cur.executescript(script)
                 return cur
         except lite.Error as e:
-            self._printError("Error running script: {}".format(e.args[0]))
+            self._printError(f"Error running script: {e.args[0]}")
             sys.exit(1)
 
     def _checkDB(self):
         cur = self.execute(
-            ("SELECT name FROM sqlite_master WHERE type='table' AND name='Game'")
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='Game'"
         )
         if not cur.fetchone():
             self._executeScript(_emptydb)
 
     def getAvailableGames(self):
         cur = db.execute("Select name,maxPlayers,description,rules from Game")
-        games = dict()
+        games = {}
         for row in cur:
-            games[row["name"]] = dict()
+            games[row["name"]] = {}
             games[row["name"]]["maxPlayers"] = row["maxPlayers"]
             games[row["name"]]["description"] = row["description"]
             games[row["name"]]["rules"] = row["rules"]
@@ -112,14 +109,12 @@ class GameLogDB:
     def addPlayer(self, nick, fullname):
         db.execute(
             "INSERT INTO Player(nick,fullName,dateCreation) "
-            "VALUES('{}','{}','{}')".format(nick, fullname, datetime.datetime.now())
+            f"VALUES('{nick}','{fullname}','{datetime.datetime.now()}')"
         )
 
     def isPlayerFavourite(self, nick):
-        cur = db.execute(
-            "SELECT nick FROM Player WHERE nick='{}' and favourite=1".format(nick)
-        )
-        if not cur.fetchone():
+        cur = db.execute(f"SELECT nick FROM Player WHERE nick='{nick}' and favourite=1")
+        if not cur.fetchone():  # noqa: SIM103
             return False
         else:
             return True
@@ -129,7 +124,7 @@ class GameLogDB:
             flag = 1
         else:
             flag = 0
-        db.execute("UPDATE Player SET favourite={} WHERE nick='{}'".format(flag, nick))
+        db.execute(f"UPDATE Player SET favourite={flag} WHERE nick='{nick}'")
 
     def _printError(self, message):
         # Python 2 syntax
@@ -158,6 +153,7 @@ INSERT INTO "Game"
 INSERT INTO "Game" VALUES('Pocha',6,'Carcassonne board game','Home rules');
 INSERT INTO "Game" VALUES('Skull King',8,'Skull King card game','Home rules');
 INSERT INTO "Game" VALUES('Toma6',10,'Toma6 card game','Home rules');
+INSERT INTO "Game" VALUES('Qwirkle',4,'Qwirkle tile game','Standard rules');
 DROP TABLE IF EXISTS "GameExtras";
 CREATE TABLE `GameExtras` (
   `Game_name` VARCHAR(45) NOT NULL ,

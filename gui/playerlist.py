@@ -1,14 +1,10 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from typing import cast
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QDialog,
     QListView,
-    QMenu,
     QPushButton,
     QVBoxLayout,
 )
@@ -25,7 +21,7 @@ class PlayerOrderDialog(QDialog):
     dealerChanged = QtCore.Signal()
 
     def __init__(self, engine, parent=None):
-        super(PlayerOrderDialog, self).__init__(parent)
+        super().__init__(parent)
         self.engine = engine
         self.originalOrder = self.engine.getListPlayers()
         self.originalDealer = self.engine.getDealer()
@@ -57,7 +53,7 @@ class PlayerList(QListView):
     changed = QtCore.Signal()
 
     def __init__(self, engine=None, parent=None):
-        super(PlayerList, self).__init__(parent)
+        super().__init__(parent)
         self.engine = engine
         self.max_players = None
         self.twin_list = None
@@ -173,7 +169,7 @@ class PlayerList(QListView):
 
 class PlayerListModel(QtGui.QStandardItemModel):
     def __init__(self, engine=None, parent=None):
-        super(PlayerListModel, self).__init__(parent)
+        super().__init__(parent)
         self.engine = engine
         self.dealer = None
 
@@ -200,7 +196,7 @@ class PlayerListModel(QtGui.QStandardItemModel):
         item.setIcon(QtGui.QIcon(icon))
 
     def retrievePlayers(self):
-        players = list()
+        players = []
         for i in range(self.rowCount()):
             nick = str(self.item(i).text())
             players.append(nick)

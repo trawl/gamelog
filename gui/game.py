@@ -1,13 +1,16 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import ctypes
 import shutil
 import subprocess
 import sys
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtCore import QCoreApplication
-from PySide6.QtGui import QAction, QPainter
+from PySide6.QtCore import (
+    QCoreApplication,
+    QEasingCurve,
+    QPropertyAnimation,
+    QRectF,
+)
+from PySide6.QtGui import QAction, QColor, QFont, QImage, QPainter, QPainterPath
 from PySide6.QtWidgets import (
     QFrame,
     QGroupBox,
@@ -28,9 +31,9 @@ from PySide6.QtWidgets import (
 )
 
 from gui.clock import GameClock
-from gui.matchedit import MatchTimesEditDialog
 from gui.gamestats import QuickStatsTW
 from gui.languagechooser import LanguageButton
+from gui.matchedit import MatchTimesEditDialog
 from gui.playerlist import PlayerOrderDialog
 from gui.plots import PlotView
 from gui.tab import Tab
@@ -60,7 +63,7 @@ class GameWidget(Tab):
     QCoreApplication.translate("GameWidget", "Scoreboard")
 
     def __init__(self, game, players, engine=None, parent=None):
-        super(GameWidget, self).__init__(parent)
+        super().__init__(parent)
         self.game = game
         if engine is not None:
             self.engine = engine
@@ -313,7 +316,7 @@ class GameWidget(Tab):
 
     def commitRound(self):
         nround = self.engine.getNumRound()
-        print("Opening round {}".format(nround))
+        print(f"Opening round {nround}")
         self.engine.openRound(nround)
         winner = self.gameInput.getWinner()
         if not winner:
@@ -369,11 +372,8 @@ class GameWidget(Tab):
     def saveMatch(self):
         self.engine.save()
 
-    def checkPlayerScore(self, player, score):
-        if score >= 0:
-            return True
-        else:
-            return False
+    def checkPlayerScore(self, player, score, extras=None):
+        return score >= 0
 
     def setRoundTitle(self):
         try:
@@ -464,7 +464,7 @@ class GameInputWidget(QWidget):
     enterPressed = QtCore.Signal()
 
     def __init__(self, engine, parent=None):
-        super(GameInputWidget, self).__init__(parent)
+        super().__init__(parent)
         self.engine = engine
         self.winnerSelected = ""
         self.playerInputList = {}
@@ -489,7 +489,7 @@ class GameInputWidget(QWidget):
             piw.reset()
 
     def changedWinner(self, winner):
-        print("Changing winner to {}".format(winner))
+        print(f"Changing winner to {winner}")
         winner = str(winner)
         if self.winnerSelected != "":
             self.playerInputList[self.winnerSelected].reset()
@@ -499,7 +499,7 @@ class GameInputWidget(QWidget):
         if event.key() in (QtCore.Qt.Key.Key_Return, QtCore.Qt.Key.Key_Enter):
             self.enterPressed.emit()
             event.accept()
-        return super(GameInputWidget, self).keyPressEvent(event)
+        return super().keyPressEvent(event)
 
     def mousePressEvent(self, event):
         self.setFocus()
@@ -777,9 +777,164 @@ class IconLabel(QLabel):
         pass
 
 
+class BonusButton(QPushButton):
+    bonusChanged = QtCore.Signal(str, object)
+
+    def __init__(
+        self, bonus_name: str, maximum: int = 1, colour=None, size=32, parent=None
+    ):
+        super().__init__(parent)
+
+        self.bonus_name = bonus_name
+        self.maximum = maximum
+        self.count = 0
+        self.button_size = size
+        self.highlight_colour = colour if colour else QColor(200, 0, 0)
+
+        original_image = QImage(f":/icons/{bonus_name}.png")
+        self.image = original_image.scaled(
+            self.button_size,
+            self.button_size,
+            QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+            QtCore.Qt.TransformationMode.SmoothTransformation,
+        )
+
+        self.grey_image = self.image.convertToFormat(QImage.Format.Format_Grayscale8)
+
+        self.setCheckable(True)
+        self.setFlat(True)
+        self.setStyleSheet("border: none;")
+
+        self.setFixedSize(self.button_size, self.button_size)
+
+        self._fade_alpha = 0.0
+
+        self.fade_anim = QPropertyAnimation(self, b"fade_alpha")
+        self.fade_anim.setDuration(400)
+        self.fade_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+        self.clicked.connect(self.plusone)
+
+    def setColour(self, colour):
+        self.highlight_colour = colour
+
+    def plusone(self):
+        old_value = self.count
+        self.count = (self.count + 1) % (self.maximum + 1)
+        self.setChecked(
+            self.count > 0
+        )  # trigger pulse animation only when transitioning 0 -> >0
+
+        if old_value == 0 and self.count > 0:
+            self.fade_anim.stop()
+            self.fade_anim.setStartValue(0.0)
+            self.fade_anim.setEndValue(1.0)
+            self.fade_anim.start()
+            self.bonusChanged.emit(self.bonus_name, self)
+
+        elif old_value > 0 and self.count == 0:
+            self.fade_anim.stop()
+            self.fade_anim.setStartValue(1.0)
+            self.fade_anim.setEndValue(0.0)
+            self.fade_anim.start()
+        self.update()
+
+    def get_fade_alpha(self):
+        return self._fade_alpha
+
+    def set_fade_alpha(self, value):
+        self._fade_alpha = float(value)
+        self.update()
+
+    fade_alpha = QtCore.Property(float, get_fade_alpha, set_fade_alpha)
+
+    def getValue(self):
+        return self.count
+
+    def setChecked(self, checked):
+        if not checked:
+            self.count = 0
+        super().setChecked(checked)
+
+    def sizeHint(self):
+        return QtCore.QSize(self.button_size, self.button_size)
+
+    def setMaximum(self, maximum):
+        self.maximum = maximum
+        if self.count > self.maximum:
+            self.count = self.maximum
+            if self.count == 0:
+                self.setChecked(False)
+            self.update()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        # --- circular clipping ---
+        path = QPainterPath()
+        radius = min(self.width(), self.height()) / 2
+        center = self.rect().center()
+        path.addEllipse(center, radius, radius)
+        painter.setClipPath(path)
+
+        # --- choose image (normal or greyscale if disabled) ---
+        if self.isEnabled():
+            img_to_draw = self.image
+        else:
+            img_to_draw = self.grey_image
+            self.setChecked(False)
+
+        # --- draw icon ---
+        painter.drawImage(self.rect(), img_to_draw)
+
+        # --- active outline (red circular ring) ---
+        if self.count > 0:
+            alpha = int(255 * self._fade_alpha)
+            ring_radius = radius - 2
+            pen = painter.pen()
+            colour = QColor(self.highlight_colour)
+            colour.setAlpha(alpha)
+            pen.setColor(colour)  # red
+            pen.setWidth(4)
+            painter.setPen(pen)
+            painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
+            painter.drawEllipse(center, ring_radius, ring_radius)
+
+        # --- text overlay when count > 1 ---
+        if self.count >= 1 and self.maximum > 1:
+            # Semi-transparent dark circle behind the number
+            overlay_color = QColor(0, 0, 0, 120)
+            painter.setBrush(overlay_color)
+            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+
+            circle_diameter = min(self.width(), self.height()) * 0.45
+            circle_rect = QRectF(
+                (self.width() - circle_diameter) / 2,
+                (self.height() - circle_diameter) / 2,
+                circle_diameter,
+                circle_diameter,
+            )
+            painter.drawEllipse(circle_rect)
+
+            # Draw the number
+            painter.setPen(QColor(255, 255, 255, 220))
+            painter.setPen(self.highlight_colour)
+            font = QFont("Arial", int(circle_diameter * 0.9), QFont.Weight.Bold)
+            painter.setFont(font)
+
+            painter.drawText(
+                self.rect(), QtCore.Qt.AlignmentFlag.AlignCenter, str(self.count)
+            )
+
+        painter.end()
+
+
 class GamePlayerWidget(QGroupBox):
-    def __init__(self, nick, colour=QtGui.QColor(), parent=None):
-        super(GamePlayerWidget, self).__init__(parent)
+    def __init__(self, nick, colour=None, parent=None):
+        if not colour:
+            colour = QtGui.QColor()
+        super().__init__(parent)
         self.player = nick
         self.pcolour = colour
         self.initUI()
@@ -880,7 +1035,7 @@ class GameRoundsDetail(QGroupBox):
     edited = QtCore.Signal()
 
     def __init__(self, engine, parent=None):
-        super(GameRoundsDetail, self).__init__(parent)
+        super().__init__(parent)
         self.engine = engine
         self.initUI()
 
@@ -968,7 +1123,7 @@ class GameRoundTable(QTableWidget):
     edited = QtCore.Signal()
 
     def __init__(self, engine, parent=None):
-        super(GameRoundTable, self).__init__(parent)
+        super().__init__(parent)
         self.engine = engine
         self.setColumnCount(len(self.engine.getListPlayers()))
         self.initUI()
@@ -1019,7 +1174,7 @@ class GameRoundTable(QTableWidget):
 
 class GameRoundPlot(QWidget):
     def __init__(self, engine, parent):
-        super(GameRoundPlot, self).__init__(parent)
+        super().__init__(parent)
         self.plotinited = False
         self.engine = engine
         self.parent = parent
@@ -1121,3 +1276,7 @@ class SleepBlocker:
         if shutil.which("xset"):
             subprocess.call(["xset", "s", "on"])
             subprocess.call(["xset", "+dpms"])
+
+
+class GameNotImplementedException(Exception):
+    pass

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from PySide6 import QtCore
 from PySide6.QtCore import (
     QCoreApplication,
@@ -26,7 +24,7 @@ class LanguageManager(QObject):
     languageChanged = Signal(QLocale)
 
     def __init__(self, parent=None):
-        super(LanguageManager, self).__init__(parent)
+        super().__init__(parent)
         # Default to system language, fallback to English if not available
         self.translator = None
         self.qt_translator = None
@@ -57,7 +55,7 @@ class LanguageManager(QObject):
 
 class LanguageButton(QToolButton):
     def __init__(self, parent=None):
-        super(LanguageButton, self).__init__(parent)
+        super().__init__(parent)
         # self.setToolTip(self.tr("Change Language"))
         # self.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
         self.languageChooser = LanguageChooser(self)
@@ -72,7 +70,7 @@ class LanguageButton(QToolButton):
                 padding: 0px;
             }
         """)
-        self.changeLanguage(QLocale.system().name())
+        self.changeLanguage()
 
     def showLanguageChooser(self):
         self.languageChooser.exec()
@@ -93,15 +91,18 @@ class LanguageButton(QToolButton):
         next_locale = locales[next_index]
         self.changeLanguage(next_locale)
 
-    def changeLanguage(self, locale):
-        if locale == "C":
-            locale = "en_GB"
-        print(f"Changing language to: {locale}")
+    def changeLanguage(self, locale=None):
         app = QApplication.instance()
         if not app:
             return
         lm = app.languageManager  # pyright: ignore[reportAttributeAccessIssue]
-        lm.loadTranslator(locale)
+        if not locale:
+            locale = lm.getCurrentLocale()
+        if locale == "C":
+            locale = "en_GB"
+        if locale != lm.getCurrentLocale():
+            print(f"Changing language from {lm.getCurrentLocale()} to {locale}")
+            lm.loadTranslator(locale)
         icon = next(
             (
                 data["icon"]
@@ -129,7 +130,7 @@ class LanguageChooser(QDialog):
     }
 
     def __init__(self, parent=None):
-        super(LanguageChooser, self).__init__(parent)
+        super().__init__(parent)
         self.initUI()
 
     def initUI(self):
@@ -141,7 +142,7 @@ class LanguageChooser(QDialog):
         self.langGroupBoxLayout = QVBoxLayout(self.langGroupBox)
         self.languageListWidget = QListWidget(self.langGroupBox)
         self.langGroupBoxLayout.addWidget(self.languageListWidget)
-        for language in self.supportedLanguages.keys():
+        for language in self.supportedLanguages:
             item = QListWidgetItem(
                 QIcon(f":/icons/{self.supportedLanguages[language]['icon']}"), language
             )

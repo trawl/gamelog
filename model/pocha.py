@@ -1,19 +1,16 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from model.base import GenericRoundMatch
 
 
 class PochaMatch(GenericRoundMatch):
-    def __init__(self, players=[]):
-        super(PochaMatch, self).__init__(players)
+    def __init__(self, players=()):
+        super().__init__(players)
         self.game = "Pocha"
         self.dealingp = 1
         self.hands = [1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 8, 7, 6, 5, 4, 3, 2, 1]
         self.maxRounds = len(self.hands)
 
     def resumeMatch(self, idMatch):
-        if not super(PochaMatch, self).resumeMatch(idMatch):
+        if not super().resumeMatch(idMatch):
             return False
 
         for player in self.getPlayers():
@@ -24,7 +21,7 @@ class PochaMatch(GenericRoundMatch):
     def computeWinner(self):
         winner = None
         if len(self.rounds) < self.maxRounds:
-            return None
+            return
         maxscore = -1000
         for player, score in self.totalScores.items():
             if score >= maxscore:

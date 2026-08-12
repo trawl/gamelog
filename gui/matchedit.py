@@ -1,18 +1,17 @@
-#!/usr/bin/env python
-from PySide6.QtCore import QTime, QDateTime
+from PySide6.QtCore import QDateTime, QTime
 from PySide6.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QFormLayout,
     QDateTimeEdit,
+    QDialog,
+    QDialogButtonBox,
+    QFormLayout,
     QTimeEdit,
-    QDialogButtonBox
+    QVBoxLayout,
 )
 
 
 class MatchTimesEditDialog(QDialog):
     def __init__(self, engine, parent=None):
-        super(MatchTimesEditDialog, self).__init__(parent)
+        super().__init__(parent)
         self.engine = engine
         self.setWindowTitle(self.tr("Match Times Edit"))
         self.widgetlayout = QVBoxLayout(self)
@@ -23,19 +22,20 @@ class MatchTimesEditDialog(QDialog):
         self.starttime.setDisplayFormat("yyyy-MM-dd HH:mm:ss")
         self.starttime.setDateTime(self.engine.getStartTime())
         self.starttime.setMaximumDateTime(QDateTime.currentDateTime())
-        self.formlayout.addRow(self.tr("Start"),self.starttime)
+        self.formlayout.addRow(self.tr("Start"), self.starttime)
         self.finishtime = QDateTimeEdit(self)
         self.finishtime.setCalendarPopup(True)
         self.finishtime.setDisplayFormat("yyyy-MM-dd HH:mm:ss")
         self.finishtime.setDateTime(self.engine.getFinishTime())
         self.finishtime.setMaximumDateTime(QDateTime.currentDateTime())
-        self.formlayout.addRow(self.tr("Finish"),self.finishtime)
+        self.formlayout.addRow(self.tr("Finish"), self.finishtime)
         self.elapsed = QTimeEdit(self)
         self.elapsed.setDisplayFormat("HH:mm:ss")
-        self.elapsed.setTime(QTime(0,0,0,0).addSecs(self.engine.getGameSeconds()))
-        self.formlayout.addRow(self.tr("Duration"),self.elapsed)
+        self.elapsed.setTime(QTime(0, 0, 0, 0).addSecs(self.engine.getGameSeconds()))
+        self.formlayout.addRow(self.tr("Duration"), self.elapsed)
         self.buttonbox = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Save | QDialogButtonBox.StandardButton.Cancel
+            QDialogButtonBox.StandardButton.Save
+            | QDialogButtonBox.StandardButton.Cancel
         )
         self.widgetlayout.addWidget(self.buttonbox)
         self.buttonbox.accepted.connect(self._onsave)
@@ -52,18 +52,21 @@ class MatchTimesEditDialog(QDialog):
         end = self.finishtime.dateTime()
 
         seconds = start.secsTo(end)
-        if seconds < 0:
-            seconds = 0
+        seconds = max(seconds, 0)
         h = (seconds // 3600) % 24  # QTimeEdit caps at 23:59:59
         m = (seconds % 3600) // 60
         s = seconds % 60
         self.elapsed.blockSignals(True)
         self.elapsed.setTime(QTime(h, m, s))
-        self.elapsed.setMaximumTime(QTime(0,0,0).addSecs(seconds))
+        self.elapsed.setMaximumTime(QTime(0, 0, 0).addSecs(seconds))
         self.starttime.setMaximumDateTime(end)
         self.finishtime.setMinimumDateTime(start)
         self.elapsed.blockSignals(False)
 
     def _onsave(self):
-        self.engine.updateTimes(self.starttime.dateTime().toPython(), self.finishtime.dateTime().toPython(), self._elapsedseconds())
+        self.engine.updateTimes(
+            self.starttime.dateTime().toPython(),
+            self.finishtime.dateTime().toPython(),
+            self._elapsedseconds(),
+        )
         self.accept()

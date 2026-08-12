@@ -1,9 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from controllers.db import GameLogDB, db
 
 
-class StatsEngine(object):
+class StatsEngine:
     _lastwinnerquery = """
     SELECT Game_name AS game,
         nick AS lastwinner,
@@ -60,9 +58,12 @@ class StatsEngine(object):
 
     def update(self, _players=None):
         # Number of matches played
-        self.generalgamestats = db.queryDict(self._lastwinnerquery)
-        self.generalmatchstats = db.queryDict(self._generalmatchstatsquery)
-        self.generalplayerstats = db.queryDict(self._generalplayerstatsquery)
+        try:
+            self.generalgamestats = db.queryDict(self._lastwinnerquery)
+            self.generalmatchstats = db.queryDict(self._generalmatchstatsquery)
+            self.generalplayerstats = db.queryDict(self._generalplayerstatsquery)
+        except IndexError:
+            pass
 
     def getGameStats(self, game):
         if self.generalgamestats:
@@ -84,7 +85,7 @@ class StatsEngine(object):
 
 class ParticularStatsEngine(StatsEngine):
     def __init__(self):
-        super(ParticularStatsEngine, self).__init__()
+        super().__init__()
         self._lastwinnerquerybase = self._lastwinnerquery
         self._generalmatchstatsquerybase = self._generalmatchstatsquery
         self._generalplayerstatsquerybase = self._generalplayerstatsquery
@@ -93,7 +94,7 @@ class ParticularStatsEngine(StatsEngine):
 
     def update(self, players=None):
         self.updatePlayers(players)
-        super(ParticularStatsEngine, self).update()
+        super().update()
 
     def updatePlayers(self, players):
         if players:
@@ -112,14 +113,14 @@ class ParticularStatsEngine(StatsEngine):
                 )
                 self._newclause = self._newclause.format(players_str, len(self.players))
                 self._lastwinnerquery = self._lastwinnerquerybase.replace(
-                    "WHERE", "WHERE {} AND".format(self._newclause)
+                    "WHERE", f"WHERE {self._newclause} AND"
                 )
                 self._generalmatchstatsquery = self._generalmatchstatsquerybase.replace(
-                    "WHERE", "WHERE {} AND".format(self._newclause)
+                    "WHERE", f"WHERE {self._newclause} AND"
                 )
                 self._generalplayerstatsquery = (
                     self._generalplayerstatsquerybase.replace(
-                        "WHERE", "WHERE {} AND".format(self._newclause)
+                        "WHERE", f"WHERE {self._newclause} AND"
                     )
                 )
 

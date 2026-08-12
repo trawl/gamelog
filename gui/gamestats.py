@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from PySide6 import QtCore
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import (
@@ -23,7 +20,7 @@ from gui.tab import Tab
 
 class QuickStatsTW(QTabWidget):
     def __init__(self, game, players, parent):
-        super(QuickStatsTW, self).__init__(parent)
+        super().__init__(parent)
         self.game = game
         self.players = players
         self.initUI()
@@ -72,7 +69,7 @@ class AbstractQuickStatsBox(QGroupBox):
     QCoreApplication.translate("AbstractQuickStatsBox", "Total")
 
     def __init__(self, game, parent):
-        super(AbstractQuickStatsBox, self).__init__(parent)
+        super().__init__(parent)
         # self.stats = None
         self.game = game
         self.initEngine()
@@ -266,7 +263,7 @@ class StatsTable(QTableWidget):
 
     def sizeHint(self):
         s = QtCore.QSize()
-        s.setWidth(super(StatsTable, self).sizeHint().width())
+        s.setWidth(super().sizeHint().width())
         s.setWidth(75 * (self.columnCount() + 1) + 2 * self.columnCount())
         s.setHeight(self.rowHeight(0) * (self.rowCount() + 1) + 10)
         return s
@@ -274,7 +271,7 @@ class StatsTable(QTableWidget):
 
 class GameStatsWidget(Tab):
     def __init__(self, parent=None):
-        super(GameStatsWidget, self).__init__(parent)
+        super().__init__(parent)
         self._parent = parent
         self.initUI()
 

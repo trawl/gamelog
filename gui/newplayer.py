@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from PySide6 import QtCore
 from PySide6.QtWidgets import (
     QDialog,
@@ -18,7 +15,7 @@ class NewPlayerDialog(QDialog):
     addedNewPlayer = QtCore.Signal(str)
 
     def __init__(self, parent=None):
-        super(NewPlayerDialog, self).__init__(parent)
+        super().__init__(parent)
         self.initUI()
         self.setWindowTitle(self.tr("New Player"))
         self.existingplayers = [str(nick).lower() for nick in db.getPlayerNicks()]

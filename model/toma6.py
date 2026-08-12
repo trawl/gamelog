@@ -1,12 +1,9 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from model.base import GenericRound, GenericRoundMatch
 
 
 class Toma6Match(GenericRoundMatch):
-    def __init__(self, players=[]):
-        super(Toma6Match, self).__init__(players)
+    def __init__(self, players=()):
+        super().__init__(players)
         self.game = "Toma6"
         self.top = 66
 

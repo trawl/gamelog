@@ -1,27 +1,22 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from controllers.db import db
 from model.base import GenericRoundMatch
 
 
 class RatukiMatch(GenericRoundMatch):
-    def __init__(self, players=[]):
-        super(RatukiMatch, self).__init__(players)
+    def __init__(self, players=()):
+        super().__init__(players)
         self.game = "Ratuki"
         self.top = 100
 
     def resumeMatch(self, idMatch):
-        if not super(RatukiMatch, self).resumeMatch(idMatch):
+        if not super().resumeMatch(idMatch):
             return False
 
         for player in self.getPlayers():
             self.playerStart(player)
 
         cur = db.execute(
-            "SELECT value FROM MatchExtras WHERE idMatch ={} and key='Top';".format(
-                idMatch
-            )
+            f"SELECT value FROM MatchExtras WHERE idMatch ={idMatch} and key='Top';"
         )
         row = cur.fetchone()
         if row:
@@ -49,8 +44,8 @@ class RatukiMatch(GenericRoundMatch):
         self.top = top
 
     def flushToDB(self):
-        super(RatukiMatch, self).flushToDB()
+        super().flushToDB()
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            "VALUES ({},'Top','{}');".format(self.idMatch, self.top)
+            f"VALUES ({self.idMatch},'Top','{self.top}');"
         )

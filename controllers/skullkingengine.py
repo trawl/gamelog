@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from typing import cast
 
 from controllers.pochaengine import (
@@ -14,7 +12,7 @@ class SkullKingEngine(PochaEngine):
     def __init__(self):
         if not hasattr(self, "game"):
             self.game = "Skull King"
-        super(SkullKingEngine, self).__init__()
+        super().__init__()
         self.hands = cast("SkullKingMatch", self.match).getHands()
 
     def getScoringMode(self):
@@ -86,7 +84,7 @@ class SkullKingEngine(PochaEngine):
         raise ValueError(f"Unknown scoring mode {self.getScoringMode()}")
 
 
-class SkullKingStatsQueries(object):
+class SkullKingStatsQueries:
     hitsQuery = """
     SELECT player, max(hitp) as "max_hits", min(hitp) as "min_hits", round(avg(hitp),2) as "avg_hits" from (
         SELECT Round.idMatch as idm, Round.nick as "player",
@@ -127,7 +125,7 @@ class SkullKingStatsQueries(object):
 
 class SkullKingStatsEngine(PochaStatsEngine):
     def __init__(self):
-        super(SkullKingStatsEngine, self).__init__()
+        super().__init__()
         self.game = "Skull King"
         self.define_queries()
 
