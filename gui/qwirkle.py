@@ -51,7 +51,7 @@ class QwirkleWidget(GameWidget):
 
         self.undoButton = QPushButton(self)
         self.undoButton.pressed.connect(self.undoCommit)
-        self.undoButton.setEnabled(False)
+        self.undoButton.setEnabled(self.engine.getNumRound() > 1)
         self.undoButton.setSizePolicy(
             QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
         )
@@ -73,8 +73,7 @@ class QwirkleWidget(GameWidget):
         dealer = self.engine.getDealer()
         for i, player in enumerate(self.engine.getListPlayers()):
             pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
-
-            if self.engine.getNumRound() == 1 and player == dealer:
+            if player == dealer:
                 pw.setDealer()
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             self.playersLayout.addWidget(pw)
