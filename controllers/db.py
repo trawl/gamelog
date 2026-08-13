@@ -2,10 +2,11 @@ import datetime
 import os.path
 import sqlite3 as lite
 import sys
+from typing import ClassVar
 
 
 class GameLogDB:
-    __shared_state = {}
+    __shared_state: ClassVar[dict] = {}
 
     def __init__(self):
         self.__dict__ = self.__shared_state
