@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from PySide6 import QtCore
 from PySide6.QtCore import (
     QCoreApplication,
@@ -123,7 +125,7 @@ class LanguageButton(QToolButton):
 
 class LanguageChooser(QDialog):
     newQM = QtCore.Signal(str)
-    supportedLanguages = {
+    supportedLanguages: ClassVar[dict] = {
         "English": {"locale": "en_GB", "icon": "english.svg"},
         "Español": {"locale": "es_ES", "icon": "spanish.svg"},
         "Català": {"locale": "ca_ES", "icon": "catalan.svg"},

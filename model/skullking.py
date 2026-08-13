@@ -1,9 +1,11 @@
+from typing import ClassVar
+
 from controllers.db import db
 from model.pocha import PochaMatch
 
 
 class SkullKingMatch(PochaMatch):
-    roundModes = {
+    roundModes: ClassVar[dict] = {
         "standard_rounds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         "even": [2, 4, 6, 8, 10],
         "brawl": [6, 7, 8, 9, 10],
@@ -11,7 +13,7 @@ class SkullKingMatch(PochaMatch):
         "barrage": 10 * [10],
         "whirlpool": [9, 7, 5, 3, 1],
     }
-    scoringModes = {
+    scoringModes: ClassVar[dict] = {
         "classic_scoring": {
             "skullking": {"bonus": 50, "reps": 1},
             "pirate": {"bonus": 20, "reps": 6},
