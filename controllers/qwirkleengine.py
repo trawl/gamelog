@@ -26,10 +26,15 @@ class QwirkleStatsEngine(StatsEngine):
         super().__init__()
         self.game = "Qwirkle"
         self.singleKindRecord = None
+        self.queries = {}
         self.define_queries()
 
     def define_queries(self):
-        self._extremeRounds = f"""
+        self.query_params = {
+            "extreme_rounds": ("max_round_score", "min_round_score"),
+            "max_qwirkles": ("max_qwirkles",),
+        }
+        self.queries["extreme_rounds"] = f"""
         SELECT Round.nick as "player", max(score) as "max_round_score",
             min(score) as "min_round_score"
         FROM Round,Match
@@ -38,7 +43,7 @@ class QwirkleStatsEngine(StatsEngine):
             and Game_name="{self.game}"
         group by player
         """
-        self._maxQwirkles = """
+        self.queries["max_qwirkles"] = """
         SELECT player, MAX(qwirkles) as "max_qwirkles"
         FROM (
             SELECT Match.idMatch as "match",
@@ -60,19 +65,15 @@ class QwirkleStatsEngine(StatsEngine):
         super().update()
         if not self.generalplayerstats:
             return
-        for row in db.queryDict(self._extremeRounds):
-            player = row["player"]
-            for r2 in self.generalplayerstats:
-                if r2["nick"] == player and r2["game"] == self.game:
-                    r2["max_round_score"] = row["max_round_score"]
-                    r2["min_round_score"] = row["min_round_score"]
-                    break
-        for row in db.queryDict(self._maxQwirkles):
-            player = row["player"]
-            for r2 in self.generalplayerstats:
-                if r2["nick"] == player and r2["game"] == self.game:
-                    r2["max_qwirkles"] = row["max_qwirkles"]
-                    break
+
+        for q, params in self.query_params.items():
+            for row in db.queryDict(self.queries[q]):
+                player = row["player"]
+                for r2 in self.generalplayerstats:
+                    if r2["nick"] == player and r2["game"] == self.game:
+                        for p in params:
+                            r2[p] = row[p]
+                        break
 
 
 class QwirkleParticularStatsEngine(QwirkleStatsEngine, ParticularStatsEngine):
@@ -80,12 +81,10 @@ class QwirkleParticularStatsEngine(QwirkleStatsEngine, ParticularStatsEngine):
         super().updatePlayers(players)
         if players:
             self.define_queries()
-            self._extremeRounds = self._extremeRounds.replace(
-                "WHERE", "WHERE {} AND".format("Match." + self._newclause)
-            )
-            self._maxQwirkles = self._maxQwirkles.replace(
-                "WHERE", "WHERE {} AND".format("Match." + self._newclause)
-            )
+            for q in self.queries:
+                self.queries[q] = self.queries[q].replace(
+                    "WHERE", "WHERE {} AND".format("Match." + self._newclause)
+                )
 
 
 if __name__ == "__main__":
