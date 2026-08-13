@@ -109,7 +109,7 @@ class GameLogDB:
     def addPlayer(self, nick, fullname):
         db.execute(
             "INSERT INTO Player(nick,fullName,dateCreation) "
-            f"VALUES('{nick}','{fullname}','{datetime.datetime.now()}')"
+            f"VALUES('{nick}','{fullname}','{datetime.datetime.now(tz=datetime.UTC)}')"
         )
 
     def isPlayerFavourite(self, nick):

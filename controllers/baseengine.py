@@ -36,7 +36,7 @@ class GameEngine:
             self.players[nick].fullName = user["fullName"]
         else:
             self.players[nick].fullName = fullName
-            self.players[nick].dateCreation = datetime.datetime.now()
+            self.players[nick].dateCreation = datetime.datetime.now(tz=datetime.UTC)
             qd = str(self.players[nick].dateCreation)
             q = f"""INSERT INTO Player (nick, fullName, dateCreation)
                  VALUES ('{nick}','{fullName}','{qd}');"""
@@ -229,7 +229,9 @@ class RoundGameEngine(GameEngine):
                 print(f"{self.getWinner():^27}")
                 print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 print()
-                print(f"{self.game} match finished at {datetime.datetime.now()}")
+                print(
+                    f"{self.game} match finished at {datetime.datetime.now(tz=datetime.UTC)}"
+                )
                 print(f"Time played {self.match.getGameTime()}")
                 print()
 

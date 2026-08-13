@@ -1,3 +1,6 @@
+import datetime
+from typing import cast
+
 from PySide6.QtCore import QDateTime, QTime
 from PySide6.QtWidgets import (
     QDateTimeEdit,
@@ -20,13 +23,13 @@ class MatchTimesEditDialog(QDialog):
         self.starttime = QDateTimeEdit(self)
         self.starttime.setCalendarPopup(True)
         self.starttime.setDisplayFormat("yyyy-MM-dd HH:mm:ss")
-        self.starttime.setDateTime(self.engine.getStartTime())
+        self.starttime.setDateTime(self.engine.getStartTime().astimezone())
         self.starttime.setMaximumDateTime(QDateTime.currentDateTime())
         self.formlayout.addRow(self.tr("Start"), self.starttime)
         self.finishtime = QDateTimeEdit(self)
         self.finishtime.setCalendarPopup(True)
         self.finishtime.setDisplayFormat("yyyy-MM-dd HH:mm:ss")
-        self.finishtime.setDateTime(self.engine.getFinishTime())
+        self.finishtime.setDateTime(self.engine.getFinishTime().astimezone())
         self.finishtime.setMaximumDateTime(QDateTime.currentDateTime())
         self.formlayout.addRow(self.tr("Finish"), self.finishtime)
         self.elapsed = QTimeEdit(self)
@@ -64,9 +67,11 @@ class MatchTimesEditDialog(QDialog):
         self.elapsed.blockSignals(False)
 
     def _onsave(self):
+        start = self.starttime.dateTime().toPython()
+        finish = self.finishtime.dateTime().toPython()
         self.engine.updateTimes(
-            self.starttime.dateTime().toPython(),
-            self.finishtime.dateTime().toPython(),
+            cast(datetime.datetime, start).astimezone(datetime.UTC),
+            cast(datetime.datetime, finish).astimezone(datetime.UTC),
             self._elapsedseconds(),
         )
         self.accept()
