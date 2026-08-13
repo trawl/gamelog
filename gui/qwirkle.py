@@ -287,30 +287,6 @@ class QwirkleEntriesDetail(GameRoundsDetail):
 
 
 class QwirkleRoundTable(GameRoundTable):
-    def insertRoundold(self, entry):
-        i = entry.getNumRound() - 1
-        self.insertRow(i)
-        for j, player in enumerate(self.engine.getListPlayers()):
-            item = QTableWidgetItem()
-            item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignVCenter
-                | QtCore.Qt.AlignmentFlag.AlignCenter
-            )
-            # item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
-            # item.setForeground(QtGui.QBrush(QtGui.QColor(0, 0, 0)))
-
-            if player == entry.getPlayer():
-                text = "{} {}".format(entry.getPlayerScore(), "*" * entry.getQwirkles())
-                font = item.font()
-                font.setBold(True)
-                item.setFont(font)
-            else:
-                text = ""
-            item.setText(text)
-            self.setItem(i, j, item)
-        self.scrollToBottom()
-
     def insertRound(self, entry):
         players = self.engine.getListPlayers()
         i = (entry.getNumRound() - 1) // len(players)
