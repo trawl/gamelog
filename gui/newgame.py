@@ -312,9 +312,19 @@ class ResumeBox(QGroupBox):
         else:
             for idMatch, candidate in candidates.items():
                 self.matches.append(idMatch)
-                savedtime = datetime.datetime.strptime(
-                    candidate["started"], "%Y-%m-%d %H:%M:%S.%f"
-                )
+                try:
+                    savedtime = (
+                        datetime.datetime.strptime(
+                            candidate["started"], "%Y-%m-%d %H:%M:%S.%f"
+                        )
+                        .replace(tzinfo=datetime.UTC)
+                        .astimezone()
+                    )
+                except ValueError:
+                    savedtime = datetime.datetime.strptime(
+                        candidate["started"], "%Y-%m-%d %H:%M:%S.%f%z"
+                    ).astimezone()
+
                 strtime = savedtime.strftime("%Y-%m-%d %H:%M")
                 hours, remainder = divmod(int(candidate["elapsed"]), 3600)
                 minutes, _ = divmod(remainder, 60)

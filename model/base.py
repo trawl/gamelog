@@ -49,9 +49,14 @@ class GenericMatch:
         if row["Game_name"] != self.game or row["state"] != self.SAVED:
             return False
         self.elapsed = int(row["elapsed"])
-        self.start = datetime.datetime.strptime(
-            row["started"], "%Y-%m-%d %H:%M:%S.%f %z"
-        )
+        try:
+            self.start = datetime.datetime.strptime(
+                row["started"], "%Y-%m-%d %H:%M:%S.%f%z"
+            ).astimezone(datetime.UTC)
+        except ValueError:
+            self.start = datetime.datetime.strptime(
+                row["started"], "%Y-%m-%d %H:%M:%S.%f"
+            ).replace(tzinfo=datetime.UTC)
         self.resumed = datetime.datetime.now(tz=datetime.UTC)
         # Retrieve players
         self.players = []
