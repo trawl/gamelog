@@ -1,9 +1,8 @@
 from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QAction, QShortcut
+from PySide6.QtGui import QShortcut
 from PySide6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
-    QMenu,
     QMessageBox,
     QPushButton,
     QSizePolicy,
@@ -50,7 +49,14 @@ class QwirkleWidget(GameWidget):
         )
         self.roundLayout.addWidget(self.gameInput)
 
+        self.undoButton = QPushButton(self)
+        self.undoButton.pressed.connect(self.undoCommit)
+        self.undoButton.setEnabled(False)
+        self.undoButton.setSizePolicy(
+            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
+        )
         self.gameInput.placeCommitButton(self.commitRoundButton)
+        self.gameInput.placeUndoButton(self.undoButton)
         self.commitRoundButton.setSizePolicy(
             QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
         )
@@ -81,6 +87,7 @@ class QwirkleWidget(GameWidget):
     def retranslateUI(self):
         super().retranslateUI()
         self.commitRoundButton.setText("▼")
+        self.undoButton.setText("⎌")
         self.finishButton.setText(self.tr("&Finish Game"))
         self.gameInput.retranslateUI()
         self.detailGroup.retranslateUI()
@@ -100,6 +107,7 @@ class QwirkleWidget(GameWidget):
             self.detailGroup.updateStats()
         else:
             self.detailGroup.updateRound()
+        self.undoButton.setEnabled(self.engine.getNumRound() > 1)
 
     def checkPlayerScore(self, player, score, extras=None):
         try:
@@ -133,6 +141,31 @@ class QwirkleWidget(GameWidget):
             self.setDealer()
         elif self.hideInputOnFinish:
             self.gameInput.hide()
+
+    def undoCommit(self):
+        try:
+            last_entry = self.engine.getRounds()[-1]
+        except IndexError:
+            return
+
+        title = self.tr("Delete Entry")
+        msg = self.tr(
+            "Are you sure you want to delete the last entry for {} ({})?"
+        ).format(last_entry.getPlayer(), last_entry.getScore()[last_entry.getPlayer()])
+        ret = QMessageBox.question(
+            self,
+            title,
+            msg,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes,
+        )
+        if ret == QMessageBox.StandardButton.No:
+            return
+        self.unsetDealer()
+        self.engine.deleteRound(len(self.engine.getRounds()) - 1)
+        self.engine.printStats()
+        self.updatePanel()
+        self.setDealer()
 
     def finish(self):
         title = self.tr("Finish game")
@@ -220,6 +253,15 @@ class QwirkleInputWidget(QWidget):
             }
             """)
         self.widgetLayout.addWidget(cb, 1)
+
+    def placeUndoButton(self, ub):
+        ub.setStyleSheet("""
+            QPushButton {
+                font-size: 48px;
+                font-weight: bold;
+            }
+            """)
+        self.widgetLayout.insertWidget(0, ub, 1)
 
     def getPlayer(self):
         return self.active_player
@@ -314,36 +356,38 @@ class QwirkleRoundTable(GameRoundTable):
         self.scrollToBottom()
 
     def openTableMenu(self, position):
-        players = self.engine.getListPlayers()
-        index = self.indexAt(position)
-        item = self.itemAt(position)
-        nentry = (index.row()) * len(players) + index.column()
-        print(f"right click on nentry {nentry}")
-        if nentry <= 0 or self.engine.getWinner():
-            return
+        # Use Undo to remove
+        return
+        # players = self.engine.getListPlayers()
+        # index = self.indexAt(position)
+        # item = self.itemAt(position)
+        # nentry = (index.row()) * len(players) + index.column()
+        # print(f"right click on nentry {nentry}")
+        # if nentry <= 0 or self.engine.getWinner():
+        #     return
 
-        menu = QMenu()
-        ic = QtGui.QIcon(":/icons/delete.png")
-        msg = self.tr("Delete Entry")
-        deleteEntryAction = QAction(ic, msg, self)
-        menu.addAction(deleteEntryAction)
-        action = menu.exec_(self.mapToGlobal(position))
-        if action == deleteEntryAction:
-            title = self.tr("Delete Entry")
-            msg = self.tr("Are you sure you want to delete this entry?")
-            ret = QMessageBox.question(
-                self,
-                title,
-                msg,
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.Yes,
-            )
-            if ret == QMessageBox.StandardButton.No:
-                return
-            self.engine.deleteRound(nentry)
-            if item:
-                item.setText("")
-            self.edited.emit()
+        # menu = QMenu()
+        # ic = QtGui.QIcon(":/icons/delete.png")
+        # msg = self.tr("Delete Entry")
+        # deleteEntryAction = QAction(ic, msg, self)
+        # menu.addAction(deleteEntryAction)
+        # action = menu.exec_(self.mapToGlobal(position))
+        # if action == deleteEntryAction:
+        #     title = self.tr("Delete Entry")
+        #     msg = self.tr("Are you sure you want to delete this entry?")
+        #     ret = QMessageBox.question(
+        #         self,
+        #         title,
+        #         msg,
+        #         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+        #         QMessageBox.StandardButton.Yes,
+        #     )
+        #     if ret == QMessageBox.StandardButton.No:
+        #         return
+        #     self.engine.deleteRound(nentry)
+        #     if item:
+        #         item.setText("")
+        #     self.edited.emit()
 
 
 class QwirkleEntriesPlot(GameRoundPlot):

@@ -40,10 +40,11 @@ class RemigioEngine(RoundGameEngine):
     def printExtraStats(self):
         print(f"Match top: {self.getTop()}")
 
-    def updateRRDealer(self):
+    def updateRRDealer(self, back=False):
         candidate = self.porder.index(self.getDealer())
+        increment = -1 if back else 1
         while True:
-            candidate = (candidate + 1) % len(self.porder)
+            candidate = (candidate + increment) % len(self.porder)
             player = self.porder[candidate]
             if not self.isPlayerOff(player):
                 self.match.setDealer(player)
