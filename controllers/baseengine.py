@@ -161,6 +161,7 @@ class RoundGameEngine(GameEngine):
 
     def deleteRound(self, nrnd):
         self.match.deleteRound(nrnd)
+        self.updateDealer(back=True)
         self.printStats()
 
     def getRounds(self):
@@ -169,19 +170,20 @@ class RoundGameEngine(GameEngine):
     def getNumRound(self):
         return len(self.match.rounds) + 1
 
-    def updateDealer(self):
+    def updateDealer(self, back=False):
         if self.match.getWinner():
             return
         if self.getDealingPolicy() == self.RRDealer:
-            self.updateRRDealer()
+            self.updateRRDealer(back)
         elif self.getDealingPolicy() == self.WinnerDealer:
-            self.updateWinnerDealer()
+            self.updateWinnerDealer(back)
 
-    def updateRRDealer(self):
-        candidate = (self.porder.index(self.getDealer()) + 1) % len(self.porder)
+    def updateRRDealer(self, back=False):
+        increment = -1 if back else 1
+        candidate = (self.porder.index(self.getDealer()) + increment) % len(self.porder)
         self.match.setDealer(self.porder[candidate])
 
-    def updateWinnerDealer(self):
+    def updateWinnerDealer(self, back=False):
         self.match.setDealer(self.round.getWinner())
 
     def printStats(self):
@@ -406,5 +408,5 @@ def readInput[T](
                 return value
             else:
                 print(errormsg)
-        except Exception:
+        except Exception:  # noqa: BLE001
             print(errormsg)
