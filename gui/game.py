@@ -1099,7 +1099,8 @@ class GameRoundsDetail(QGroupBox):
             self.gamestats.updateContent(
                 self.engine.getGame(), self.engine.getListPlayers()
             )
-        except Exception:
+        except Exception as e:  # noqa: BLE001 # noqa: BLE001
+            print(f"[UpdateStats] {e}", file=sys.stderr)
             self.gamestats.update()
 
     def deleteRound(self, _nround):

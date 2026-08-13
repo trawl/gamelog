@@ -25,7 +25,7 @@ class GameLogDB:
         try:
             self.con = lite.connect(dbname)
             self._checkDB()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self._printError(f"Error connecting to DB: {e.args[0]}")
 
         db.execute("PRAGMA synchronous=OFF")

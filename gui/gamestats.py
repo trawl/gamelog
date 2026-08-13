@@ -1,4 +1,5 @@
 import datetime
+import sys
 
 from PySide6 import QtCore
 from PySide6.QtCore import QCoreApplication
@@ -35,8 +36,8 @@ class QuickStatsTW(QTabWidget):
         self.initStatsWidgets()
         try:
             self.ps.updatePlayers(self.players)
-        except Exception:
-            pass
+        except Exception as e:  # noqa: BLE001
+            print(f"[QwickStatsTW Init] {e}", file=sys.stderr)
         self.addTab(self.gs, "")
         self.addTab(self.ps, "")
         self.retranslateUI()

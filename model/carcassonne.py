@@ -72,7 +72,7 @@ class CarcassonneMatch(GenericRoundMatch):
                 self.winner = candidates.pop()
                 return
 
-            for k in details:
+            for k in details:  # noqa: PLC0206
                 for player in removed:
                     del details[k][player]
 

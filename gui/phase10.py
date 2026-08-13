@@ -1,4 +1,5 @@
 import re
+import sys
 from typing import cast
 
 from PySide6 import QtCore, QtGui
@@ -446,7 +447,8 @@ class Phase10PlayerWidget(GamePlayerWidget):
             return 0
         try:
             return int(self.roundScore.value())
-        except Exception:
+        except (ValueError, TypeError) as e:
+            print(f"[Phase10PlayerWidget.getScore] {e}", file=sys.stderr)
             return -1
 
     def setScore(self, score):
@@ -479,7 +481,8 @@ class Phase10PlayerWidget(GamePlayerWidget):
     def updateRoundPhaseCleared(self, score):
         try:
             score = int(score)
-        except Exception:
+        except (ValueError, TypeError) as e:
+            print(f"[Phase10PlayerWidget.getScore] {e}", file=sys.stderr)
             self.roundPhaseClearedCheckbox.setChecked(False)
             return
 
