@@ -264,8 +264,8 @@ class LinePlot(QGraphicsItem):
 
         try:
             minsep = 10 * max([len(h) for h in self.hheaders])
-        except Exception:
-            pass
+        except (ValueError, TypeError) as e:
+            print(f"[LinePlot.drawHrefs] {e}", file=sys.stderr)
 
         while unitincrement * factor < minsep:
             provfactor = 2 * factor
