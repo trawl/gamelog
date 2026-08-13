@@ -220,7 +220,7 @@ class GameWidget(Tab):
         self.setRoundTitle()
         # self.matchGroup.setTitle(self.tr("Game Time"))
         self.pauseMatchButton.setText(self.tr("&Pause/Play"))
-        self.cancelMatchButton.setText(self.tr("&Cancel Match"))
+        self.cancelMatchButton.setText(self.tr("&Leave Match"))
         self.restartMatchButton.setText(self.tr("Restart &Match"))
         self.commitRoundButton.setText(self.tr("Commit &Round"))
         self.playerOrderButton.setText(self.tr("Player &Order"))
@@ -254,7 +254,7 @@ class GameWidget(Tab):
 
     def cancelMatch(self):
         if not self.isFinished():
-            tit = self.tr("Cancel Match")
+            tit = self.tr("Leave Match")
             msg = self.tr("Do you want to save the current {} match?")
             msg = msg.format(self.game)
             ret = QMessageBox.question(

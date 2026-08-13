@@ -17,71 +17,71 @@
 <context>
     <name>AbstractQuickStatsBox</name>
     <message>
-        <location filename="../gui/gamestats.py" line="57"/>
+        <location filename="../gui/gamestats.py" line="60"/>
         <source>Longest</source>
         <translation>Más Larga</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="58"/>
+        <location filename="../gui/gamestats.py" line="61"/>
         <source>Shortest</source>
         <translation>Más Corta</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="59"/>
         <location filename="../gui/gamestats.py" line="62"/>
-        <location filename="../gui/gamestats.py" line="68"/>
+        <location filename="../gui/gamestats.py" line="65"/>
+        <location filename="../gui/gamestats.py" line="71"/>
         <source>Average</source>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="60"/>
-        <location filename="../gui/gamestats.py" line="66"/>
+        <location filename="../gui/gamestats.py" line="63"/>
+        <location filename="../gui/gamestats.py" line="69"/>
         <source>Highest</source>
         <translation>Más Alta</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="61"/>
-        <location filename="../gui/gamestats.py" line="67"/>
+        <location filename="../gui/gamestats.py" line="64"/>
+        <location filename="../gui/gamestats.py" line="70"/>
         <source>Lowest</source>
         <translation>Más Baja</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="63"/>
+        <location filename="../gui/gamestats.py" line="66"/>
         <source>Played</source>
         <translation>Jugadas</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="64"/>
+        <location filename="../gui/gamestats.py" line="67"/>
         <source>Victories</source>
         <translation>Victorias</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="65"/>
+        <location filename="../gui/gamestats.py" line="68"/>
         <source>Ratio (%)</source>
         <translation>Ratio (%)</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="69"/>
+        <location filename="../gui/gamestats.py" line="72"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="161"/>
+        <location filename="../gui/gamestats.py" line="164"/>
         <source>Last winner</source>
         <translation>Último ganador</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="163"/>
+        <location filename="../gui/gamestats.py" line="166"/>
         <source>Matches</source>
         <translation>Partidas</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="164"/>
+        <location filename="../gui/gamestats.py" line="167"/>
         <source>Players</source>
         <translation>Jugadores</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="177"/>
+        <location filename="../gui/gamestats.py" line="180"/>
         <source>No statistics found</source>
         <translation>No hay estadísticas</translation>
     </message>
@@ -226,13 +226,13 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="../gui/game.py" line="1150"/>
-        <location filename="../gui/game.py" line="1155"/>
+        <location filename="../gui/game.py" line="1151"/>
+        <location filename="../gui/game.py" line="1156"/>
         <source>Delete Entry</source>
         <translation>Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="1156"/>
+        <location filename="../gui/game.py" line="1157"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>¿Estás seguro que quieres eliminar esta entrada?</translation>
     </message>
@@ -271,9 +271,8 @@
         <translation type="vanished">Tiempo de Juego</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="257"/>
         <source>Cancel Match</source>
-        <translation>Salir del Juego</translation>
+        <translation type="vanished">Salir del Juego</translation>
     </message>
     <message>
         <location filename="../gui/game.py" line="222"/>
@@ -281,9 +280,8 @@
         <translation>&amp;Pausar/Reanudar</translation>
     </message>
     <message>
-        <location filename="../gui/game.py" line="223"/>
         <source>&amp;Cancel Match</source>
-        <translation>&amp;Salir del Juego</translation>
+        <translation type="vanished">&amp;Salir del Juego</translation>
     </message>
     <message>
         <location filename="../gui/game.py" line="225"/>
@@ -301,6 +299,11 @@
         <translation>¡{} ha ganado la partida!</translation>
     </message>
     <message>
+        <location filename="../gui/game.py" line="223"/>
+        <source>&amp;Leave Match</source>
+        <translation>&amp;Abandonar Partida</translation>
+    </message>
+    <message>
         <location filename="../gui/game.py" line="249"/>
         <source>Game is paused</source>
         <translation>El juego está pausado</translation>
@@ -309,6 +312,11 @@
         <location filename="../gui/game.py" line="252"/>
         <source></source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../gui/game.py" line="257"/>
+        <source>Leave Match</source>
+        <translation>Abandonar Partida</translation>
     </message>
     <message>
         <location filename="../gui/game.py" line="323"/>
@@ -393,12 +401,12 @@
 <context>
     <name>LanguageChooser</name>
     <message>
-        <location filename="../gui/languagechooser.py" line="140"/>
+        <location filename="../gui/languagechooser.py" line="142"/>
         <source>Select the desired language:</source>
         <translation>Elige el idioma:</translation>
     </message>
     <message>
-        <location filename="../gui/languagechooser.py" line="137"/>
+        <location filename="../gui/languagechooser.py" line="139"/>
         <source>Language</source>
         <translation>Idioma</translation>
     </message>
@@ -479,22 +487,22 @@
 <context>
     <name>MatchTimesEditDialog</name>
     <message>
-        <location filename="../gui/matchedit.py" line="16"/>
+        <location filename="../gui/matchedit.py" line="19"/>
         <source>Match Times Edit</source>
         <translation>Cambiar Tiempos</translation>
     </message>
     <message>
-        <location filename="../gui/matchedit.py" line="25"/>
+        <location filename="../gui/matchedit.py" line="29"/>
         <source>Start</source>
         <translation>Inicio</translation>
     </message>
     <message>
-        <location filename="../gui/matchedit.py" line="31"/>
+        <location filename="../gui/matchedit.py" line="36"/>
         <source>Finish</source>
         <translation>Final</translation>
     </message>
     <message>
-        <location filename="../gui/matchedit.py" line="35"/>
+        <location filename="../gui/matchedit.py" line="40"/>
         <source>Duration</source>
         <translation>Duración</translation>
     </message>
@@ -605,12 +613,12 @@
 <context>
     <name>Phase10QSBox</name>
     <message>
-        <location filename="../gui/phase10.py" line="815"/>
+        <location filename="../gui/phase10.py" line="818"/>
         <source>Lowest Ph</source>
         <translation>Fase Min</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="817"/>
+        <location filename="../gui/phase10.py" line="820"/>
         <source>Damned</source>
         <translation>Maldita</translation>
     </message>
@@ -618,12 +626,12 @@
 <context>
     <name>Phase10RoundPlot</name>
     <message>
-        <location filename="../gui/phase10.py" line="733"/>
+        <location filename="../gui/phase10.py" line="736"/>
         <source>Phases</source>
         <translation>Fases</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="734"/>
+        <location filename="../gui/phase10.py" line="737"/>
         <source>Scores</source>
         <translation>Puntuación</translation>
     </message>
@@ -631,12 +639,12 @@
 <context>
     <name>Phase10RoundTable</name>
     <message>
-        <location filename="../gui/phase10.py" line="669"/>
+        <location filename="../gui/phase10.py" line="672"/>
         <source>Winner</source>
         <translation>Ganador</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="677"/>
+        <location filename="../gui/phase10.py" line="680"/>
         <source> (Phase {})</source>
         <translation> (Fase {})</translation>
     </message>
@@ -644,22 +652,22 @@
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="../gui/phase10.py" line="638"/>
+        <location filename="../gui/phase10.py" line="641"/>
         <source>Score</source>
         <translation>Marcador</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="639"/>
+        <location filename="../gui/phase10.py" line="642"/>
         <source>Table</source>
         <translation>Tabla</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="640"/>
+        <location filename="../gui/phase10.py" line="643"/>
         <source>Plot</source>
         <translation>Gráfico</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="641"/>
+        <location filename="../gui/phase10.py" line="644"/>
         <source>Statistics</source>
         <translation>Estadísticas</translation>
     </message>
@@ -667,7 +675,7 @@
 <context>
     <name>Phase10Widget</name>
     <message>
-        <location filename="../gui/phase10.py" line="208"/>
+        <location filename="../gui/phase10.py" line="209"/>
         <source>Phases in order</source>
         <translation>Fases en orden</translation>
     </message>
@@ -676,83 +684,83 @@
         <translation type="vanished">Fase</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="64"/>
+        <location filename="../gui/phase10.py" line="65"/>
         <source>cards of the same colour</source>
         <translation>cartas del mismo color</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="66"/>
+        <location filename="../gui/phase10.py" line="67"/>
         <source>run of</source>
         <translation>escalera de</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="67"/>
+        <location filename="../gui/phase10.py" line="68"/>
         <source>runs of</source>
         <translation>escaleras de</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="70"/>
+        <location filename="../gui/phase10.py" line="71"/>
         <source>colour run of</source>
         <translation>escalera de color de</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="71"/>
+        <location filename="../gui/phase10.py" line="72"/>
         <source>colour runs of</source>
         <translation>escaleras de color de</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="40"/>
+        <location filename="../gui/phase10.py" line="41"/>
         <source>pair</source>
         <translation>pareja</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="41"/>
+        <location filename="../gui/phase10.py" line="42"/>
         <source>pairs</source>
         <translation>parejas</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="44"/>
+        <location filename="../gui/phase10.py" line="45"/>
         <source>three of a kind</source>
         <comment>singular</comment>
         <translation>trío</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="47"/>
+        <location filename="../gui/phase10.py" line="48"/>
         <source>three of a kind</source>
         <comment>plural</comment>
         <translation>tríos</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="52"/>
+        <location filename="../gui/phase10.py" line="53"/>
         <source>four of a kind</source>
         <comment>singular</comment>
         <translation>cuarteto</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="55"/>
+        <location filename="../gui/phase10.py" line="56"/>
         <source>four of a kind</source>
         <comment>plural</comment>
         <translation>cuartetos</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="58"/>
+        <location filename="../gui/phase10.py" line="59"/>
         <source>five of a kind</source>
         <comment>singular</comment>
         <translation>quinteto</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="61"/>
+        <location filename="../gui/phase10.py" line="62"/>
         <source>five of a kind</source>
         <comment>plural</comment>
         <translation>quintetos</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="159"/>
+        <location filename="../gui/phase10.py" line="160"/>
         <source>Phases</source>
         <translation>Fases</translation>
     </message>
     <message>
-        <location filename="../gui/phase10.py" line="211"/>
+        <location filename="../gui/phase10.py" line="212"/>
         <source>Free phase order</source>
         <translation>Fases libres</translation>
     </message>
@@ -908,12 +916,12 @@
 <context>
     <name>QuickStatsTW</name>
     <message>
-        <location filename="../gui/gamestats.py" line="43"/>
+        <location filename="../gui/gamestats.py" line="46"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../gui/gamestats.py" line="44"/>
+        <location filename="../gui/gamestats.py" line="47"/>
         <source>Particular</source>
         <translation>Particular</translation>
     </message>
@@ -921,12 +929,12 @@
 <context>
     <name>QwirkleQSBox</name>
     <message>
-        <location filename="../gui/qwirkle.py" line="412"/>
+        <location filename="../gui/qwirkle.py" line="430"/>
         <source>Best Play</source>
         <translation>Mejor Jug</translation>
     </message>
     <message>
-        <location filename="../gui/qwirkle.py" line="414"/>
+        <location filename="../gui/qwirkle.py" line="432"/>
         <source>Max Qs</source>
         <translation>Max Qs</translation>
     </message>
@@ -934,45 +942,52 @@
 <context>
     <name>QwirkleRoundTable</name>
     <message>
-        <location filename="../gui/qwirkle.py" line="351"/>
-        <location filename="../gui/qwirkle.py" line="356"/>
         <source>Delete Entry</source>
-        <translation>Eliminar Entrada</translation>
+        <translation type="vanished">Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="../gui/qwirkle.py" line="357"/>
         <source>Are you sure you want to delete this entry?</source>
-        <translation>¿Estás seguro que quieres eliminar esta entrada?</translation>
+        <translation type="vanished">¿Estás seguro que quieres eliminar esta entrada?</translation>
     </message>
 </context>
 <context>
     <name>QwirkleWidget</name>
     <message>
-        <location filename="../gui/qwirkle.py" line="84"/>
+        <location filename="../gui/qwirkle.py" line="90"/>
         <source>&amp;Finish Game</source>
         <translation>&amp;Finalizar Partida</translation>
     </message>
     <message>
-        <location filename="../gui/qwirkle.py" line="118"/>
+        <location filename="../gui/qwirkle.py" line="125"/>
         <source>You must select a player</source>
         <translation>Debe seleccionar un jugador</translation>
     </message>
     <message>
-        <location filename="../gui/qwirkle.py" line="123"/>
+        <location filename="../gui/qwirkle.py" line="130"/>
         <source>{} score is not valid</source>
         <translation>La puntuación de {} no es válida</translation>
+    </message>
+    <message>
+        <location filename="../gui/qwirkle.py" line="150"/>
+        <source>Delete Entry</source>
+        <translation>Eliminar Entrada</translation>
+    </message>
+    <message>
+        <location filename="../gui/qwirkle.py" line="152"/>
+        <source>Are you sure you want to delete the last entry for {} ({})?</source>
+        <translation>¿Estás seguro de elimiar la última entrada para {} ({})?</translation>
     </message>
     <message>
         <source>{player} score is not valid</source>
         <translation type="vanished">La puntuación de {player} no és válida</translation>
     </message>
     <message>
-        <location filename="../gui/qwirkle.py" line="138"/>
+        <location filename="../gui/qwirkle.py" line="170"/>
         <source>Finish game</source>
         <translation>Finalizar Partida</translation>
     </message>
     <message>
-        <location filename="../gui/qwirkle.py" line="139"/>
+        <location filename="../gui/qwirkle.py" line="171"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>¿Estás seguro que quieres finalizar la partida actual?</translation>
     </message>
@@ -1051,12 +1066,12 @@
         <translation type="vanished">Cancelar</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="352"/>
+        <location filename="../gui/newgame.py" line="362"/>
         <source>Cancel Saved Game</source>
         <translation>Cancelar Partida Guardada</translation>
     </message>
     <message>
-        <location filename="../gui/newgame.py" line="353"/>
+        <location filename="../gui/newgame.py" line="363"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>¿Estás seguro que quieres cancelar la partida guardada?</translation>
     </message>
