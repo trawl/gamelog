@@ -307,7 +307,6 @@ class QwirkleInputWidget(QWidget):
             self.enterPressed.emit()
             event.accept()
         if event.key() == QtCore.Qt.Key.Key_Space:
-            print("Space press detected!")
             self.spacePressed.emit()
             event.accept()
         return super().keyPressEvent(event)
