@@ -11,7 +11,7 @@ class GameClock(QLCDNumber):
     def __init__(self, elapsed=0, parent=None):
         super().__init__(parent)
         self.setSegmentStyle(QLCDNumber.SegmentStyle.Filled)
-        self.startTime = datetime.datetime.now()
+        self.startTime = datetime.datetime.now(tz=datetime.UTC)
         self.accumulated = elapsed
         self.paused = False
         self._paintenabled = True
@@ -38,7 +38,7 @@ class GameClock(QLCDNumber):
 
     def showTime(self, elapsed=None):
         if not elapsed:
-            now = datetime.datetime.now()
+            now = datetime.datetime.now(tz=datetime.UTC)
             timediff = now - self.startTime
             elapsed = timediff.seconds + self.accumulated
         else:
@@ -59,7 +59,7 @@ class GameClock(QLCDNumber):
         self.timer.stop()
         self.showcolons = True
         self.showTime()
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(tz=datetime.UTC)
         timediff = now - self.startTime
         self.accumulated += timediff.seconds
         self.blinkAnim.start()
@@ -68,7 +68,7 @@ class GameClock(QLCDNumber):
         self.blinkAnim.stop()
         self.opacityEffect.setOpacity(1.0)
         self._paintenabled = True
-        self.startTime = datetime.datetime.now()
+        self.startTime = datetime.datetime.now(tz=datetime.UTC)
         self.timer.start(self.refreshinterval)
         self.showcolons = True
         self.showTime()

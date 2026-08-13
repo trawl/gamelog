@@ -1,3 +1,5 @@
+import datetime
+
 from PySide6 import QtCore
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import (
@@ -178,10 +180,17 @@ class AbstractQuickStatsBox(QGroupBox):
             self.playerStatsTitleLabel.hide()
             self.matchStatsTitleLabel.hide()
         else:
-            self.gameStatsLabel.setText(
-                self.gameStatsText.format(
-                    gamestats["lastwinner"], gamestats["lastwinnerdate"]
+            # Show date in local time instead of UTC
+            lastwinnerdate = (
+                datetime.datetime.strptime(
+                    gamestats["lastwinnerdate"], "%Y-%m-%d %H:%M:%S"
                 )
+                .replace(tzinfo=datetime.UTC)
+                .astimezone()
+                .strftime("%Y-%m-%d %H:%M:%S")
+            )
+            self.gameStatsLabel.setText(
+                self.gameStatsText.format(gamestats["lastwinner"], lastwinnerdate)
             )
             self.playerStatsTitleLabel.show()
             self.matchStatsTitleLabel.show()

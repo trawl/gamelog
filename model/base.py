@@ -23,7 +23,7 @@ class GenericMatch:
         self.players = players
         self.winner = None
         self.start = None
-        self.resumed = datetime.datetime.now()
+        self.resumed = datetime.datetime.now(tz=datetime.UTC)
         self.finish = None
         self.elapsed = 0
         self.totalScores = {}
@@ -49,8 +49,10 @@ class GenericMatch:
         if row["Game_name"] != self.game or row["state"] != self.SAVED:
             return False
         self.elapsed = int(row["elapsed"])
-        self.start = datetime.datetime.strptime(row["started"], "%Y-%m-%d %H:%M:%S.%f")
-        self.resumed = datetime.datetime.now()
+        self.start = datetime.datetime.strptime(
+            row["started"], "%Y-%m-%d %H:%M:%S.%f %z"
+        )
+        self.resumed = datetime.datetime.now(tz=datetime.UTC)
         # Retrieve players
         self.players = []
         cur = db.execute(
@@ -67,7 +69,7 @@ class GenericMatch:
         return True
 
     def startMatch(self):
-        self.start = datetime.datetime.now()
+        self.start = datetime.datetime.now(tz=datetime.UTC)
         self.resumed = self.start
         self.state = self.RUNNING
         for p in self.players:
@@ -80,7 +82,7 @@ class GenericMatch:
         self.flushToDB()
 
     def updateElapsed(self):
-        self.finish = datetime.datetime.now()
+        self.finish = datetime.datetime.now(tz=datetime.UTC)
         timediff = self.finish - self.resumed
         self.elapsed += timediff.seconds
 
@@ -122,7 +124,7 @@ class GenericMatch:
 
     def unpause(self):
         if self.isPaused():
-            self.resumed = datetime.datetime.now()
+            self.resumed = datetime.datetime.now(tz=datetime.UTC)
             self.state = self.RUNNING
             print(f"{self.game} Resumed at {self.resumed}")
 
@@ -159,7 +161,7 @@ class GenericMatch:
         if self.isPaused() or self.winner:
             return self.elapsed
         else:
-            timediff = datetime.datetime.now() - self.resumed
+            timediff = datetime.datetime.now(tz=datetime.UTC) - self.resumed
             return self.elapsed + timediff.seconds
 
     def getStartTime(self):
