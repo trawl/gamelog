@@ -12,12 +12,6 @@ class QwirkleMatch(GenericRoundMatch):
     def createRound(self, numround):
         return QwirkleEntry(numround)
 
-    def addRound(self, rnd):
-        self.rounds.append(rnd)
-        for player, score in rnd.getScore().items():
-            self.totalScores[player] += score
-            self.playerAddRound(player, rnd)
-
     def flushToDB(self):
         super().flushToDB()
         for entry in self.rounds:
