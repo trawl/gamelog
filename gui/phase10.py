@@ -3,7 +3,8 @@ import sys
 from typing import cast
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtCore import QCoreApplication
+from PySide6.QtCore import QCoreApplication, QSize, Qt
+from PySide6.QtGui import QColor, QFont, QPainter
 from PySide6.QtWidgets import (
     QFrame,
     QGridLayout,
@@ -97,6 +98,141 @@ def getPhaseNames(phasecodes):
     return phases
 
 
+class CardWidget(QWidget):
+    ASPECT_RATIO = 2.5 / 3.5
+    MAX_WIDTH = 20
+    MAX_HEIGHT = int(MAX_WIDTH / ASPECT_RATIO)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setMaximumSize(self.MAX_WIDTH, self.MAX_HEIGHT)
+        self.reset()
+
+    def sizeHint(self):
+        return QSize(self.MAX_WIDTH, self.MAX_HEIGHT)
+
+    def minimumSizeHint(self):
+        return QSize(20, int(20 / self.ASPECT_RATIO))
+
+    def hasHeightForWidth(self):
+        return True
+
+    def heightForWidth(self, width):
+        return int(width / self.ASPECT_RATIO)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        # Scale everything according to the current card width.
+        corner_radius = self.width() * 0.20
+        font_size = self.width() * 0.90
+
+        # Card
+        painter.setBrush(self._colour)
+        painter.setPen(Qt.GlobalColor.black)
+        painter.drawRoundedRect(self.rect(), corner_radius, corner_radius)
+
+        # Character
+        if self._character:
+            font = QFont("Arial")
+            font.setPixelSize(int(font_size))
+            font.setBold(True)
+            painter.setFont(font)
+            painter.setPen(Qt.GlobalColor.black)
+
+            painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, self._character)
+
+    # ------------------------------------------------------------------
+    # Background colour
+    # ------------------------------------------------------------------
+
+    def getColour(self):
+        return self._colour
+
+    def setColour(self, colour):
+        self._colour = QColor(colour)
+        self.update()
+
+    # ------------------------------------------------------------------
+    # Character
+    # ------------------------------------------------------------------
+
+    def getChar(self):
+        return self._character
+
+    def setChar(self, character):
+        self._character = character
+        self.update()
+
+    def reset(self, colour=None, char=None):
+        self._colour = colour if colour else QColor("grey")
+        self._character = str(char) if char else ""
+        self.update()
+
+
+class GraphicalPhase(QWidget):
+    def __init__(self, phase=None, accent_colour=None, parent=None):
+        super().__init__(parent)
+        self.initUI()
+        self._accent_colour = accent_colour if accent_colour else "purple"
+        self.setPhase(phase)
+
+    def initUI(self):
+        self.widgetLayout = QHBoxLayout(self)
+        self.cards = []
+        for _ in range(10):
+            card = CardWidget(self)
+            self.cards.append(card)
+            self.widgetLayout.addWidget(card)
+
+    def setAccentColour(self, colour):
+        self._accent_colour = colour
+
+    def getPhase(self, phase):
+        return self.phase
+
+    def setPhase(self, phase):
+        self.phase = phase
+        if not phase:
+            for card in self.cards:
+                card.reset()
+        else:
+            cardi = 0
+            combs = []
+            total_combined_cards = 0
+            for combination in phase.split():
+                m = re.match(r"(\d)([src]|cr)(\d)", combination)
+                if m:
+                    numcombs, tcode, combcards = m.groups()
+                    comb = {"n": int(numcombs), "t": tcode, "c": int(combcards)}
+                    combs.append(comb)
+                    total_combined_cards += comb["n"] * comb["c"]
+
+            padding = 10 - total_combined_cards
+
+            for combn, comb in enumerate(combs):
+                if comb["t"] in ("s", "r"):
+                    colour = "light grey"
+                else:
+                    colour = "purple"
+                for nc in range(comb["n"]):
+                    for ncc in range(comb["c"]):
+                        number = ""
+                        if "s" in comb["t"]:
+                            number = combn + nc + 1
+                        if "r" in comb["t"]:
+                            number = ncc + 1
+                        self.cards[cardi].reset(colour, number)
+                        cardi += 1
+                try:
+                    for _ in range(padding):
+                        self.cards[cardi].reset()
+                        cardi += 1
+                except IndexError:
+                    pass
+
+
 class Phase10Widget(GameWidget):
     def createEngine(self):
         if self.game == "Phase10Master":
@@ -137,18 +273,24 @@ class Phase10Widget(GameWidget):
         self.extraGroup.setStyleSheet(
             "QGroupBox { font-size: 18px; font-weight: bold; }"
         )
+        self.extraGroup.clicked.connect(self.togglePhaseDescs)
         # self.widgetLayout.addWidget(self.extraGroup, 1, 1)
         self.rightLayout.addWidget(self.extraGroup)
-        self.extraGroupLayout = QVBoxLayout(self.extraGroup)
+        self.extraGroupLayout = QGridLayout(self.extraGroup)
 
         self.phaseLabels = []
-        for _ in range(len(self.engine.getPhases())):
-            self.extraGroupLayout.addSpacing(10)
+        self.phaseCards = []
+        for i, code in enumerate(self.engine.getPhases()):
+            # self.extraGroupLayout.addSpacing(10)
             label = QLabel(self)
             label.setStyleSheet("QLabel {font-weight: bold; }")
             #             label.setScaledContents(True)
             self.phaseLabels.append(label)
-            self.extraGroupLayout.addWidget(label)
+            self.extraGroupLayout.addWidget(label, i, 0)
+            gp = GraphicalPhase(code, "purple", self)
+            gp.hide()
+            self.phaseCards.append(gp)
+            self.extraGroupLayout.addWidget(gp, i, 1)
 
         self.setDealer()
         self.retranslateUI()
@@ -162,6 +304,12 @@ class Phase10Widget(GameWidget):
         phaselabels = zip(getPhaseNames(self.engine.getPhases()), self.phaseLabels)
         for number, (phase, label) in enumerate(phaselabels, start=1):
             label.setText(f"{number} : {phase}")
+
+    def togglePhaseDescs(self):
+        print("toggling desds")
+        for l, c in zip(self.phaseLabels, self.phaseCards):
+            l.hide(not l.hidden())
+            c.hide(not c.hidden())
 
     def setRoundTitle(self):
         game = self.engine.getGame()
@@ -345,18 +493,26 @@ class Phase10PlayerWidget(GamePlayerWidget):
 
         self.mainLayout = QVBoxLayout(self)
         self.upperLayout = QHBoxLayout()
+        self.graphicalphaseLayout = QHBoxLayout()
         self.mainLayout.addStretch()
         self.mainLayout.addLayout(self.upperLayout)
+        self.mainLayout.addLayout(self.graphicalphaseLayout)
         self.mainLayout.addStretch()
         self.upperLayout.addStretch()
+        self.graphicalphaseLayout.addStretch()
         self.phaseNameLabel = QLabel(self)
         css = "font-weight: bold; font-size: 24px; color:rgb({},{},{});"
         self.phaseNameLabel.setStyleSheet(
             css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
         )
-        self.updatePhaseName()
         self.upperLayout.addWidget(self.phaseNameLabel)
         self.upperLayout.addStretch()
+        self.phaseCards = GraphicalPhase(
+            self.engine.getPhases()[self.current_phase - 1], self.pcolour, self
+        )
+        self.graphicalphaseLayout.addWidget(self.phaseCards)
+        self.graphicalphaseLayout.addStretch()
+        self.updatePhaseName()
         self.lowerLayout = QHBoxLayout()
         self.mainLayout.addLayout(self.lowerLayout)
         self.mainLayout.addStretch()
@@ -440,6 +596,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
             else:
                 if not label.isRemaining():
                     label.setRemaining()
+
         self.updatePhaseName()
 
     def getScore(self):
@@ -477,6 +634,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
     def updatePhaseName(self):
         phasenames = getPhaseNames(self.engine.getPhases())
         self.phaseNameLabel.setText(phasenames[self.current_phase - 1])
+        self.phaseCards.setPhase(self.engine.getPhases()[self.current_phase - 1])
 
     def updateRoundPhaseCleared(self, score):
         try:
