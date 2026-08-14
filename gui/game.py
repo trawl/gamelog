@@ -849,7 +849,7 @@ class BonusButton(QPushButton):
     fade_alpha = QtCore.Property(float, get_fade_alpha, set_fade_alpha)
 
     def getValue(self):
-        return self.count
+        return self.count if self.isEnabled() else 0
 
     def setChecked(self, checked):
         if not checked:

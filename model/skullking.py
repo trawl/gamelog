@@ -25,7 +25,7 @@ class SkullKingMatch(PochaMatch):
             "loot": {"bonus": 20, "reps": 2},
             "fourteen": {"bonus": 10, "reps": 3},
             "blackfourteen": {"bonus": 1, "reps": 1},
-            "roatan": {"bonus": 20, "reps": 1},
+            "roatan": {"bonus": 10, "reps": 2},
         },
     }
     scoringModes["rascal_scoring"] = scoringModes["standard_scoring"] | {

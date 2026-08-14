@@ -1087,17 +1087,17 @@
 <context>
     <name>SkullKingQSBox</name>
     <message>
-        <location filename="../gui/skullking.py" line="1059"/>
+        <location filename="../gui/skullking.py" line="1094"/>
         <source>Max Hit %</source>
         <translation>Max Acierto %</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="1061"/>
+        <location filename="../gui/skullking.py" line="1096"/>
         <source>Avg Hit %</source>
         <translation>Acierto %</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="1063"/>
+        <location filename="../gui/skullking.py" line="1098"/>
         <source>Best Round</source>
         <translation>Mejor Ronda</translation>
     </message>
@@ -1162,6 +1162,16 @@
         <translation>Remolino</translation>
     </message>
     <message>
+        <location filename="../gui/skullking.py" line="208"/>
+        <source>Has the Kraken and White Whale appeared and discarded two tricks?</source>
+        <translation>¿Han aparecido el Kraken y la Ballena Blanca, descartando dos manos?</translation>
+    </message>
+    <message>
+        <location filename="../gui/skullking.py" line="231"/>
+        <source>Has the Kraken appeared and discarded a trick?</source>
+        <translation>¿Ha aparecido el Kraken, descartando una mano?</translation>
+    </message>
+    <message>
         <source>Scoring</source>
         <translation type="vanished">Modo Puntuación</translation>
     </message>
@@ -1170,17 +1180,16 @@
         <translation type="vanished">Modo Rondas</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="208"/>
         <source>Has the Kraken appeared?</source>
-        <translation>¿Ha aparecido el Kraken?</translation>
+        <translation type="vanished">¿Ha aparecido el Kraken?</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="247"/>
+        <location filename="../gui/skullking.py" line="270"/>
         <source>There are more than 3 Fourteen bonuses selected.</source>
         <translation>Hay más de 3 bonus del 14 seleccionados.</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="254"/>
+        <location filename="../gui/skullking.py" line="277"/>
         <source>There are more than 4 Loot bonuses selected.</source>
         <translation>Hay más de 4 bonus de botín seleccionados.</translation>
     </message>

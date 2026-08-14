@@ -56,12 +56,18 @@ class SkullKingEngine(PochaEngine):
 
     def computePlayerScoreClassic(self, expected, won, bonuses):
         if expected == 0 and won == 0:
-            return self.getNumRound() * 10
+            return self.getNumRound() * 10 + self.computePlayerBonuses(bonuses)
         if expected == 0 and won != 0:
             return self.getNumRound() * -10
         if expected == won:
             return won * 20 + self.computePlayerBonuses(bonuses)
-        return -10 * abs(expected - won)
+        try:
+            roatan_penalty = bonuses["roatan"] * cast(
+                "SkullKingMatch", self.match
+            ).getBonus("roatan")
+        except KeyError:
+            roatan_penalty = 0
+        return -10 * abs(expected - won) - roatan_penalty
 
     def computePlayerScoreRascal(self, expected, won, bonuses):
         diff = abs(won - expected)
