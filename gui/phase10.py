@@ -151,7 +151,10 @@ class CardWidget(QWidget):
         return self._colour
 
     def setColour(self, colour):
-        self._colour = QColor(colour)
+        if type(colour) == str:
+            self._colour = QColor(colour)
+        else:
+            self._colour = colour
         self.update()
 
     # ------------------------------------------------------------------
@@ -175,7 +178,7 @@ class GraphicalPhase(QWidget):
     def __init__(self, phase=None, accent_colour=None, parent=None):
         super().__init__(parent)
         self.initUI()
-        self._accent_colour = accent_colour if accent_colour else "purple"
+        self._accent_colour = accent_colour if accent_colour else QColor("purple")
         self.setPhase(phase)
 
     def initUI(self):
@@ -187,21 +190,25 @@ class GraphicalPhase(QWidget):
             self.widgetLayout.addWidget(card)
 
     def setAccentColour(self, colour):
-        self._accent_colour = colour
+        self._accent_colour = colour if colour else QColor("purple")
+        self.updateCard()
 
     def getPhase(self, phase):
         return self.phase
 
-    def setPhase(self, phase):
+    def setPhase(self, phase=None):
         self.phase = phase
-        if not phase:
+        self.updateCard()
+
+    def updateCard(self):
+        if not self.phase:
             for card in self.cards:
                 card.reset()
         else:
             cardi = 0
             combs = []
             total_combined_cards = 0
-            for combination in phase.split():
+            for combination in self.phase.split():
                 m = re.match(r"(\d)([src]|cr)(\d)", combination)
                 if m:
                     numcombs, tcode, combcards = m.groups()
@@ -213,9 +220,9 @@ class GraphicalPhase(QWidget):
 
             for combn, comb in enumerate(combs):
                 if comb["t"] in ("s", "r"):
-                    colour = "light grey"
+                    colour = QColor("light grey")
                 else:
-                    colour = "purple"
+                    colour = self._accent_colour
                 for nc in range(comb["n"]):
                     for ncc in range(comb["c"]):
                         number = ""
