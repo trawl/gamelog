@@ -1087,17 +1087,17 @@
 <context>
     <name>SkullKingQSBox</name>
     <message>
-        <location filename="../gui/skullking.py" line="1059"/>
+        <location filename="../gui/skullking.py" line="1094"/>
         <source>Max Hit %</source>
         <translation>Max Hit %</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="1061"/>
+        <location filename="../gui/skullking.py" line="1096"/>
         <source>Avg Hit %</source>
         <translation>Avg Hit %</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="1063"/>
+        <location filename="../gui/skullking.py" line="1098"/>
         <source>Best Round</source>
         <translation>Best Round</translation>
     </message>
@@ -1162,6 +1162,16 @@
         <translation>Whirlpool</translation>
     </message>
     <message>
+        <location filename="../gui/skullking.py" line="208"/>
+        <source>Has the Kraken and White Whale appeared and discarded two tricks?</source>
+        <translation>Has the Kraken and White Whale appeared and discarded two tricks?</translation>
+    </message>
+    <message>
+        <location filename="../gui/skullking.py" line="231"/>
+        <source>Has the Kraken appeared and discarded a trick?</source>
+        <translation>Has the Kraken appeared and discarded a trick?</translation>
+    </message>
+    <message>
         <source>Scoring</source>
         <translation type="vanished">Scoring</translation>
     </message>
@@ -1170,17 +1180,16 @@
         <translation type="vanished">Card Counts</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="208"/>
         <source>Has the Kraken appeared?</source>
-        <translation>Has the Kraken appeared?</translation>
+        <translation type="vanished">Has the Kraken appeared?</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="247"/>
+        <location filename="../gui/skullking.py" line="270"/>
         <source>There are more than 3 Fourteen bonuses selected.</source>
         <translation>There are more than 3 Fourteen bonuses selected.</translation>
     </message>
     <message>
-        <location filename="../gui/skullking.py" line="254"/>
+        <location filename="../gui/skullking.py" line="277"/>
         <source>There are more than 4 Loot bonuses selected.</source>
         <translation>There are more than 4 Loot bonuses selected.</translation>
     </message>

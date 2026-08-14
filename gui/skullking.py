@@ -203,10 +203,33 @@ class SkullKingWidget(GameWidget):
                 i18n("PochaWidget", "There are players with no selected won hands."),
             )
             return
-        if hands == won + 1 and self.engine.getScoringMode() != "classic_scoring":
+        if hands == won + 2 and self.engine.getScoringMode() != "classic_scoring":
             # Kraken case
             kraken_msg = QCoreApplication.translate(
-                "SkullKingWidget", "Has the Kraken appeared?"
+                "SkullKingWidget",
+                "Has the Kraken and White Whale appeared and discarded two tricks?",
+            )
+            msg = (
+                i18n(
+                    "PochaWidget",
+                    "There are {} won hands selected when there should be {}.",
+                ).format(won, hands)
+                + " "
+                + kraken_msg
+            )
+            ret = QMessageBox.question(
+                self,
+                self.game,
+                msg,
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
+            )
+            if ret == QMessageBox.StandardButton.No:
+                return
+        elif hands == won + 1 and self.engine.getScoringMode() != "classic_scoring":
+            # Kraken case
+            kraken_msg = QCoreApplication.translate(
+                "SkullKingWidget", "Has the Kraken appeared and discarded a trick?"
             )
             msg = (
                 i18n(
@@ -629,6 +652,9 @@ class SkullKingPlayerInputWidget(QGroupBox):
             layout.addWidget(self.bonusButtons[btype], position)
             layout.setAlignment(self.bonusButtons[btype], alignment)
 
+        self.disableExtraRow(
+            self.getExpectedHands() != self.getWonHands() or self.getExpectedHands() < 1
+        )
         self.epLayout.addStretch()
 
     def reset(self):
@@ -643,7 +669,16 @@ class SkullKingPlayerInputWidget(QGroupBox):
         self.btWidget.setMaxBet(hands)
 
     def disableExtraRow(self, disable=True):
-        self.extraPointsGroup.setDisabled(disable)
+        for btype, b in self.bonusButtons.items():
+            if btype == "loot":
+                b.setEnabled(
+                    self.getExpectedHands() == self.getWonHands()
+                    and self.getExpectedHands() >= 0
+                )
+            elif btype == "roatan":
+                b.setEnabled(self.getExpectedHands() >= 0 and self.getWonHands() != 0)
+            else:
+                b.setDisabled(disable)
 
     def enableWonGroup(self, _button):
         self.newExpected.emit()
