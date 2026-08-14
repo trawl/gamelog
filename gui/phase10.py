@@ -3,8 +3,8 @@ import sys
 from typing import cast
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtCore import QCoreApplication, QSize, Qt
-from PySide6.QtGui import QColor, QFont, QPainter
+from PySide6.QtCore import QCoreApplication
+from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QFrame,
     QGridLayout,
@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
 
 from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
 from gui.game import (
+    CardWidget,
     GameInputWidget,
     GameNotImplementedException,
     GamePlayerWidget,
@@ -30,6 +31,7 @@ from gui.game import (
     GameWidget,
     PlayerColours,
     ScoreSpinBox,
+    ToggleGroupBox,
 )
 from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from gui.plots import PlotView
@@ -96,82 +98,6 @@ def getPhaseNames(phasecodes):
                     phase += f"{n} {types[tcode][plural]} {cards}"
         phases.append(phase)
     return phases
-
-
-class CardWidget(QWidget):
-    ASPECT_RATIO = 2.5 / 3.5
-    MAX_WIDTH = 20
-    MAX_HEIGHT = int(MAX_WIDTH / ASPECT_RATIO)
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setMaximumSize(self.MAX_WIDTH, self.MAX_HEIGHT)
-        self.reset()
-
-    def sizeHint(self):
-        return QSize(self.MAX_WIDTH, self.MAX_HEIGHT)
-
-    def minimumSizeHint(self):
-        return QSize(20, int(20 / self.ASPECT_RATIO))
-
-    def hasHeightForWidth(self):
-        return True
-
-    def heightForWidth(self, width):
-        return int(width / self.ASPECT_RATIO)
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-
-        # Scale everything according to the current card width.
-        corner_radius = self.width() * 0.20
-        font_size = self.width() * 0.90
-
-        # Card
-        painter.setBrush(self._colour)
-        painter.setPen(Qt.GlobalColor.black)
-        painter.drawRoundedRect(self.rect(), corner_radius, corner_radius)
-
-        # Character
-        if self._character:
-            font = QFont("Arial")
-            font.setPixelSize(int(font_size))
-            font.setBold(True)
-            painter.setFont(font)
-            painter.setPen(Qt.GlobalColor.black)
-
-            painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, self._character)
-
-    # ------------------------------------------------------------------
-    # Background colour
-    # ------------------------------------------------------------------
-
-    def getColour(self):
-        return self._colour
-
-    def setColour(self, colour):
-        if type(colour) == str:
-            self._colour = QColor(colour)
-        else:
-            self._colour = colour
-        self.update()
-
-    # ------------------------------------------------------------------
-    # Character
-    # ------------------------------------------------------------------
-
-    def getChar(self):
-        return self._character
-
-    def setChar(self, character):
-        self._character = character
-        self.update()
-
-    def reset(self, colour=None, char=None):
-        self._colour = colour if colour else QColor("grey")
-        self._character = str(char) if char else ""
-        self.update()
 
 
 class GraphicalPhase(QWidget):
@@ -273,32 +199,40 @@ class Phase10Widget(GameWidget):
         # self.widgetLayout.addWidget(self.details, 1, 0)
         self.leftLayout.addWidget(self.details)
 
-        self.extraGroup = QGroupBox(self)
+        self.extraGroup = ToggleGroupBox(self)
         self.extraGroup.setSizePolicy(
-            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.MinimumExpanding
         )
         self.extraGroup.setStyleSheet(
             "QGroupBox { font-size: 18px; font-weight: bold; }"
         )
-        self.extraGroup.clicked.connect(self.togglePhaseDescs)
         # self.widgetLayout.addWidget(self.extraGroup, 1, 1)
         self.rightLayout.addWidget(self.extraGroup)
-        self.extraGroupLayout = QGridLayout(self.extraGroup)
+        self.extraGroupText = QWidget(self.extraGroup)
+        self.extraGroupTextLayout = QVBoxLayout(self.extraGroupText)
+        self.extraGroupTextLayout.setContentsMargins(4, 4, 4, 4)
+        self.extraGroupTextLayout.setSpacing(2)
+        self.extraGroupCards = QWidget(self.extraGroup)
+        self.extraGroupCardsLayout = QGridLayout(self.extraGroupCards)
+        self.extraGroupCardsLayout.setContentsMargins(4, 4, 4, 4)
+        self.extraGroupCardsLayout.setSpacing(2)
 
         self.phaseLabels = []
         self.phaseCards = []
         for i, code in enumerate(self.engine.getPhases()):
-            # self.extraGroupLayout.addSpacing(10)
-            label = QLabel(self)
+            label = QLabel(self.extraGroupText)
             label.setStyleSheet("QLabel {font-weight: bold; }")
-            #             label.setScaledContents(True)
             self.phaseLabels.append(label)
-            self.extraGroupLayout.addWidget(label, i, 0)
-            gp = GraphicalPhase(code, "purple", self)
-            gp.hide()
+            self.extraGroupTextLayout.addWidget(label)
+            gp = GraphicalPhase(code, "purple", self.extraGroupCards)
             self.phaseCards.append(gp)
-            self.extraGroupLayout.addWidget(gp, i, 1)
+            label = QLabel(f"{i + 1} : ", self.extraGroupCards)
+            label.setStyleSheet("QLabel {font-weight: bold; }")
+            self.extraGroupCardsLayout.addWidget(label, i, 0)
+            self.extraGroupCardsLayout.addWidget(gp, i, 1)
 
+        self.extraGroup.addScreen(self.extraGroupText)
+        self.extraGroup.addScreen(self.extraGroupCards)
         self.setDealer()
         self.retranslateUI()
 
