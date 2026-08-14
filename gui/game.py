@@ -7,8 +7,11 @@ from PySide6 import QtCore, QtGui
 from PySide6.QtCore import (
     QCoreApplication,
     QEasingCurve,
+    QEvent,
+    QObject,
     QPropertyAnimation,
     QRectF,
+    QSize,
 )
 from PySide6.QtGui import QAction, QColor, QFont, QImage, QPainter, QPainterPath
 from PySide6.QtWidgets import (
@@ -23,6 +26,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QSizePolicy,
+    QStackedLayout,
     QTableWidget,
     QTabWidget,
     QToolButton,
@@ -1281,3 +1285,112 @@ class SleepBlocker:
 
 class GameNotImplementedException(Exception):
     pass
+
+
+class CardWidget(QWidget):
+    ASPECT_RATIO = 2.5 / 3.5
+    MAX_WIDTH = 20
+    MAX_HEIGHT = int(MAX_WIDTH / ASPECT_RATIO)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setMaximumSize(self.MAX_WIDTH, self.MAX_HEIGHT)
+        self.reset()
+
+    def sizeHint(self):
+        return QSize(self.MAX_WIDTH, self.MAX_HEIGHT)
+
+    def minimumSizeHint(self):
+        return QSize(20, int(20 / self.ASPECT_RATIO))
+
+    def hasHeightForWidth(self):
+        return True
+
+    def heightForWidth(self, width):
+        return int(width / self.ASPECT_RATIO)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        # Scale everything according to the current card width.
+        corner_radius = self.width() * 0.20
+        font_size = self.width() * 0.90
+
+        # Card
+        painter.setBrush(self._colour)
+        painter.setPen(QtCore.Qt.GlobalColor.black)
+        painter.drawRoundedRect(self.rect(), corner_radius, corner_radius)
+
+        # Character
+        if self._character:
+            font = QFont("Arial")
+            font.setPixelSize(int(font_size))
+            font.setBold(True)
+            painter.setFont(font)
+            painter.setPen(QtCore.Qt.GlobalColor.black)
+
+            painter.drawText(
+                self.rect(), QtCore.Qt.AlignmentFlag.AlignCenter, self._character
+            )
+
+    def getColour(self):
+        return self._colour
+
+    def setColour(self, colour):
+        if type(colour) == str:
+            self._colour = QColor(colour)
+        else:
+            self._colour = colour
+        self.update()
+
+    def getChar(self):
+        return self._character
+
+    def setChar(self, character):
+        self._character = character
+        self.update()
+
+    def reset(self, colour=None, char=None):
+        self._colour = colour if colour else QColor("grey")
+        self._character = str(char) if char else ""
+        self.update()
+
+
+class ToggleGroupBox(QGroupBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.current = 0
+        self.screens = []
+        self.widgetLayout = QStackedLayout(self)
+
+    def addScreen(self, widget):
+        self._install_event_filters(widget)
+        self.screens.append(widget)
+        self.widgetLayout.addWidget(widget)
+
+    def _install_event_filters(self, widget):
+        widget.installEventFilter(self)
+
+        for child in widget.findChildren(QObject):
+            child.installEventFilter(self)
+
+    def eventFilter(self, watched, event):
+        if (
+            event.type() == QEvent.Type.MouseButtonPress
+            and event.button() == QtCore.Qt.MouseButton.LeftButton
+        ):
+            self.toggle()
+            return True
+
+        return super().eventFilter(watched, event)
+
+    def toggle(self):
+        if len(self.screens) < 2:
+            return
+        self.current = (self.current + 1) % len(self.screens)
+        print(f"ToggleGroup: {self.current}")
+        self.widgetLayout.setCurrentIndex(self.current)
+        # for i, screen in enumerate(self.screens):
+        #     screen.setVisible(i == self.current)
