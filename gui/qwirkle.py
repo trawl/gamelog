@@ -161,8 +161,7 @@ class QwirkleWidget(GameWidget):
         if ret == QMessageBox.StandardButton.No:
             return
         self.unsetDealer()
-        self.engine.deleteRound(len(self.engine.getRounds()) - 1)
-        self.engine.printStats()
+        self.engine.deleteRound(len(self.engine.getRounds()))
         self.updatePanel()
         self.setDealer()
 

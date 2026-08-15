@@ -87,3 +87,6 @@ class QwirkleEntry(GenericEntry):
 
     def getQwirkles(self):
         return self.qwirkles
+
+    def __repr__(self):
+        return f"{self.getNumEntry()}: {self.getPlayer()} - {self.getPlayerScore()} | {self.getQwirkles()}"
