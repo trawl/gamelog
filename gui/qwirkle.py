@@ -198,14 +198,13 @@ class QwirkleWidget(GameWidget):
 
     def setDealer(self):
         self.playerGroupBox[self.engine.getDealer()].setDealer()
+        self.gameInput.reset()
 
     def updatePlayerOrder(self):
         GameWidget.updatePlayerOrder(self)
         # self.playersLayout.addStretch()
-        for player in self.engine.getListPlayers():
-            self.playersLayout.removeWidget(self.playerGroupBox[player])
-
         for i, player in enumerate(self.engine.getListPlayers()):
+            self.playersLayout.removeWidget(self.playerGroupBox[player])
             self.playersLayout.addWidget(self.playerGroupBox[player])
             self.playerGroupBox[player].setColour(PlayerColours[i])
         # self.playersLayout.addStretch()
