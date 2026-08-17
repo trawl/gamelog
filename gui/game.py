@@ -932,11 +932,6 @@ class BonusButton(QPushButton):
             self.fade_anim.setEndValue(1.0)
             self.fade_anim.start()
 
-            self.bonusChanged.emit(
-                self.bonus_name,
-                self,
-            )
-
         # Transition >0 -> 0
         elif old_value > 0 and self.count == 0:
             self.fade_anim.stop()
@@ -944,6 +939,10 @@ class BonusButton(QPushButton):
             self.fade_anim.setEndValue(0.0)
             self.fade_anim.start()
 
+        self.bonusChanged.emit(
+            self.bonus_name,
+            self,
+        )
         self.update()
 
     def get_fade_alpha(self):

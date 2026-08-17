@@ -84,16 +84,22 @@ class QwirkleMatch(GenericRoundMatch):
 class QwirkleEntry(GenericEntry):
     def __init__(self, numround):
         super().__init__(numround)
-        self.qwirkles = 0
+        self.bonuses = {"qwirkles": 0}
 
     def addExtraInfo(self, player, extras):
         try:
-            self.qwirkles = extras["qwirkles"]
+            self.bonuses = extras
         except KeyError:
             pass
 
+    def getBonuses(self):
+        return self.bonuses
+
     def getQwirkles(self):
-        return self.qwirkles
+        try:
+            return self.bonuses["qwirkles"]
+        except KeyError:
+            return 0
 
     def __repr__(self):
-        return f"{self.getNumEntry()}: {self.getPlayer()} - {self.getPlayerScore()} | {self.getQwirkles()}"
+        return f"{self.getNumEntry()}: {self.getPlayer()} - {self.getPlayerScore()} | {self.getBonuses()}"

@@ -46,6 +46,7 @@ class ScrabbleWidget(GameWidget):
             self.gameInput = self.createGameInputWidget(self)
         self.gameInput.enterPressed.connect(self.commitRound)
         self.gameInput.scoreChanged.connect(self.guardCommitButton)
+        self._commit_round_connection = False
         self.guardCommitButton()
         self.focussc = QShortcut(
             QtGui.QKeySequence("Ctrl+A"), self, self.gameInput.setFocus
@@ -124,10 +125,14 @@ class ScrabbleWidget(GameWidget):
         score = self.gameInput.getScore()
         if not self.checkPlayerScore(player, score, bonuses):
             self.commitRoundButton.setDisabled(True)
-            self.gameInput.enterPressed.disconnect(self.commitRound)
+            if self._commit_round_connection:
+                self.gameInput.enterPressed.disconnect(self.commitRound)
+                self._commit_round_connection = False
+
         else:
             self.commitRoundButton.setDisabled(False)
             self.gameInput.enterPressed.connect(self.commitRound)
+            self._commit_round_connection = True
 
     def commitRound(self):
         player = self.gameInput.getPlayer()
@@ -255,6 +260,7 @@ class ScrabbleInputWidget(QWidget):
             )
             self.bonusButtons[b] = bb
             self.currentPlayerBoxLayout.addWidget(bb)
+            bb.bonusChanged.connect(self.scoreChanged)
 
     def retranslateUI(self):
         pass

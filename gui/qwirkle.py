@@ -1,5 +1,3 @@
-from PySide6 import QtCore
-
 from controllers.qwirkleengine import QwirkleEngine
 from gui.game import (
     BonusButton,
@@ -50,12 +48,7 @@ class QwirkleInputWidget(ScrabbleInputWidget):
             self.currentPlayerBoxLayout.addWidget(bb)
             self.spacePressed.connect(bb.plusone)
             self.scoreSpinBox.spacePressed.connect(bb.plusone)
-
-    def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key.Key_Space:
-            self.spacePressed.emit()
-            event.accept()
-        return super().keyPressEvent(event)
+            bb.bonusChanged.connect(self.scoreChanged)
 
 
 class QwirkleEntriesDetail(GameRoundsDetail):
