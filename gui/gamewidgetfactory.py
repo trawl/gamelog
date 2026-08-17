@@ -4,6 +4,7 @@ from gui.pocha import PochaWidget
 from gui.qwirkle import QwirkleWidget
 from gui.ratuki import RatukiWidget
 from gui.remigio import RemigioWidget
+from gui.scrabble import ScrabbleWidget
 from gui.skullking import SkullKingWidget
 from gui.toma6 import Toma6Widget
 
@@ -27,6 +28,8 @@ class GameWidgetFactory:
             return Toma6Widget(gname, players, None, parent)
         if gname == "Qwirkle":
             return QwirkleWidget(gname, players, None, parent)
+        if gname == "Scrabble":
+            return ScrabbleWidget(gname, players, None, parent)
         return None
 
     @classmethod
@@ -47,4 +50,6 @@ class GameWidgetFactory:
             return Toma6Widget(gname, None, engine, parent)
         if gname == "Qwirkle":
             return QwirkleWidget(gname, None, engine, parent)
+        if gname == "Scrabble":
+            return ScrabbleWidget(gname, None, engine, parent)
         return None

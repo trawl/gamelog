@@ -8,12 +8,14 @@ from PySide6.QtCore import (
     QCoreApplication,
     QEasingCurve,
     QEvent,
+    QFile,
     QObject,
     QPropertyAnimation,
     QRectF,
     QSize,
 )
 from PySide6.QtGui import QAction, QColor, QFont, QImage, QPainter, QPainterPath
+from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QFrame,
     QGroupBox,
@@ -79,7 +81,6 @@ class GameWidget(Tab):
                 self.engine.addPlayer(nick)
             self.engine.begin()
         self.engine.printStats()
-        self.gameInput = self.createGameInputWidget(self)
         self.finished = False
         self.hideInputOnFinish = True
         self.screen_blocker = SleepBlocker()
@@ -219,6 +220,7 @@ class GameWidget(Tab):
                 self.dealerPolicyCheckBox,
                 # alignment=QtCore.Qt.AlignmentFlag.AlignHCenter,
             )
+        self.gameInput = self.createGameInputWidget(self)
 
     def retranslateUI(self):
         self.setRoundTitle()
@@ -535,6 +537,7 @@ class ScoreSpinBox(QWidget):
         self._value = 0
         self._minimum = 0
         self._maximum = 200
+        self._start = 0
         self._step = 1
         self._hideMinimum = True
         self.pcolour = QtGui.QColor(255, 255, 255)
@@ -664,15 +667,21 @@ class ScoreSpinBox(QWidget):
     def value(self):
         return self._value
 
-    def setValue(self, value: int):
-        value = max(self._minimum, min(self._maximum, value))
-        if value != self._value:
-            self._value = value
-            if self._hideMinimum and value == self._minimum:
-                self.line_edit.setText("")
-            else:
-                self.line_edit.setText(str(value))
-            self.valueChanged.emit(value)
+    def setValue(self, value: int | None):
+        if value is None:
+            if value != self._value:
+                self.valueChanged.emit(value)
+            self._value = None
+            self.line_edit.setText("")
+        else:
+            value = max(self._minimum, min(self._maximum, value))
+            if value != self._value:
+                self._value = value
+                if self._hideMinimum and value == self._minimum:
+                    self.line_edit.setText("")
+                else:
+                    self.line_edit.setText(str(value))
+                self.valueChanged.emit(value)
         self._update_buttons()
 
     def setStep(self, step):
@@ -682,7 +691,7 @@ class ScoreSpinBox(QWidget):
         self.line_edit.setFocus(reason)
 
     def _snap_to_step(self):
-        if self._step > 1:
+        if self._value is not None and self._step > 1:
             offset = self._value - self._minimum
             new_value = self._minimum + (offset // self._step) * self._step
             if self._value != new_value:
@@ -690,11 +699,17 @@ class ScoreSpinBox(QWidget):
 
     def step_up(self):
         self.line_edit.setFocus()
-        self.setValue(self._value + self._step)
+        if self._value is None:
+            self.setValue(self._start)
+        else:
+            self.setValue(self._value + self._step)
 
     def step_down(self):
         self.line_edit.setFocus()
-        self.setValue(self._value - self._step)
+        if self._value is None:
+            self.setValue(self._start)
+        else:
+            self.setValue(self._value - self._step)
 
     def _commit_text(self):
         try:
@@ -703,9 +718,10 @@ class ScoreSpinBox(QWidget):
             value = self._value
         self.setValue(value)
 
-    def setRange(self, minimum: int, maximum: int):
+    def setRange(self, minimum: int, maximum: int, start=None):
         self._minimum = minimum
         self._maximum = maximum
+        self._start = minimum if start is None else start
         self._validator = QtGui.QIntValidator(self._minimum, self._maximum, self)
         self.line_edit.setValidator(self._validator)
         self.setValue(self._value)
@@ -722,6 +738,10 @@ class ScoreSpinBox(QWidget):
     def clear(self):
         self.line_edit.clear()
 
+    def reset(self):
+        self._value = None
+        self.line_edit.clear()
+
     def setReadOnly(self, ro):
         self.line_edit.setReadOnly(ro)
         self.up_button.setDisabled(ro)
@@ -732,8 +752,12 @@ class ScoreSpinBox(QWidget):
 
     def _update_buttons(self):
         if not self.line_edit.isReadOnly():
-            self.up_button.setEnabled(self._value < self._maximum)
-            self.down_button.setEnabled(self._value > self._minimum)
+            self.up_button.setEnabled(
+                self._value is None or self._value < self._maximum
+            )
+            self.down_button.setEnabled(
+                self._value is None or self._value > self._minimum
+            )
 
     def wheelEvent(self, event):
         if self.line_edit.isReadOnly():
@@ -756,7 +780,7 @@ class ScoreSpinBox(QWidget):
     def setDisabled(self, o):
         super().setDisabled(o)
         if o:
-            self.setValue(self._minimum)
+            self.setValue(self._start)
 
 
 class IconLabel(QLabel):
@@ -785,7 +809,12 @@ class BonusButton(QPushButton):
     bonusChanged = QtCore.Signal(str, object)
 
     def __init__(
-        self, bonus_name: str, maximum: int = 1, colour=None, size=32, parent=None
+        self,
+        bonus_name: str,
+        maximum: int = 1,
+        colour=None,
+        size=32,
+        parent=None,
     ):
         super().__init__(parent)
 
@@ -795,25 +824,93 @@ class BonusButton(QPushButton):
         self.button_size = size
         self.highlight_colour = colour if colour else QColor(200, 0, 0)
 
-        original_image = QImage(f":/icons/{bonus_name}.png")
-        self.image = original_image.scaled(
-            self.button_size,
-            self.button_size,
-            QtCore.Qt.AspectRatioMode.KeepAspectRatio,
-            QtCore.Qt.TransformationMode.SmoothTransformation,
-        )
+        # Keep SVGs as SVGs and render them directly in paintEvent().
+        self.svg_renderer = None
 
-        self.grey_image = self.image.convertToFormat(QImage.Format.Format_Grayscale8)
+        svg_path = f":/icons/{bonus_name}.svg"
+        png_path = f":/icons/{bonus_name}.png"
+
+        if QFile.exists(svg_path):
+            self.svg_renderer = QSvgRenderer(svg_path)
+
+            if not self.svg_renderer.isValid():
+                self.svg_renderer = None
+
+        if self.svg_renderer is None and QFile.exists(png_path):
+            original_image = QImage(png_path)
+
+            self.image = original_image.scaled(
+                self.button_size,
+                self.button_size,
+                QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                QtCore.Qt.TransformationMode.SmoothTransformation,
+            )
+
+            self.grey_image = self.image.convertToFormat(
+                QImage.Format.Format_Grayscale8
+            )
+
+        elif self.svg_renderer is None:
+            # No SVG or PNG exists, so create a fallback icon.
+            original_image = QImage(
+                self.button_size,
+                self.button_size,
+                QImage.Format.Format_ARGB32_Premultiplied,
+            )
+            original_image.fill(QtCore.Qt.GlobalColor.transparent)
+
+            painter = QPainter(original_image)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+            # Light grey circle
+            painter.setBrush(QColor("#D3D3D3"))
+            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+
+            painter.drawEllipse(
+                2,
+                2,
+                self.button_size - 4,
+                self.button_size - 4,
+            )
+
+            # Bonus name
+            painter.setPen(QColor("#333333"))
+            painter.setFont(
+                QFont(
+                    "Arial",
+                    int(self.button_size * 0.4),
+                    QFont.Weight.Bold,
+                )
+            )
+
+            painter.drawText(
+                original_image.rect(),
+                QtCore.Qt.AlignmentFlag.AlignCenter,
+                bonus_name.upper(),
+            )
+
+            painter.end()
+
+            self.image = original_image
+            self.grey_image = original_image.convertToFormat(
+                QImage.Format.Format_Grayscale8
+            )
 
         self.setCheckable(True)
         self.setFlat(True)
         self.setStyleSheet("border: none;")
 
-        self.setFixedSize(self.button_size, self.button_size)
+        self.setFixedSize(
+            self.button_size,
+            self.button_size,
+        )
 
         self._fade_alpha = 0.0
 
-        self.fade_anim = QPropertyAnimation(self, b"fade_alpha")
+        self.fade_anim = QPropertyAnimation(
+            self,
+            b"fade_alpha",
+        )
         self.fade_anim.setDuration(400)
         self.fade_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
 
@@ -824,23 +921,30 @@ class BonusButton(QPushButton):
 
     def plusone(self):
         old_value = self.count
-        self.count = (self.count + 1) % (self.maximum + 1)
-        self.setChecked(
-            self.count > 0
-        )  # trigger pulse animation only when transitioning 0 -> >0
 
+        self.count = (self.count + 1) % (self.maximum + 1)
+
+        self.setChecked(self.count > 0)
+
+        # Transition 0 -> >0
         if old_value == 0 and self.count > 0:
             self.fade_anim.stop()
             self.fade_anim.setStartValue(0.0)
             self.fade_anim.setEndValue(1.0)
             self.fade_anim.start()
-            self.bonusChanged.emit(self.bonus_name, self)
 
+            self.bonusChanged.emit(
+                self.bonus_name,
+                self,
+            )
+
+        # Transition >0 -> 0
         elif old_value > 0 and self.count == 0:
             self.fade_anim.stop()
             self.fade_anim.setStartValue(1.0)
             self.fade_anim.setEndValue(0.0)
             self.fade_anim.start()
+
         self.update()
 
     def get_fade_alpha(self):
@@ -850,7 +954,11 @@ class BonusButton(QPushButton):
         self._fade_alpha = float(value)
         self.update()
 
-    fade_alpha = QtCore.Property(float, get_fade_alpha, set_fade_alpha)
+    fade_alpha = QtCore.Property(
+        float,
+        get_fade_alpha,
+        set_fade_alpha,
+    )
 
     def getValue(self):
         return self.count if self.isEnabled() else 0
@@ -858,77 +966,155 @@ class BonusButton(QPushButton):
     def setChecked(self, checked):
         if not checked:
             self.count = 0
+
         super().setChecked(checked)
 
     def sizeHint(self):
-        return QtCore.QSize(self.button_size, self.button_size)
+        return QtCore.QSize(
+            self.button_size,
+            self.button_size,
+        )
 
     def setMaximum(self, maximum):
         self.maximum = maximum
+
         if self.count > self.maximum:
             self.count = self.maximum
+
             if self.count == 0:
                 self.setChecked(False)
+
             self.update()
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # --- circular clipping ---
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+
+        # --------------------------------------------------
+        # Circular clipping
+        # --------------------------------------------------
+
         path = QPainterPath()
-        radius = min(self.width(), self.height()) / 2
+
+        radius = (
+            min(
+                self.width(),
+                self.height(),
+            )
+            / 2
+        )
+
         center = self.rect().center()
-        path.addEllipse(center, radius, radius)
+
+        path.addEllipse(
+            center,
+            radius,
+            radius,
+        )
+
         painter.setClipPath(path)
 
-        # --- choose image (normal or greyscale if disabled) ---
-        if self.isEnabled():
-            img_to_draw = self.image
+        # --------------------------------------------------
+        # Draw icon
+        # --------------------------------------------------
+
+        if self.svg_renderer is not None:
+            # Render the SVG directly at the widget's
+            # current size. This avoids intermediate
+            # low-resolution rasterisation.
+            self.svg_renderer.render(
+                painter,
+                QRectF(self.rect()),
+            )
+
         else:
-            img_to_draw = self.grey_image
-            self.setChecked(False)
+            if self.isEnabled():
+                img_to_draw = self.image
+            else:
+                img_to_draw = self.grey_image
+                self.setChecked(False)
 
-        # --- draw icon ---
-        painter.drawImage(self.rect(), img_to_draw)
+            painter.drawImage(
+                self.rect(),
+                img_to_draw,
+            )
 
-        # --- active outline (red circular ring) ---
+        # --------------------------------------------------
+        # Active outline
+        # --------------------------------------------------
+
         if self.count > 0:
             alpha = int(255 * self._fade_alpha)
+
             ring_radius = radius - 2
-            pen = painter.pen()
+
             colour = QColor(self.highlight_colour)
             colour.setAlpha(alpha)
-            pen.setColor(colour)  # red
+
+            pen = painter.pen()
+            pen.setColor(colour)
             pen.setWidth(4)
+
             painter.setPen(pen)
             painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
-            painter.drawEllipse(center, ring_radius, ring_radius)
 
-        # --- text overlay when count > 1 ---
+            painter.drawEllipse(
+                center,
+                ring_radius,
+                ring_radius,
+            )
+
+        # --------------------------------------------------
+        # Count overlay
+        # --------------------------------------------------
+
         if self.count >= 1 and self.maximum > 1:
-            # Semi-transparent dark circle behind the number
-            overlay_color = QColor(0, 0, 0, 120)
+            # Semi-transparent dark circle
+            # behind the number.
+            overlay_color = QColor(
+                0,
+                0,
+                0,
+                120,
+            )
+
             painter.setBrush(overlay_color)
             painter.setPen(QtCore.Qt.PenStyle.NoPen)
 
-            circle_diameter = min(self.width(), self.height()) * 0.45
+            circle_diameter = (
+                min(
+                    self.width(),
+                    self.height(),
+                )
+                * 0.45
+            )
+
             circle_rect = QRectF(
                 (self.width() - circle_diameter) / 2,
                 (self.height() - circle_diameter) / 2,
                 circle_diameter,
                 circle_diameter,
             )
+
             painter.drawEllipse(circle_rect)
 
-            # Draw the number
-            painter.setPen(QColor(255, 255, 255, 220))
+            # Number
             painter.setPen(self.highlight_colour)
-            font = QFont("Arial", int(circle_diameter * 0.9), QFont.Weight.Bold)
+
+            font = QFont(
+                "Arial",
+                int(circle_diameter * 0.9),
+                QFont.Weight.Bold,
+            )
+
             painter.setFont(font)
 
             painter.drawText(
-                self.rect(), QtCore.Qt.AlignmentFlag.AlignCenter, str(self.count)
+                self.rect(),
+                QtCore.Qt.AlignmentFlag.AlignCenter,
+                str(self.count),
             )
 
         painter.end()

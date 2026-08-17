@@ -155,6 +155,7 @@ INSERT INTO "Game" VALUES('Pocha',6,'Carcassonne board game','Home rules');
 INSERT INTO "Game" VALUES('Skull King',8,'Skull King card game','Home rules');
 INSERT INTO "Game" VALUES('Toma6',10,'Toma6 card game','Home rules');
 INSERT INTO "Game" VALUES('Qwirkle',4,'Qwirkle tile game','Standard rules');
+INSERT INTO "Game" VALUES('Scrabble',4,'Scrabble word game','Standard rules');
 DROP TABLE IF EXISTS "GameExtras";
 CREATE TABLE `GameExtras` (
   `Game_name` VARCHAR(45) NOT NULL ,

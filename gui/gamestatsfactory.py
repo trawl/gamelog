@@ -3,6 +3,7 @@ from gui.gamestats import QuickStatsTW
 from gui.phase10 import Phase10QSTW
 from gui.pocha import PochaQSTW
 from gui.qwirkle import QwirkleQSTW
+from gui.scrabble import ScrabbleQSTW
 from gui.skullking import SkullKingQSTW
 
 
@@ -19,4 +20,6 @@ class QSFactory:
             return SkullKingQSTW(gname, players, parent)
         if gname == "Qwirkle":
             return QwirkleQSTW(gname, players, parent)
+        if gname == "Scrabble":
+            return ScrabbleQSTW(gname, players, parent)
         return QuickStatsTW(gname, players, parent)

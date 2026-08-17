@@ -22,6 +22,11 @@ from controllers.qwirkleengine import (
 )
 from controllers.ratukiengine import RatukiEngine
 from controllers.remigioengine import RemigioEngine
+from controllers.scrabbleengine import (
+    ScrabbleEngine,
+    ScrabbleParticularStatsEngine,
+    ScrabbleStatsEngine,
+)
 from controllers.skullkingengine import (
     SkullKingEngine,
     SkullKingParticularStatsEngine,
@@ -52,6 +57,8 @@ class GameEngineFactory:
             return Toma6Engine()
         if gname == "Qwirkle":
             return QwirkleEngine()
+        if gname == "Scrabble":
+            return ScrabbleEngine()
 
         return GameEngine()
 
@@ -69,6 +76,8 @@ class StatsEngineFactory:
             return SkullKingStatsEngine()
         if gname == "Qwirkle":
             return QwirkleStatsEngine()
+        if gname == "Scrabble":
+            return ScrabbleStatsEngine()
         return StatsEngine()
 
     @classmethod
@@ -83,4 +92,6 @@ class StatsEngineFactory:
             return SkullKingParticularStatsEngine()
         if gname == "Qwirkle":
             return QwirkleParticularStatsEngine()
+        if gname == "Scrabble":
+            return ScrabbleParticularStatsEngine()
         return ParticularStatsEngine()
