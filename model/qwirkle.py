@@ -1,9 +1,11 @@
+from typing import ClassVar
+
 from controllers.db import db
 from model.base import GenericEntry, GenericRoundMatch
 
 
 class QwirkleMatch(GenericRoundMatch):
-    bonuses = ("qwirkles",)
+    bonuses: ClassVar[dict] = {"qwirkles": 6}
 
     def __init__(self, players=()):
         super().__init__(players)

@@ -45,6 +45,8 @@ class ScrabbleWidget(GameWidget):
         if not self.gameInput:
             self.gameInput = self.createGameInputWidget(self)
         self.gameInput.enterPressed.connect(self.commitRound)
+        self.gameInput.scoreChanged.connect(self.guardCommitButton)
+        self.guardCommitButton()
         self.focussc = QShortcut(
             QtGui.QKeySequence("Ctrl+A"), self, self.gameInput.setFocus
         )
@@ -111,9 +113,21 @@ class ScrabbleWidget(GameWidget):
         else:
             self.detailGroup.updateRound()
         self.undoButton.setEnabled(self.engine.getNumRound() > 1)
+        self.guardCommitButton()
 
     def checkPlayerScore(self, player, score, extras=None):
         return bool(score)
+
+    def guardCommitButton(self):
+        player = self.gameInput.getPlayer()
+        bonuses = self.gameInput.getBonuses()
+        score = self.gameInput.getScore()
+        if not self.checkPlayerScore(player, score, bonuses):
+            self.commitRoundButton.setDisabled(True)
+            self.gameInput.enterPressed.disconnect(self.commitRound)
+        else:
+            self.commitRoundButton.setDisabled(False)
+            self.gameInput.enterPressed.connect(self.commitRound)
 
     def commitRound(self):
         player = self.gameInput.getPlayer()
@@ -211,6 +225,7 @@ class ScrabbleWidget(GameWidget):
 class ScrabbleInputWidget(QWidget):
     enterPressed = QtCore.Signal()
     spacePressed = QtCore.Signal()
+    scoreChanged = QtCore.Signal()
 
     def __init__(self, engine, parent):
         super().__init__(parent)
@@ -228,13 +243,16 @@ class ScrabbleInputWidget(QWidget):
         self.scoreSpinBox = ScoreSpinBox(self.currentPlayerBox)
         self.scoreSpinBox.setRange(-60, 400, 0)
         self.currentPlayerBoxLayout.addWidget(self.scoreSpinBox)
+        self.scoreSpinBox.valueChanged.connect(self.scoreChanged)
         self.bonusButtons = {}
         self.createBonusButtons()
         self.reset()
 
     def createBonusButtons(self):
-        for b in self.engine.getBonuses():
-            bb = BonusButton(b, 1, colour=None, size=32, parent=self.currentPlayerBox)
+        for b, maxreps in self.engine.getBonuses().items():
+            bb = BonusButton(
+                b, maxreps, colour=None, size=32, parent=self.currentPlayerBox
+            )
             self.bonusButtons[b] = bb
             self.currentPlayerBoxLayout.addWidget(bb)
 

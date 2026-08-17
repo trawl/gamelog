@@ -42,8 +42,10 @@ class QwirkleInputWidget(ScrabbleInputWidget):
 
     def createBonusButtons(self):
         self.currentPlayerBoxLayout.insertSpacing(0, 64)
-        for b in self.engine.getBonuses():
-            bb = BonusButton(b, 6, colour=None, size=64, parent=self.currentPlayerBox)
+        for b, maxreps in self.engine.getBonuses().items():
+            bb = BonusButton(
+                b, maxreps, colour=None, size=64, parent=self.currentPlayerBox
+            )
             self.bonusButtons[b] = bb
             self.currentPlayerBoxLayout.addWidget(bb)
             self.spacePressed.connect(bb.plusone)

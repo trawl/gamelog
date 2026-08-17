@@ -529,7 +529,7 @@ class SpaceFilter(QtCore.QObject):
 
 
 class ScoreSpinBox(QWidget):
-    valueChanged = QtCore.Signal(int)
+    valueChanged = QtCore.Signal(object)
     spacePressed = QtCore.Signal()
 
     def __init__(self, parent=None):
@@ -739,8 +739,7 @@ class ScoreSpinBox(QWidget):
         self.line_edit.clear()
 
     def reset(self):
-        self._value = None
-        self.line_edit.clear()
+        self.setValue(None)
 
     def setReadOnly(self, ro):
         self.line_edit.setReadOnly(ro)

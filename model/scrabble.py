@@ -1,9 +1,11 @@
+from typing import ClassVar
+
 from controllers.db import db
 from model.base import GenericEntry, GenericRoundMatch
 
 
 class ScrabbleMatch(GenericRoundMatch):
-    bonuses = ("dl", "tl", "dw", "tw", "bingo")
+    bonuses: ClassVar[dict] = {"dl": 2, "tl": 2, "dw": 2, "tw": 1, "bingo": 1}
 
     def __init__(self, players=()):
         super().__init__(players)
