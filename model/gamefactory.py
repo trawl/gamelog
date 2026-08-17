@@ -5,6 +5,7 @@ from model.pocha import PochaMatch
 from model.qwirkle import QwirkleMatch
 from model.ratuki import RatukiMatch
 from model.remigio import RemigioMatch
+from model.scrabble import ScrabbleMatch
 from model.skullking import SkullKingMatch
 from model.toma6 import Toma6Match
 
@@ -31,5 +32,7 @@ class GameFactory:
             return Toma6Match(players)
         if gname == "Qwirkle":
             return QwirkleMatch(players)
+        if gname == "Scrabble":
+            return ScrabbleMatch(players)
 
         return GenericMatch(players)

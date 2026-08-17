@@ -1,6 +1,9 @@
+from typing import cast
+
 from controllers.baseengine import EntryGameEngine, readInput
 from controllers.db import db
 from controllers.statsengine import ParticularStatsEngine, StatsEngine
+from model.qwirkle import QwirkleMatch
 
 
 class QwirkleEngine(EntryGameEngine):
@@ -8,6 +11,9 @@ class QwirkleEngine(EntryGameEngine):
         if not hasattr(self, "game"):
             self.game = "Qwirkle"
         EntryGameEngine.__init__(self)
+
+    def getBonuses(self):
+        return cast(QwirkleMatch, self.match).getBonuses()
 
     def runStubRoundPlayer(self, player, winner=None):
         score = readInput(

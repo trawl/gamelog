@@ -3,6 +3,8 @@ from model.base import GenericEntry, GenericRoundMatch
 
 
 class QwirkleMatch(GenericRoundMatch):
+    bonuses = ("qwirkles",)
+
     def __init__(self, players=()):
         super().__init__(players)
         self.game = "Qwirkle"
@@ -11,6 +13,9 @@ class QwirkleMatch(GenericRoundMatch):
 
     def createRound(self, numround):
         return QwirkleEntry(numround)
+
+    def getBonuses(self):
+        return self.bonuses
 
     def flushToDB(self):
         super().flushToDB()

@@ -177,10 +177,12 @@ class RemigioWidget(GameWidget):
         if newtop is None:
             newtop = self.topPointsLineEdit.value()
         try:
+            if newtop is None:
+                return
             newtop = int(newtop)
             self.engine.setTop(newtop)
             self.detailGroup.updatePlot()
-        except ValueError:
+        except (ValueError, TypeError):
             pass
 
     def setWinner(self):
