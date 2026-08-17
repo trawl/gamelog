@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Triple Word Scrabble bonus</title><desc id="desc">Round red Triple Word bonus icon.</desc>
+  <circle cx="128" cy="128" r="118" fill="#EA3B43" stroke="#FFFFFF" stroke-width="8"/>
+  <circle cx="128" cy="128" r="102" fill="none" stroke="#A6192E" stroke-width="5" opacity=".6"/>
+  <!-- A row of tiles represents a word; three score gems represent triple. -->
+  <g fill="#FFFFFF">
+    <rect x="48" y="106" width="48" height="48" rx="9"/><rect x="104" y="106" width="48" height="48" rx="9"/><rect x="160" y="106" width="48" height="48" rx="9"/>
+    <circle cx="100" cy="80" r="9"/><circle cx="128" cy="80" r="9"/><circle cx="156" cy="80" r="9"/>
+  </g>
+  <g fill="none" stroke="#A6192E" stroke-width="5" opacity=".6"><rect x="57" y="115" width="30" height="30" rx="5"/><rect x="113" y="115" width="30" height="30" rx="5"/><rect x="169" y="115" width="30" height="30" rx="5"/></g>
+</svg>
