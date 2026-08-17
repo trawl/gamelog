@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Scrabble Bingo bonus</title><desc id="desc">Round green Bingo bonus icon for playing all seven tiles.</desc>
+  <circle cx="128" cy="128" r="118" fill="#62A856" stroke="#FFFFFF" stroke-width="8"/>
+  <circle cx="128" cy="128" r="102" fill="none" stroke="#2D713D" stroke-width="5" opacity=".6"/>
+  <!-- Seven blank tiles and a star signify playing a full rack. -->
+  <path d="M128 45l10 25 27 2-21 18 7 27-23-14-23 14 7-27-21-18 27-2z" fill="#F6D55C"/>
+  <g fill="#FFFFFF">
+    <rect x="37" y="128" width="22" height="36" rx="5"/><rect x="62" y="128" width="22" height="36" rx="5"/><rect x="87" y="128" width="22" height="36" rx="5"/><rect x="112" y="128" width="22" height="36" rx="5"/><rect x="137" y="128" width="22" height="36" rx="5"/><rect x="162" y="128" width="22" height="36" rx="5"/><rect x="187" y="128" width="22" height="36" rx="5"/>
+  </g>
+  <g fill="none" stroke="#2D713D" stroke-width="3" opacity=".55">
+    <rect x="42" y="133" width="12" height="26" rx="3"/><rect x="67" y="133" width="12" height="26" rx="3"/><rect x="92" y="133" width="12" height="26" rx="3"/><rect x="117" y="133" width="12" height="26" rx="3"/><rect x="142" y="133" width="12" height="26" rx="3"/><rect x="167" y="133" width="12" height="26" rx="3"/><rect x="192" y="133" width="12" height="26" rx="3"/>
+  </g>
+</svg>

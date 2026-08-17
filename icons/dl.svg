@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Double Letter Scrabble bonus</title><desc id="desc">Round light blue Double Letter bonus icon.</desc>
+  <circle cx="128" cy="128" r="118" fill="#8BC9E9" stroke="#FFFFFF" stroke-width="8"/>
+  <circle cx="128" cy="128" r="102" fill="none" stroke="#378AB7" stroke-width="5" opacity=".55"/>
+  <!-- One tile represents a letter; two score gems represent double. -->
+  <rect x="82" y="94" width="92" height="92" rx="16" fill="#FFFFFF"/>
+  <rect x="99" y="111" width="58" height="58" rx="9" fill="none" stroke="#378AB7" stroke-width="7" opacity=".55"/>
+  <g fill="#FFFFFF"><circle cx="114" cy="69" r="10"/><circle cx="142" cy="69" r="10"/></g>
+</svg>
