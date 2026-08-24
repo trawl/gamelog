@@ -1,13 +1,16 @@
+from PySide6 import QtCore
+
 from controllers.qwirkleengine import QwirkleEngine
 from gui.game import (
     BonusButton,
     GameNotImplementedException,
-    GameRoundsDetail,
 )
-from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
+from gui.gamestats import GeneralQuickStats, ParticularQuickStats
 from gui.scrabble import (
+    ScrabbleEntriesDetail,
     ScrabbleEntriesPlot,
     ScrabbleInputWidget,
+    ScrabbleQSTW,
     ScrabbleRoundTable,
     ScrabbleWidget,
 )
@@ -22,6 +25,9 @@ class QwirkleWidget(ScrabbleWidget):
     def createGameInputWidget(self, parent=None):  # pyright: ignore[reportIncompatibleMethodOverride]
         return QwirkleInputWidget(self.engine, parent)
 
+    def createRoundsDetail(self, parent=None):
+        return QwirkleEntriesDetail(self.engine, parent)
+
     def checkPlayerScore(self, player, score, extras=None):
         try:
             if score < 0 or not extras:
@@ -33,6 +39,8 @@ class QwirkleWidget(ScrabbleWidget):
 
 
 class QwirkleInputWidget(ScrabbleInputWidget):
+    spacePressed = QtCore.Signal()
+
     def initUI(self):
         super().initUI()
         self.scoreSpinBox.setRange(-1, 84, 0)
@@ -48,13 +56,10 @@ class QwirkleInputWidget(ScrabbleInputWidget):
             self.currentPlayerBoxLayout.addWidget(bb)
             self.spacePressed.connect(bb.plusone)
             self.scoreSpinBox.spacePressed.connect(bb.plusone)
-            bb.bonusChanged.connect(self.scoreChanged)
+            bb.bonusChanged.connect(self.changed)
 
 
-class QwirkleEntriesDetail(GameRoundsDetail):
-    def __init__(self, engine, parent=None):
-        super().__init__(engine, parent)
-
+class QwirkleEntriesDetail(ScrabbleEntriesDetail):
     def createRoundTable(self, engine, parent=None):
         return QwirkleRoundTable(self.engine, parent)
 
@@ -73,7 +78,7 @@ class QwirkleEntriesPlot(ScrabbleEntriesPlot):
     pass
 
 
-class QwirkleQSTW(QuickStatsTW):
+class QwirkleQSTW(ScrabbleQSTW):
     def initStatsWidgets(self):
         self.gs = QwirkleQSBox(self.game, self)
         self.ps = QwirklePQSBox(self.game, self)

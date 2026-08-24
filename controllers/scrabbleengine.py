@@ -15,6 +15,9 @@ class ScrabbleEngine(EntryGameEngine):
     def getBonuses(self):
         return cast(ScrabbleMatch, self.match).getBonuses()
 
+    def requiresExplicitFinish(self):
+        return True
+
     def runStubRoundPlayer(self, player, winner=None):
         score = readInput(
             f"{player} score: ",

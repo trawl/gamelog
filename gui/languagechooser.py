@@ -21,6 +21,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
+from controllers.settings import appsettings
+
 
 class LanguageManager(QObject):
     languageChanged = Signal(QLocale)
@@ -30,11 +32,21 @@ class LanguageManager(QObject):
         # Default to system language, fallback to English if not available
         self.translator = None
         self.qt_translator = None
-        self.current_locale = QLocale.system().name()
+        default_locale = appsettings["language"]
+        self.current_locale = (
+            default_locale
+            if default_locale and default_locale != "system"
+            else QLocale.system().name()
+        )
+
         self.loadTranslator(self.current_locale)
 
     def loadTranslator(self, lang):
         translator = QTranslator()
+        if lang.lower() == "system":
+            lang = QLocale.system().name()
+        if lang == "C":
+            lang = "en_GB"
         ret = translator.load(lang, "i18n/")
         qt_translator = QTranslator()
         qt_qm = "qtbase_" + lang.split("_")[0]
@@ -50,6 +62,7 @@ class LanguageManager(QObject):
             QCoreApplication.installTranslator(self.qt_translator)
             QCoreApplication.installTranslator(self.translator)
             self.languageChanged.emit(QLocale(lang))
+            # appsettings.set("language", lang)
 
     def getCurrentLocale(self):
         return self.current_locale
@@ -60,6 +73,11 @@ class LanguageButton(QToolButton):
         super().__init__(parent)
         # self.setToolTip(self.tr("Change Language"))
         # self.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
+        app = QApplication.instance()
+        if app:
+            self.lm = app.languageManager  # pyright: ignore[reportAttributeAccessIssue]
+        else:
+            self.lm = LanguageManager()
         self.languageChooser = LanguageChooser(self)
         self.languageChooser.newQM.connect(self.changeLanguage)
         # self.clicked.connect(self.showLanguageChooser)
@@ -78,33 +96,40 @@ class LanguageButton(QToolButton):
         self.languageChooser.exec()
 
     def nextLanguage(self):
-        app = QApplication.instance()
-        if not app:
-            return
-        lm = app.languageManager  # pyright: ignore[reportAttributeAccessIssue]
         locales = [
             data["locale"] for data in LanguageChooser.supportedLanguages.values()
         ]
         try:
-            current_index = locales.index(lm.getCurrentLocale())
+            current_index = locales.index(self.lm.getCurrentLocale())
             next_index = (current_index + 1) % len(locales)
         except ValueError:
             next_index = 0
         next_locale = locales[next_index]
         self.changeLanguage(next_locale)
 
+    def refresh(self):
+        locale = self.lm.getCurrentLocale()
+        print(f"Refreshing Language button for {locale}")
+        icon = next(
+            (
+                data["icon"]
+                for data in LanguageChooser.supportedLanguages.values()
+                if data["locale"] == locale
+            ),
+            None,
+        )
+        if not icon:
+            icon = "english.svg"
+        self.setIcon(QIcon(f":/icons/{icon}"))
+
     def changeLanguage(self, locale=None):
-        app = QApplication.instance()
-        if not app:
-            return
-        lm = app.languageManager  # pyright: ignore[reportAttributeAccessIssue]
         if not locale:
-            locale = lm.getCurrentLocale()
+            locale = self.lm.getCurrentLocale()
         if locale == "C":
             locale = "en_GB"
-        if locale != lm.getCurrentLocale():
-            print(f"Changing language from {lm.getCurrentLocale()} to {locale}")
-            lm.loadTranslator(locale)
+        if locale != self.lm.getCurrentLocale():
+            print(f"Changing language from {self.lm.getCurrentLocale()} to {locale}")
+            self.lm.loadTranslator(locale)
         icon = next(
             (
                 data["icon"]

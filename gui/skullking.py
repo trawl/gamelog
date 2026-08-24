@@ -29,7 +29,6 @@ from gui.game import (
     BonusButton,
     GameInputWidget,
     GameNotImplementedException,
-    GamePlayerWidget,
     GameRoundPlot,
     GameRoundsDetail,
     GameRoundTable,
@@ -60,21 +59,34 @@ class SkullKingWidget(GameWidget):
 
     def initUI(self):
         super().initUI()
+        self.retranslateUI()
 
-        self.gameInput = SkullKingInputWidget(self.engine, self)
-        self.gameInput.enterPressed.connect(self.commitRound)
-        self.roundLayout.addWidget(self.gameInput)
-        # self.roundTitleLabel.hide()
+    def retranslateUI(self):
+        super().retranslateUI()
+        # self.playerGroup.setTitle(i18n("GameWidget", "Scoreboard"))
+        # self.scoringModeLabel.setText(self.tr("Scoring"))
+        for i, m in enumerate(cast("SkullKingEngine", self.engine).listScoringModes()):
+            self.scoringModeCombo.setItemText(i, self.tr(m))
+
+        # self.roundModeLabel.setText(self.tr("Card Counts"))
+        for i, m in enumerate(cast("SkullKingEngine", self.engine).listRoundModes()):
+            self.roundModeCombo.setItemText(i, self.tr(m))
+
+    def createGameInputWidget(self, parent=None):  # pyright: ignore[reportIncompatibleMethodOverride]
+        return SkullKingInputWidget(self.engine, parent)
+
+    def createRoundsDetail(self, parent=None):
+        return SkullKingRoundsDetail(self.engine, parent)
+
+    def addExtraConfig(self):
+        super().addExtraConfig()
         self.progressBar = StepProgressBar(self.engine.getRoundSequence(), self)
-        self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         self.matchGroupLayout.addWidget(self.progressBar)
 
         self.configLayout = QVBoxLayout()
         self.matchGroupLayout.addLayout(self.configLayout)
         self.dealerPolicyCheckBox.hide()
 
-        # self.scoringModeLabel = QLabel(self.tr("Scoring"), self)
-        # self.configLayout.addWidget(self.scoringModeLabel, 0, 0)
         self.scoringModeCombo = QComboBox(self)
         self.scoringModeCombo.addItems(
             [
@@ -100,50 +112,6 @@ class SkullKingWidget(GameWidget):
         self.roundModeCombo.currentIndexChanged.connect(self.changeRoundMode)
         self.configLayout.addWidget(self.roundModeCombo)
 
-        self.enableConfigCombos(self.engine.getNumRound() == 1)
-
-        self.detailGroup = SkullKingRoundsDetail(self.engine, self)
-        self.detailGroup.edited.connect(self.updatePanel)
-        # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
-        self.leftLayout.addWidget(self.detailGroup)
-
-        # self.playerGroup = QGroupBox(self)
-
-        # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
-        # self.matchGroupLayout.addWidget(self.playerGroup)
-
-        # self.playerGroup.setStyleSheet(
-        #     "QGroupBox { font-size: 18px; font-weight: bold; }"
-        # )
-        self.playersLayout = QVBoxLayout()
-        self.matchGroupLayout.addLayout(self.playersLayout)
-        # self.playersLayout.addStretch()
-        self.playerGroupBox = {}
-        for i, player in enumerate(self.players):
-            pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
-            pw.updateDisplay(self.engine.getScoreFromPlayer(player))
-            if player == self.engine.getDealer():
-                pw.setDealer()
-            self.matchGroupLayout.addWidget(pw)
-            self.playerGroupBox[player] = pw
-
-        # self.playersLayout.addStretch()
-
-        self.retranslateUI()
-
-    def retranslateUI(self):
-        super().retranslateUI()
-        # self.playerGroup.setTitle(i18n("GameWidget", "Scoreboard"))
-        # self.scoringModeLabel.setText(self.tr("Scoring"))
-        for i, m in enumerate(cast("SkullKingEngine", self.engine).listScoringModes()):
-            self.scoringModeCombo.setItemText(i, self.tr(m))
-
-        # self.roundModeLabel.setText(self.tr("Card Counts"))
-        for i, m in enumerate(cast("SkullKingEngine", self.engine).listRoundModes()):
-            self.roundModeCombo.setItemText(i, self.tr(m))
-
-        self.detailGroup.retranslateUI()
-
     def setRoundTitle(self):
         super().setRoundTitle()
         hands = self.engine.getHands()
@@ -167,94 +135,79 @@ class SkullKingWidget(GameWidget):
     def checkPlayerScore(self, player, score, extras=None):
         return True
 
-    def unsetDealer(self):
-        self.playerGroupBox[self.engine.getDealer()].unsetDealer()
-
-    def setDealer(self):
-        self.playerGroupBox[self.engine.getDealer()].setDealer()
-
     def updatePanel(self):
+        super().updatePanel()
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         self.enableConfigCombos(self.engine.getNumRound() == 1)
-        for player in self.players:
-            score = self.engine.getScoreFromPlayer(player)
-            self.playerGroupBox[player].updateDisplay(score)
 
-        if self.engine.getWinner():
-            self.detailGroup.updateStats()
-        self.detailGroup.updateRound()
-        super().updatePanel()
-        self.gameInput.setFocus()
-
-    def setWinner(self):
-        super().setWinner()
-        winner = self.engine.getWinner()
-        if winner in self.players:
-            self.playerGroupBox[winner].setWinner()
-
-    def commitRound(self):
+    def commitRoundSanityCheck(self, interactive=False):
         hands = self.engine.getHands()
-        wonhands = self.gameInput.getWonHands()
+        wonhands = cast(SkullKingInputWidget, self.gameInput).getWonHands()
         won = sum(wonhands.values())
         if min(wonhands.values()) < 0:
-            QMessageBox.warning(
-                self,
-                self.game,
-                i18n("PochaWidget", "There are players with no selected won hands."),
-            )
-            return
+            msg = i18n("PochaWidget", "There are players with no selected won hands.")
+            if interactive:
+                QMessageBox.warning(self, self.game, msg)
+            else:
+                print(msg)
+            return False
         if hands == won + 2 and self.engine.getScoringMode() != "classic_scoring":
-            # Kraken case
-            kraken_msg = QCoreApplication.translate(
-                "SkullKingWidget",
-                "Has the Kraken and White Whale appeared and discarded two tricks?",
-            )
-            msg = (
-                i18n(
-                    "PochaWidget",
-                    "There are {} won hands selected when there should be {}.",
-                ).format(won, hands)
-                + " "
-                + kraken_msg
-            )
-            ret = QMessageBox.question(
-                self,
-                self.game,
-                msg,
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.No,
-            )
-            if ret == QMessageBox.StandardButton.No:
-                return
+            if interactive:
+                # Kraken + White whale corner case
+                kraken_msg = QCoreApplication.translate(
+                    "SkullKingWidget",
+                    "Has the Kraken and White Whale appeared and discarded two tricks?",
+                )
+                msg = (
+                    i18n(
+                        "PochaWidget",
+                        "There are {} won hands selected when there should be {}.",
+                    ).format(won, hands)
+                    + " "
+                    + kraken_msg
+                )
+                ret = QMessageBox.question(
+                    self,
+                    self.game,
+                    msg,
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    QMessageBox.StandardButton.No,
+                )
+                if ret == QMessageBox.StandardButton.No:
+                    return False
         elif hands == won + 1 and self.engine.getScoringMode() != "classic_scoring":
-            # Kraken case
-            kraken_msg = QCoreApplication.translate(
-                "SkullKingWidget", "Has the Kraken appeared and discarded a trick?"
-            )
-            msg = (
-                i18n(
-                    "PochaWidget",
-                    "There are {} won hands selected when there should be {}.",
-                ).format(won, hands)
-                + " "
-                + kraken_msg
-            )
-            ret = QMessageBox.question(
-                self,
-                self.game,
-                msg,
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.No,
-            )
-            if ret == QMessageBox.StandardButton.No:
-                return
+            if interactive:
+                # Kraken case
+                kraken_msg = QCoreApplication.translate(
+                    "SkullKingWidget", "Has the Kraken appeared and discarded a trick?"
+                )
+                msg = (
+                    i18n(
+                        "PochaWidget",
+                        "There are {} won hands selected when there should be {}.",
+                    ).format(won, hands)
+                    + " "
+                    + kraken_msg
+                )
+                ret = QMessageBox.question(
+                    self,
+                    self.game,
+                    msg,
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    QMessageBox.StandardButton.No,
+                )
+                if ret == QMessageBox.StandardButton.No:
+                    return False
         elif hands != won:
             msg = i18n(
                 "PochaWidget",
                 "There are {} won hands selected when there should be {}.",
-            )
-            QMessageBox.warning(self, self.game, msg.format(won, hands))
-            return
+            ).format(won, hands)
+            if interactive:
+                QMessageBox.warning(self, self.game, msg)
+            else:
+                print(msg)
+            return False
         # Validate bonuses
         if self.engine.getScoringMode() != "classic_scoring":
             fourteens = 0
@@ -271,29 +224,19 @@ class SkullKingWidget(GameWidget):
                     "SkullKingWidget",
                     "There are more than 3 Fourteen bonuses selected.",
                 )
-                QMessageBox.warning(self, self.game, msg)
-                return
+                if interactive:
+                    QMessageBox.warning(self, self.game, msg)
+                else:
+                    print(msg)
+                return False
             if loots > 4:
                 msg = self.tr("There are more than 4 Loot bonuses selected.")
-                QMessageBox.warning(self, self.game, msg)
-                return
-
-        super().commitRound()
-
-    def setFocus(self, reason=None):
-        self.gameInput.setFocus()
-
-    def updatePlayerOrder(self):
-        GameWidget.updatePlayerOrder(self)
-        # self.playersLayout.addStretch()
-        for player in self.engine.getListPlayers():
-            self.playersLayout.removeWidget(self.playerGroupBox[player])
-
-        for i, player in enumerate(self.engine.getListPlayers()):
-            self.playersLayout.addWidget(self.playerGroupBox[player])
-            self.playerGroupBox[player].setColour(PlayerColours[i])
-        # self.playersLayout.addStretch()
-        self.detailGroup.updatePlayerOrder()
+                if interactive:
+                    QMessageBox.warning(self, self.game, msg)
+                else:
+                    print(msg)
+                return False
+        return True
 
     def changeRoundMode(self, _index):
         rmode = list(cast("SkullKingEngine", self.engine).listRoundModes())[
@@ -308,7 +251,7 @@ class SkullKingWidget(GameWidget):
         self.progressBar.setSteps(self.engine.getRoundSequence())
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         self.detailGroup.updatePlot()
-        self.gameInput.changeRoundMode()
+        cast(SkullKingInputWidget, self.gameInput).changeRoundMode()
 
     def changeScoringMode(self, _index):
         smode = list(cast("SkullKingEngine", self.engine).listScoringModes())[
@@ -319,15 +262,14 @@ class SkullKingWidget(GameWidget):
         except ValueError as ve:
             QMessageBox.critical(self, self.game, str(ve))
             return
-        self.gameInput.changeScoringMode()
+        cast(SkullKingInputWidget, self.gameInput).changeScoringMode()
         # self.updatePlayerOrder()
 
 
 class SkullKingInputWidget(GameInputWidget):
     def __init__(self, engine, parent=None):
-        super().__init__(engine, parent)
         self.lastChoices = []
-        self.initUI()
+        super().__init__(engine, parent)
 
     def initUI(self):
         self.widgetLayout = QGridLayout(self)
@@ -348,12 +290,13 @@ class SkullKingInputWidget(GameInputWidget):
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
             self.playerInputList[player].newExpected.connect(self.checkExpected)
             self.playerInputList[player].handsClicked.connect(self.newChoice)
-            self.playerInputList[player].handsClicked.connect(self.newChoice)
             self.playerInputList[player].betTricksChanged.connect(
                 self.updateCandidateAction
             )
+            self.playerInputList[player].betTricksChanged.connect(self.changed)
             for bonus_button in self.playerInputList[player].getBonusButtons().values():
                 bonus_button.bonusChanged.connect(self.bonusChangedAction)
+                bonus_button.bonusChanged.connect(self.changed)
 
         print(f"trying to set focus to {self.engine.getListPlayers()[0]}")
         self.playerInputList[self.engine.getListPlayers()[0]].setFocus()
@@ -754,43 +697,117 @@ class SkullKingPlayerInputWidget(QGroupBox):
 class ClickableLabel(QLabel):
     clicked = QtCore.Signal(Qt.MouseButton)
 
-    def __init__(self, text="", pcolour=None, size=40, parent=None):
+    def __init__(
+        self,
+        text="",
+        pcolour=None,
+        size=40,
+        parent=None,
+    ):
         super().__init__(text, parent)
-        self.pcolour = pcolour if pcolour else QColor(255, 255, 255)
+
+        self.pcolour = pcolour if pcolour is not None else QColor(255, 255, 255)
+
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
         self.diameter = size
         self.locked = False
         self.candidate = False
-        self.setFixedSize(self.diameter, self.diameter)
-        # Color animation effect (disabled unless candidate=True)
+
+        self.setFixedSize(
+            self.diameter,
+            self.diameter,
+        )
+
+        # ---------------------------------------------
+        # Custom colour animation
+        # ---------------------------------------------
+
         self.effect = QGraphicsColorizeEffect(self)
-        # self.effect.setColor(QColor("#4c8bf5"))  # glow color
-        self.effect.setColor(self.pcolour)  # glow color
+        self.effect.setColor(self.pcolour)
         self.effect.setStrength(0.0)
         self.setGraphicsEffect(self.effect)
 
-        # Animation: pulse between strength=0 -> 0.6 -> 0
-        self.anim = QPropertyAnimation(self.effect, b"strength")
+        self.anim = QPropertyAnimation(
+            self.effect,
+            b"strength",
+        )
         self.anim.setDuration(1800)
         self.anim.setStartValue(0.0)
-        self.anim.setKeyValueAt(0.5, 0.2)
+        self.anim.setKeyValueAt(0.7, 0.7)
         self.anim.setEndValue(0.0)
-        self.anim.setLoopCount(-1)  # infinite
-        self.setStyleSheet(self.normalStyle())
+        self.anim.setLoopCount(-1)
+
+        # ---------------------------------------------
+        # QSS state properties
+        # ---------------------------------------------
+
+        self.setProperty("locked", False)
+        self.setProperty("pressed", False)
+
+        # Apply the instance-specific colour.
+        self._update_colour_style()
+
+    # ---------------------------------------------
+    # COLOUR
+    # ---------------------------------------------
+
+    def setColour(self, colour):
+        self.pcolour = colour
+
+        self.effect.setColor(self.pcolour)
+
+        self._update_colour_style()
+
+    def _update_colour_style(self):
+        """
+        Apply only the instance-specific colour.
+
+        The rest of the styling comes from the application's
+        global light/dark QSS.
+        """
+
+        colour = self.pcolour
+
+        css_colour = f"rgb({colour.red()}, {colour.green()}, {colour.blue()})"
+
+        self.setStyleSheet(
+            f"""
+            ClickableLabel {{
+                color: {css_colour};
+            }}
+
+            ClickableLabel[locked="true"] {{
+                border-color: {css_colour};
+            }}
+            """
+        )
+
+    # ---------------------------------------------
+    # CANDIDATE
+    # ---------------------------------------------
 
     def isCandidate(self):
         return self.candidate
 
     def setCandidate(self, value):
+        value = bool(value)
+
         if self.candidate == value:
             return
+
         self.candidate = value
+
         if value:
             self.startCandidateAnimation()
         else:
             self.stopCandidateAnimation()
 
-    candidateProperty = Property(bool, isCandidate, setCandidate)
+    candidateProperty = Property(
+        bool,
+        isCandidate,
+        setCandidate,
+    )
 
     def startCandidateAnimation(self):
         self.anim.start()
@@ -799,78 +816,66 @@ class ClickableLabel(QLabel):
         self.anim.stop()
         self.effect.setStrength(0.0)
 
-    def normalStyle(self):
-        if self.locked:
-            return self.lockStyle()
-        hovercolour = "#555555"
-        return f"""
-            QLabel {{
-                background-color: #444444;
-                border: 1px solid #666666;
-                border-radius: {self.diameter // 2}px;
-                font-size: 24px;
-                font-weight: bold;
-                color: rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});
-            }}
-            QLabel:hover {{
-                background-color: {hovercolour};
-            }}
-        """
-
-    def lockStyle(self):
-        return f"""
-            QLabel {{
-                background-color: #444444;
-                border: 1px solid;
-                border-color: rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});
-                border-radius: {self.diameter // 2}px;
-                font-size: 24px;
-                font-weight: bold;
-                color: rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});
-            }}
-            QLabel:hover {{
-                background-color: #444444;
-            }}
-        """
-
-    def pressedStyle(self):
-        return f"""
-            QLabel {{
-                background-color: #333333;
-                border: 1px solid #777777;
-                border-radius: {self.diameter // 2}px;
-                font-size: 24px;
-                font-weight: bold;
-                color: rgb({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()});
-            }}
-        """
-
-    def mousePressEvent(self, event):
-        self.highlightChange()
-        self.clicked.emit(event.button())
-
-    def resetStyle(self):
-        self.setStyleSheet(self.normalStyle())
-
-    def highlightChange(self):
-        self.setStyleSheet(self.pressedStyle())
-        QTimer.singleShot(180, self.resetStyle)
-
-    def lock(self):
-        self.locked = True
-        self.setStyleSheet(self.lockStyle())
-
-    def unlock(self):
-        self.locked = False
-        self.setStyleSheet(self.normalStyle())
+    # ---------------------------------------------
+    # LOCK
+    # ---------------------------------------------
 
     def isLocked(self):
         return self.locked
 
-    def setColour(self, colour):
-        self.pcolour = colour
-        self.effect.setColor(self.pcolour)  # glow color
-        self.resetStyle()
+    def lock(self):
+        if self.locked:
+            return
+
+        self.locked = True
+        self._set_state_property(
+            "locked",
+            True,
+        )
+
+    def unlock(self):
+        if not self.locked:
+            return
+
+        self.locked = False
+        self._set_state_property(
+            "locked",
+            False,
+        )
+
+    # ---------------------------------------------
+    # PRESS
+    # ---------------------------------------------
+
+    def mousePressEvent(self, event):
+        self._set_state_property(
+            "pressed",
+            True,
+        )
+
+        self.clicked.emit(event.button())
+
+        QTimer.singleShot(
+            180,
+            lambda: self._set_state_property(
+                "pressed",
+                False,
+            ),
+        )
+
+        super().mousePressEvent(event)
+
+    # ---------------------------------------------
+    # QSS STATE
+    # ---------------------------------------------
+
+    def _set_state_property(self, name, value):
+        self.setProperty(name, value)
+
+        self.style().unpolish(self)
+        self.style().polish(self)
+
+        self.update()
 
 
 class BetTrickWidget(QWidget):
@@ -927,7 +932,7 @@ class BetTrickWidget(QWidget):
         else:
             self.betLabel.setText(str(self.bet))
             # self.tricksLabel.unlock()
-        self.betLabel.highlightChange()
+        # self.betLabel.highlightChange()
         self.changed.emit()
 
     def resetBet(self):
@@ -958,7 +963,7 @@ class BetTrickWidget(QWidget):
             self.tricksLabel.setText("-")
         else:
             self.tricksLabel.setText(str(self.tricks))
-        self.tricksLabel.highlightChange()
+        # self.tricksLabel.highlightChange()
         self.changed.emit()
 
     def cycleBet(self, event):

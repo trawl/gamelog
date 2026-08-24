@@ -138,6 +138,12 @@ db = GameLogDB()
 
 
 _emptydb = """
+DROP TABLE IF EXISTS "AppSettings";
+CREATE TABLE `AppSettings` (
+  `key` VARCHAR(255) NOT NULL ,
+  `type` VARCHAR(45) NOT NULL ,
+  `value` TEXT NULL ,
+  PRIMARY KEY (`key`) );
 DROP TABLE IF EXISTS "Game";
 CREATE TABLE `Game` (
   `name` VARCHAR(45) NOT NULL ,

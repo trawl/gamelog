@@ -1,21 +1,20 @@
-from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QShortcut
+from typing import cast
+
+from PySide6 import QtCore
 from PySide6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QMessageBox,
-    QPushButton,
     QSizePolicy,
     QTableWidgetItem,
-    QVBoxLayout,
-    QWidget,
 )
 
 from controllers.scrabbleengine import ScrabbleEngine
+from controllers.settings import appsettings
 from gui.game import (
     BonusButton,
+    GameInputWidget,
     GameNotImplementedException,
-    GamePlayerWidget,
     GameRoundPlot,
     GameRoundsDetail,
     GameRoundTable,
@@ -34,122 +33,67 @@ class ScrabbleWidget(GameWidget):
 
     def initUI(self):
         super().initUI()
-        # self.roundTitleLabel.hide()
         self.dealerPolicyCheckBox.hide()
-        self.finishButton = QPushButton(self.roundGroup)
-        self.buttonGroupLayout.insertWidget(
-            self.buttonGroupLayout.count() - 1, self.finishButton
+
+        cast(ScrabbleInputWidget, self.gameInput).placeCommitButton(
+            self.commitRoundButton
         )
-        self.finishButton.clicked.connect(self.finish)
-
-        if not self.gameInput:
-            self.gameInput = self.createGameInputWidget(self)
-        self.gameInput.enterPressed.connect(self.commitRound)
-        self.gameInput.scoreChanged.connect(self.guardCommitButton)
-        self._commit_round_connection = False
-        self.guardCommitButton()
-        self.focussc = QShortcut(
-            QtGui.QKeySequence("Ctrl+A"), self, self.gameInput.setFocus
-        )
-        self.roundLayout.addWidget(self.gameInput)
-
-        self.undoButton = QPushButton(self)
-        self.undoButton.pressed.connect(self.undoCommit)
-        self.undoButton.setEnabled(self.engine.getNumRound() > 1)
-        self.undoButton.setSizePolicy(
-            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
-        )
-        self.gameInput.placeCommitButton(self.commitRoundButton)
-        self.gameInput.placeUndoButton(self.undoButton)
-        self.commitRoundButton.setSizePolicy(
-            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
-        )
-
-        self.detailGroup = ScrabbleEntriesDetail(self.engine, self)
-        # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
-        self.leftLayout.addWidget(self.detailGroup)
-        self.detailGroup.edited.connect(self.updatePanel)
-
-        self.playersLayout = QVBoxLayout()
-        self.matchGroupLayout.addLayout(self.playersLayout)
-        # self.playersLayout.addStretch()
-        self.playerGroupBox = {}
-        dealer = self.engine.getDealer()
-        for i, player in enumerate(self.engine.getListPlayers()):
-            pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
-            if player == dealer:
-                pw.setDealer()
-            pw.updateDisplay(self.engine.getScoreFromPlayer(player))
-            self.playersLayout.addWidget(pw)
-            self.playerGroupBox[player] = pw
-
-        # self.playersLayout.addStretch()
+        cast(ScrabbleInputWidget, self.gameInput).placeUndoButton(self.undoButton)
+        for b in (self.commitRoundButton, self.undoButton):
+            b.setSizePolicy(
+                QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
+            )
         self.retranslateUI()
-        QtCore.QTimer.singleShot(1000, self.gameInput.setFocus)
 
     def createGameInputWidget(self, parent=None):  # pyright: ignore[reportIncompatibleMethodOverride]
         return ScrabbleInputWidget(self.engine, parent)
 
-    def retranslateUI(self):
-        super().retranslateUI()
-        self.commitRoundButton.setText("▼")
-        self.undoButton.setText("⎌")
-        self.finishButton.setText(self.tr("&Finish Game"))
-        self.gameInput.retranslateUI()
-        self.detailGroup.retranslateUI()
+    def createRoundsDetail(self, parent=None):
+        return ScrabbleEntriesDetail(self.engine, parent)
 
-    def setRoundTitle(self):
-        game = self.engine.getGame()
-        if game is None:
-            game = ""
-        self.roundTitleLabel.setText(game)
+    # def retranslateUI(self):
+    #     super().retranslateUI()
+    #     # self.commitRoundButton.setText("▼")
+    #     self.commitRoundButton.setText("↵")
+    #     self.undoButton.setText("⎌")
 
-    def updatePanel(self):
-        super().updatePanel()
-        self.updateScores()
-        if self.engine.getWinner():
-            self.finishButton.setDisabled(True)
-            self.gameInput.hide()
-            self.detailGroup.updateStats()
-        else:
-            self.detailGroup.updateRound()
-        self.undoButton.setEnabled(self.engine.getNumRound() > 1)
-        self.guardCommitButton()
+    #     self.gameInput.retranslateUI()
+    #     self.detailGroup.retranslateUI()
 
     def checkPlayerScore(self, player, score, extras=None):
         return bool(score)
 
-    def guardCommitButton(self):
-        player = self.gameInput.getPlayer()
-        bonuses = self.gameInput.getBonuses()
-        score = self.gameInput.getScore()
-        if not self.checkPlayerScore(player, score, bonuses):
-            self.commitRoundButton.setDisabled(True)
-            if self._commit_round_connection:
-                self.gameInput.enterPressed.disconnect(self.commitRound)
-                self._commit_round_connection = False
-
-        else:
-            self.commitRoundButton.setDisabled(False)
-            self.gameInput.enterPressed.connect(self.commitRound)
-            self._commit_round_connection = True
-
-    def commitRound(self):
-        player = self.gameInput.getPlayer()
-        bonuses = self.gameInput.getBonuses()
-        score = self.gameInput.getScore()
+    def commitRoundSanityCheck(self, interactive=False):
+        gi = cast(ScrabbleInputWidget, self.gameInput)
+        player = gi.getPlayer()
+        bonuses = gi.getBonuses()
+        score = gi.getScore()
         if player == "":
             msg = self.tr("You must select a player")
-            QMessageBox.warning(self, self.game, msg)
-            return
+            if interactive:
+                QMessageBox.warning(self, self.game, msg)
+            else:
+                print(f"[sanity] {msg}")
+            return False
 
         if not self.checkPlayerScore(player, score, bonuses):
             msg = self.tr("{} score is not valid").format(player)
-            QMessageBox.warning(self, self.game, msg)
-            return
+            if interactive:
+                QMessageBox.warning(self, self.game, msg)
+            else:
+                print(f"[sanity] {msg}")
+            return False
+        return True
 
+    def commitRound(self):
+        if not self.commitRoundSanityCheck(interactive=True):
+            return
         # Once here, we can commit round
         self.unsetDealer()
+        gi = cast(ScrabbleInputWidget, self.gameInput)
+        player = gi.getPlayer()
+        bonuses = gi.getBonuses()
+        score = gi.getScore()
         self.engine.addEntry(player, score, bonuses)
         self.engine.printStats()
         self.updatePanel()
@@ -158,89 +102,18 @@ class ScrabbleWidget(GameWidget):
         elif self.hideInputOnFinish:
             self.gameInput.hide()
 
-    def undoCommit(self):
-        try:
-            last_entry = self.engine.getRounds()[-1]
-        except IndexError:
-            return
-
-        title = self.tr("Delete Entry")
-        msg = self.tr(
-            "Are you sure you want to delete the last entry for {} ({})?"
-        ).format(last_entry.getPlayer(), last_entry.getScore()[last_entry.getPlayer()])
-        ret = QMessageBox.question(
-            self,
-            title,
-            msg,
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.Yes,
-        )
-        if ret == QMessageBox.StandardButton.No:
-            return
-        self.unsetDealer()
-        self.engine.deleteRound(len(self.engine.getRounds()))
-        self.updatePanel()
-        self.setDealer()
-
-    def finish(self):
-        title = self.tr("Finish game")
-        msg = self.tr("Are you sure you want to finish the current game?")
-        ret = QMessageBox.question(
-            self,
-            title,
-            msg,
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.Yes,
-        )
-
-        if ret == QMessageBox.StandardButton.No:
-            return
-        self.engine.finishGame()
-        self.updatePanel()
-
-    def updateScores(self):
-        for player in self.players:
-            score = self.engine.getScoreFromPlayer(player)
-            self.playerGroupBox[player].updateDisplay(score)
-
-    def setWinner(self):
-        super().setWinner()
-        winner = self.engine.getWinner()
-        if winner in self.players:
-            self.playerGroupBox[winner].setWinner()
-
-    def unsetDealer(self):
-        self.playerGroupBox[self.engine.getDealer()].unsetDealer()
-
     def setDealer(self):
-        self.playerGroupBox[self.engine.getDealer()].setDealer()
+        super().setDealer()
         self.gameInput.reset()
 
-    def updatePlayerOrder(self):
-        GameWidget.updatePlayerOrder(self)
-        # self.playersLayout.addStretch()
-        for i, player in enumerate(self.engine.getListPlayers()):
-            self.playersLayout.removeWidget(self.playerGroupBox[player])
-            self.playersLayout.addWidget(self.playerGroupBox[player])
-            self.playerGroupBox[player].setColour(PlayerColours[i])
-        # self.playersLayout.addStretch()
-        self.detailGroup.updateRound()
 
-
-class ScrabbleInputWidget(QWidget):
-    enterPressed = QtCore.Signal()
-    spacePressed = QtCore.Signal()
-    scoreChanged = QtCore.Signal()
-
+class ScrabbleInputWidget(GameInputWidget):
     def __init__(self, engine, parent):
-        super().__init__(parent)
-        self.engine = engine
-        self.parent = parent
-        self.active_player = self.engine.getDealer()
-        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-        self.initUI()
+        self.active_player = engine.getDealer()
+        super().__init__(engine, parent)
 
     def initUI(self):
+        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout = QHBoxLayout(self)
         self.currentPlayerBox = QGroupBox(self)
         self.widgetLayout.addWidget(self.currentPlayerBox, 2)
@@ -248,7 +121,7 @@ class ScrabbleInputWidget(QWidget):
         self.scoreSpinBox = ScoreSpinBox(self.currentPlayerBox)
         self.scoreSpinBox.setRange(-60, 400, 0)
         self.currentPlayerBoxLayout.addWidget(self.scoreSpinBox)
-        self.scoreSpinBox.valueChanged.connect(self.scoreChanged)
+        self.scoreSpinBox.valueChanged.connect(self.changed)
         self.bonusButtons = {}
         self.createBonusButtons()
         self.reset()
@@ -260,27 +133,43 @@ class ScrabbleInputWidget(QWidget):
             )
             self.bonusButtons[b] = bb
             self.currentPlayerBoxLayout.addWidget(bb)
-            bb.bonusChanged.connect(self.scoreChanged)
+            bb.bonusChanged.connect(self.changed)
 
     def retranslateUI(self):
-        pass
+        if appsettings["text_in_buttons"]:
+            css = """
+                QPushButton {
+                    font-weight: normal;
+                }
+                """
+        else:
+            css = """
+                QPushButton {
+                    font-size: 48px;
+                    font-weight: bold;
+                }
+                """
+        self.commitButton.setStyleSheet(css)
+        self.undoButton.setStyleSheet(css)
 
     def placeCommitButton(self, cb):
-        cb.setStyleSheet("""
-            QPushButton {
-                font-size: 48px;
-                font-weight: bold;
-            }
-            """)
+        # cb.setStyleSheet("""
+        #     QPushButton {
+        #         font-size: 48px;
+        #         font-weight: bold;
+        #     }
+        #     """)
+        self.commitButton = cb
         self.widgetLayout.addWidget(cb, 1)
 
     def placeUndoButton(self, ub):
-        ub.setStyleSheet("""
-            QPushButton {
-                font-size: 48px;
-                font-weight: bold;
-            }
-            """)
+        # ub.setStyleSheet("""
+        #     QPushButton {
+        #         font-size: 48px;
+        #         font-weight: bold;
+        #     }
+        #     """)
+        self.undoButton = ub
         self.widgetLayout.insertWidget(0, ub, 1)
 
     def getPlayer(self):
@@ -324,11 +213,11 @@ class ScrabbleInputWidget(QWidget):
     def updatePlayerOrder(self):
         self.reset()
 
-    def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key.Key_Return:
-            self.enterPressed.emit()
-            event.accept()
-        return super().keyPressEvent(event)
+    # def keyPressEvent(self, event):
+    #     if event.key() == QtCore.Qt.Key.Key_Return:
+    #         self.enterPressed.emit()
+    #         event.accept()
+    #     return super().keyPressEvent(event)
 
 
 class ScrabbleEntriesDetail(GameRoundsDetail):

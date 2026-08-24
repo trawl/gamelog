@@ -28,6 +28,9 @@ class CarcassonneEngine(EntryGameEngine):
         self.match = cast("CarcassonneMatch", self.match)
         return self.match.getEntryKinds()
 
+    def requiresExplicitFinish(self):
+        return True
+
 
 if __name__ == "__main__":
     re = CarcassonneEngine()

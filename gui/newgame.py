@@ -4,7 +4,9 @@ from typing import cast
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QApplication,
     QComboBox,
+    QFrame,
     QGroupBox,
     QHBoxLayout,
     QListWidget,
@@ -18,11 +20,14 @@ from PySide6.QtWidgets import (
 
 from controllers.db import db
 from controllers.resumeengine import ResumeEngine
+from controllers.settings import appsettings
+from gui.gamelogapplication import GamelogApplication
 from gui.gamestatsfactory import QSFactory
 from gui.gamewidgetfactory import GameWidgetFactory
 from gui.languagechooser import LanguageButton
 from gui.newplayer import NewPlayerDialog
 from gui.playerlist import PlayerList, PlayerListModel
+from gui.settings import SettingsDialog
 from gui.tab import Tab
 
 
@@ -57,16 +62,16 @@ class NewGameWidget(Tab):
     #        self.retranslateUI()
 
     def retranslateUI(self):
-        # self.gameGroupBox.setTitle(self.tr("Games"))
         self.updateGameInfo()
         # self.playersGroupBox.setTitle(self.tr("Players"))
-        self.availablePlayersGroup.setTitle(self.tr("Available Players"))
-        self.newPlayerButton.setText(self.tr("New Player"))
-        game = str(self.gameComboBox.currentText())
-        self.inGameGroup.setTitle(
-            self.tr("Selected Players (max {})").format(self.games[game]["maxPlayers"])
-        )
         self.startGameButton.setText("▶")
+        self.settingsButton.setText("⚙")
+        if appsettings["text_in_buttons"]:
+            self.availablePlayersGroup.setTitle(self.tr("Available Players"))
+            self.newPlayerButton.setText(self.tr("New Player"))
+        else:
+            self.availablePlayersGroup.setTitle("♟♟♟...")
+            self.newPlayerButton.setText("+")
         self.resumeGroup.retranslateUI()
         if self.gameStatsBox:
             self.gameStatsBox.retranslateUI()
@@ -92,11 +97,27 @@ class NewGameWidget(Tab):
         # )
         self.gameNameLayout.addWidget(self.gameComboBox)
 
+        self.settingsGroup = QFrame(self)
+        self.settingsGroup.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred
+        )
+        self.gameNameLayout.addWidget(self.settingsGroup)
+
+        self.settingsLayout = QVBoxLayout(self.settingsGroup)
+        self.settingsLayout.addStretch()
         self.languageChooser = LanguageButton(self)
         self.languageChooser.setSizePolicy(
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
         )
-        self.gameNameLayout.addWidget(self.languageChooser)
+        self.settingsLayout.addWidget(self.languageChooser)
+
+        self.settingsButton = QPushButton(self)
+        self.settingsButton.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
+        self.settingsButton.clicked.connect(self.onSettings)
+        self.settingsLayout.addWidget(self.settingsButton)
+        self.settingsLayout.addStretch()
         self.startGameButton = QPushButton(self)
         self.startGameButton.setSizePolicy(
             QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
@@ -107,12 +128,16 @@ class NewGameWidget(Tab):
                 font-weight: bold;
             }
             """)
-        self.startGameButton.clicked.connect(self.createNewGame)
+        self.startGameButton.clicked.connect(self.onPlay)
         self.gameNameLayout.addWidget(self.startGameButton)
 
         # self.gameDescriptionLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.resumeGroup = ResumeBox(self._parent)
         self.resumeGroup.restartRequested.connect(self.restartGame)
+        self.resumeGroup.savedGameSelected.connect(self.inGameGroup.setDisabled)
+        self.resumeGroup.savedGameSelected.connect(
+            self.availablePlayersGroup.setDisabled
+        )
         #        self.gameRulesBrowser = QTextBrowser(self.gameGroupBox)
         self.gameGroupBoxLayout.addWidget(self.resumeGroup)
         self.gameGroupBoxLayout.setStretchFactor(self.resumeGroup, 1)
@@ -137,9 +162,12 @@ class NewGameWidget(Tab):
         game = str(self.gameComboBox.currentText())
         max_players = self.games[game]["maxPlayers"]
         self.playersInGameList.setMaxPlayers(max_players)
-        self.inGameGroup.setTitle(
-            self.tr("Selected Players (max {})").format(max_players)
-        )
+        if appsettings["text_in_buttons"]:
+            self.inGameGroup.setTitle(
+                self.tr("Selected Players (max {})").format(max_players)
+            )
+        else:
+            self.inGameGroup.setTitle(f"{self.games[game]['maxPlayers']} ♟")
         #        self.gameRulesBrowser.setText("{}".format(self.games[game]['rules']))
         #         self.gameStatsBox.update(game)
         if self.gameStatsBox is not None:
@@ -174,6 +202,7 @@ class NewGameWidget(Tab):
         self.playersGroupBoxLayout.addWidget(self.inGameGroup)
         self.inGameGroupLayout = QVBoxLayout(self.inGameGroup)
         self.playersInGameList = PlayerList(None, self.inGameGroup)
+        self.playersInGameList.setMinimumWidth(120)
         # self.inGameGroup.setMaximumHeight(230)
         self.inGameGroupLayout.addWidget(self.playersInGameList)
 
@@ -181,6 +210,7 @@ class NewGameWidget(Tab):
         self.playersGroupBoxLayout.addWidget(self.availablePlayersGroup)
         self.availablePlayersGroupLayout = QVBoxLayout(self.availablePlayersGroup)
         self.playersAvailableList = PlayerList(None, self.playersGroupBox)
+        self.playersAvailableList.setMinimumWidth(120)
         self.availablePlayersGroupLayout.addWidget(self.playersAvailableList)
 
         #        self.availablePlayersGroupLayout.addStretch()
@@ -201,6 +231,28 @@ class NewGameWidget(Tab):
         self.newPlayerButton = QPushButton(self.playersGroupBox)
         self.newPlayerButton.clicked.connect(self.createNewPlayer)
         self.playersButtonsLayout.addWidget(self.newPlayerButton)
+
+    def onPlay(self):
+        if self.resumeGroup.getSelectedSavedGame() == 0:
+            self.createNewGame()
+        else:
+            self.resumeGroup.resumeGame()
+
+    def onSettings(self):
+        sd = SettingsDialog(parent=self)
+        sd.settingChanged.connect(self.watchSettingChange)
+        # sd.settingChanged.connect(self.retranslateUI)
+        sd.exec()
+
+    def watchSettingChange(self, name, value):
+        if name == "language":
+            self.languageChooser.changeLanguage(value)
+        elif name == "theme":
+            app = QApplication.instance()
+            if app:
+                cast(GamelogApplication, app).themeManager.set_theme(value)
+        else:
+            self.retranslateUI()
 
     def createNewGame(self):
         game = str(self.gameComboBox.currentText())
@@ -264,6 +316,7 @@ class NewGameWidget(Tab):
 
 class ResumeBox(QGroupBox):
     restartRequested = Signal(QWidget)
+    savedGameSelected = Signal(bool)
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -281,23 +334,33 @@ class ResumeBox(QGroupBox):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum
         )
         self.widgetLayout.addWidget(self.savedlist)
+        self.savedlist.itemSelectionChanged.connect(self.onSelectionChange)
         self.buttonLayout = QVBoxLayout()
         self.widgetLayout.addLayout(self.buttonLayout)
-        self.resumebutton = QPushButton(self)
-        self.resumebutton.clicked.connect(self.resumeGame)
-        self.resumebutton.hide()
-        self.buttonLayout.addWidget(self.resumebutton)
+        # self.resumebutton = QPushButton(self)
+        # self.resumebutton.clicked.connect(self.resumeGame)
+        # self.resumebutton.hide()
+        # self.buttonLayout.addWidget(self.resumebutton)
+        # self.buttonLayout.addStretch()
         self.cancelbutton = QPushButton(self)
+        self.cancelbutton.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding
+        )
         self.cancelbutton.clicked.connect(self.deleteGame)
         self.cancelbutton.hide()
         self.buttonLayout.addWidget(self.cancelbutton)
-        self.buttonLayout.addStretch()
+        # self.buttonLayout.addStretch()
         self.retranslateUI()
 
     def retranslateUI(self):
-        self.setTitle(self.tr("Saved Games"))
-        self.resumebutton.setText(self.tr("Resume"))
-        self.cancelbutton.setText(self.tr("Delete"))
+        # self.setTitle(self.tr("Saved Games"))
+        # self.resumebutton.setText(self.tr("Resume"))
+        # self.cancelbutton.setText(self.tr("Delete"))
+        # self.resumebutton.setText(self.tr("▶"))
+        if appsettings["text_in_buttons"]:
+            self.cancelbutton.setText(self.tr("Delete"))
+        else:
+            self.cancelbutton.setText("⌫")
 
     def changeGame(self, game):
         self.game = game
@@ -307,9 +370,13 @@ class ResumeBox(QGroupBox):
         candidates = self.engine.getCandidates()
         if not candidates:
             self.hide()
-            self.resumebutton.hide()
+            # self.resumebutton.hide()
             self.cancelbutton.hide()
         else:
+            item = QListWidgetItem(self.tr("Start a new game..."), self.savedlist)
+            self.savedlist.addItem(item)
+            self.matches.append(0)
+            item.setSelected(True)
             for idMatch, candidate in candidates.items():
                 self.matches.append(idMatch)
                 try:
@@ -333,8 +400,20 @@ class ResumeBox(QGroupBox):
                 item = QListWidgetItem(msg, self.savedlist)
                 self.savedlist.addItem(item)
             self.show()
-            self.resumebutton.show()
+            # self.resumebutton.show()
             self.cancelbutton.show()
+
+    def getSelectedSavedGame(self):
+        selected = self.savedlist.selectedIndexes()
+        if not selected:
+            return 0
+        else:
+            return self.savedlist.selectedIndexes()[0].row()
+
+    def onSelectionChange(self):
+        is_saved_match_selected = self.getSelectedSavedGame() != 0
+        self.cancelbutton.setEnabled(is_saved_match_selected)
+        self.savedGameSelected.emit(is_saved_match_selected)
 
     def resumeGame(self):
         selected = self.savedlist.selectedIndexes()

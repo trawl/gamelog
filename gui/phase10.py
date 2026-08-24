@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
+from controllers.settings import appsettings
 from gui.game import (
     CardWidget,
     GameInputWidget,
@@ -100,72 +101,6 @@ def getPhaseNames(phasecodes):
     return phases
 
 
-class GraphicalPhase(QWidget):
-    def __init__(self, phase=None, accent_colour=None, parent=None):
-        super().__init__(parent)
-        self.initUI()
-        self._accent_colour = accent_colour if accent_colour else QColor("purple")
-        self.setPhase(phase)
-
-    def initUI(self):
-        self.widgetLayout = QHBoxLayout(self)
-        self.cards = []
-        for _ in range(10):
-            card = CardWidget(self)
-            self.cards.append(card)
-            self.widgetLayout.addWidget(card)
-
-    def setAccentColour(self, colour):
-        self._accent_colour = colour if colour else QColor("purple")
-        self.updateCard()
-
-    def getPhase(self, phase):
-        return self.phase
-
-    def setPhase(self, phase=None):
-        self.phase = phase
-        self.updateCard()
-
-    def updateCard(self):
-        if not self.phase:
-            for card in self.cards:
-                card.reset()
-        else:
-            cardi = 0
-            combs = []
-            total_combined_cards = 0
-            for combination in self.phase.split():
-                m = re.match(r"(\d)([src]|cr)(\d)", combination)
-                if m:
-                    numcombs, tcode, combcards = m.groups()
-                    comb = {"n": int(numcombs), "t": tcode, "c": int(combcards)}
-                    combs.append(comb)
-                    total_combined_cards += comb["n"] * comb["c"]
-
-            padding = 10 - total_combined_cards
-
-            for combn, comb in enumerate(combs):
-                if comb["t"] in ("s", "r"):
-                    colour = QColor("light grey")
-                else:
-                    colour = self._accent_colour
-                for nc in range(comb["n"]):
-                    for ncc in range(comb["c"]):
-                        number = ""
-                        if "s" in comb["t"]:
-                            number = combn + nc + 1
-                        if "r" in comb["t"]:
-                            number = ncc + 1
-                        self.cards[cardi].reset(colour, number)
-                        cardi += 1
-                try:
-                    for _ in range(padding):
-                        self.cards[cardi].reset()
-                        cardi += 1
-                except IndexError:
-                    pass
-
-
 class Phase10Widget(GameWidget):
     def createEngine(self):
         if self.game == "Phase10Master":
@@ -178,26 +113,27 @@ class Phase10Widget(GameWidget):
     def initUI(self):
         super().initUI()
         self.hideInputOnFinish = False
+        self.gameInput.setAutoFillBackground(True)
+        self.setDealer()
+        self.retranslateUI()
+
+    def addExtraConfig(self):
+        super().addExtraConfig()
         # self.roundTitleLabel.hide()
         # self.phasesInOrderCheckBox = QCheckBox(self.matchGroup)
         self.phasesInOrderCheckBox = QPushButton(self.matchGroup)
+        self.phasesInOrderCheckBox.setProperty("textStateOnly", True)
         self.phasesInOrderCheckBox.setCheckable(True)
         self.phasesInOrderCheckBox.setChecked(self.engine.getPhasesInOrderFlag())
         # self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
         self.phasesInOrderCheckBox.setDisabled(self.engine.getNumRound() > 1)
         self.phasesInOrderCheckBox.toggled.connect(self.phasesInOrderChanged)
-        self.phasesInOrderCheckBox.setStyleSheet(self.dealerPolicyCheckBox.styleSheet())
+        # self.phasesInOrderCheckBox.setStyleSheet(self.dealerPolicyCheckBox.styleSheet())
         self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
 
-        self.gameInput = Phase10InputWidget(self.engine, self)
-        self.gameInput.setAutoFillBackground(True)
-        self.phasesInOrderCheckBox.toggled.connect(self.gameInput.switchPhasesInOrder)
-        self.gameInput.enterPressed.connect(self.commitRound)
-
-        self.details = Phase10RoundsDetail(self.engine, self.gameInput, self)
-        self.details.edited.connect(self.updatePanel)
-        # self.widgetLayout.addWidget(self.details, 1, 0)
-        self.leftLayout.addWidget(self.details)
+        self.phasesInOrderCheckBox.toggled.connect(
+            cast(Phase10InputWidget, self.gameInput).switchPhasesInOrder
+        )
 
         self.extraGroup = ToggleGroupBox(self)
         self.extraGroup.setSizePolicy(
@@ -226,47 +162,50 @@ class Phase10Widget(GameWidget):
             self.extraGroupTextLayout.addWidget(label)
             gp = GraphicalPhase(code, "purple", self.extraGroupCards)
             self.phaseCards.append(gp)
-            label = QLabel(f"{i + 1} : ", self.extraGroupCards)
+            label = QLabel(f"{i + 1: >2} : ", self.extraGroupCards)
             label.setStyleSheet("QLabel {font-weight: bold; }")
             self.extraGroupCardsLayout.addWidget(label, i, 0)
             self.extraGroupCardsLayout.addWidget(gp, i, 1)
 
         self.extraGroup.addScreen(self.extraGroupText)
         self.extraGroup.addScreen(self.extraGroupCards)
-        self.setDealer()
-        self.retranslateUI()
+
+    def createGameInputWidget(self, parent=None):
+        return Phase10InputWidget(self.engine, parent)
+
+    def createRoundsDetail(self, parent=None):
+        return Phase10RoundsDetail(self.engine, self.gameInput, self)
+
+    def addPlayerWidgets(self):
+        pass
 
     def retranslateUI(self):
         super().retranslateUI()
         self.phasesInOrderChanged()
-        self.gameInput.retranslateUI()
         self.extraGroup.setTitle(self.tr("Phases"))
-        self.details.retranslateUI()
         phaselabels = zip(getPhaseNames(self.engine.getPhases()), self.phaseLabels)
         for number, (phase, label) in enumerate(phaselabels, start=1):
-            label.setText(f"{number} : {phase}")
+            label.setText(f"{number: >2} :   {phase}")
 
     def togglePhaseDescs(self):
-        print("toggling desds")
         for l, c in zip(self.phaseLabels, self.phaseCards):
             l.hide(not l.hidden())
             c.hide(not c.hidden())
 
-    def setRoundTitle(self):
-        game = self.engine.getGame()
-        if game is None:
-            game = ""
-        self.roundTitleLabel.setText(game)
-
     def checkPlayerScore(self, player, score, extras=None):
         return super().checkPlayerScore(self, score) and not (
             score % 5 != 0
-            or (score < 50 and not self.gameInput.hasPlayerCleared(player))
+            or (
+                score < 50
+                and not cast(Phase10InputWidget, self.gameInput).hasPlayerCleared(
+                    player
+                )
+            )
         )
 
     def getPlayerExtraInfo(self, player):
-        cleared = self.gameInput.hasPlayerCleared(player)
-        a_phase = self.gameInput.getPlayerAimedPhase(player)
+        cleared = cast(Phase10InputWidget, self.gameInput).hasPlayerCleared(player)
+        a_phase = cast(Phase10InputWidget, self.gameInput).getPlayerAimedPhase(player)
         if a_phase:
             return {"aimedPhase": a_phase, "isCompleted": cleared}
         else:
@@ -274,23 +213,19 @@ class Phase10Widget(GameWidget):
 
     def updatePanel(self):
         super().updatePanel()
-        self.phasesInOrderCheckBox.setEnabled(False)
-        self.dealerPolicyCheckBox.setEnabled(False)
-        self.gameInput.updatePanel()
-        self.details.updateRound()
-        if self.engine.getWinner():
-            self.details.updateStats()
+        self.phasesInOrderCheckBox.setDisabled(self.engine.getNumRound() > 1)
+        cast(Phase10InputWidget, self.gameInput).updatePanel()
 
     def unsetDealer(self):
-        self.gameInput.unsetDealer()
+        cast(Phase10InputWidget, self.gameInput).unsetDealer()
 
     def setDealer(self):
-        self.gameInput.setDealer()
+        cast(Phase10InputWidget, self.gameInput).setDealer()
 
     def setWinner(self):
         super().setWinner()
         self.gameInput.setEnabled(True)
-        self.gameInput.setWinner()
+        cast(Phase10InputWidget, self.gameInput).setWinner()
 
     def phasesInOrderChanged(self, _=None):
         if self.phasesInOrderCheckBox.isChecked():
@@ -299,18 +234,14 @@ class Phase10Widget(GameWidget):
         else:
             self.engine.setPhasesInOrderFlag(False)
             self.phasesInOrderCheckBox.setText(self.tr("Free phase order"))
-        self.gameInput.updatePanel()
+        cast(Phase10InputWidget, self.gameInput).updatePanel()
 
     def updatePlayerOrder(self):
         GameWidget.updatePlayerOrder(self)
-        self.details.updatePlayerOrder()
+        self.detailGroup.updatePlayerOrder()
 
 
 class Phase10InputWidget(GameInputWidget):
-    def __init__(self, engine, parent=None):
-        super().__init__(engine, parent)
-        self.initUI()
-
     def initUI(self):
         players = self.engine.getListPlayers()
         if len(players) >= 4:
@@ -325,6 +256,7 @@ class Phase10InputWidget(GameInputWidget):
                 player, self.engine, self
             )
             self.playerInputList[player].roundWinnerSet.connect(self.changedWinner)
+            self.playerInputList[player].playerScoreChanged.connect(self.changed)
             if players_grid:
                 cast("QGridLayout", self.widgetLayout).addWidget(
                     self.playerInputList[player], np // 2, np % 2
@@ -498,6 +430,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.roundScore.setValue(5)
         self.roundScore.setColour(self.pcolour)
         self.roundScore.valueChanged.connect(self.updateRoundPhaseCleared)
+        self.roundScore.valueChanged.connect(self.playerScoreChanged)
         self.lowerLayout.addWidget(self.roundScore)
 
         self.roundPhaseClearedCheckbox = Phase10ClearedCheckBox(self)
@@ -543,11 +476,10 @@ class Phase10PlayerWidget(GamePlayerWidget):
     def getScore(self):
         if self.isRoundWinner():
             return 0
-        try:
-            return int(self.roundScore.value())
-        except (ValueError, TypeError) as e:
-            print(f"[Phase10PlayerWidget.getScore] {e}", file=sys.stderr)
+        score = self.roundScore.value()
+        if score is None:
             return -1
+        return int(score)
 
     def setScore(self, score):
         self.roundScore.setValue(score)
@@ -736,14 +668,12 @@ class Phase10RoundsDetail(GameRoundsDetail):
         self.container.setCurrentIndex(0)
 
     def retranslateUI(self):
+        super().retranslateUI()
         #         self.setTitle(i18n("GameRoundsDetail",'Details'))
-        self.container.setTabText(0, self.tr("Score"))
-        self.container.setTabText(1, self.tr("Table"))
-        self.container.setTabText(2, self.tr("Plot"))
-        self.container.setTabText(3, self.tr("Statistics"))
-        self.gamestats.retranslateUI()
-        self.plot.retranslateUI()
-        self.updateRound()
+        if appsettings["text_in_buttons"]:
+            self.container.setTabText(self.container.indexOf(self.iw), self.tr("Score"))
+        else:
+            self.container.setTabText(self.container.indexOf(self.iw), "★")
 
     def createRoundTable(self, engine, parent=None):
         return Phase10RoundTable(self.engine, parent)
@@ -921,3 +851,69 @@ class Phase10QSBox(GeneralQuickStats):
 
 class Phase10PQSBox(Phase10QSBox, ParticularQuickStats):
     pass
+
+
+class GraphicalPhase(QWidget):
+    def __init__(self, phase=None, accent_colour=None, parent=None):
+        super().__init__(parent)
+        self.initUI()
+        self._accent_colour = accent_colour if accent_colour else QColor("purple")
+        self.setPhase(phase)
+
+    def initUI(self):
+        self.widgetLayout = QHBoxLayout(self)
+        self.cards = []
+        for _ in range(10):
+            card = CardWidget(self)
+            self.cards.append(card)
+            self.widgetLayout.addWidget(card)
+
+    def setAccentColour(self, colour):
+        self._accent_colour = colour if colour else QColor("purple")
+        self.updateCard()
+
+    def getPhase(self):
+        return self.phase
+
+    def setPhase(self, phase=None):
+        self.phase = phase
+        self.updateCard()
+
+    def updateCard(self):
+        if not self.phase:
+            for card in self.cards:
+                card.reset()
+        else:
+            cardi = 0
+            combs = []
+            total_combined_cards = 0
+            for combination in self.phase.split():
+                m = re.match(r"(\d)([src]|cr)(\d)", combination)
+                if m:
+                    numcombs, tcode, combcards = m.groups()
+                    comb = {"n": int(numcombs), "t": tcode, "c": int(combcards)}
+                    combs.append(comb)
+                    total_combined_cards += comb["n"] * comb["c"]
+
+            padding = 10 - total_combined_cards
+
+            for combn, comb in enumerate(combs):
+                if comb["t"] in ("s", "r"):
+                    colour = QColor("light grey")
+                else:
+                    colour = self._accent_colour
+                for nc in range(comb["n"]):
+                    for ncc in range(comb["c"]):
+                        number = ""
+                        if "s" in comb["t"]:
+                            number = combn + nc + 1
+                        if "r" in comb["t"]:
+                            number = ncc + 1
+                        self.cards[cardi].reset(colour, number)
+                        cardi += 1
+                try:
+                    for _ in range(padding):
+                        self.cards[cardi].reset()
+                        cardi += 1
+                except IndexError:
+                    pass

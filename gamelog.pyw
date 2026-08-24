@@ -3,12 +3,11 @@ import ctypes
 import os
 import sys
 
-from PySide6.QtCore import QFile, QTextStream
-from PySide6.QtWidgets import QApplication
-
 import resources_rc  # noqa: F401
+from gui.gamelogapplication import GamelogApplication
 from gui.languagechooser import LanguageManager
 from gui.mainwindow import MainWindow
+from gui.thememanager import ThemeManager
 
 if __name__ == "__main__":
     if sys.platform.startswith("win"):
@@ -19,15 +18,10 @@ if __name__ == "__main__":
         sys.stdout = f
         sys.stderr = f
 
-    app = QApplication(sys.argv)
-    file = QFile(":/styles/main.qss")
-    if file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
-        stream = QTextStream(file)
-        app.setStyleSheet(stream.readAll())
-        print("Loaded Style styles/main.qss")
-
+    app = GamelogApplication(sys.argv)
     app.setDesktopFileName("gamelog")
 
-    app.languageManager = LanguageManager(app)  # pyright: ignore[reportAttributeAccessIssue]
+    app.languageManager = LanguageManager(app)
+    app.themeManager = ThemeManager(app)
     mw = MainWindow()
     sys.exit(app.exec())

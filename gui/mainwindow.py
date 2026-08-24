@@ -23,7 +23,8 @@ class MainWindow(QMainWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        db.connectDB()
+        if not db.isConnected():
+            db.connectDB()
         self.openedGames = []
         self.initUI()
 

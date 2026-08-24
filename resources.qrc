@@ -26,6 +26,7 @@
         <file>icons/dl.svg</file>
         <file>icons/tl.svg</file>
         <file>icons/bingo.svg</file>
-        <file>styles/main.qss</file>
+        <file>styles/light.qss</file>
+        <file>styles/dark.qss</file>
     </qresource>
 </RCC>

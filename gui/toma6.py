@@ -28,23 +28,6 @@ class Toma6Widget(RemigioWidget):
     def createRoundsDetail(self, parent=None):
         return Toma6RoundsDetail(self.engine, parent)
 
-    def initUI(self):
-        super().initUI()
-        # self.topPointsLabel.hide()
-        # self.topPointsLineEdit.hide()
-        # self.gameInput.enterPressed.connect(self.commitRound)
-        self.roundLayout.addWidget(self.gameInput)
-
-        self.retranslateUI()
-
-    def updateScores(self):
-        for player in self.players:
-            score = self.engine.getScoreFromPlayer(player)
-            self.playerGroupBox[player].updateDisplay(score)
-
-    def updateGameStatusLabel(self):
-        super(RemigioWidget, self).updateGameStatusLabel()
-
 
 class Toma6InputWidget(RemigioInputWidget):
     def initUI(self):
@@ -55,6 +38,8 @@ class Toma6InputWidget(RemigioInputWidget):
                 player, self.bgcolors, PlayerColours[i], self
             )
             self.widgetLayout.addWidget(self.playerInputList[player])
+            self.playerInputList[player].changed.connect(self.changed)
+            self.playerInputList[player].changed.connect(self.getWinner)
 
     def getWinner(self):
         scores = self.getScores()

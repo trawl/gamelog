@@ -1,6 +1,10 @@
+from typing import cast
+
 from PySide6.QtCore import Property, QEasingCurve, QPropertyAnimation, QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QLinearGradient, QPainter
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QApplication, QWidget
+
+from gui.gamelogapplication import GamelogApplication
 
 
 class StepProgressBar(QWidget):
@@ -10,7 +14,7 @@ class StepProgressBar(QWidget):
         self.current_step = 0
 
         # Animation state
-        self._highlight_pos = 0.0  # float representing the "center" of highlight
+        self._highlight_pos = 0.0
         self._highlight_target = 0.0
 
         self.highlight_anim = QPropertyAnimation(self, b"highlightPos")
@@ -21,27 +25,68 @@ class StepProgressBar(QWidget):
         self.setMaximumHeight(30)
         self.setMinimumWidth(20)
 
-        # COLORS ----------------------------------------
-        self.color_done_top = QColor(110, 220, 120)
-        self.color_done_bottom = QColor(70, 160, 80)
+        # Theme
+        app = QApplication.instance()
+        if app:
+            theme_manager = cast(GamelogApplication, app).themeManager
+            theme_manager.themeChanged.connect(self._theme_changed)
+            self._update_colors(theme_manager.effective_theme)
+        else:
+            self._update_colors("dark")
 
-        # self.color_active_top = QColor(255, 230, 130)
-        # self.color_active_bottom = QColor(230, 180, 40)
-
-        self.color_active_top = QColor(50, 90, 200)  # lighter blue
-        self.color_active_bottom = QColor(30, 60, 150)  # deeper blue
-
-        self.color_pending_top = QColor(120, 120, 120)
-        self.color_pending_bottom = QColor(70, 70, 70)
-
-        self.separator_color = QColor(40, 40, 40)
-
-        # Highlight glow band
-        # self.highlight_color = QColor(255, 255, 180, 90)
-        self.highlight_color = QColor(120, 160, 255, 110)
-
-        # Gloss overlay (subtle)
+        # Gloss overlay
         self.gloss_alpha = 80
+
+    # ---------------------------------------------
+    # THEME
+    # ---------------------------------------------
+    def _theme_changed(self, theme):
+        self._update_colors(theme)
+
+    def _update_colors(self, theme):
+        if hasattr(theme, "value"):
+            theme = theme.value
+
+        if theme == "dark":
+            self.color_done_top = QColor(110, 220, 120)
+            self.color_done_bottom = QColor(70, 160, 80)
+
+            self.color_active_top = QColor(50, 90, 200)
+            self.color_active_bottom = QColor(30, 60, 150)
+
+            self.color_pending_top = QColor(120, 120, 120)
+            self.color_pending_bottom = QColor(70, 70, 70)
+
+            self.separator_color = QColor(40, 40, 40)
+
+            self.highlight_color = QColor(
+                120,
+                160,
+                255,
+                110,
+            )
+
+        else:
+            # Light theme
+            self.color_done_top = QColor(90, 190, 100)
+            self.color_done_bottom = QColor(55, 145, 65)
+
+            self.color_active_top = QColor(70, 120, 220)
+            self.color_active_bottom = QColor(45, 85, 175)
+
+            self.color_pending_top = QColor(210, 213, 218)
+            self.color_pending_bottom = QColor(175, 179, 185)
+
+            self.separator_color = QColor(160, 165, 170)
+
+            self.highlight_color = QColor(
+                90,
+                140,
+                235,
+                90,
+            )
+
+        self.update()
 
     # ---------------------------------------------
     # PROPERTIES FOR ANIMATION
@@ -53,15 +98,23 @@ class StepProgressBar(QWidget):
         self._highlight_pos = value
         self.update()
 
-    highlightPos = Property(float, getHighlightPos, setHighlightPos)
+    highlightPos = Property(
+        float,
+        getHighlightPos,
+        setHighlightPos,
+    )
 
     # ---------------------------------------------
     # PUBLIC API
     # ---------------------------------------------
     def setSteps(self, steps, keep_current=False):
-        self.steps = [str(s) for s in steps]  # guarantee strings
+        self.steps = [str(s) for s in steps]
+
         if keep_current:
-            self.current_step = min(self.current_step, len(self.steps) - 1)
+            self.current_step = min(
+                self.current_step,
+                len(self.steps) - 1,
+            )
         else:
             self.current_step = 0
 
@@ -69,6 +122,7 @@ class StepProgressBar(QWidget):
 
     def setCurrentStep(self, step):
         step = int(step)
+
         if step == self.current_step or step < 0 or step >= len(self.steps) + 1:
             return
 
@@ -77,6 +131,7 @@ class StepProgressBar(QWidget):
 
         # Trigger highlight slide animation
         self._highlight_target = float(step)
+
         self.highlight_anim.stop()
         self.highlight_anim.setStartValue(float(old_step))
         self.highlight_anim.setEndValue(self._highlight_target)
@@ -93,80 +148,151 @@ class StepProgressBar(QWidget):
 
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
         total = len(self.steps)
         W = self.width()
         H = self.height()
         segW = W / total
 
         # ---------------------------
-        # Draw each segment (with gradient)
+        # Draw each segment
         # ---------------------------
         for i, label in enumerate(self.steps):
             left = i * segW
-            rect = QRectF(left, 0, segW, H)
+            rect = QRectF(
+                left,
+                0,
+                segW,
+                H,
+            )
 
             # Determine state
             if i < self.current_step:
                 top_color = self.color_done_top
                 bottom_color = self.color_done_bottom
+
             elif i == self.current_step:
                 top_color = self.color_active_top
                 bottom_color = self.color_active_bottom
+
             else:
                 top_color = self.color_pending_top
                 bottom_color = self.color_pending_bottom
 
             # Gradient Fill
-            grad = QLinearGradient(rect.topLeft(), rect.bottomLeft())
+            grad = QLinearGradient(
+                rect.topLeft(),
+                rect.bottomLeft(),
+            )
+
             grad.setColorAt(0, top_color)
             grad.setColorAt(1, bottom_color)
-            painter.fillRect(rect, grad)
 
-            # Subtle Gloss (top 40%)
-            gloss_rect = QRectF(left, 0, segW, H * 0.4)
-            gloss_grad = QLinearGradient(gloss_rect.topLeft(), gloss_rect.bottomLeft())
-            c1 = QColor(255, 255, 255, self.gloss_alpha)
-            c2 = QColor(255, 255, 255, 0)
+            painter.fillRect(
+                rect,
+                grad,
+            )
+
+            # ---------------------------
+            # Subtle Gloss
+            # ---------------------------
+            gloss_rect = QRectF(
+                left,
+                0,
+                segW,
+                H * 0.4,
+            )
+
+            gloss_grad = QLinearGradient(
+                gloss_rect.topLeft(),
+                gloss_rect.bottomLeft(),
+            )
+
+            c1 = QColor(
+                255,
+                255,
+                255,
+                self.gloss_alpha,
+            )
+            c2 = QColor(
+                255,
+                255,
+                255,
+                0,
+            )
+
             gloss_grad.setColorAt(0, c1)
             gloss_grad.setColorAt(1, c2)
-            painter.fillRect(gloss_rect, gloss_grad)
 
-            # Separator (except last)
+            painter.fillRect(
+                gloss_rect,
+                gloss_grad,
+            )
+
+            # ---------------------------
+            # Separator
+            # ---------------------------
             # if i < total - 1:
             #     painter.setPen(QPen(self.separator_color, 2))
             #     painter.drawLine(
-            #         int(left + segW), int(H * 0.15), int(left + segW), int(H * 0.85)
+            #         int(left + segW),
+            #         int(H * 0.15),
+            #         int(left + segW),
+            #         int(H * 0.85),
             #     )
 
         # ---------------------------
         # DRAW SLIDING HIGHLIGHT
         # ---------------------------
         highlight_x = (self._highlight_pos + 0.5) * segW
-        highlight_rect = QRectF(highlight_x - segW * 0.5, 0, segW, H)
+
+        highlight_rect = QRectF(
+            highlight_x - segW * 0.5,
+            0,
+            segW,
+            H,
+        )
 
         glow_grad = QLinearGradient(
-            highlight_rect.topLeft(), highlight_rect.bottomLeft()
+            highlight_rect.topLeft(),
+            highlight_rect.bottomLeft(),
         )
+
         glow_top = QColor(self.highlight_color)
+
         glow_bottom = QColor(self.highlight_color)
         glow_bottom.setAlpha(40)
 
         glow_grad.setColorAt(0, glow_top)
         glow_grad.setColorAt(1, glow_bottom)
 
-        painter.fillRect(highlight_rect, glow_grad)
+        painter.fillRect(
+            highlight_rect,
+            glow_grad,
+        )
 
         # ---------------------------
         # DRAW LABELS
         # ---------------------------
-
         if len(self.steps) <= 10:
             painter.setPen(Qt.GlobalColor.white)
+
             font = QFont(self.font())
             font.setBold(True)
             painter.setFont(font)
 
             for i, label in enumerate(self.steps):
                 left = i * segW
-                rect = QRectF(left, 0, segW, H)
-                painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, str(label))
+
+                rect = QRectF(
+                    left,
+                    0,
+                    segW,
+                    H,
+                )
+
+                painter.drawText(
+                    rect,
+                    Qt.AlignmentFlag.AlignCenter,
+                    str(label),
+                )

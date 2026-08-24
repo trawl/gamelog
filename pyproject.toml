@@ -8,3 +8,6 @@ dependencies = [
 ]
 [project.scripts]
 gamelog = "gamelog.pyw:__main__"
+
+[tool.basedpyright]
+typeCheckingMode = "standard"

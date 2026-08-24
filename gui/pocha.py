@@ -7,8 +7,8 @@ from PySide6.QtWidgets import (
     QButtonGroup,
     QFrame,
     QGridLayout,
+    QGroupBox,
     QHBoxLayout,
-    QLabel,
     QMessageBox,
     QPushButton,
     QRadioButton,
@@ -22,7 +22,6 @@ from controllers.pochaengine import PochaEngine
 from gui.game import (
     GameInputWidget,
     GameNotImplementedException,
-    GamePlayerWidget,
     GameRoundPlot,
     GameRoundsDetail,
     GameRoundTable,
@@ -54,16 +53,29 @@ class PochaWidget(GameWidget):
 
     def initUI(self):
         super().initUI()
+        self.retranslateUI()
 
-        self.gameInput = PochaInputWidget(self.engine, self)
-        self.gameInput.enterPressed.connect(self.commitRound)
-        self.roundLayout.addWidget(self.gameInput)
+    def createGameInputWidget(self, parent=None):
+        return PochaInputWidget(self.engine, parent)
 
+    def createRoundsDetail(self, parent=None):
+        return PochaRoundsDetail(self.engine, parent)
+
+    def retranslateUI(self):
+        super().retranslateUI()
+        self.spanishSuitRadio.setText(self.tr("Spanish Deck"))
+        self.frenchSuitRadio.setText(self.tr("French Deck"))
+        self.detailGroup.retranslateUI()
+
+    def addExtraConfig(self):
+        super().addExtraConfig()
         self.progressBar = StepProgressBar(self.engine.getRoundSequence(), self)
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
-        self.matchGroupLayout.addWidget(self.progressBar)
+        # self.matchGroupLayout.addWidget(self.progressBar)
+        self.matchGroupLayout.insertWidget(1, self.progressBar)
 
         self.configLayout = QGridLayout()
+        # self.matchGroupLayout.insertLayout(3, self.configLayout)
         self.matchGroupLayout.addLayout(self.configLayout)
         self.suitTypeGroup = QButtonGroup(self)
         self.spanishSuitRadio = QRadioButton(self)
@@ -75,45 +87,7 @@ class PochaWidget(GameWidget):
         self.suitTypeGroup.addButton(self.frenchSuitRadio)
         self.configLayout.addWidget(self.frenchSuitRadio)
         self.frenchSuitRadio.setChecked(self.engine.getSuitType() == "french")
-
         self.dealerPolicyCheckBox.hide()
-
-        self.detailGroup = PochaRoundsDetail(self.engine, self)
-        self.detailGroup.edited.connect(self.updatePanel)
-        # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
-        self.leftLayout.addWidget(self.detailGroup)
-
-        # self.playerGroup = QGroupBox(self)
-        # # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
-        # self.rightLayout.addWidget(self.playerGroup)
-
-        # self.playerGroup.setStyleSheet(
-        #     "QGroupBox { font-size: 18px; font-weight: bold; }"
-        # )
-        # self.playersLayout = QVBoxLayout(self.playerGroup)
-        # self.playersLayout.addStretch()
-        self.playersLayout = QVBoxLayout()
-        self.matchGroupLayout.addLayout(self.playersLayout)
-        self.playerGroupBox = {}
-        for i, player in enumerate(self.players):
-            pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
-            pw.updateDisplay(self.engine.getScoreFromPlayer(player))
-            if player == self.engine.getDealer():
-                pw.setDealer()
-            self.playersLayout.addWidget(pw)
-            self.playerGroupBox[player] = pw
-
-        # self.playersLayout.addStretch()
-
-        self.retranslateUI()
-
-    def retranslateUI(self):
-        super().retranslateUI()
-        #         self.playerGroup.setTitle(i18n("PochaWidget","Score"))
-        self.spanishSuitRadio.setText(self.tr("Spanish Deck"))
-        self.frenchSuitRadio.setText(self.tr("French Deck"))
-        # self.playerGroup.setTitle(self.tr("Scoreboard"))
-        self.detailGroup.retranslateUI()
 
     def changeSuit(self, *_args):
         if self.spanishSuitRadio.isChecked():
@@ -123,7 +97,9 @@ class PochaWidget(GameWidget):
         self.retranslateUI()
 
     def setRoundTitle(self):
-        super().setRoundTitle()
+        if self.engine.getWinner():
+            self.roundTitleLabel.setText(f"{self.engine.getGame()}")
+            return
         hands = self.engine.getHands()
         direction = self.engine.getDirection()
         if hands == 1:
@@ -148,69 +124,40 @@ class PochaWidget(GameWidget):
     def checkPlayerScore(self, player, score, extras=None):
         return True
 
-    def unsetDealer(self):
-        self.playerGroupBox[self.engine.getDealer()].unsetDealer()
-
-    def setDealer(self):
-        self.playerGroupBox[self.engine.getDealer()].setDealer()
-
     def updatePanel(self):
-        self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
-        for player in self.players:
-            score = self.engine.getScoreFromPlayer(player)
-            self.playerGroupBox[player].updateDisplay(score)
-
-        if self.engine.getWinner():
-            self.detailGroup.updateStats()
-        self.detailGroup.updateRound()
         super().updatePanel()
-        self.gameInput.setFocus()
+        self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
+        # self.spanishSuitRadio.setDisabled(self.engine.getNumRound() > 1)
+        # self.frenchSuitRadio.setDisabled(self.engine.getNumRound() > 1)
 
-    def setWinner(self):
-        super().setWinner()
-        winner = self.engine.getWinner()
-        if winner in self.players:
-            self.playerGroupBox[winner].setWinner()
-
-    def commitRound(self):
+    def commitRoundSanityCheck(self, interactive=False):
         hands = self.engine.getHands()
-        wonhands = self.gameInput.getWonHands()
+        wonhands = cast(PochaInputWidget, self.gameInput).getWonHands()
         won = sum(wonhands.values())
         if min(wonhands.values()) < 0:
-            QMessageBox.warning(
-                self,
-                self.game,
-                self.tr("There are players with no selected won hands."),
-            )
-            return
+            msg = self.tr("There are players with no selected won hands.")
+            if interactive:
+                QMessageBox.warning(
+                    self,
+                    self.game,
+                    msg,
+                )
+            return False
 
         if hands != won:
             msg = self.tr("There are {} won hands selected when there should be {}.")
-            QMessageBox.warning(self, self.game, msg.format(won, hands))
-            return
-
-        super().commitRound()
+            if interactive:
+                QMessageBox.warning(self, self.game, msg.format(won, hands))
+            return False
+        return True
 
     def setFocus(self, _reason=None):
         self.gameInput.setFocus()
-
-    def updatePlayerOrder(self):
-        GameWidget.updatePlayerOrder(self)
-        # self.playersLayout.addStretch()
-        for player in self.engine.getListPlayers():
-            self.playersLayout.removeWidget(self.playerGroupBox[player])
-
-        for i, player in enumerate(self.engine.getListPlayers()):
-            self.playersLayout.addWidget(self.playerGroupBox[player])
-            self.playerGroupBox[player].setColour(PlayerColours[i])
-        # self.playersLayout.addStretch()
-        self.detailGroup.updatePlayerOrder()
 
 
 class PochaInputWidget(GameInputWidget):
     def __init__(self, engine, parent=None):
         super().__init__(engine, parent)
-        self.initUI()
         self.lastChoices = []
 
     def initUI(self):
@@ -233,6 +180,7 @@ class PochaInputWidget(GameInputWidget):
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
             self.playerInputList[player].newExpected.connect(self.checkExpected)
             self.playerInputList[player].handsClicked.connect(self.newChoice)
+            self.playerInputList[player].changed.connect(self.changed)
 
     def newChoice(self, mode, player):
         self.lastChoices.append((mode, player))
@@ -240,12 +188,6 @@ class PochaInputWidget(GameInputWidget):
     def reset(self):
         super().reset()
         self.lastChoices = []
-
-    def getScores(self):
-        scores = {}
-        for player, piw in self.playerInputList.items():
-            scores[player] = piw.getScore()
-        return scores
 
     def getWonHands(self):
         won = {}
@@ -350,10 +292,11 @@ class PochaInputWidget(GameInputWidget):
             self.playerInputList[player].setColour(PlayerColours[i])
 
 
-class PochaPlayerInputWidget(QFrame):
+class PochaPlayerInputWidget(QGroupBox):
     winnerSet = QtCore.Signal(str)
     newExpected = QtCore.Signal()
     handsClicked = QtCore.Signal(str, str)
+    changed = QtCore.Signal()
 
     def __init__(self, player, engine, colour=None, parent=None):
         super().__init__(parent)
@@ -364,24 +307,12 @@ class PochaPlayerInputWidget(QFrame):
         self.mainLayout = QVBoxLayout(self)
         self.mainLayout.setSpacing(0)
 
-        self.label = QLabel(self)
-        self.label.setText(self.player)
-        self.mainLayout.addWidget(self.label)
-        self.label.setAutoFillBackground(False)
-        self.setFrameShape(QFrame.Shape.Panel)
-        self.setFrameShadow(QFrame.Shadow.Raised)
-        self.label.setScaledContents(True)
-        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.label.setWordWrap(False)
-        css = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
-        self.label.setStyleSheet(
-            css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
-        )
+        self.setTitle(self.player)
 
         self.expectedGroupBox = QFrame(self)
         self.mainLayout.addWidget(self.expectedGroupBox)
         self.ebLayout = QHBoxLayout(self.expectedGroupBox)
-        self.ebLayout.setSpacing(0)
+        self.ebLayout.setSpacing(2)
         self.ebLayout.setContentsMargins(2, 2, 2, 2)
         self.expectedGroup = QButtonGroup(self)
         self.expectedGroup.buttonReleased.connect(self.expectedClickedAction)
@@ -390,39 +321,32 @@ class PochaPlayerInputWidget(QFrame):
         self.wonGroupBox = QFrame(self)
         self.mainLayout.addWidget(self.wonGroupBox)
         self.wbLayout = QHBoxLayout(self.wonGroupBox)
-        self.wbLayout.setSpacing(0)
+        self.wbLayout.setSpacing(2)
         self.wbLayout.setContentsMargins(2, 2, 2, 2)
         self.wonGroup = QButtonGroup(self)
         self.wonGroup.buttonReleased.connect(self.wonClickedAction)
         self.wonButtons = []
-        button_css = f"""
-            QPushButton:checked {{
-                background: {self.pcolour.name()};
-            }}
-
-            QPushButton:checked:hover {{
-                background: {self.pcolour.name()};
-            }}"""
         for i in range(-1, 9):
             button = PochaHandsButton(str(i), self)
-            button.setStyleSheet(button_css)
             self.expectedGroup.addButton(button, i)
             self.expectedButtons.append(button)
             button.toggled.connect(self.enableWonGroup)
+            button.toggled.connect(self.changed)
             if i < 0:
                 button.hide()
             else:
                 self.ebLayout.addWidget(button)
 
             button = PochaHandsButton(str(i), self)
-            button.setStyleSheet(button_css)
             self.wonGroup.addButton(button, i)
             self.wonButtons.append(button)
             if i < 0:
                 button.hide()
             else:
                 self.wbLayout.addWidget(button)
+            button.toggled.connect(self.changed)
 
+        self.setColour(self.pcolour)
         self.reset()
 
     def reset(self):
@@ -505,10 +429,30 @@ class PochaPlayerInputWidget(QFrame):
 
     def setColour(self, colour):
         self.pcolour = colour
-        css = "QLabel {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}"
-        self.label.setStyleSheet(
-            css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
-        )
+        css = f"""
+            QGroupBox {{ font-size: 24px; font-weight: bold; color: {self.pcolour.name()}; }}
+            QGroupBox:focus-within {{ border: 2px solid #0078d7; background-color: #e6f1fb;}}
+            QGroupBox::title {{
+                    subcontrol-origin: margin;
+                    subcontrol-position: top center;
+                    padding: 0 10px;
+                    background-color: transparent;
+            }}
+
+            QPushButton {{
+                padding: 2px 2px;
+            }}
+
+            QPushButton:checked {{
+                background: {self.pcolour.name()};
+                border: 1px solid {self.pcolour.name()};
+            }}
+
+            QPushButton:checked:hover {{
+                background: {self.pcolour.name()};
+            }}
+        """
+        self.setStyleSheet(css)
 
 
 class PochaHandsButton(QPushButton):

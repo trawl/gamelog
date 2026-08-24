@@ -1,6 +1,6 @@
 QPushButton {
     border-radius: 6px;
-    padding: 6px 10px;
+    padding: 6px 6px;
     background: #555;
     color: white;
 }
@@ -46,6 +46,38 @@ QPushButton:disabled {
     background: #444;
     color: #999;
     border-color: #555;
+}
+
+QPushButton[textStateOnly="true"]:checked {
+    background: #555;
+    color: white;
+}
+
+QPushButton[textStateOnly="true"]:disabled {
+    background: #444;
+    color: #999;
+    border-color: #555;
+}
+
+QPushButton[textStateOnly="true"]:checked:hover {
+    background: #666;
+    border-color: #aaa;
+}
+
+QPushButton[textStateOnly="true"]:checked:pressed {
+    background: #555;
+}
+
+QPushButton[textStateOnly="true"]:disabled {
+    background: #444;
+    color: white;
+    border-color: #555;
+}
+
+QLineEdit {
+    border-radius: 6px;
+    border: 1px solid #555555 ;
+    background: transparent;
 }
 
 QComboBox {
@@ -189,3 +221,32 @@ QHeaderView::section:last {
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
 }*/
+
+ClickableLabel {
+    background-color: #444444;
+    border: 1px solid #666666;
+    border-radius: 20px;
+
+    font-size: 24px;
+    font-weight: bold;
+
+    /* Default only; Python overrides this per instance */
+    color: white;
+}
+
+ClickableLabel:hover {
+    background-color: #555555;
+}
+
+ClickableLabel[pressed="true"] {
+    background-color: #333333;
+    border-color: #777777;
+}
+
+ClickableLabel[locked="true"] {
+    background-color: #444444;
+}
+
+ClickableLabel[locked="true"]:hover {
+    background-color: #444444;
+}

@@ -109,6 +109,9 @@ class GameEngine:
     def getGameSeconds(self):
         return self.match.getGameSeconds()
 
+    def requiresExplicitFinish(self) -> bool:
+        return False
+
     def updateTimes(self, start, finish, seconds):
         self.match.setStartTime(start)
         self.match.setFinishTime(finish)
@@ -141,10 +144,15 @@ class GameEngine:
 class RoundGameEngine(GameEngine):
     match: "GenericRoundMatch"
 
+    def __init__(self):
+        super().__init__()
+        self.starting_dealer = None
+
     def begin(self):
         super().begin()
         if self.getDealingPolicy() != self.NoDealer:
-            self.match.setDealer(random.choice(self.porder))
+            self.starting_dealer = random.choice(self.porder)
+            self.match.setDealer(self.starting_dealer)
 
     def openRound(self, nround):
         self.round = self.match.createRound(nround)
@@ -184,7 +192,11 @@ class RoundGameEngine(GameEngine):
         self.match.setDealer(self.porder[candidate])
 
     def updateWinnerDealer(self, back=False):
-        self.match.setDealer(self.round.getWinner())
+        try:
+            newdealer = self.getRounds()[-1].getWinner()
+        except IndexError:
+            newdealer = self.starting_dealer
+        self.match.setDealer(newdealer)
 
     def printStats(self):
         lastround = self.getNumRound() - 1

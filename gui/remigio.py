@@ -37,62 +37,25 @@ class RemigioWidget(GameWidget):
 
     def initUI(self):
         super().initUI()
+        self.retranslateUI()
 
-        self.gameInput.enterPressed.connect(self.commitRound)
-        self.roundLayout.addWidget(self.gameInput)
-
-        # self.configLayout = QHBoxLayout()
-        # self.matchGroupLayout.addLayout(self.configLayout)
-        # self.topPointsLineEdit = QLineEdit(self.matchGroup)
-        # self.topPointsLineEdit.setText(str(self.engine.getTop()))
-        # self.topPointsLineEdit.setValidator(
-        #     QtGui.QIntValidator(1, 10000, self.topPointsLineEdit)
-        # )
-        # self.topPointsLineEdit.setFixedWidth(50)
-        # sp = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        # self.topPointsLineEdit.setSizePolicy(sp)
-        # self.topPointsLineEdit.editingFinished.connect(self.changeTop)
-        # self.topPointsLineEdit.setDisabled(self.engine.getNumRound() > 1)
-        # self.topPointsLineEdit.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        # self.topPointsLineEdit.setStyleSheet("""
-        #     QLineEdit {
-        #         padding: 2px;
-        #         border-radius: 6px;
-        #         border: 1px solid #555555;
-        #         background: transparent;
-        #     }
-        #     QLineEdit:focus {
-        #         border: 2px solid #ffffff;   /* highlight color */
-        #     }
-        # """)
-        self.topPointsLineEdit = ScoreSpinBox(self.matchGroup)
-        self.topPointsLineEdit.setMaximum(1000)
-        self.topPointsLineEdit.setValue(self.engine.getTop())
-        self.topPointsLineEdit.lineEdit().setFocusPolicy(
+    def addExtraConfig(self):
+        super().addExtraConfig()
+        self.topPointsScoreBox = ScoreSpinBox(self.matchGroup)
+        self.topPointsScoreBox.setMaximum(1000)
+        self.topPointsScoreBox.setValue(self.engine.getTop())
+        self.topPointsScoreBox.lineEdit().setFocusPolicy(
             QtCore.Qt.FocusPolicy.ClickFocus
         )
-        self.topPointsLineEdit.setDisabled(self.engine.getNumRound() > 1)
-        self.topPointsLineEdit.valueChanged.connect(self.changeTop)
-        # self.topPointsLineEdit.setMaximumWidth(200)
-        # self.topPointsLineEdit.setFixedSize(140, 50)
-        self.topPointsLineEdit.setSizePolicy(
+        self.topPointsScoreBox.valueChanged.connect(self.changeTop)
+        self.topPointsScoreBox.setSizePolicy(
             QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Maximum
         )
         self.matchGroupLayout.addWidget(
-            self.topPointsLineEdit, alignment=QtCore.Qt.AlignmentFlag.AlignLeft
+            self.topPointsScoreBox, alignment=QtCore.Qt.AlignmentFlag.AlignLeft
         )
-        # self.topPointsLineEdit.hide()
 
-        self.topPointsLabel = QLabel(self.matchGroup)
-        self.topPointsLabel.setStyleSheet("QLabel {font-weight: bold; }")
-        self.topPointsLabel.hide()
-        # self.configLayout.addWidget(self.topPointsLabel)
-        # self.matchGroupLayout.addSpacing(20)
-
-        self.detailGroup = self.createRoundsDetail(self)
-        self.detailGroup.edited.connect(self.updatePanel)
-        self.leftLayout.addWidget(self.detailGroup)
-
+    def addPlayerWidgets(self):
         np = len(self.players)
         if np <= 6:
             self.playersLayout = QVBoxLayout()
@@ -109,7 +72,6 @@ class RemigioWidget(GameWidget):
             if player == self.engine.getDealer():
                 pw.setDealer()
             if self.engine.isPlayerOff(player):
-                print(f"Should set {player} to ko...")
                 pw.koPlayer()
             if np < 8:
                 self.playersLayout.addWidget(pw)
@@ -117,18 +79,11 @@ class RemigioWidget(GameWidget):
                 self.playersLayout.addWidget(pw, i // 2, i % 2)  # pyright: ignore[reportArgumentType]
             self.playerGroupBox[player] = pw
 
-        self.retranslateUI()
-
-    def retranslateUI(self):
-        super().retranslateUI()
-        # self.topPointsLabel.setText(self.tr("Score Limit"))
-        self.detailGroup.retranslateUI()
-
     def createGameInputWidget(self, parent=None):
-        return RemigioInputWidget(self.engine, RemigioWidget.bgcolors, parent)
+        return RemigioInputWidget(self.engine, self.bgcolors, parent)
 
     def createRoundsDetail(self, parent=None):
-        return RemigioRoundsDetail(self.engine, RemigioWidget.bgcolors, parent)
+        return RemigioRoundsDetail(self.engine, self.bgcolors, parent)
 
     def updateGameStatusLabel(self):
         super().updateGameStatusLabel()
@@ -147,25 +102,13 @@ class RemigioWidget(GameWidget):
         else:
             return {}
 
-    def unsetDealer(self):
-        self.playerGroupBox[self.engine.getDealer()].unsetDealer()
-
-    def setDealer(self):
-        self.playerGroupBox[self.engine.getDealer()].setDealer()
-
     def updatePanel(self):
-        self.topPointsLineEdit.setReadOnly(True)
-        self.dealerPolicyCheckBox.setEnabled(False)
-        self.updateScores()
-        if self.engine.getWinner():
-            self.detailGroup.updateStats()
-        self.detailGroup.updateRound()
         super().updatePanel()
+        self.topPointsScoreBox.setReadOnly(self.engine.getNumRound() > 1)
 
     def updateScores(self):
+        super().updateScores()
         for player in self.players:
-            score = self.engine.getScoreFromPlayer(player)
-            self.playerGroupBox[player].updateDisplay(score)
             if self.engine.isPlayerOff(player):
                 self.playerGroupBox[player].koPlayer()
                 cast(RemigioInputWidget, self.gameInput).koPlayer(player)
@@ -175,7 +118,7 @@ class RemigioWidget(GameWidget):
 
     def changeTop(self, newtop=None):
         if newtop is None:
-            newtop = self.topPointsLineEdit.value()
+            newtop = self.topPointsScoreBox.value()
         try:
             if newtop is None:
                 return
@@ -185,29 +128,11 @@ class RemigioWidget(GameWidget):
         except (ValueError, TypeError):
             pass
 
-    def setWinner(self):
-        super().setWinner()
-        winner = self.engine.getWinner()
-        if winner in self.players:
-            self.playerGroupBox[winner].setWinner()
-
-    def updatePlayerOrder(self):
-        GameWidget.updatePlayerOrder(self)
-        for player in self.engine.getListPlayers():
-            self.playersLayout.removeWidget(self.playerGroupBox[player])
-
-        for i, player in enumerate(self.engine.getListPlayers()):
-            self.playersLayout.addWidget(self.playerGroupBox[player])
-            self.playerGroupBox[player].setColour(PlayerColours[i])
-        # self.playersLayout.addStretch()
-        self.detailGroup.updatePlayerOrder()
-
 
 class RemigioInputWidget(GameInputWidget):
     def __init__(self, engine, bgcolors, parent=None):
-        super().__init__(engine, parent)
         self.bgcolors = bgcolors
-        self.initUI()
+        super().__init__(engine, parent)
 
     def initUI(self):
         for i, player in enumerate(self.engine.getListPlayers()):
@@ -217,6 +142,7 @@ class RemigioInputWidget(GameInputWidget):
             if self.engine.isPlayerOff(player):
                 self.koPlayer(player)
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
+            self.playerInputList[player].changed.connect(self.changed)
 
         nplayers = len(self.engine.getListPlayers())
         if nplayers < 8:
@@ -265,41 +191,10 @@ class RemigioInputWidget(GameInputWidget):
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].setColour(PlayerColours[i])
 
-    # def updatePlayersLayout(self):
-    #     active_players = self.engine.getActivePlayers()
-    #     nactive = len(active_players)
-    #     trash_layout = self.layout()
-    #     if trash_layout:
-    #         QWidget().setLayout(trash_layout)
-    #         # while trash_layout.count():
-    #         #     trash_layout.takeAt(0)
-    #         # trash_layout.deleteLater()
-
-    #     for player, piw in self.playerInputList.items():
-    #         if piw.isKo():
-    #             self.widgetLayout.removeWidget(piw)
-    #             self.koplayersLayout.addWidget(piw)
-    #         if not piw.isKo():
-    #             self.koplayersLayout.removeWidget(piw)
-
-    #     if nactive < 8:
-    #         self.widgetLayout = QHBoxLayout()
-    #         for player in active_players:
-    #             self.widgetLayout.addWidget(self.playerInputList[player])  # pyright: ignore[reportArgumentType]
-    #     else:
-    #         print(f"Creating Grid layout for {nactive}")
-    #         self.widgetLayout = QGridLayout()
-    #         for i, player in enumerate(active_players):
-    #             self.widgetLayout.addWidget(
-    #                 self.playerInputList[player],
-    #                 i // ((nactive + 1) // 2),
-    #                 i % ((nactive + 1) // 2),
-    #             )  # pyright: ignore[reportArgumentType]
-    #     self.setLayout(self.widgetLayout)
-
 
 class RemigioPlayerInputWidget(QGroupBox):
     winnerSet = QtCore.Signal(str)
+    changed = QtCore.Signal()
 
     def __init__(self, player, bgcolors, colour=None, parent=None):
         super().__init__(parent)
@@ -323,6 +218,7 @@ class RemigioPlayerInputWidget(QGroupBox):
         self.scoreSpinBox.setRange(-1, 100)
         self.setColour(colour)
         self.scoreSpinBox.spacePressed.connect(self.setWinner)
+        self.scoreSpinBox.valueChanged.connect(self.changed)
 
         self.lowerLayout = QHBoxLayout()
         self.mainLayout.addLayout(self.lowerLayout)
@@ -333,6 +229,7 @@ class RemigioPlayerInputWidget(QGroupBox):
     def reset(self):
         self.closeType = 0
         self.updatePanel()
+        self.changed.emit()
 
     def setColour(self, colour):
         self.pcolour = colour
@@ -342,6 +239,7 @@ class RemigioPlayerInputWidget(QGroupBox):
 
     def increaseCloseType(self):
         self.closeType = (self.closeType) % 4 + 1
+        self.changed.emit()
         self.updatePanel()
 
     def updatePanel(self):

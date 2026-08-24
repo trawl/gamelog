@@ -2,7 +2,6 @@ from typing import cast
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
-from PySide6.QtGui import QShortcut
 from PySide6.QtWidgets import (
     QButtonGroup,
     QGridLayout,
@@ -10,22 +9,20 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMessageBox,
-    QPushButton,
     QRadioButton,
+    QSizePolicy,
     QTableWidgetItem,
-    QVBoxLayout,
     QWidget,
 )
 
 from controllers.carcassonneengine import CarcassonneEngine, CarcassonneStatsEngine
 from gui.game import (
+    GameInputWidget,
     GameNotImplementedException,
-    GamePlayerWidget,
     GameRoundPlot,
     GameRoundsDetail,
     GameRoundTable,
     GameWidget,
-    PlayerColours,
     QuickStatsTW,
     ScoreSpinBox,
 )
@@ -42,63 +39,36 @@ class CarcassonneWidget(GameWidget):
 
     def initUI(self):
         super().initUI()
-        # self.roundTitleLabel.hide()
-        self.finishButton = QPushButton(self.roundGroup)
-        self.buttonGroupLayout.insertWidget(
-            self.buttonGroupLayout.count() - 1, self.finishButton
-        )
-        self.finishButton.clicked.connect(self.finish)
+        if not self.gameInput:
+            self.gameInput = self.createGameInputWidget(self)
 
-        self.gameInput = CarcassonneInputWidget(self.engine, self.bgcolors, self)
-        self.gameInput.enterPressed.connect(self.commitRound)
-        self.focussc = QShortcut(
-            QtGui.QKeySequence("Ctrl+A"), self, self.gameInput.setFocus
+        self.commitRoundButton.setSizePolicy(
+            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
         )
-        self.roundLayout.addWidget(self.gameInput)
-
+        self.undoButton.setSizePolicy(
+            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
+        )
         self.gameInput.placeCommitButton(self.commitRoundButton)
+        self.gameInput.placeUndoButton(self.undoButton)
 
-        self.detailGroup = CarcassonneEntriesDetail(self.engine, self.bgcolors, self)
-        # self.widgetLayout.addWidget(self.detailGroup, 1, 0)
-        self.leftLayout.addWidget(self.detailGroup)
-        self.detailGroup.edited.connect(self.updatePanel)
-
-        # self.playerGroup = QGroupBox(self)
-        # # self.widgetLayout.addWidget(self.playerGroup, 1, 1)
-        # self.rightLayout.addWidget(self.playerGroup)
-
-        # self.playerGroup.setStyleSheet(
-        #     "QGroupBox { font-size: 18px; font-weight: bold; }"
-        # )
-        self.playersLayout = QVBoxLayout()
-        self.matchGroupLayout.addLayout(self.playersLayout)
-        # self.playersLayout.addStretch()
-        self.playerGroupBox = {}
-        dealer = self.engine.getDealer()
-        for i, player in enumerate(self.engine.getListPlayers()):
-            pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
-
-            if self.engine.getNumRound() == 1 and player == dealer:
-                pw.setDealer()
-            pw.updateDisplay(self.engine.getScoreFromPlayer(player))
-            self.playersLayout.addWidget(pw)
-            self.playerGroupBox[player] = pw
-
-        # self.playersLayout.addStretch()
         self.retranslateUI()
         QtCore.QTimer.singleShot(1000, self.gameInput.setFocus)
 
-    def retranslateUI(self):
-        super().retranslateUI()
-        self.finishButton.setText(self.tr("&Finish Game"))
-        self.gameInput.retranslateUI()
-        self.detailGroup.retranslateUI()
+    def createGameInputWidget(self, parent=None):
+        return CarcassonneInputWidget(self.engine, self.bgcolors, parent)
 
-    def setRoundTitle(self):
-        game = self.engine.getGame()
-        if game is None:
-            game = ""
-        self.roundTitleLabel.setText(game)
+    def createRoundsDetail(self, parent=None):
+        return CarcassonneEntriesDetail(self.engine, self.bgcolors, parent)
+
+    # def retranslateUI(self):
+    #     super().retranslateUI()
+    #     self.commitRoundButton.setText("↵")
+    #     self.undoButton.setText("⎌")
+    #     font = self.commitRoundButton.font()
+    #     font.setBold(True)
+    #     self.commitRoundButton.setFont(font)
+    #     self.gameInput.retranslateUI()
+    #     self.detailGroup.retranslateUI()
 
     def getPlayerExtraInfo(self, player):
         kind = self.gameInput.getKind()
@@ -107,108 +77,48 @@ class CarcassonneWidget(GameWidget):
         else:
             return {}
 
-    def updatePanel(self):
-        super().updatePanel()
-        self.updateScores()
-        if self.engine.getWinner():
-            self.finishButton.setDisabled(True)
-            self.gameInput.hide()
-            self.detailGroup.updateStats()
-        else:
-            self.detailGroup.updateRound()
-
     def checkPlayerScore(self, player, score, extras=None):
         return score > 0
 
-    def commitRound(self):
+    def commitRoundSanityCheck(self, interactive=False):
         player = self.gameInput.getPlayer()
         kind = self.gameInput.getKind()
         score = self.gameInput.getScore()
         if player == "":
             msg = self.tr("You must select a player")
-            QMessageBox.warning(self, self.game, msg)
-            return
+            if interactive:
+                QMessageBox.warning(self, self.game, msg)
+            return False
 
         if kind == "":
             msg = self.tr("You must select a kind")
-            QMessageBox.warning(self, self.game, msg)
-            return
+            if interactive:
+                QMessageBox.warning(self, self.game, msg)
+            return False
 
         if not self.checkPlayerScore(player, score):
             msg = self.tr(f"{player} score is not valid")
-            QMessageBox.warning(self, self.game, msg)
+            if interactive:
+                QMessageBox.warning(self, self.game, msg)
+            return False
+        return True
+
+    def commitRound(self):
+        if not self.commitRoundSanityCheck(interactive=True):
             return
-
-        # Everything ok so far, let's confirm
-        # title = i18n(
-        #     "CarcassonneWidget", 'Commit Entry')
-        # msg = i18n(
-        #     "CarcassonneWidget", "Are you sure you want to commit this entry?")
-
-        # ret = QMessageBox.question(self, title, msg,
-        #                            QMessageBox.Yes | QMessageBox.No,
-        #                            QMessageBox.Yes)
-
-        # if ret == QMessageBox.No:
-        #     return
-
-        # Once here, we can commit round
+        player = self.gameInput.getPlayer()
+        kind = self.gameInput.getKind()
+        score = self.gameInput.getScore()
         try:
             self.playerGroupBox[self.engine.getDealer()].unsetDealer()
         except KeyError:
             pass
         self.engine.addEntry(player, score, {"kind": kind})
         self.engine.printStats()
-
         self.updatePanel()
 
-    def finish(self):
-        title = self.tr("Finish game")
-        msg = self.tr("Are you sure you want to finish the current game?")
-        ret = QMessageBox.question(
-            self,
-            title,
-            msg,
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.Yes,
-        )
 
-        if ret == QMessageBox.StandardButton.No:
-            return
-        self.engine.finishGame()
-        self.updatePanel()
-
-    def updateScores(self):
-        for player in self.players:
-            score = self.engine.getScoreFromPlayer(player)
-            self.playerGroupBox[player].updateDisplay(score)
-
-    def setWinner(self):
-        super().setWinner()
-        winner = self.engine.getWinner()
-        if winner in self.players:
-            self.playerGroupBox[winner].setWinner()
-
-    def unsetDealer(self):
-        self.playerGroupBox[self.engine.getDealer()].unsetDealer()
-
-    def setDealer(self):
-        self.playerGroupBox[self.engine.getDealer()].setDealer()
-
-    def updatePlayerOrder(self):
-        GameWidget.updatePlayerOrder(self)
-        # self.playersLayout.addStretch()
-        for player in self.engine.getListPlayers():
-            self.playersLayout.removeWidget(self.playerGroupBox[player])
-
-        for i, player in enumerate(self.engine.getListPlayers()):
-            self.playersLayout.addWidget(self.playerGroupBox[player])
-            self.playerGroupBox[player].setColour(PlayerColours[i])
-        # self.playersLayout.addStretch()
-        self.detailGroup.updateRound()
-
-
-class CarcassonneInputWidget(QWidget):
+class CarcassonneInputWidget(GameInputWidget):
     enterPressed = QtCore.Signal()
 
     QCoreApplication.translate("CarcassonneInputWidget", "City")
@@ -219,14 +129,11 @@ class CarcassonneInputWidget(QWidget):
     QCoreApplication.translate("CarcassonneInputWidget", "Fair")
 
     def __init__(self, engine, bgcolors, parent):
-        super().__init__(parent)
-        self.engine = engine
-        self.parent = parent
+        super().__init__(engine, parent)
         self.bgcolors = bgcolors
-        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
-        self.initUI()
 
     def initUI(self):
+        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout = QHBoxLayout(self)
         self.playerGroup = QGroupBox(self)
         self.widgetLayout.addWidget(self.playerGroup)
@@ -262,6 +169,7 @@ class CarcassonneInputWidget(QWidget):
         # self.scoreSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         # self.scoreSpinBox.setMaximumWidth(120)
         self.scoreSpinBox.setRange(0, 300)
+        self.scoreSpinBox.valueChanged.connect(self.changed)
 
         for i, kind in enumerate(self.engine.getEntryKinds(), 1):
             lbl = self.tr(kind)
@@ -293,7 +201,10 @@ class CarcassonneInputWidget(QWidget):
             self.kindButtons[i].setText(f"{i}. {text}")
 
     def placeCommitButton(self, cb):
-        self.scoreGroupLayout.addWidget(cb)
+        self.scoreGroupLayout.addWidget(cb, 2)
+
+    def placeUndoButton(self, ub):
+        self.scoreGroupLayout.addWidget(ub, 1)
 
     def getPlayer(self):
         pid = self.playerButtonGroup.checkedId()
@@ -316,6 +227,7 @@ class CarcassonneInputWidget(QWidget):
         self.playerButtons[0].setChecked(True)
         self.kindButtons[0].setChecked(True)
         self.scoreSpinBox.setValue(0)
+        self.changed.emit()
         self.setFocus()
 
     def keyPressEvent(self, event):
@@ -339,14 +251,17 @@ class CarcassonneInputWidget(QWidget):
         elif number:
             if not self.getPlayer():
                 if number <= len(self.engine.getPlayers()):
+                    self.changed.emit()
                     self.playerButtons[number].setChecked(True)
             elif not self.getKind() and number <= len(self.engine.getEntryKinds()):
+                self.changed.emit()
                 self.kindButtons[number].setChecked(True)
                 self.scoreSpinBox.setFocus()
 
         return super().keyPressEvent(event)
 
     def setCloisterPoints(self, doit):
+        self.changed.emit()
         if doit:
             self.scoreSpinBox.setValue(9)
             self.scoreSpinBox.setMaximum(9)
@@ -356,6 +271,7 @@ class CarcassonneInputWidget(QWidget):
             self.scoreSpinBox.setMaximum(300)
 
     def setGoodsPoints(self, doit):
+        self.changed.emit()
         if doit:
             self.scoreSpinBox.setValue(10)
             self.scoreSpinBox.setReadOnly(True)
@@ -365,6 +281,7 @@ class CarcassonneInputWidget(QWidget):
             self.scoreSpinBox.setValue(0)
 
     def setFairPoints(self, doit):
+        self.changed.emit()
         if doit:
             self.scoreSpinBox.setValue(5)
             self.scoreSpinBox.setReadOnly(True)

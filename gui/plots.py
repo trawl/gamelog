@@ -419,8 +419,8 @@ class PlotDot(QGraphicsEllipseItem):
 
     def paint(self, painter, options, widget=None):
         painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, True)
-        brush = self.brush()
-        brush.setStyle(QtCore.Qt.BrushStyle.SolidPattern)
+        # brush = self.brush()
+        # brush.setStyle(QtCore.Qt.BrushStyle.SolidPattern)
         angle_per = 360 / len(self.colours)
         start_angle = 0.0
 
@@ -432,7 +432,7 @@ class PlotDot(QGraphicsEllipseItem):
                 self.boundingRect(), int(start_angle) * 16, int(angle_per) * 16
             )
             start_angle += angle_per
-        super().paint(painter, options, widget)
+        # super().paint(painter, options, widget)
         painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, False)
 
 

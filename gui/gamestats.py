@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.enginefactory import StatsEngineFactory
+from controllers.settings import appsettings
 from gui.tab import Tab
 
 
@@ -43,8 +44,12 @@ class QuickStatsTW(QTabWidget):
         self.retranslateUI()
 
     def retranslateUI(self):
-        self.setTabText(self.indexOf(self.gs), self.tr("General"))
-        self.setTabText(self.indexOf(self.ps), self.tr("Particular"))
+        if appsettings["text_in_buttons"]:
+            self.setTabText(self.indexOf(self.gs), self.tr("General"))
+            self.setTabText(self.indexOf(self.ps), self.tr("Particular"))
+        else:
+            self.setTabText(self.indexOf(self.gs), "∑")
+            self.setTabText(self.indexOf(self.ps), "#")
         self.gs.retranslateUI()
         self.ps.retranslateUI()
 
