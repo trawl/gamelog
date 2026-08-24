@@ -137,8 +137,16 @@ class AbstractQuickStatsBox(QGroupBox):
         self.scrollarea = QScrollArea()
         self.scrollarea.setWidgetResizable(True)
         self.scrollarea.setFrameShape(QFrame.Shape.NoFrame)
+        self.scrollarea.setObjectName("quickStatsScrollArea")
         self.superlayout.addWidget(self.scrollarea)
         self.container = QWidget(self)
+        self.container.setObjectName("quickStatsContainer")
+        self.setStyleSheet("""QWidget#quickStatsContainer {
+            background: transparent;
+        }
+        QScrollArea#quickStatsScrollArea {
+            background: transparent;
+        }""")
         self.widgetLayout = QVBoxLayout(self.container)
         self.scrollarea.setWidget(self.container)
 

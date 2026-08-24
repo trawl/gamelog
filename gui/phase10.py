@@ -664,16 +664,16 @@ class Phase10RoundsDetail(GameRoundsDetail):
 
     def initUI(self):
         super().initUI()
-        self.container.insertTab(0, self.iw, "")
-        self.container.setCurrentIndex(0)
+        self.insertTab(0, self.iw, "")
+        self.setCurrentIndex(0)
 
     def retranslateUI(self):
         super().retranslateUI()
         #         self.setTitle(i18n("GameRoundsDetail",'Details'))
         if appsettings["text_in_buttons"]:
-            self.container.setTabText(self.container.indexOf(self.iw), self.tr("Score"))
+            self.setTabText(self.indexOf(self.iw), self.tr("Score"))
         else:
-            self.container.setTabText(self.container.indexOf(self.iw), "★")
+            self.setTabText(self.indexOf(self.iw), "★")
 
     def createRoundTable(self, engine, parent=None):
         return Phase10RoundTable(self.engine, parent)
@@ -732,8 +732,18 @@ class Phase10RoundPlot(GameRoundPlot):
         self.widgetLayout.addLayout(self.plotsLayout)
 
         self.phasesLabel = QLabel("", self)
+        self.phasesLabel.setStyleSheet("QLabel {font-weight: bold; }")
+        self.phasesLabel.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        self.phasesLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.plotsLayout.addWidget(self.phasesLabel, 0, 0)
         self.scoreLabel = QLabel("", self)
+        self.scoreLabel.setStyleSheet("QLabel {font-weight: bold; }")
+        self.scoreLabel.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        self.scoreLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.plotsLayout.addWidget(self.scoreLabel, 0, 1)
 
         self.canvas = PlotView(PlayerColours, self)
@@ -832,6 +842,10 @@ class Phase10RoundPlot(GameRoundPlot):
             self.playersListLayout.addWidget(label)
 
             self.playersListLayout.addStretch()
+
+    def paintEvent(self, event):
+        self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
+        super().paintEvent(event)
 
 
 class Phase10QSTW(QuickStatsTW):

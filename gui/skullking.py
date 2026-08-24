@@ -1008,7 +1008,7 @@ class SkullKingRoundsDetail(GameRoundsDetail):
     def __init__(self, engine, parent=None):
         self.bgcolors = [0xCCFF99, 0xFFCC99]
         super().__init__(engine, parent)
-        self.container.setCurrentWidget(self.plot)
+        self.setCurrentWidget(self.plot)
 
     def createRoundTable(self, engine, parent=None):
         return SkullKingRoundTable(self.engine, self.bgcolors, parent)

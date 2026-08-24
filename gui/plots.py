@@ -4,6 +4,7 @@ from PySide6 import QtCore, QtGui
 from PySide6.QtGui import QPalette
 from PySide6.QtWidgets import (
     QApplication,
+    QFrame,
     QGraphicsEllipseItem,
     QGraphicsItem,
     QGraphicsLineItem,
@@ -29,14 +30,16 @@ colours = [
 class PlotView(QGraphicsView):
     def __init__(self, clrs=colours, parent=None):
         QGraphicsView.__init__(self, parent)
+        self.setFrameShape(QFrame.Shape.HLine)
         self._scene = QGraphicsScene(self)
-        self._scene.setSceneRect(QtCore.QRectF(0, 0, 440, 340))
         self.setScene(self._scene)
         self.setMinimumSize(100, 100)
         self.colours = clrs
 
     def setBackground(self, colour):
-        self.setBackgroundBrush(QtGui.QBrush(colour))
+        colour.setAlphaF(1.0)
+        brush = QtGui.QBrush(colour)
+        self.setBackgroundBrush(brush)
 
     def addLinePlot(self):
         self.plot = LinePlot(self.colours)
@@ -55,11 +58,29 @@ class PlotView(QGraphicsView):
         self.plot.addLimitLine(value)
 
     def resizeEvent(self, event):
+        super().resizeEvent(event)
         self._scene.setSceneRect(
             QtCore.QRectF(0, 0, event.size().width(), event.size().height())
         )
+        self._update_viewport_mask()
         if self.plot:
-            self.plot.updatePlot()
+            # self.plot.updatePlot()
+            QtCore.QTimer.singleShot(0, self.plot.updatePlot)
+
+    def _update_viewport_mask(self):
+        radius = 8
+        rect = self.viewport().rect()
+
+        path = QtGui.QPainterPath()
+        path.addRoundedRect(
+            QtCore.QRectF(rect),
+            radius,
+            radius,
+        )
+
+        region = QtGui.QRegion(path.toFillPolygon().toPolygon())
+
+        self.viewport().setMask(region)
 
 
 class LinePlot(QGraphicsItem):
@@ -128,7 +149,16 @@ class LinePlot(QGraphicsItem):
         self.changed = True
 
     def decorateAxes(self):
-        QGraphicsRectItem(self.hmargin, self.vmargin, self.awidth, self.aheight, self)
+        rect = QGraphicsRectItem(
+            self.hmargin, self.vmargin, self.awidth, self.aheight, self
+        )
+        pen = rect.pen()
+        pen.setColor(
+            QtCore.Qt.GlobalColor.white
+            if self.dark_mode
+            else QtCore.Qt.GlobalColor.black
+        )
+        rect.setPen(pen)
         self.computeAxesBoundaries()
         self.drawVRefs()
         self.drawHRefs()
@@ -446,4 +476,4 @@ if __name__ == "__main__":
     view.addSeries(data, "test2")
     view.addLimit(9)
     view.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

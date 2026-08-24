@@ -861,7 +861,7 @@ class GamePlayerWidget(QGroupBox):
         painter.drawPixmap(0, 0, scaled)
 
 
-class GameRoundsDetail(QGroupBox):
+class GameRoundsDetail(QTabWidget):
     edited = QtCore.Signal()
 
     def __init__(self, engine, parent=None):
@@ -872,14 +872,11 @@ class GameRoundsDetail(QGroupBox):
     def initUI(self):
         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout = QVBoxLayout(self)
-        #        self.container = QToolBox(self)
-        self.container = QTabWidget(self)
-        self.widgetLayout.addWidget(self.container)
 
         self.tableContainer = QFrame(self)
         self.tableContainerLayout = QVBoxLayout(self.tableContainer)
-        self.tableContainer.setAutoFillBackground(True)
-        self.container.addTab(self.tableContainer, "")
+        # self.tableContainer.setAutoFillBackground(True)
+        self.addTab(self.tableContainer, "")
 
         self.table = self.createRoundTable(self.engine, self)
         self.tableContainerLayout.addWidget(self.table, stretch=1)
@@ -887,40 +884,22 @@ class GameRoundsDetail(QGroupBox):
         self.table.edited.connect(self.edited.emit)
 
         self.plot = self.createRoundPlot(self.engine, self)
-        self.plot.setAutoFillBackground(True)
-        #        self.container.addItem(self.plot,'')
-        self.container.addTab(self.plot, "")
+        # self.plot.setAutoFillBackground(True)
+        self.addTab(self.plot, "")
 
-        self.statsFrame = QWidget(self)
-        self.statsFrame.setAutoFillBackground(True)
-        self.container.addTab(self.statsFrame, "")
-
-        self.statsLayout = QVBoxLayout(self.statsFrame)
         self.gamestats = self.createQSBox()
-        self.statsLayout.addWidget(self.gamestats)
+        self.addTab(self.gamestats, "")
 
     def retranslateUI(self):
         # self.setTitle(i18n("GameRoundsDetail",'Details'))
         if appsettings["text_in_buttons"]:
-            self.container.setTabText(
-                self.container.indexOf(self.tableContainer), self.tr("Table")
-            )
-            self.container.setTabText(
-                self.container.indexOf(self.plot), self.tr("Plot")
-            )
-            self.container.setTabText(
-                self.container.indexOf(self.statsFrame), self.tr("Statistics")
-            )
+            self.setTabText(self.indexOf(self.tableContainer), self.tr("Table"))
+            self.setTabText(self.indexOf(self.plot), self.tr("Plot"))
+            self.setTabText(self.indexOf(self.gamestats), self.tr("Statistics"))
         else:
-            self.container.setTabText(self.container.indexOf(self.tableContainer), "☷")
-            self.container.setTabText(self.container.indexOf(self.plot), "∿")
-            self.container.setTabText(self.container.indexOf(self.statsFrame), "σ")
-        #        self.container.setItemText(0,i18n(
-        #       "CarcassonneEntriesDetail","Table"))
-        #        self.container.setItemText(1,i18n(
-        #       "CarcassonneEntriesDetail","Plot"))
-        #        self.container.setItemText(2,i18n(
-        #       "CarcassonneEntriesDetail","Statistics"))
+            self.setTabText(self.indexOf(self.tableContainer), "☷")
+            self.setTabText(self.indexOf(self.plot), "∿")
+            self.setTabText(self.indexOf(self.gamestats), "σ")
         self.gamestats.retranslateUI()
         self.plot.retranslateUI()
         self.updateRound()
@@ -1033,7 +1012,7 @@ class GameRoundPlot(QWidget):
 
     def paintEvent(self, event):
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
-        QWidget.paintEvent(self, event)
+        super().paintEvent(event)
         self.canvas.viewport().repaint()
 
     def retranslateUI(self):

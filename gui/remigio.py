@@ -339,7 +339,7 @@ class RemigioRoundsDetail(GameRoundsDetail):
     def __init__(self, engine, bgcolors, parent=None):
         self.bgcolors = bgcolors
         super().__init__(engine, parent)
-        self.container.setCurrentWidget(self.plot)
+        self.setCurrentWidget(self.plot)
 
     def createRoundTable(self, engine, parent=None):
         return RemigioRoundTable(self.engine, self.bgcolors, parent)

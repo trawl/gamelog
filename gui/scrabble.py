@@ -223,7 +223,7 @@ class ScrabbleInputWidget(GameInputWidget):
 class ScrabbleEntriesDetail(GameRoundsDetail):
     def __init__(self, engine, parent=None):
         super().__init__(engine, parent)
-        self.container.setCurrentWidget(self.plot)
+        self.setCurrentWidget(self.plot)
 
     def createRoundTable(self, engine, parent=None):
         return ScrabbleRoundTable(self.engine, parent)
