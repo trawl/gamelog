@@ -28,5 +28,11 @@
         <file>icons/bingo.svg</file>
         <file>styles/light.qss</file>
         <file>styles/dark.qss</file>
+        <file>i18n/qtbase_en.qm</file>
+        <file>i18n/en_GB.qm</file>
+        <file>i18n/qtbase_es.qm</file>
+        <file>i18n/es_ES.qm</file>
+        <file>i18n/qtbase_ca.qm</file>
+        <file>i18n/ca_ES.qm</file>
     </qresource>
 </RCC>

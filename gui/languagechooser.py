@@ -47,10 +47,10 @@ class LanguageManager(QObject):
             lang = QLocale.system().name()
         if lang == "C":
             lang = "en_GB"
-        ret = translator.load(lang, "i18n/")
+        ret = translator.load(lang, ":i18n/")
         qt_translator = QTranslator()
         qt_qm = "qtbase_" + lang.split("_")[0]
-        qt_translator.load(qt_qm, "i18n/")
+        qt_translator.load(qt_qm, ":i18n/")
         if ret:
             if self.translator:
                 QCoreApplication.removeTranslator(self.translator)
