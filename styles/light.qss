@@ -166,61 +166,83 @@ QListView::item:selected:hover {
     border-radius: 6px;
 }
 
-
 QTableView {
-    background: transparent;
+    background: rgba(0, 0, 0, 18);
     gridline-color: rgba(0, 0, 0, 80);
-    selection-background-color: rgba(120, 180, 255, 100);
+    selection-background-color: rgba(80, 140, 220, 80);
+    border: 1px solid rgba(0, 0, 0, 70);
+    border-radius: 8px;
 }
 
-/* Headers */
+/* ------------------------------------------------------------------
+   Horizontal header
+   ------------------------------------------------------------------ */
+
 QHeaderView::section {
     background: qlineargradient(
         x1: 0,
         y1: 0,
         x2: 0,
         y2: 1,
-        stop: 0 rgba(0, 0, 0, 25),
-        stop: 1 rgba(0, 0, 0, 10)
+        stop: 0 rgba(255, 255, 255, 220),
+        stop: 1 rgba(235, 235, 235, 220)
     );
+
     padding: 6px 8px;
+
     border: none;
-    border-top: 1px solid rgba(0, 0, 0, 80);
+    border-top: 1px solid rgba(0, 0, 0, 70);
     border-bottom: 1px solid rgba(0, 0, 0, 100);
-    border-left: 1px solid rgba(0, 0, 0, 40);
-    border-right: 1px solid rgba(0, 0, 0, 40);
+    border-left: 1px solid rgba(0, 0, 0, 50);
+    border-right: 1px solid rgba(0, 0, 0, 50);
+
     font-weight: 600;
 }
 
-/* Remove double border between adjacent headers */
+/* Remove double border between adjacent horizontal headers */
 QHeaderView::section:horizontal {
     margin-left: -1px;
 }
 
-/* Corner button (top-left square) */
+/* Top-left / top-right corners */
+QHeaderView::section:horizontal:first {
+    border-top-left-radius: 7px;
+}
+
+QHeaderView::section:horizontal:last {
+    border-top-right-radius: 7px;
+}
+
+
+/* ------------------------------------------------------------------
+   Vertical header
+   ------------------------------------------------------------------ */
+
+QHeaderView::section:vertical {
+    background: rgba(235, 235, 235, 220);
+
+    border: none;
+    border-right: 1px solid rgba(0, 0, 0, 60);
+    border-bottom: 1px solid rgba(0, 0, 0, 60);
+
+    padding: 4px 6px;
+}
+
+/* Bottom-left corner */
+QHeaderView::section:vertical:last {
+    border-bottom-left-radius: 7px;
+}
+
+
+/* ------------------------------------------------------------------
+   Corner button
+   ------------------------------------------------------------------ */
+
 QTableCornerButton::section {
-    background: rgba(0, 0, 0, 15);
-    border: 1px solid rgba(0, 0, 0, 80);
+    background: transparent;
+    border: none;
 }
 
-/* Optional: hover feedback */
-/*
-QTableView::item:hover {
-    background: rgba(0, 0, 0, 15);
-}
-*/
-
-/* Optional: round top corners of the header */
-/*
-QHeaderView::section:first {
-    border-top-left-radius: 6px;
-}
-
-QHeaderView::section:last {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-}
-*/
 
 ClickableLabel {
     background-color: #e2e4e7;
