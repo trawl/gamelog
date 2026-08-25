@@ -6,7 +6,7 @@ _mainquery = (
 
 if __name__ == "__main__":
     db = GameLogDB()
-    db.connectDB("../db/gamelog.db")
+    db.connectDB()
 
     phases = {
         "Phase10": [

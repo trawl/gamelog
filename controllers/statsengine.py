@@ -127,7 +127,7 @@ class ParticularStatsEngine(StatsEngine):
 
 if __name__ == "__main__":
     db = GameLogDB()
-    db.connectDB("../db/gamelog.db")
+    db.connectDB()
     #     se = StatsEngine()
     #     se.update()
     #     print(se.getMatchGameStats('Phase10Master'))

@@ -257,7 +257,7 @@ class RoundGameEngine(GameEngine):
         print(f"Welcome to {self.getGame()} Engine Stub")
 
         if not db.isConnected():
-            db.connectDB("../db/gamelog.db")
+            db.connectDB()
 
         playersOrder = []
         validPlayers = db.getPlayerNicks()

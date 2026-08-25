@@ -10,7 +10,7 @@ ORDER BY idMatch,idRound,nick;
 
 if __name__ == "__main__":
     db = GameLogDB()
-    db.connectDB("../db/gamelog.db")
+    db.connectDB()
 
     currentMatch = 0
     currentRound = 0

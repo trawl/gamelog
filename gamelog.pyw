@@ -20,6 +20,7 @@ if __name__ == "__main__":
 
     app = GamelogApplication(sys.argv)
     app.setDesktopFileName("gamelog")
+    app.setApplicationName("gamelog")
 
     app.languageManager = LanguageManager(app)
     app.themeManager = ThemeManager(app)

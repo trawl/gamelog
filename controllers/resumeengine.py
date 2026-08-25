@@ -38,7 +38,7 @@ class ResumeEngine:
 
 if __name__ == "__main__":
     if not db.isConnected():
-        db.connectDB("../db/gamelog.db")
+        db.connectDB()
     pmt = "Game to play (Phase10/Phase10Master/Remigio/Ratuki/Carcassone): "
     game = readInput(
         pmt,

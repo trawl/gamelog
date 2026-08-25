@@ -2,7 +2,10 @@ import datetime
 import os.path
 import sqlite3 as lite
 import sys
+from pathlib import Path
 from typing import ClassVar
+
+from PySide6.QtCore import QCoreApplication, QStandardPaths
 
 
 class GameLogDB:
@@ -13,17 +16,49 @@ class GameLogDB:
         if not hasattr(self, "con"):
             self.con = None
 
-    def connectDB(self, dbname="db/gamelog.db"):
-        self.disconnectDB()
-        dbdir, _ = os.path.split(dbname)
-        if not os.path.isdir(dbdir):
+    def getDBLocation(self):
+        # First, environment
+        dbpath = os.getenv("GAMELOG_DB")
+        if dbpath:
+            dbdir = Path(dbpath).parent
             try:
-                os.makedirs(dbdir)
+                dbdir.mkdir(parents=True, exist_ok=True)
             except OSError as e:
                 self._printError(f"Error creating DB: {e.args[0]}")
                 sys.exit(1)
+            return dbpath
+
+        # Second, load the local development database if exists
+        dbpath = Path(
+            Path(__file__).resolve().parent.parent / "db" / "gamelog.db",
+        )
+        if dbpath.exists():
+            return dbpath
+
+        # Last, for proper native app mode, use standard OS writable location
+        if not QCoreApplication.applicationName():
+            QCoreApplication.setApplicationName("Gamelog")
+
+        data_dir = Path(
+            QStandardPaths.writableLocation(
+                QStandardPaths.StandardLocation.AppDataLocation
+            )
+        )
         try:
-            self.con = lite.connect(dbname)
+            data_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as e:
+            self._printError(f"Error creating DB: {e.args[0]}")
+            sys.exit(1)
+
+        return data_dir / "gamelog.db"
+
+    def connectDB(self, dbpath=None):
+        self.disconnectDB()
+        if not dbpath:
+            dbpath = self.getDBLocation()
+        try:
+            print(f"Loading database from {dbpath}")
+            self.con = lite.connect(str(dbpath))
             self._checkDB()
         except Exception as e:  # noqa: BLE001
             self._printError(f"Error connecting to DB: {e.args[0]}")
