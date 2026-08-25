@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from controllers.db import db
 from controllers.settings import appsettings
 
 
@@ -102,6 +103,11 @@ class SettingsDialog(QDialog):
 
     def initUI(self) -> None:
         layout = QVBoxLayout(self)
+        layout.addStretch()
+        database_path_label = QLabel(str(db.getDBPath()), self)
+        database_path_label.setObjectName("settingSource")
+        database_path_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(database_path_label)
 
         form = QFormLayout()
         form.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
@@ -143,6 +149,7 @@ class SettingsDialog(QDialog):
         button_layout.addWidget(self.close_button)
 
         layout.addLayout(button_layout)
+        layout.addStretch()
 
         self.setStyleSheet(
             """

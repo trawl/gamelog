@@ -13,6 +13,7 @@ class GameLogDB:
 
     def __init__(self):
         self.__dict__ = self.__shared_state
+        self.dbpath = None
         if not hasattr(self, "con"):
             self.con = None
 
@@ -20,7 +21,8 @@ class GameLogDB:
         # First, environment
         dbpath = os.getenv("GAMELOG_DB")
         if dbpath:
-            dbdir = Path(dbpath).parent
+            dbpath = Path(dbpath)
+            dbdir = dbpath.parent
             try:
                 dbdir.mkdir(parents=True, exist_ok=True)
             except OSError as e:
@@ -56,13 +58,15 @@ class GameLogDB:
         self.disconnectDB()
         if not dbpath:
             dbpath = self.getDBLocation()
+        else:
+            dbpath = Path(dbpath)
         try:
             print(f"Loading database from {dbpath}")
             self.con = lite.connect(str(dbpath))
             self._checkDB()
         except Exception as e:  # noqa: BLE001
             self._printError(f"Error connecting to DB: {e.args[0]}")
-
+        self.dbpath = dbpath
         db.execute("PRAGMA synchronous=OFF")
 
     def isConnected(self):
@@ -71,6 +75,10 @@ class GameLogDB:
     def disconnectDB(self):
         if self.con:
             self.con.close()
+        self.dbpath = None
+
+    def getDBPath(self):
+        return self.dbpath
 
     def execute(self, query):
         if self.con is None:
