@@ -1,6 +1,6 @@
 [project]
 name = "gamelog"
-version = "1.0.0"
+version = "2.0.0"
 description = "A utility to keep track of board games scores"
 requires-python = ">=3.12"
 dependencies = [
