@@ -15,11 +15,18 @@ Whenever there has been some change in the code that includes translatable text,
 ```
 pyside6-lupdate gui/* controllers/* -ts i18n/*.ts
 ```
+
 2. Use Linguist to provide the necessary translations:
 ```
 pyside6-linguist i18n/*.ts &
 ```
-3. From Linguist, click save all, then release all
+
+3. From Linguist, click save all, then release all.
+
+4. Refresh resources as explained below
+```
+pyside6-rcc resources.qrc -o  resources_rc.py
+```
 
 ## Resources (Style an icons) changex
 Any changes on the resources used by the application need to be recompiled into the resources_rc.py. That includes changing or adding icons, as well as any modifications to the stylesheets(qss).
