@@ -1361,6 +1361,7 @@ class BonusButton(QPushButton):
 
         # Keep SVGs as SVGs and render them directly in paintEvent().
         self.svg_renderer = None
+        self._disabled_svg_cache = {}
 
         svg_path = f":/icons/{bonus_name}.svg"
         png_path = f":/icons/{bonus_name}.png"
@@ -1520,6 +1521,43 @@ class BonusButton(QPushButton):
 
             self.update()
 
+    def _disabled_svg_image(self, dpr: float) -> QImage:
+        """Return a cached greyed-out rasterisation of the SVG icon."""
+        key = (self.width(), self.height(), dpr)
+
+        if key not in self._disabled_svg_cache:
+            image = QImage(
+                round(self.width() * dpr),
+                round(self.height() * dpr),
+                QImage.Format.Format_ARGB32_Premultiplied,
+            )
+            image.fill(QtCore.Qt.GlobalColor.transparent)
+
+            image_painter = QPainter(image)
+            image_painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            if self.svg_renderer:
+                self.svg_renderer.render(image_painter, QRectF(image.rect()))
+
+            image_painter.end()
+
+            # Preserve the source luminance, rather than painting a single
+            # flat grey. This makes different disabled icons distinguishable
+            # while retaining their transparency.
+            for y in range(image.height()):
+                for x in range(image.width()):
+                    colour = image.pixelColor(x, y)
+                    grey = round(
+                        0.299 * colour.red()
+                        + 0.587 * colour.green()
+                        + 0.114 * colour.blue()
+                    )
+                    colour.setRgb(grey, grey, grey, colour.alpha())
+                    image.setPixelColor(x, y, colour)
+
+            self._disabled_svg_cache[key] = image
+
+        return self._disabled_svg_cache[key]
+
     def paintEvent(self, event):
         painter = QPainter(self)
 
@@ -1548,20 +1586,26 @@ class BonusButton(QPushButton):
             radius,
         )
 
-        painter.setClipPath(path)
+        # painter.setClipPath(path)
 
         # --------------------------------------------------
         # Draw icon
         # --------------------------------------------------
 
         if self.svg_renderer is not None:
-            # Render the SVG directly at the widget's
-            # current size. This avoids intermediate
-            # low-resolution rasterisation.
-            self.svg_renderer.render(
-                painter,
-                QRectF(self.rect()),
-            )
+            if self.isEnabled():
+                # Render enabled SVGs directly, avoiding intermediate
+                # low-resolution rasterisation.
+                self.svg_renderer.render(
+                    painter,
+                    QRectF(self.rect()),
+                )
+            else:
+                painter.drawImage(
+                    self.rect(),
+                    self._disabled_svg_image(painter.device().devicePixelRatioF()),
+                )
+                self.setChecked(False)
 
         else:
             if self.isEnabled():
@@ -1593,6 +1637,8 @@ class BonusButton(QPushButton):
 
             painter.setPen(pen)
             painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
+            center.setX(center.x() + 1)
+            center.setY(center.y() + 1)
 
             painter.drawEllipse(
                 center,

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Pirate</title><desc id="desc">A refined crossed-cutlasses badge.</desc>
+  <defs><radialGradient id="bg" cx="35%" cy="25%"><stop stop-color="#6B2735"/><stop offset="1" stop-color="#2A1018"/></radialGradient><linearGradient id="steel" x2="0" y2="1"><stop stop-color="#FFFFFF"/><stop offset=".48" stop-color="#B8C6D1"/><stop offset="1" stop-color="#758899"/></linearGradient></defs>
+  <circle cx="128" cy="128" r="118" fill="#55202D"/><circle cx="128" cy="128" r="112" fill="none" stroke="#D6A447" stroke-width="2" opacity=".65"/><circle cx="128" cy="128" r="101" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity=".13"/>
+  <path d="M55 183c29-3 62-28 92-77 14-23 25-43 38-69 2 36-7 72-32 110-22 34-51 56-84 65z" fill="#C4D1D9" stroke="#EAF3F6" stroke-width="2"/><path d="M201 183c-29-3-62-28-92-77-14-23-25-43-38-69-2 36 7 72 32 110 22 34 51 56 84 65z" fill="#C4D1D9" stroke="#EAF3F6" stroke-width="2"/>
+  <path d="M62 174l31 13m101-13-31 13M71 73l31 13m83-13-31 13" stroke="#D6A447" stroke-width="8" stroke-linecap="round"/><circle cx="128" cy="128" r="15" fill="#D6A447" stroke="#FFE5A0" stroke-width="2"/>
+</svg>

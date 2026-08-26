@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Rascal of Roatan</title><desc id="desc">A refined masked rogue badge.</desc>
+  <defs><radialGradient id="bg" cx="35%" cy="25%"><stop stop-color="#674985"/><stop offset="1" stop-color="#29183E"/></radialGradient><linearGradient id="hat" x2="0" y2="1"><stop stop-color="#33465E"/><stop offset="1" stop-color="#111C2B"/></linearGradient></defs>
+  <circle cx="128" cy="128" r="118" fill="#493263"/><circle cx="128" cy="128" r="112" fill="none" stroke="#D8B45A" stroke-width="2" opacity=".7"/><circle cx="128" cy="128" r="101" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity=".13"/>
+  <path d="M52 112c14-40 44-63 76-63s62 23 76 63c-23-14-48-21-76-21s-53 7-76 21z" fill="#203047" stroke="#6F89A4" stroke-width="2"/><path d="M72 104c17-14 36-21 56-21s39 7 56 21" fill="none" stroke="#D8B45A" stroke-width="3" stroke-linecap="round"/>
+  <path d="M80 120c0-29 20-47 48-47s48 18 48 47v45c0 34-20 55-48 55s-48-21-48-55z" fill="#D6A278" stroke="#8E593C" stroke-width="3"/><path d="M73 138c17-12 35-18 55-18s38 6 55 18v31c-17 13-35 20-55 20s-38-7-55-20z" fill="#A73E58" stroke="#E68AA3" stroke-width="2"/>
+  <path d="M91 135l18 10m56-10-18 10" stroke="#F6C6D2" stroke-width="3" stroke-linecap="round"/><circle cx="106" cy="115" r="6" fill="#18263A"/><circle cx="150" cy="115" r="6" fill="#18263A"/><path d="M77 158l-17 13m119-13 17 13" stroke="#A73E58" stroke-width="7" stroke-linecap="round"/>
+</svg>

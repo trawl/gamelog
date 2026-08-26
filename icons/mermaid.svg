@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Mermaid</title><desc id="desc">A refined pearl and clam shell badge.</desc>
+  <defs><radialGradient id="bg" cx="35%" cy="25%"><stop stop-color="#2D8894"/><stop offset="1" stop-color="#103C4B"/></radialGradient><linearGradient id="shell" x2="0" y2="1"><stop stop-color="#FFD0DF"/><stop offset="1" stop-color="#B95183"/></linearGradient><radialGradient id="pearl" cx="32%" cy="25%"><stop stop-color="#FFFFFF"/><stop offset=".45" stop-color="#F5E6E5"/><stop offset="1" stop-color="#CFAEBA"/></radialGradient></defs>
+  <circle cx="128" cy="128" r="118" fill="#176371"/><circle cx="128" cy="128" r="112" fill="none" stroke="#F3B4CB" stroke-width="2" opacity=".75"/><circle cx="128" cy="128" r="101" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity=".15"/>
+  <path d="M57 159c8-47 38-78 71-78s63 31 71 78c-21-14-45-20-71-20s-50 6-71 20z" fill="#D67AA4" stroke="#FFD5E2" stroke-width="2"/><path d="M78 151l20-54m10 43 8-55m12 54V84m20 56 8-55m10 66 20-54" fill="none" stroke="#95436C" stroke-width="3" opacity=".55"/>
+  <path d="M57 159c18 24 41 36 71 36s53-12 71-36c-22-13-45-20-71-20s-49 7-71 20z" fill="#C25D8C" stroke="#FFD5E2" stroke-width="2"/><circle cx="128" cy="145" r="27" fill="#F4E7E2" stroke="#FFFFFF" stroke-width="2"/><circle cx="118" cy="134" r="7" fill="#FFFFFF" opacity=".85"/>
+</svg>

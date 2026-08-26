@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Loot</title><desc id="desc">A refined heap of gold coins badge.</desc>
+  <defs><radialGradient id="bg" cx="35%" cy="25%"><stop stop-color="#5E4029"/><stop offset="1" stop-color="#24170F"/></radialGradient><linearGradient id="coin" x2="0" y2="1"><stop stop-color="#FFECA2"/><stop offset=".45" stop-color="#E1AF3D"/><stop offset="1" stop-color="#A96D15"/></linearGradient></defs>
+  <circle cx="128" cy="128" r="118" fill="#3E291B"/><circle cx="128" cy="128" r="112" fill="none" stroke="#E1AF3D" stroke-width="2" opacity=".7"/><circle cx="128" cy="128" r="101" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity=".12"/>
+  <ellipse cx="83" cy="166" rx="35" ry="20" fill="#E1AF3D" stroke="#FFECA2" stroke-width="2"/><ellipse cx="129" cy="136" rx="37" ry="22" fill="#E1AF3D" stroke="#FFECA2" stroke-width="2"/><ellipse cx="173" cy="166" rx="35" ry="20" fill="#E1AF3D" stroke="#FFECA2" stroke-width="2"/><ellipse cx="128" cy="184" rx="49" ry="23" fill="#E1AF3D" stroke="#FFECA2" stroke-width="2"/>
+  <g fill="none" stroke="#A96D15" stroke-width="3" opacity=".75"><ellipse cx="83" cy="166" rx="25" ry="12"/><ellipse cx="129" cy="136" rx="27" ry="14"/><ellipse cx="173" cy="166" rx="25" ry="12"/><ellipse cx="128" cy="184" rx="39" ry="15"/></g>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Cannonball</title><desc id="desc">A cannonball with a lit fuse on a round badge.</desc>
+  <circle cx="128" cy="128" r="118" fill="#3B424A"/><circle cx="128" cy="128" r="112" fill="none" stroke="#C8A94D" stroke-width="2" opacity=".7"/><circle cx="128" cy="128" r="101" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity=".13"/>
+  <path d="M145 74c12-24 28-34 48-31" fill="none" stroke="#C6923E" stroke-width="7" stroke-linecap="round"/><path d="M186 38l7 5-7 5 7 5" fill="none" stroke="#C6923E" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M198 29l5 10 10 5-10 5-5 10-5-10-10-5 10-5z" fill="#F5C84C" stroke="#FFF0B7" stroke-width="2"/>
+  <circle cx="119" cy="146" r="59" fill="#202830" stroke="#94A1A7" stroke-width="3"/><path d="M84 111c14-17 35-26 55-25" fill="none" stroke="#53616C" stroke-width="10" stroke-linecap="round" opacity=".7"/><circle cx="98" cy="124" r="9" fill="#65737B" opacity=".65"/>
+</svg>

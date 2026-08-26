@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Skull King</title><desc id="desc">An elegant gold crown badge.</desc>
+  <circle cx="128" cy="128" r="118" fill="#172B45"/><circle cx="128" cy="128" r="112" fill="none" stroke="#D7A63E" stroke-width="2" opacity=".7"/><circle cx="128" cy="128" r="101" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity=".13"/>
+  <path d="M57 161L71 76l42 37 15-62 15 62 42-37 14 85z" fill="#D7A63E" stroke="#FFE9AA" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M61 160c24 9 49 13 67 13s43-4 67-13v26c-24 9-49 13-67 13s-43-4-67-13z" fill="#B47A21" stroke="#FFE9AA" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M79 151h98" stroke="#FFF0B7" stroke-width="3" opacity=".75"/><path d="M86 91l27 22m30 0 27-22" fill="none" stroke="#A66D1B" stroke-width="3" opacity=".55"/>
+  <circle cx="128" cy="172" r="10" fill="#B53D42" stroke="#FFE6A0" stroke-width="3"/><circle cx="91" cy="170" r="6" fill="#FFF0B7"/><circle cx="165" cy="170" r="6" fill="#FFF0B7"/>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Fourteen black</title><desc id="desc">Fourteen polished score markers on a black badge.</desc>
+  <defs><radialGradient id="bg" cx="35%" cy="25%"><stop stop-color="#363B44"/><stop offset="1" stop-color="#101216"/></radialGradient><radialGradient id="pip" cx="32%" cy="25%"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#BFC7CA"/></radialGradient></defs>
+  <circle cx="128" cy="128" r="118" fill="#22262D"/><circle cx="128" cy="128" r="112" fill="none" stroke="#C8A94D" stroke-width="2" opacity=".6"/><circle cx="128" cy="128" r="101" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity=".12"/>
+  <g fill="#F4F1E8" stroke="#FFFFFF" stroke-width="1"><circle cx="78" cy="77" r="11"/><circle cx="111" cy="77" r="11"/><circle cx="145" cy="77" r="11"/><circle cx="178" cy="77" r="11"/><circle cx="61" cy="111" r="11"/><circle cx="95" cy="111" r="11"/><circle cx="128" cy="111" r="11"/><circle cx="161" cy="111" r="11"/><circle cx="195" cy="111" r="11"/><circle cx="78" cy="145" r="11"/><circle cx="111" cy="145" r="11"/><circle cx="145" cy="145" r="11"/><circle cx="178" cy="145" r="11"/><circle cx="128" cy="179" r="11"/></g>
+</svg>
