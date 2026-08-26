@@ -6,12 +6,7 @@ class CarcassonneMatch(GenericRoundMatch):
     def __init__(self, players=()):
         super().__init__(players)
         self.game = "Carcassonne"
-        cur = db.execute(
-            "SELECT value FROM GameExtras "
-            f"WHERE Game_name = '{self.game}' and key='Kinds';"
-        )
-        row = cur.fetchone()
-        self.entry_kinds = [str(kind) for kind in row["value"].split(",")]
+        self.entry_kinds = ["City", "Road", "Cloister", "Field", "Goods", "Fair"]
         self.dealingp = 3
         self.updatewinnereveryround = False
 

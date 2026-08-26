@@ -216,8 +216,6 @@ CREATE TABLE `GameExtras` (
     REFERENCES `Game` (`name` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
-INSERT INTO "GameExtras"
-    VALUES ('Carcassonne','Kinds','City,Road,Cloister,Field,Goods,Fair');
 DROP TABLE IF EXISTS "Match";
 CREATE TABLE `Match` (
   `idMatch` INTEGER  PRIMARY KEY ,
