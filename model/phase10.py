@@ -3,6 +3,33 @@ import random
 from controllers.db import db
 from model.base import GenericRound, GenericRoundMatch
 
+phases = {
+    "Phase10": [
+        "2s3",
+        "1s3 1r4",
+        "1s4 1r4",
+        "1r7",
+        "1r8",
+        "1r9",
+        "2s4",
+        "1c7",
+        "1s5 1s2",
+        "1s5 1s3",
+    ],
+    "Phase10Master": [
+        "4s2",
+        "1c6",
+        "1s4 1r4",
+        "1r8",
+        "1c7",
+        "1r9",
+        "2s4",
+        "1cr4 1s3",
+        "1s5 1s3",
+        "1s5 1cr3",
+    ],
+}
+
 
 class Phase10Match(GenericRoundMatch):
     def __init__(self, players=()):
@@ -135,6 +162,9 @@ class Phase10Match(GenericRoundMatch):
             return
         print(f"Setting phases in order flag to {flag}")
         self.phasesinorder = flag
+
+    def getPhases(self):
+        return phases[self.game]
 
 
 class Phase10Round(GenericRound):

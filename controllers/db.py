@@ -216,26 +216,6 @@ CREATE TABLE `GameExtras` (
     REFERENCES `Game` (`name` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 01','2s3');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 02','1s3 1r4');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 03','1s4 1r4');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 04','1r7');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 05','1r8');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 06','1r9');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 07','2s4');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 08','1c7');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 09','1s5 1s2');
-INSERT INTO "GameExtras" VALUES('Phase10','Phase 10','1s5 1s3');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 01','4s2');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 02','1c6');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 03','1s4 1r4');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 04','1r8');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 05','1c7');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 06','1r9');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 07','2s4');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 08','1cr4 1s3');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 09','1s5 1s3');
-INSERT INTO "GameExtras" VALUES('Phase10Master','Phase 10','1s5 1cr3');
 INSERT INTO "GameExtras"
     VALUES ('Carcassonne','Kinds','City,Road,Cloister,Field,Goods,Fair');
 DROP TABLE IF EXISTS "Match";

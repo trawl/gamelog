@@ -13,14 +13,7 @@ class Phase10Engine(RoundGameEngine):
         super().__init__()
 
     def getPhases(self):
-        cur = db.execute(
-            "Select key,value from GameExtras "
-            f"where Game_name='{self.game}' and key like 'Phase %' "
-            "order by key asc"
-        )
-        if cur:
-            return [row["value"] for row in cur]
-        return []
+        return cast(Phase10Match, self.match).getPhases()
 
     def getRemainingPhasesFromPlayer(self, player):
         remaining = list(range(1, 11))
