@@ -120,6 +120,11 @@ class GameLogDB:
         )
         if not cur.fetchone():
             self._executeScript(_emptydb)
+        # Ensure we have all the games we support
+        for ge in _games:
+            self.execute(
+                f"""INSERT OR IGNORE INTO "Game" VALUES ("{ge[0]}",{ge[1]},"{ge[2]}","{ge[3]}")"""
+            )
 
     def getAvailableGames(self):
         cur = db.execute("Select name,maxPlayers,description,rules from Game")
@@ -179,6 +184,18 @@ class GameLogDB:
 
 db = GameLogDB()
 
+_games = [
+    ("Phase10", 6, "Standard Edition", "Home rules"),
+    ("Phase10Master", 6, "Master Edition", "Home rules"),
+    ("Remigio", 12, "Classic Remigio", "Home rules"),
+    ("Ratuki", 5, "Ratuki Slap game", "Home rules"),
+    ("Carcassonne", 6, "Carcassonne board game", "Home rules"),
+    ("Pocha", 6, "Carcassonne board game", "Home rules"),
+    ("Skull King", 8, "Skull King card game", "Home rules"),
+    ("Toma6", 10, "Toma6 card game", "Home rules"),
+    ("Qwirkle", 4, "Qwirkle tile game", "Standard rules"),
+    ("Scrabble", 4, "Scrabble word game", "Standard rules"),
+]
 
 _emptydb = """
 DROP TABLE IF EXISTS "AppSettings";
@@ -194,17 +211,7 @@ CREATE TABLE `Game` (
   `description` TEXT NULL ,
   `rules` TEXT NULL ,
   PRIMARY KEY (`name`) );
-INSERT INTO "Game" VALUES('Phase10',6,'Standard Edition','Home rules');
-INSERT INTO "Game" VALUES('Phase10Master',6,'Master Edition','Home rules');
-INSERT INTO "Game" VALUES('Remigio',12,'Classic Remigio','Home rules');
-INSERT INTO "Game" VALUES('Ratuki',5,'Ratuki Slap game','Home rules');
-INSERT INTO "Game"
-    VALUES('Carcassonne',6,'Carcassonne board game','Home rules');
-INSERT INTO "Game" VALUES('Pocha',6,'Carcassonne board game','Home rules');
-INSERT INTO "Game" VALUES('Skull King',8,'Skull King card game','Home rules');
-INSERT INTO "Game" VALUES('Toma6',10,'Toma6 card game','Home rules');
-INSERT INTO "Game" VALUES('Qwirkle',4,'Qwirkle tile game','Standard rules');
-INSERT INTO "Game" VALUES('Scrabble',4,'Scrabble word game','Standard rules');
+
 DROP TABLE IF EXISTS "GameExtras";
 CREATE TABLE `GameExtras` (
   `Game_name` VARCHAR(45) NOT NULL ,
