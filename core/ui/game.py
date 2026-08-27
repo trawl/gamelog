@@ -14,6 +14,7 @@ from PySide6.QtCore import (
     QPropertyAnimation,
     QRectF,
     QSize,
+    QTextStream,
 )
 from PySide6.QtGui import (
     QAction,
@@ -104,6 +105,7 @@ class GameWidget(Tab):
     def initUI(self):
         # Set up the main grid
         self.setStyleSheet("QGroupBox { font-size: 120%; font-weight: bold; }")
+        self._base_stylesheet = self.styleSheet()
         # self.widgetLayout = QGridLayout(self)
         self.widgetLayout = QHBoxLayout(self)
         self.leftLayout = QVBoxLayout()
@@ -278,7 +280,64 @@ class GameWidget(Tab):
         self.addExtraConfig()
         self.addPlayerWidgets()
 
+        self._connectThemeStylesheet()
+        self._applyGameStylesheet()
+
         QtCore.QTimer.singleShot(500, self.gameInput.setFocus)
+
+    def _gameStyleSlug(self):
+        """Package name of the concrete game (e.g. ``skullking``), or None.
+
+        Derived from the widget's module so a game needs no extra metadata:
+        ``games.skullking.widget`` -> ``skullking``.  The generic base widget
+        (``core.ui.game``) has no game slug and gets no per-game stylesheet.
+        """
+        parts = type(self).__module__.split(".")
+        if len(parts) >= 2 and parts[0] == "games":
+            return parts[1]
+        return None
+
+    def _currentThemeName(self):
+        app = QApplication.instance()
+        theme_manager = getattr(app, "themeManager", None)
+        if theme_manager is not None:
+            return str(theme_manager.effective_theme())
+        return "light"
+
+    def _loadGameStylesheet(self, slug):
+        """Return the game's qss for the current theme, or '' if none ships.
+
+        Prefers a theme-specific ``<slug>.<theme>.qss`` and falls back to a
+        theme-agnostic ``<slug>.qss``.
+        """
+        theme = self._currentThemeName()
+        for candidate in (f":/styles/{slug}.{theme}.qss", f":/styles/{slug}.qss"):
+            file = QFile(candidate)
+            if file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+                text = QTextStream(file).readAll()
+                file.close()
+                return text
+        return ""
+
+    def _connectThemeStylesheet(self):
+        app = QApplication.instance()
+        theme_manager = getattr(app, "themeManager", None)
+        if theme_manager is not None:
+            theme_manager.themeChanged.connect(self._applyGameStylesheet)
+
+    def _applyGameStylesheet(self, *_args):
+        """Layer the game's stylesheet on top of the widget's base styles.
+
+        Scoped to this game widget (and its children), so it augments the
+        global theme without affecting other open game tabs.  Re-applied on
+        theme changes.
+        """
+        slug = self._gameStyleSlug()
+        base = getattr(self, "_base_stylesheet", "")
+        if not slug:
+            return
+        game_qss = self._loadGameStylesheet(slug)
+        self.setStyleSheet(f"{base}\n{game_qss}" if game_qss else base)
 
     def retranslateUI(self):
         self.setRoundTitle()
