@@ -1,5 +1,4 @@
 import os
-import re
 
 from PySide6.QtCore import QCoreApplication
 
@@ -77,24 +76,20 @@ class AppSettings:
         self.dbseed()
         self.refresh()
 
-    def flush(self):
-        for k, d in self.settings["db"].items():
-            db.execute(
-                "INSERT OR REPLACE INTO `AppSettings`"
-                "(`key`, `value`, `type`, `displayname`, `description`) "
-                "VALUES (?,?,?,?,?)",
-                (k, d["value"], d["type"], d["displayname"], d["description"]),
-            )
-
     def refresh(self):
         self.loadFromEnv()
         self.loadFromDB()
 
     def loadFromEnv(self):
+        # A GAMELOG_<SETTING> environment variable overrides the matching
+        # setting, e.g. GAMELOG_LOG_LEVEL -> "log_level". Only known settings
+        # are honoured (GAMELOG_DB and the like are handled elsewhere).
+        prefix = "GAMELOG_"
         for var, value in os.environ.items():
-            m = re.match(r"GAMELOG_(\w)+", var)
-            if m:
-                key = m.groups()
+            if not var.startswith(prefix):
+                continue
+            key = var[len(prefix) :].lower()
+            if key in default_settings:
                 self.settings["env"][key] = value
 
     def loadFromDB(self):
