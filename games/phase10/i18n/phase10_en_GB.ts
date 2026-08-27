@@ -4,12 +4,12 @@
 <context>
     <name>Phase10QSBox</name>
     <message>
-        <location filename="../widget.py" line="861"/>
+        <location filename="../widget.py" line="863"/>
         <source>Lowest Ph</source>
         <translation>Min Ph</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="863"/>
+        <location filename="../widget.py" line="865"/>
         <source>Damned</source>
         <translation>Damned</translation>
     </message>
@@ -17,12 +17,12 @@
 <context>
     <name>Phase10RoundPlot</name>
     <message>
-        <location filename="../widget.py" line="775"/>
+        <location filename="../widget.py" line="777"/>
         <source>Phases</source>
         <translation>Phases</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="776"/>
+        <location filename="../widget.py" line="778"/>
         <source>Scores</source>
         <translation>Scores</translation>
     </message>
@@ -30,12 +30,12 @@
 <context>
     <name>Phase10RoundTable</name>
     <message>
-        <location filename="../widget.py" line="701"/>
+        <location filename="../widget.py" line="703"/>
         <source>Winner</source>
         <translation>Winner</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="709"/>
+        <location filename="../widget.py" line="711"/>
         <source> (Phase {})</source>
         <translation> (Phase {})</translation>
     </message>
@@ -43,7 +43,7 @@
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="../widget.py" line="674"/>
+        <location filename="../widget.py" line="676"/>
         <source>Score</source>
         <translation>Score</translation>
     </message>
@@ -51,88 +51,88 @@
 <context>
     <name>Phase10Widget</name>
     <message>
-        <location filename="../widget.py" line="233"/>
+        <location filename="../widget.py" line="235"/>
         <source>Phases in order</source>
         <translation>Phases in order</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="69"/>
+        <location filename="../widget.py" line="71"/>
         <source>cards of the same colour</source>
         <translation>cards of the same colour</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="71"/>
+        <location filename="../widget.py" line="73"/>
         <source>run of</source>
         <translation>run of</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="72"/>
+        <location filename="../widget.py" line="74"/>
         <source>runs of</source>
         <translation>runs of</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="75"/>
+        <location filename="../widget.py" line="77"/>
         <source>colour run of</source>
         <translation>colour run of</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="76"/>
+        <location filename="../widget.py" line="78"/>
         <source>colour runs of</source>
         <translation>colour runs of</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="45"/>
+        <location filename="../widget.py" line="47"/>
         <source>pair</source>
         <translation>pair</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="46"/>
+        <location filename="../widget.py" line="48"/>
         <source>pairs</source>
         <translation>pairs</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="49"/>
+        <location filename="../widget.py" line="51"/>
         <source>three of a kind</source>
         <comment>singular</comment>
         <translation>three of a kind</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="52"/>
+        <location filename="../widget.py" line="54"/>
         <source>three of a kind</source>
         <comment>plural</comment>
         <translation>three of a kind</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="57"/>
+        <location filename="../widget.py" line="59"/>
         <source>four of a kind</source>
         <comment>singular</comment>
         <translation>four of a kind</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="60"/>
+        <location filename="../widget.py" line="62"/>
         <source>four of a kind</source>
         <comment>plural</comment>
         <translation>four of a kind</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="63"/>
+        <location filename="../widget.py" line="65"/>
         <source>five of a kind</source>
         <comment>singular</comment>
         <translation>five of a kind</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="66"/>
+        <location filename="../widget.py" line="68"/>
         <source>five of a kind</source>
         <comment>plural</comment>
         <translation>five of a kind</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="185"/>
+        <location filename="../widget.py" line="187"/>
         <source>Phases</source>
         <translation>Phases</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="236"/>
+        <location filename="../widget.py" line="238"/>
         <source>Free phase order</source>
         <translation>Free phase order</translation>
     </message>

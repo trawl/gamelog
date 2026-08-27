@@ -4,12 +4,12 @@
 <context>
     <name>ScrabbleQSBox</name>
     <message>
-        <location filename="../widget.py" line="341"/>
+        <location filename="../widget.py" line="344"/>
         <source>Best Play</source>
         <translation>Mejor Jug</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="343"/>
+        <location filename="../widget.py" line="346"/>
         <source>Max Bonus</source>
         <translation>Max Bonus</translation>
     </message>
@@ -17,12 +17,12 @@
 <context>
     <name>ScrabbleWidget</name>
     <message>
-        <location filename="../widget.py" line="72"/>
+        <location filename="../widget.py" line="75"/>
         <source>You must select a player</source>
         <translation>Debe seleccionar un jugador</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="80"/>
+        <location filename="../widget.py" line="83"/>
         <source>{} score is not valid</source>
         <translation>La puntuación de {} no es válida</translation>
     </message>

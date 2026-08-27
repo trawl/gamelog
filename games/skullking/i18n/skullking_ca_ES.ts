@@ -4,17 +4,17 @@
 <context>
     <name>SkullKingQSBox</name>
     <message>
-        <location filename="../widget.py" line="1099"/>
+        <location filename="../widget.py" line="1102"/>
         <source>Max Hit %</source>
         <translation>Max Encert %</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1101"/>
+        <location filename="../widget.py" line="1104"/>
         <source>Avg Hit %</source>
         <translation>Encert %</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1103"/>
+        <location filename="../widget.py" line="1106"/>
         <source>Best Round</source>
         <translation>Millor Ronda</translation>
     </message>
@@ -22,67 +22,67 @@
 <context>
     <name>SkullKingWidget</name>
     <message>
-        <location filename="../widget.py" line="45"/>
+        <location filename="../widget.py" line="48"/>
         <source>classic_scoring</source>
         <translation>Puntatge clàssic</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="46"/>
+        <location filename="../widget.py" line="49"/>
         <source>standard_scoring</source>
         <translation>Recompte estàndar</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="47"/>
+        <location filename="../widget.py" line="50"/>
         <source>rascal_scoring</source>
         <translation>Recompte del canalla</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="48"/>
+        <location filename="../widget.py" line="51"/>
         <source>standard_rounds</source>
         <translation>Rondes Estàndard</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="49"/>
+        <location filename="../widget.py" line="52"/>
         <source>even</source>
         <translation>Quilla uniforme</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="50"/>
+        <location filename="../widget.py" line="53"/>
         <source>brawl</source>
         <translation>Directes a la baralla</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="51"/>
+        <location filename="../widget.py" line="54"/>
         <source>skirmish</source>
         <translation>Escaramussa al punt</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="52"/>
+        <location filename="../widget.py" line="55"/>
         <source>barrage</source>
         <translation>Bombardeig lateral</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="53"/>
+        <location filename="../widget.py" line="56"/>
         <source>whirlpool</source>
         <translation>Remolí</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="157"/>
+        <location filename="../widget.py" line="160"/>
         <source>Has the Kraken and White Whale appeared and discarded two tricks?</source>
         <translation>Han aparegut el Kraken i la Balena Blanca, descartant dues mans?</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="181"/>
+        <location filename="../widget.py" line="184"/>
         <source>Has the Kraken appeared and discarded a trick?</source>
         <translation>Ha aparegut el Kraken, descartant una mà?</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="223"/>
+        <location filename="../widget.py" line="226"/>
         <source>There are more than 3 Fourteen bonuses selected.</source>
         <translation>Hi ha més de 3 bonus del 14 sel·leccionats.</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="233"/>
+        <location filename="../widget.py" line="236"/>
         <source>There are more than 4 Loot bonuses selected.</source>
         <translation>Hi han més de 4 bonus de botí sel·leccionats.</translation>
     </message>
