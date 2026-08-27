@@ -50,8 +50,8 @@ Adding a game is dropping in a directory; no other files need editing.
 
    registry.register(
        GameDefinition(
-           "My Game",                 # name (shown in the UI, stored in the DB)
-           6,                         # max players
+           "My Game",  # name (shown in the UI, stored in the DB)
+           6,  # max players
            "Short description",
            "Home rules",
            "games.mygame.model:MyGameMatch",
