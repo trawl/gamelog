@@ -344,12 +344,12 @@
 <context>
     <name>LanguageChooser</name>
     <message>
-        <location filename="../../ui/languagechooser.py" line="167"/>
+        <location filename="../../ui/languagechooser.py" line="179"/>
         <source>Select the desired language:</source>
         <translation>Select the desired language:</translation>
     </message>
     <message>
-        <location filename="../../ui/languagechooser.py" line="164"/>
+        <location filename="../../ui/languagechooser.py" line="176"/>
         <source>Language</source>
         <translation>Language</translation>
     </message>
