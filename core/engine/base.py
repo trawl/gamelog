@@ -29,7 +29,7 @@ class GameEngine:
         self.porder.append(nick)
         self.players[nick] = Player()
         self.players[nick].nick = nick
-        cur = db.execute(f"Select * from Player where nick='{nick}';")
+        cur = db.execute("Select * from Player where nick=?;", (nick,))
         # Exists in db?
         user = cur.fetchone()
         if user:
@@ -38,9 +38,10 @@ class GameEngine:
             self.players[nick].fullName = fullName
             self.players[nick].dateCreation = datetime.datetime.now(tz=datetime.UTC)
             qd = str(self.players[nick].dateCreation)
-            q = f"""INSERT INTO Player (nick, fullName, dateCreation)
-                 VALUES ('{nick}','{fullName}','{qd}');"""
-            db.execute(q)
+            db.execute(
+                "INSERT INTO Player (nick, fullName, dateCreation) VALUES (?,?,?);",
+                (nick, fullName, qd),
+            )
 
     def begin(self):
         if not self.match:
@@ -84,7 +85,9 @@ class GameEngine:
             return 0
 
     def getGameMaxPlayers(self):
-        cur = db.execute(f"Select maxPlayers from Game where name='{self.game}'")
+        cur = db.execute(
+            "Select maxPlayers from Game where name=?", (self.game,)
+        )
         r = cur.fetchone()
         return int(r["maxPlayers"])
 

@@ -93,14 +93,12 @@ class CarcassonneStatsEngine(StatsEngine):
         self.matchKindRecord = []
 
         for kind in ("City", "Road", "Field"):
-            self.singleKindRecord += db.queryDict(
-                self._singleKindRecordQuery.format(kind)
-            )
+            q = self._singleKindRecordQuery.format(kind)
+            self.singleKindRecord += db.queryDict(q, self._bound_params(q))
 
         for kind in ("City", "Road", "Cloister", "Field", "Fair"):
-            self.matchKindRecord += db.queryDict(
-                self._matchKindRecordQuery.format(kind)
-            )
+            q = self._matchKindRecordQuery.format(kind)
+            self.matchKindRecord += db.queryDict(q, self._bound_params(q))
 
     def getSingleKindRecords(self):
         return self.singleKindRecord

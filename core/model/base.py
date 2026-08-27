@@ -39,7 +39,8 @@ class GenericMatch:
             return False
         cur = db.execute(
             "SELECT Game_name,state,started,elapsed "
-            f"FROM Match WHERE idMatch ={idMatch};"
+            "FROM Match WHERE idMatch =?;",
+            (idMatch,),
         )
         if not cur:
             return False
@@ -62,7 +63,8 @@ class GenericMatch:
         self.players = []
         cur = db.execute(
             "SELECT rowid,nick,totalScore FROM MatchPlayer "
-            f"WHERE idMatch ={idMatch} ORDER BY rowid;"
+            "WHERE idMatch =? ORDER BY rowid;",
+            (idMatch,),
         )
         for row in cur:
             player = str(row["nick"])
@@ -138,14 +140,18 @@ class GenericMatch:
             cur = db.execute(
                 "INSERT INTO Match (Game_name, state, started,"
                 "finished,elapsed) "
-                f"VALUES ('{self.game}',{self.state},'{self.start!s}','{self.finish!s}',{self.elapsed});"
+                "VALUES (?,?,?,?,?);",
+                (self.game, self.state, str(self.start), str(self.finish),
+                 self.elapsed),
             )
             self.idMatch = cur.lastrowid
         else:
             cur = db.execute(
                 "INSERT OR REPLACE INTO Match (idMatch,Game_name,"
                 "state,started,finished,elapsed) "
-                f"VALUES ({self.idMatch},'{self.game}',{self.state},'{self.start!s}','{self.finish!s}',{self.elapsed});"
+                "VALUES (?,?,?,?,?,?);",
+                (self.idMatch, self.game, self.state, str(self.start),
+                 str(self.finish), self.elapsed),
             )
         for p in self.players:
             winner = 0
@@ -154,7 +160,8 @@ class GenericMatch:
             db.execute(
                 "INSERT OR REPLACE INTO MatchPlayer"
                 "(idMatch,nick,totalScore,winner) "
-                f"VALUES ({self.idMatch!s},'{p!s}',{self.getScoreFromPlayer(str(p))},{winner});"
+                "VALUES (?,?,?,?);",
+                (self.idMatch, str(p), self.getScoreFromPlayer(str(p)), winner),
             )
 
     def getGameTime(self):
@@ -234,7 +241,8 @@ class GenericRoundMatch(GenericMatch):
             return False
         cur = db.execute(
             "SELECT idRound,nick,winner,score FROM Round "
-            f"WHERE idMatch ={idMatch} ORDER BY idRound;"
+            "WHERE idMatch =? ORDER BY idRound;",
+            (idMatch,),
         )
         current = 0
         rnd = None
@@ -253,7 +261,8 @@ class GenericRoundMatch(GenericMatch):
             self.rounds.append(rnd)
 
         cur = db.execute(
-            f"SELECT value FROM MatchExtras WHERE idMatch ={idMatch} and key='Dealer';"
+            "SELECT value FROM MatchExtras WHERE idMatch =? and key='Dealer';",
+            (idMatch,),
         )
         row = cur.fetchone()
         if row:
@@ -261,7 +270,8 @@ class GenericRoundMatch(GenericMatch):
 
         cur = db.execute(
             "SELECT value FROM MatchExtras "
-            f"WHERE idMatch ={idMatch} and key='DealingPolicy';"
+            "WHERE idMatch =? and key='DealingPolicy';",
+            (idMatch,),
         )
         row = cur.fetchone()
         if row:
@@ -269,8 +279,9 @@ class GenericRoundMatch(GenericMatch):
 
         cur = db.execute(
             "SELECT idRound,nick,key,value FROM RoundStatistics "
-            f"WHERE idMatch ={idMatch} "
-            "ORDER BY idRound,nick,key,value;"
+            "WHERE idMatch =? "
+            "ORDER BY idRound,nick,key,value;",
+            (idMatch,),
         )
 
         currentr = 0
@@ -303,16 +314,20 @@ class GenericRoundMatch(GenericMatch):
         super().flushToDB()
 
         #         db.execute("BEGIN")
-        db.execute(f"DELETE FROM Round where idMatch={self.idMatch};")
-        db.execute(f"DELETE FROM RoundStatistics where idMatch={self.idMatch};")
+        db.execute("DELETE FROM Round where idMatch=?;", (self.idMatch,))
+        db.execute(
+            "DELETE FROM RoundStatistics where idMatch=?;", (self.idMatch,)
+        )
 
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            f"VALUES ({self.idMatch},'Dealer','{self.getDealer()}');"
+            "VALUES (?,'Dealer',?);",
+            (self.idMatch, str(self.getDealer())),
         )
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            f"VALUES ({self.idMatch},'DealingPolicy','{self.getDealingPolicy()}');"
+            "VALUES (?,'DealingPolicy',?);",
+            (self.idMatch, str(self.getDealingPolicy())),
         )
 
         for rnd in self.rounds:
@@ -323,7 +338,8 @@ class GenericRoundMatch(GenericMatch):
                 db.execute(
                     "INSERT OR REPLACE INTO Round (idMatch, nick, "
                     "idRound, winner,score) "
-                    f"VALUES ({self.idMatch},'{player!s}',{rnd.getNumRound()},{winner},{score});"
+                    "VALUES (?,?,?,?,?);",
+                    (self.idMatch, str(player), rnd.getNumRound(), winner, score),
                 )
 
     #         db.execute("COMMIT")

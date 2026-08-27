@@ -98,8 +98,12 @@ class PochaStatsEngine(StatsEngine):
     def update(self, players=None):
         super().update()
         # print(f"Updating {self.game} stats...")
-        self.hitsRecord = db.queryDict(self._hitsQuery)
-        self.extremeRoundsRecord = db.queryDict(self._extremeRounds)
+        self.hitsRecord = db.queryDict(
+            self._hitsQuery, self._bound_params(self._hitsQuery)
+        )
+        self.extremeRoundsRecord = db.queryDict(
+            self._extremeRounds, self._bound_params(self._extremeRounds)
+        )
 
         if not self.generalplayerstats:
             return

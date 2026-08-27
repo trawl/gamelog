@@ -123,22 +123,22 @@ class GameLogDB:
     def getDBPath(self):
         return self.dbpath
 
-    def execute(self, query):
+    def execute(self, query, params=()):
         if self.con is None:
             raise RuntimeError("Database not connected")
         try:
             with self.con:
                 self.con.row_factory = lite.Row
                 cur = self.con.cursor()
-                cur.execute(query)
+                cur.execute(query, params)
                 return cur
         except lite.Error as e:
             self._printError(f"Error running query {query}\n {e.args[0]}")
             sys.exit(1)
 
-    def queryDict(self, query):
+    def queryDict(self, query, params=()):
         result = []
-        for row in self.execute(query):
+        for row in self.execute(query, params):
             entry = {}
             for key in row.keys():  # noqa: SIM118
                 entry[key] = row[key]
@@ -171,7 +171,7 @@ class GameLogDB:
         for definition in registry.definitions():
             ge = definition.database_row()
             self.execute(
-                f"""INSERT OR IGNORE INTO "Game" VALUES ("{ge[0]}",{ge[1]},"{ge[2]}","{ge[3]}")"""
+                'INSERT OR IGNORE INTO "Game" VALUES (?,?,?,?)', ge
             )
 
     def getAvailableGames(self):
@@ -205,23 +205,24 @@ class GameLogDB:
 
     def addPlayer(self, nick, fullname):
         db.execute(
-            "INSERT INTO Player(nick,fullName,dateCreation) "
-            f"VALUES('{nick}','{fullname}','{datetime.datetime.now(tz=datetime.UTC)}')"
+            "INSERT INTO Player(nick,fullName,dateCreation) VALUES(?,?,?)",
+            (nick, fullname, str(datetime.datetime.now(tz=datetime.UTC))),
         )
 
     def isPlayerFavourite(self, nick):
-        cur = db.execute(f"SELECT nick FROM Player WHERE nick='{nick}' and favourite=1")
+        cur = db.execute(
+            "SELECT nick FROM Player WHERE nick=? and favourite=1", (nick,)
+        )
         if not cur.fetchone():  # noqa: SIM103
             return False
         else:
             return True
 
     def setPlayerFavourite(self, nick, isfav):
-        if isfav:
-            flag = 1
-        else:
-            flag = 0
-        db.execute(f"UPDATE Player SET favourite={flag} WHERE nick='{nick}'")
+        flag = 1 if isfav else 0
+        db.execute(
+            "UPDATE Player SET favourite=? WHERE nick=?", (flag, nick)
+        )
 
     def _printError(self, message):
         # Python 2 syntax

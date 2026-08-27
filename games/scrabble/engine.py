@@ -75,7 +75,8 @@ class ScrabbleStatsEngine(StatsEngine):
             return
 
         for q, params in self.query_params.items():
-            for row in db.queryDict(self.queries[q]):
+            query = self.queries[q]
+            for row in db.queryDict(query, self._bound_params(query)):
                 player = row["player"]
                 for r2 in self.generalplayerstats:
                     if r2["nick"] == player and r2["game"] == self.game:

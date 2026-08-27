@@ -34,7 +34,9 @@ class CarcassonneMatch(GenericRoundMatch):
             db.execute(
                 "INSERT OR REPLACE INTO RoundStatistics "
                 "(idMatch,nick,idRound,key,value) "
-                f"VALUES ({self.idMatch},'{entry.getPlayer()}',{entry.getNumEntry()},'kind','{entry.getKind()}');"
+                "VALUES (?,?,?,'kind',?);",
+                (self.idMatch, entry.getPlayer(), entry.getNumEntry(),
+                 entry.getKind()),
             )
 
     def computeWinner(self):

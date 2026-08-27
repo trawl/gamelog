@@ -55,13 +55,38 @@ class StatsEngine:
         self.generalgamestats = None
         self.generalmatchstats = None
         self.generalplayerstats = None
+        # Bound parameters for the queries below (populated by subclasses that
+        # filter by player).
+        self._params: tuple = ()
+
+    def _bound_params(self, query):
+        """Parameters to bind for ``query``.
+
+        The player-filter clause (see ``ParticularStatsEngine``) is spliced in
+        once per ``WHERE`` in the source query, so its parameters repeat the
+        same number of times. Plain, unfiltered queries have no bound
+        parameters. Subclasses that run their own filtered queries must bind
+        with this helper.
+        """
+        if not self._params:
+            return ()
+        repeats = query.count("?") // len(self._params)
+        return self._params * repeats
 
     def update(self, _players=None):
         # Number of matches played
         try:
-            self.generalgamestats = db.queryDict(self._lastwinnerquery)
-            self.generalmatchstats = db.queryDict(self._generalmatchstatsquery)
-            self.generalplayerstats = db.queryDict(self._generalplayerstatsquery)
+            self.generalgamestats = db.queryDict(
+                self._lastwinnerquery, self._bound_params(self._lastwinnerquery)
+            )
+            self.generalmatchstats = db.queryDict(
+                self._generalmatchstatsquery,
+                self._bound_params(self._generalmatchstatsquery),
+            )
+            self.generalplayerstats = db.queryDict(
+                self._generalplayerstatsquery,
+                self._bound_params(self._generalplayerstatsquery),
+            )
         except IndexError:
             pass
 
@@ -101,17 +126,22 @@ class ParticularStatsEngine(StatsEngine):
             splayers = set(players)
             if self.players != splayers:
                 self.players = splayers
-                players_str = ",".join(["'" + p + "'" for p in self.players])
+                # Fixed ordering so the placeholders and the bound parameters
+                # line up (the nick list appears twice in the clause).
+                plist = list(self.players)
+                placeholders = ",".join("?" for _ in plist)
                 self._newclause = (
                     "idMatch IN ("
                     "SELECT idMatch FROM MatchPlayer "
-                    "WHERE nick IN ({0}) "
+                    f"WHERE nick IN ({placeholders}) "
                     "GROUP BY idMatch "
-                    "HAVING COUNT(*)={1} and idMatch NOT IN ("
+                    "HAVING COUNT(*)=? and idMatch NOT IN ("
                     "SELECT idMatch FROM MatchPlayer "
-                    "WHERE nick NOT IN ({0})))"
+                    f"WHERE nick NOT IN ({placeholders})))"
                 )
-                self._newclause = self._newclause.format(players_str, len(self.players))
+                # Parameter order matches placeholder order in the clause:
+                # first IN list, then COUNT(*)=?, then the NOT IN list.
+                self._params = (*plist, len(plist), *plist)
                 self._lastwinnerquery = self._lastwinnerquerybase.replace(
                     "WHERE", f"WHERE {self._newclause} AND"
                 )

@@ -104,7 +104,8 @@ class SkullKingMatch(PochaMatch):
             return False
 
         cur = db.execute(
-            f"SELECT value FROM MatchExtras WHERE idMatch ={idMatch} and key='scoringMode';"
+            "SELECT value FROM MatchExtras WHERE idMatch =? and key='scoringMode';",
+            (idMatch,),
         )
         if cur:
             row = cur.fetchone()
@@ -112,7 +113,8 @@ class SkullKingMatch(PochaMatch):
                 self.scoringMode = row["value"]
 
         cur = db.execute(
-            f"SELECT value FROM MatchExtras WHERE idMatch ={idMatch} and key='roundMode';"
+            "SELECT value FROM MatchExtras WHERE idMatch =? and key='roundMode';",
+            (idMatch,),
         )
         if cur:
             row = cur.fetchone()
@@ -128,9 +130,11 @@ class SkullKingMatch(PochaMatch):
         super().flushToDB()
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            f"VALUES ({self.idMatch},'scoringMode','{self.scoringMode}');"
+            "VALUES (?,'scoringMode',?);",
+            (self.idMatch, self.scoringMode),
         )
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            f"VALUES ({self.idMatch},'roundMode','{self.roundMode}');"
+            "VALUES (?,'roundMode',?);",
+            (self.idMatch, self.roundMode),
         )

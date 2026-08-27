@@ -12,7 +12,8 @@ class ResumeEngine:
         self.candidates = {}
         cur = db.execute(
             "SELECT idMatch, started, finished, elapsed "
-            f"FROM Match WHERE state=4 and Game_name='{self.game}'"
+            "FROM Match WHERE state=4 and Game_name=?",
+            (self.game,),
         )
         for row in cur:
             self.candidates[row["idMatch"]] = {}
@@ -22,7 +23,9 @@ class ResumeEngine:
             self.candidates[row["idMatch"]]["players"] = []
 
         for idMatch, match in self.candidates.items():
-            cur = db.execute(f"SELECT nick FROM MatchPlayer WHERE idMatch={idMatch}")
+            cur = db.execute(
+                "SELECT nick FROM MatchPlayer WHERE idMatch=?", (idMatch,)
+            )
             for row in cur:
                 match["players"].append(str(row["nick"]))
 

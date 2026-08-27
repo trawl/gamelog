@@ -44,7 +44,8 @@ class RemigioMatch(GenericRoundMatch):
             return False
 
         cur = db.execute(
-            f"SELECT value FROM MatchExtras WHERE idMatch ={idMatch} and key='Top';"
+            "SELECT value FROM MatchExtras WHERE idMatch =? and key='Top';",
+            (idMatch,),
         )
         if cur:
             row = cur.fetchone()
@@ -86,13 +87,15 @@ class RemigioMatch(GenericRoundMatch):
         super().flushToDB()
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            f"VALUES ({self.idMatch},'Top','{self.top}');"
+            "VALUES (?,'Top',?);",
+            (self.idMatch, self.top),
         )
         for rnd in self.rounds:
             db.execute(
                 "INSERT OR REPLACE INTO RoundStatistics "
                 "(idMatch,nick,idRound,key,value) "
-                f"VALUES ({self.idMatch},'{rnd.getWinner()}',{rnd.getNumRound()},'closeType','{rnd.closeType}');"
+                "VALUES (?,?,?,'closeType',?);",
+                (self.idMatch, rnd.getWinner(), rnd.getNumRound(), rnd.closeType),
             )
 
 

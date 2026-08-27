@@ -27,7 +27,9 @@ class ScrabbleMatch(GenericRoundMatch):
                     db.execute(
                         "INSERT OR REPLACE INTO RoundStatistics "
                         "(idMatch,nick,idRound,key,value) "
-                        f"VALUES ({self.idMatch},'{entry.getPlayer()}',{entry.getNumEntry()},'{bonus}','{tally}');"
+                        "VALUES (?,?,?,?,?);",
+                        (self.idMatch, entry.getPlayer(), entry.getNumEntry(),
+                         bonus, tally),
                     )
 
     def computeWinner(self):

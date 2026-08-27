@@ -147,7 +147,9 @@ class Phase10StatsEngine(StatsEngine):
 
     def update(self, players=None):
         super().update()
-        self.wphases = db.queryDict(self._worst_phases)
+        self.wphases = db.queryDict(
+            self._worst_phases, self._bound_params(self._worst_phases)
+        )
         for row in self.wphases:
             game = row["game"]
             player = row["nick"]
@@ -157,7 +159,9 @@ class Phase10StatsEngine(StatsEngine):
                         r2["min_phases"] = row["min_phases"]
                         break
 
-        rows = db.queryDict(self._damned_phases)
+        rows = db.queryDict(
+            self._damned_phases, self._bound_params(self._damned_phases)
+        )
         attempts = {}
         for row in rows:
             if row["game"] not in attempts:

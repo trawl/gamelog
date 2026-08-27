@@ -16,7 +16,8 @@ class RatukiMatch(GenericRoundMatch):
             self.playerStart(player)
 
         cur = db.execute(
-            f"SELECT value FROM MatchExtras WHERE idMatch ={idMatch} and key='Top';"
+            "SELECT value FROM MatchExtras WHERE idMatch =? and key='Top';",
+            (idMatch,),
         )
         row = cur.fetchone()
         if row:
@@ -47,5 +48,6 @@ class RatukiMatch(GenericRoundMatch):
         super().flushToDB()
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            f"VALUES ({self.idMatch},'Top','{self.top}');"
+            "VALUES (?,'Top',?);",
+            (self.idMatch, self.top),
         )

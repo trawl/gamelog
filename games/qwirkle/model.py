@@ -26,7 +26,9 @@ class QwirkleMatch(GenericRoundMatch):
                 db.execute(
                     "INSERT OR REPLACE INTO RoundStatistics "
                     "(idMatch,nick,idRound,key,value) "
-                    f"VALUES ({self.idMatch},'{entry.getPlayer()}',{entry.getNumEntry()},'qwirkles','{entry.getQwirkles()}');"
+                    "VALUES (?,?,?,'qwirkles',?);",
+                    (self.idMatch, entry.getPlayer(), entry.getNumEntry(),
+                     entry.getQwirkles()),
                 )
 
     def computeWinner(self):

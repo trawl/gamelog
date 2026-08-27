@@ -67,7 +67,10 @@ class AppSettings:
     def flush(self):
         for k, d in self.settings["db"].items():
             db.execute(
-                f"INSERT OR REPLACE INTO `AppSettings`(`key`, `value`, `type`, `displayname`, `description`) VALUES ('{k}', '{d['value']}', '{d['type']}','{d['displayname']}', '{d['description']}') "
+                "INSERT OR REPLACE INTO `AppSettings`"
+                "(`key`, `value`, `type`, `displayname`, `description`) "
+                "VALUES (?,?,?,?,?)",
+                (k, d["value"], d["type"], d["displayname"], d["description"]),
             )
 
     def refresh(self):
@@ -117,7 +120,9 @@ class AppSettings:
     def set(self, key, value, persistent=True):
         if persistent:
             self.settings["db"][key] = value
-            db.execute(f"UPDATE `AppSettings` SET `value`='{value}' WHERE key='{key}'")
+            db.execute(
+                "UPDATE `AppSettings` SET `value`=? WHERE key=?", (value, key)
+            )
         else:
             self.settings["env"][key] = value
 
@@ -133,11 +138,14 @@ class AppSettings:
             PRIMARY KEY (`key`) );""")
 
         for k, d in default_settings.items():
-            cur = db.execute(f"SELECT `key` FROM `AppSettings` WHERE `key`= '{k}'")
+            cur = db.execute(
+                "SELECT `key` FROM `AppSettings` WHERE `key`=?", (k,)
+            )
             if not cur.fetchone():
-                value = "NULL" if d["value"] is None else f"'{d['value']}'"
                 db.execute(
-                    f"INSERT OR REPLACE INTO `AppSettings`(`key`, `value`, `type`) VALUES ('{k}', {value}, '{d['type']}') "
+                    "INSERT OR REPLACE INTO `AppSettings`(`key`, `value`, `type`) "
+                    "VALUES (?,?,?)",
+                    (k, d["value"], d["type"]),
                 )
 
 

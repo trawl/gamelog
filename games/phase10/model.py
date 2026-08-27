@@ -103,7 +103,8 @@ class Phase10Match(GenericRoundMatch):
 
         cur = db.execute(
             "SELECT value FROM MatchExtras "
-            f"WHERE idMatch ={idMatch} and key='PhasesInOrder';"
+            "WHERE idMatch =? and key='PhasesInOrder';",
+            (idMatch,),
         )
         if cur:
             row = cur.fetchone()
@@ -139,19 +140,24 @@ class Phase10Match(GenericRoundMatch):
             inorderflag = 0
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            f"VALUES ({self.idMatch},'PhasesInOrder','{inorderflag}');"
+            "VALUES (?,'PhasesInOrder',?);",
+            (self.idMatch, inorderflag),
         )
         for rnd in self.rounds:
             for player in rnd.score.keys():  # noqa: SIM118
                 db.execute(
                     "INSERT OR REPLACE INTO RoundStatistics "
                     "(idMatch,nick,idRound,key,value) "
-                    f"VALUES ({self.idMatch},'{player}',{rnd.getNumRound()},'PhaseAimed','{rnd.aimedPhase[player]}');"
+                    "VALUES (?,?,?,'PhaseAimed',?);",
+                    (self.idMatch, player, rnd.getNumRound(),
+                     rnd.aimedPhase[player]),
                 )
                 db.execute(
                     "INSERT OR REPLACE INTO RoundStatistics "
                     "(idMatch,nick,idRound,key,value) "
-                    f"VALUES ({self.idMatch},'{player}',{rnd.getNumRound()},'PhaseCompleted','{rnd.completedPhase[player]}');"
+                    "VALUES (?,?,?,'PhaseCompleted',?);",
+                    (self.idMatch, player, rnd.getNumRound(),
+                     rnd.completedPhase[player]),
                 )
 
     def getPhasesInOrderFlag(self):
