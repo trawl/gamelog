@@ -1,5 +1,5 @@
 import datetime
-import os.path
+import os
 import sqlite3 as lite
 import sys
 from pathlib import Path
@@ -115,13 +115,18 @@ class GameLogDB:
             sys.exit(1)
 
     def _checkDB(self):
+        from games import load_builtin_games
+        from games.registry import registry
+
+        load_builtin_games()
         cur = self.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='Game'"
         )
         if not cur.fetchone():
             self._executeScript(_emptydb)
         # Ensure we have all the games we support
-        for ge in _games:
+        for definition in registry.definitions():
+            ge = definition.database_row()
             self.execute(
                 f"""INSERT OR IGNORE INTO "Game" VALUES ("{ge[0]}",{ge[1]},"{ge[2]}","{ge[3]}")"""
             )
@@ -184,19 +189,6 @@ class GameLogDB:
 
 db = GameLogDB()
 
-_games = [
-    ("Phase10", 6, "Standard Edition", "Home rules"),
-    ("Phase10Master", 6, "Master Edition", "Home rules"),
-    ("Remigio", 12, "Classic Remigio", "Home rules"),
-    ("Ratuki", 5, "Ratuki Slap game", "Home rules"),
-    ("Carcassonne", 6, "Carcassonne board game", "Home rules"),
-    ("Pocha", 6, "Carcassonne board game", "Home rules"),
-    ("Skull King", 8, "Skull King card game", "Home rules"),
-    ("Toma6", 10, "Toma6 card game", "Home rules"),
-    ("Qwirkle", 4, "Qwirkle tile game", "Standard rules"),
-    ("Scrabble", 4, "Scrabble word game", "Standard rules"),
-]
-
 _emptydb = """
 DROP TABLE IF EXISTS "AppSettings";
 CREATE TABLE `AppSettings` (
@@ -211,7 +203,6 @@ CREATE TABLE `Game` (
   `description` TEXT NULL ,
   `rules` TEXT NULL ,
   PRIMARY KEY (`name`) );
-
 DROP TABLE IF EXISTS "GameExtras";
 CREATE TABLE `GameExtras` (
   `Game_name` VARCHAR(45) NOT NULL ,

@@ -4,6 +4,11 @@ import os
 import sys
 
 import resources_rc  # noqa: F401
+from games import load_builtin_games
+
+# Register game metadata before the UI imports initialize application settings.
+load_builtin_games()
+
 from gui.gamelogapplication import GamelogApplication
 from gui.languagechooser import LanguageManager
 from gui.mainwindow import MainWindow

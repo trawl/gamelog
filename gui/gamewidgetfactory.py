@@ -1,55 +1,20 @@
-from gui.carcassonne import CarcassonneWidget
-from gui.phase10 import Phase10Widget
-from gui.pocha import PochaWidget
-from gui.qwirkle import QwirkleWidget
-from gui.ratuki import RatukiWidget
-from gui.remigio import RemigioWidget
-from gui.scrabble import ScrabbleWidget
-from gui.skullking import SkullKingWidget
-from gui.toma6 import Toma6Widget
+from games import load_builtin_games
+from games.registry import registry
 
 
 class GameWidgetFactory:
     @classmethod
     def createGameWidget(cls, gname, players, parent):
-        if gname in ["Phase10", "Phase10Master"]:
-            return Phase10Widget(gname, players, None, parent)
-        if gname == "Remigio":
-            return RemigioWidget(gname, players, None, parent)
-        if gname == "Ratuki":
-            return RatukiWidget(gname, players, None, parent)
-        if gname == "Carcassonne":
-            return CarcassonneWidget(gname, players, None, parent)
-        if gname == "Pocha":
-            return PochaWidget(gname, players, None, parent)
-        if gname == "Skull King":
-            return SkullKingWidget(gname, players, None, parent)
-        if gname == "Toma6":
-            return Toma6Widget(gname, players, None, parent)
-        if gname == "Qwirkle":
-            return QwirkleWidget(gname, players, None, parent)
-        if gname == "Scrabble":
-            return ScrabbleWidget(gname, players, None, parent)
-        return None
+        load_builtin_games()
+        definition = registry.get(gname)
+        if not definition:
+            return None
+        return definition.resolve(definition.widget_factory)(gname, players, None, parent)
 
     @classmethod
     def resumeGameWidget(cls, gname, engine, parent):
-        if gname in ["Phase10", "Phase10Master"]:
-            return Phase10Widget(gname, None, engine, parent)
-        if gname == "Remigio":
-            return RemigioWidget(gname, None, engine, parent)
-        if gname == "Ratuki":
-            return RatukiWidget(gname, None, engine, parent)
-        if gname == "Carcassonne":
-            return CarcassonneWidget(gname, None, engine, parent)
-        if gname == "Pocha":
-            return PochaWidget(gname, None, engine, parent)
-        if gname == "Skull King":
-            return SkullKingWidget(gname, None, engine, parent)
-        if gname == "Toma6":
-            return Toma6Widget(gname, None, engine, parent)
-        if gname == "Qwirkle":
-            return QwirkleWidget(gname, None, engine, parent)
-        if gname == "Scrabble":
-            return ScrabbleWidget(gname, None, engine, parent)
-        return None
+        load_builtin_games()
+        definition = registry.get(gname)
+        if not definition:
+            return None
+        return definition.resolve(definition.widget_factory)(gname, None, engine, parent)

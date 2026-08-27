@@ -1,25 +1,15 @@
-from gui.carcassonne import CarcassonneQSTW
+from games import load_builtin_games
+from games.registry import registry
 from gui.gamestats import QuickStatsTW
-from gui.phase10 import Phase10QSTW
-from gui.pocha import PochaQSTW
-from gui.qwirkle import QwirkleQSTW
-from gui.scrabble import ScrabbleQSTW
-from gui.skullking import SkullKingQSTW
 
 
 class QSFactory:
     @classmethod
     def createQS(cls, gname, players, parent):
-        if gname == "Carcassonne":
-            return CarcassonneQSTW(gname, players, parent)
-        if gname in ("Phase10Master", "Phase10"):
-            return Phase10QSTW(gname, players, parent)
-        if gname == "Pocha":
-            return PochaQSTW(gname, players, parent)
-        if gname == "Skull King":
-            return SkullKingQSTW(gname, players, parent)
-        if gname == "Qwirkle":
-            return QwirkleQSTW(gname, players, parent)
-        if gname == "Scrabble":
-            return ScrabbleQSTW(gname, players, parent)
+        load_builtin_games()
+        definition = registry.get(gname)
+        if definition and definition.quick_stats_factory:
+            return definition.resolve(definition.quick_stats_factory)(
+                gname, players, parent
+            )
         return QuickStatsTW(gname, players, parent)
