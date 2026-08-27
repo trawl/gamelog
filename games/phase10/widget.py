@@ -185,14 +185,16 @@ class Phase10Widget(GameWidget):
         super().retranslateUI()
         self.phasesInOrderChanged()
         self.extraGroup.setTitle(self.tr("Phases"))
-        phaselabels = zip(getPhaseNames(self.engine.getPhases()), self.phaseLabels)
+        phaselabels = zip(
+            getPhaseNames(self.engine.getPhases()), self.phaseLabels, strict=False
+        )
         for number, (phase, label) in enumerate(phaselabels, start=1):
             label.setText(f"{number: >2} :   {phase}")
 
     def togglePhaseDescs(self):
-        for l, c in zip(self.phaseLabels, self.phaseCards):
-            l.hide(not l.hidden())
-            c.hide(not c.hidden())
+        for label, card in zip(self.phaseLabels, self.phaseCards, strict=False):
+            label.hide(not label.hidden())
+            card.hide(not card.hidden())
 
     def checkPlayerScore(self, player, score, extras=None):
         return super().checkPlayerScore(self, score) and not (

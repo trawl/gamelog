@@ -157,7 +157,7 @@ class StepProgressBar(QWidget):
         # ---------------------------
         # Draw each segment
         # ---------------------------
-        for i, label in enumerate(self.steps):
+        for i, _label in enumerate(self.steps):
             left = i * segW
             rect = QRectF(
                 left,

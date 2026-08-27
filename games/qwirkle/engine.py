@@ -57,7 +57,7 @@ class QwirkleStatsEngine(StatsEngine):
         FROM (
             SELECT Match.idMatch as "match",
                 RoundStatistics.nick as "player",key,
- 			SUM(value) as "qwirkles"
+             SUM(value) as "qwirkles"
             FROM Match,Round,RoundStatistics
             WHERE Match.idMatch = Round.idMatch
                 AND Round.idMatch = RoundStatistics.idMatch

@@ -57,7 +57,7 @@ class ScrabbleStatsEngine(StatsEngine):
         FROM (
             SELECT Match.idMatch as "match",
                 RoundStatistics.nick as "player",key,
- 			SUM(value) as "bonuses"
+             SUM(value) as "bonuses"
             FROM Match,Round,RoundStatistics
             WHERE Match.idMatch = Round.idMatch
                 AND Round.idMatch = RoundStatistics.idMatch

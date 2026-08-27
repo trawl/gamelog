@@ -357,7 +357,7 @@ class PochaPlayerInputWidget(QGroupBox):
 
     def refreshButtons(self, forbidden=-1):
         hands = self.engine.getHands()
-        for eb, wb in zip(self.expectedButtons, self.wonButtons):
+        for eb, wb in zip(self.expectedButtons, self.wonButtons, strict=False):
             if int(eb.text()) > hands or int(eb.text()) < 0:
                 eb.hide()
             else:

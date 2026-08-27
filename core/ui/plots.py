@@ -393,7 +393,7 @@ class LinePlot(QGraphicsItem):
             n = len(colours)
             offsets = [(i - (n - 1) / 2) * linewidth for i in range(n)]
 
-            for colour, offset in zip(colours, offsets):
+            for colour, offset in zip(colours, offsets, strict=False):
                 PlotLine(
                     pp.x(),
                     pp.y() + offset,
