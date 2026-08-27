@@ -21,9 +21,8 @@ from PySide6.QtWidgets import (
 from controllers.db import db
 from controllers.resumeengine import ResumeEngine
 from controllers.settings import appsettings
+from games.registry import registry
 from gui.gamelogapplication import GamelogApplication
-from gui.gamestatsfactory import QSFactory
-from gui.gamewidgetfactory import GameWidgetFactory
 from gui.languagechooser import LanguageButton
 from gui.newplayer import NewPlayerDialog
 from gui.playerlist import PlayerList, PlayerListModel
@@ -175,7 +174,7 @@ class NewGameWidget(Tab):
             # print("UGI deleting")
             self.gameStatsBox.deleteLater()
 
-        self.gameStatsBox = QSFactory.createQS(game, None, self)
+        self.gameStatsBox = registry.create_quick_stats(game, None, self)
         self.gameGroupBoxLayout.addWidget(self.gameStatsBox)
         self.gameGroupBoxLayout.setStretchFactor(self.gameStatsBox, 10)
         self.updateStats()
@@ -268,7 +267,7 @@ class NewGameWidget(Tab):
             msg = self.tr("The maximum number of players is")
             QMessageBox.warning(self, tit, f"{msg} {maxPlayers}")
         else:
-            matchTab = GameWidgetFactory.createGameWidget(game, players, self._parent)
+            matchTab = registry.create_widget(game, players, None, self._parent)
             if matchTab:
                 matchTab.restartRequested.connect(self.restartGame)
                 if self._parent:
@@ -283,7 +282,7 @@ class NewGameWidget(Tab):
         game = gamewidget.game
         if self._parent:
             self._parent.removeTab(gamewidget)
-        matchTab = GameWidgetFactory.createGameWidget(game, players, self._parent)
+        matchTab = registry.create_widget(game, players, None, self._parent)
         if matchTab:
             matchTab.restartRequested.connect(self.restartGame)
             if self._parent:
@@ -422,8 +421,8 @@ class ResumeBox(QGroupBox):
             gameengine = self.engine
             if self.engine:
                 gameengine = self.engine.resume(idMatch)
-            matchTab = GameWidgetFactory.resumeGameWidget(
-                self.game, gameengine, self._parent
+            matchTab = registry.create_widget(
+                self.game, None, gameengine, self._parent
             )
             if matchTab:
                 matchTab.restartRequested.connect(self.restartGame)

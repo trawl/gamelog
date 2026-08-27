@@ -6,8 +6,8 @@ from collections.abc import Callable
 from typing import TypeVar
 
 from controllers.db import db
+from games.registry import registry
 from model.base import GenericRoundMatch, Player
-from model.gamefactory import GameFactory
 
 
 class GameEngine:
@@ -21,7 +21,7 @@ class GameEngine:
         self.porder = []
         if not hasattr(self, "game"):
             self.game = None
-        self.match = GameFactory.createMatch(self.game)
+        self.match = registry.create_match(self.game)
 
     def addPlayer(self, nick, fullName=""):
         if fullName == "":
@@ -44,13 +44,13 @@ class GameEngine:
 
     def begin(self):
         if not self.match:
-            self.match = GameFactory.createMatch(self.game)
+            self.match = registry.create_match(self.game)
         self.match.setPlayers(self.porder)
         self.match.startMatch()
 
     def resume(self, idMatch):
         if not self.match:
-            self.match = GameFactory.createMatch(self.game)
+            self.match = registry.create_match(self.game)
         if self.match.resumeMatch(idMatch):
             for nick in self.match.getPlayers():
                 self.addPlayer(nick)

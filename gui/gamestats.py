@@ -17,8 +17,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from controllers.enginefactory import StatsEngineFactory
 from controllers.settings import appsettings
+from games.registry import registry
 from gui.tab import Tab
 
 
@@ -130,7 +130,7 @@ class AbstractQuickStatsBox(QGroupBox):
         self.setSizePolicy(sp)
 
     def initEngine(self):
-        self.stats = StatsEngineFactory.getStatsEngine(self.game)
+        self.stats = registry.create_stats_engine(self.game)
 
     def initUI(self):
         self.superlayout = QVBoxLayout(self)
@@ -270,7 +270,7 @@ class GeneralQuickStats(AbstractQuickStatsBox):
 
 class ParticularQuickStats(AbstractQuickStatsBox):
     def initEngine(self):
-        self.stats = StatsEngineFactory.getParticularStatsEngine(self.game)
+        self.stats = registry.create_particular_stats_engine(self.game)
 
     def updatePlayers(self, players):
         if players:

@@ -3,7 +3,7 @@ from typing import cast
 
 from controllers.baseengine import RoundGameEngine, readInput
 from controllers.db import db
-from controllers.enginefactory import GameEngineFactory
+from games.registry import registry
 
 
 class ResumeEngine:
@@ -30,7 +30,7 @@ class ResumeEngine:
         return self.candidates
 
     def resume(self, idMatch):
-        engine = GameEngineFactory.createMatch(self.game)
+        engine = registry.create_engine(self.game)
         if engine and engine.resume(idMatch):
             return engine
         return None
