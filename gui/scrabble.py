@@ -10,8 +10,8 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.scrabbleengine import ScrabbleEngine
-from controllers.settings import appsettings
-from gui.game import (
+from core.engine.settings import appsettings
+from core.ui.game import (
     BonusButton,
     GameInputWidget,
     GameNotImplementedException,
@@ -22,7 +22,7 @@ from gui.game import (
     PlayerColours,
     ScoreSpinBox,
 )
-from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
+from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 
 
 class ScrabbleWidget(GameWidget):

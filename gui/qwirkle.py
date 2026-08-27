@@ -1,11 +1,11 @@
 from PySide6 import QtCore
 
 from controllers.qwirkleengine import QwirkleEngine
-from gui.game import (
+from core.ui.game import (
     BonusButton,
     GameNotImplementedException,
 )
-from gui.gamestats import GeneralQuickStats, ParticularQuickStats
+from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats
 from gui.scrabble import (
     ScrabbleEntriesDetail,
     ScrabbleEntriesPlot,

@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-from controllers.db import db
+from core.engine.db import db
 
 standardIcon = ":/icons/player.png"
 favouriteIcon = ":/icons/fav.png"

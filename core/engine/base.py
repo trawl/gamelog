@@ -5,9 +5,9 @@ from abc import abstractmethod
 from collections.abc import Callable
 from typing import TypeVar
 
-from controllers.db import db
-from games.registry import registry
-from model.base import GenericRoundMatch, Player
+from core.engine.db import db
+from core.model.base import GenericRoundMatch, Player
+from core.registry import registry
 
 
 class GameEngine:

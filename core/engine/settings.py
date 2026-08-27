@@ -3,7 +3,7 @@ import re
 
 from PySide6.QtCore import QCoreApplication
 
-from controllers.db import db
+from core.engine.db import db
 
 QCoreApplication.translate("AppSettings", "symbols")
 QCoreApplication.translate("AppSettings", "text")

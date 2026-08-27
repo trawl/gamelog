@@ -17,9 +17,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from controllers.settings import appsettings
-from games.registry import registry
-from gui.tab import Tab
+from core.engine.settings import appsettings
+from core.registry import registry
+from core.ui.tab import Tab
 
 
 class QuickStatsTW(QTabWidget):

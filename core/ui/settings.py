@@ -20,8 +20,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from controllers.db import db
-from controllers.settings import appsettings
+from core.engine.db import db
+from core.engine.settings import appsettings
 
 
 class SettingsDialog(QDialog):

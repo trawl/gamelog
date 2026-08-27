@@ -1,4 +1,4 @@
-from games.registry import GameDefinition, registry
+from core.registry import GameDefinition, registry
 
 registry.register(GameDefinition(
     "Skull King", 8, "Skull King card game", "Home rules",

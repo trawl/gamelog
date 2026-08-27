@@ -45,17 +45,17 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from controllers.baseengine import EntryGameEngine
-from controllers.settings import appsettings
-from gui.clock import GameClock
-from gui.gamelogapplication import GamelogApplication
-from gui.gamestats import QuickStatsTW
-from gui.languagechooser import LanguageButton
-from gui.matchedit import MatchTimesEditDialog
-from gui.playerlist import PlayerOrderDialog
-from gui.plots import PlotView
-from gui.settings import SettingsDialog
-from gui.tab import Tab
+from core.engine.base import EntryGameEngine
+from core.engine.settings import appsettings
+from core.ui.clock import GameClock
+from core.ui.gamelogapplication import GamelogApplication
+from core.ui.gamestats import QuickStatsTW
+from core.ui.languagechooser import LanguageButton
+from core.ui.matchedit import MatchTimesEditDialog
+from core.ui.playerlist import PlayerOrderDialog
+from core.ui.plots import PlotView
+from core.ui.settings import SettingsDialog
+from core.ui.tab import Tab
 
 # i18n = QApplication.translate
 

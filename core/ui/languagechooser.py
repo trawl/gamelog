@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-from controllers.settings import appsettings
+from core.engine.settings import appsettings
 
 
 class LanguageManager(QObject):

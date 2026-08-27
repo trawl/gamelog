@@ -1,4 +1,4 @@
-from games.registry import GameDefinition, registry
+from core.registry import GameDefinition, registry
 
 registry.register(GameDefinition(
     "Scrabble", 4, "Scrabble word game", "Standard rules", "model.scrabble:ScrabbleMatch",

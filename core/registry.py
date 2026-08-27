@@ -51,21 +51,21 @@ class GameDefinition:
     def create_stats_engine(self) -> Any:
         if self.stats_engine_factory:
             return self.resolve(self.stats_engine_factory)()
-        from controllers.statsengine import StatsEngine
+        from core.engine.stats import StatsEngine
 
         return StatsEngine()
 
     def create_particular_stats_engine(self) -> Any:
         if self.particular_stats_engine_factory:
             return self.resolve(self.particular_stats_engine_factory)()
-        from controllers.statsengine import ParticularStatsEngine
+        from core.engine.stats import ParticularStatsEngine
 
         return ParticularStatsEngine()
 
     def create_quick_stats(self, gname, players, parent) -> Any:
         if self.quick_stats_factory:
             return self.resolve(self.quick_stats_factory)(gname, players, parent)
-        from gui.gamestats import QuickStatsTW
+        from core.ui.gamestats import QuickStatsTW
 
         return QuickStatsTW(gname, players, parent)
 
@@ -104,7 +104,7 @@ class GameRegistry:
         definition = self.get(name)
         if definition:
             return definition.create_match(players)
-        from model.base import GenericMatch
+        from core.model.base import GenericMatch
 
         return GenericMatch(players)
 
@@ -113,7 +113,7 @@ class GameRegistry:
         definition = self.get(name)
         if definition:
             return definition.create_engine()
-        from controllers.baseengine import GameEngine
+        from core.engine.base import GameEngine
 
         return GameEngine()
 
@@ -131,7 +131,7 @@ class GameRegistry:
         definition = self.get(name)
         if definition:
             return definition.create_stats_engine()
-        from controllers.statsengine import StatsEngine
+        from core.engine.stats import StatsEngine
 
         return StatsEngine()
 
@@ -140,7 +140,7 @@ class GameRegistry:
         definition = self.get(name)
         if definition:
             return definition.create_particular_stats_engine()
-        from controllers.statsengine import ParticularStatsEngine
+        from core.engine.stats import ParticularStatsEngine
 
         return ParticularStatsEngine()
 
@@ -149,7 +149,7 @@ class GameRegistry:
         definition = self.get(name)
         if definition:
             return definition.create_quick_stats(name, players, parent)
-        from gui.gamestats import QuickStatsTW
+        from core.ui.gamestats import QuickStatsTW
 
         return QuickStatsTW(name, players, parent)
 

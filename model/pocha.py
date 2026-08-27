@@ -1,4 +1,4 @@
-from model.base import GenericRoundMatch
+from core.model.base import GenericRoundMatch
 
 
 class PochaMatch(GenericRoundMatch):

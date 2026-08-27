@@ -1,6 +1,6 @@
 from typing import cast
 
-from controllers.baseengine import RoundGameEngine, readInput
+from core.engine.base import RoundGameEngine, readInput
 from model.ratuki import RatukiMatch
 
 

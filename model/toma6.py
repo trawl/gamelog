@@ -1,4 +1,4 @@
-from model.base import GenericRound, GenericRoundMatch
+from core.model.base import GenericRound, GenericRoundMatch
 
 
 class Toma6Match(GenericRoundMatch):

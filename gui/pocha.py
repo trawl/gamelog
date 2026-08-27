@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.pochaengine import PochaEngine
-from gui.game import (
+from core.ui.game import (
     GameInputWidget,
     GameNotImplementedException,
     GameRoundPlot,
@@ -28,8 +28,8 @@ from gui.game import (
     GameWidget,
     PlayerColours,
 )
-from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
-from gui.progress import StepProgressBar
+from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
+from core.ui.progress import StepProgressBar
 
 
 class PochaWidget(GameWidget):

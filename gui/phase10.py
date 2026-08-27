@@ -20,8 +20,8 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.phase10engine import Phase10Engine, Phase10MasterEngine
-from controllers.settings import appsettings
-from gui.game import (
+from core.engine.settings import appsettings
+from core.ui.game import (
     CardWidget,
     GameInputWidget,
     GameNotImplementedException,
@@ -34,8 +34,8 @@ from gui.game import (
     ScoreSpinBox,
     ToggleGroupBox,
 )
-from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
-from gui.plots import PlotView
+from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
+from core.ui.plots import PlotView
 
 
 def getPhaseNames(phasecodes):

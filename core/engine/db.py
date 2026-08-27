@@ -8,6 +8,20 @@ from typing import ClassVar
 from PySide6.QtCore import QCoreApplication, QStandardPaths
 
 
+def _project_root() -> Path:
+    """Locate the repository root by walking up to the ``pyproject.toml``.
+
+    Anchoring to a project marker keeps the development-database lookup
+    independent of where this module lives in the package tree.
+    """
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        if (parent / "pyproject.toml").exists():
+            return parent
+    # Fallback: repository root relative to this module's current location.
+    return here.parents[2]
+
+
 class GameLogDB:
     __shared_state: ClassVar[dict] = {}
 
@@ -31,9 +45,7 @@ class GameLogDB:
             return dbpath
 
         # Second, load the local development database if exists
-        dbpath = Path(
-            Path(__file__).resolve().parent.parent / "db" / "gamelog.db",
-        )
+        dbpath = _project_root() / "db" / "gamelog.db"
         if dbpath.exists():
             return dbpath
 
@@ -115,8 +127,8 @@ class GameLogDB:
             sys.exit(1)
 
     def _checkDB(self):
+        from core.registry import registry
         from games import load_builtin_games
-        from games.registry import registry
 
         load_builtin_games()
         cur = self.execute(

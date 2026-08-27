@@ -1,5 +1,5 @@
-from controllers.db import db
-from model.base import GenericRoundMatch
+from core.engine.db import db
+from core.model.base import GenericRoundMatch
 
 
 class RatukiMatch(GenericRoundMatch):

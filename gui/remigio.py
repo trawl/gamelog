@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.remigioengine import RemigioEngine
-from gui.game import (
+from core.ui.game import (
     GameInputWidget,
     GameNotImplementedException,
     GamePlayerWidget,

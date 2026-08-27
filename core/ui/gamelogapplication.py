@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QApplication
 
-from gui.languagechooser import LanguageManager
-from gui.thememanager import ThemeManager
+from core.ui.languagechooser import LanguageManager
+from core.ui.thememanager import ThemeManager
 
 
 class GamelogApplication(QApplication):

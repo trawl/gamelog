@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.carcassonneengine import CarcassonneEngine, CarcassonneStatsEngine
-from gui.game import (
+from core.ui.game import (
     GameInputWidget,
     GameNotImplementedException,
     GameRoundPlot,
@@ -26,7 +26,7 @@ from gui.game import (
     QuickStatsTW,
     ScoreSpinBox,
 )
-from gui.gamestats import GeneralQuickStats, ParticularQuickStats, StatsTable
+from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, StatsTable
 
 
 class CarcassonneWidget(GameWidget):

@@ -18,16 +18,16 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from controllers.db import db
-from controllers.resumeengine import ResumeEngine
-from controllers.settings import appsettings
-from games.registry import registry
-from gui.gamelogapplication import GamelogApplication
-from gui.languagechooser import LanguageButton
-from gui.newplayer import NewPlayerDialog
-from gui.playerlist import PlayerList, PlayerListModel
-from gui.settings import SettingsDialog
-from gui.tab import Tab
+from core.engine.db import db
+from core.engine.resume import ResumeEngine
+from core.engine.settings import appsettings
+from core.registry import registry
+from core.ui.gamelogapplication import GamelogApplication
+from core.ui.languagechooser import LanguageButton
+from core.ui.newplayer import NewPlayerDialog
+from core.ui.playerlist import PlayerList, PlayerListModel
+from core.ui.settings import SettingsDialog
+from core.ui.tab import Tab
 
 
 class NewGameWidget(Tab):

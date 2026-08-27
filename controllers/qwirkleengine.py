@@ -1,8 +1,8 @@
 from typing import cast
 
-from controllers.baseengine import EntryGameEngine, readInput
-from controllers.db import db
-from controllers.statsengine import ParticularStatsEngine, StatsEngine
+from core.engine.base import EntryGameEngine, readInput
+from core.engine.db import db
+from core.engine.stats import ParticularStatsEngine, StatsEngine
 from model.qwirkle import QwirkleMatch
 
 

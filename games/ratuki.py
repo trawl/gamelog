@@ -1,4 +1,4 @@
-from games.registry import GameDefinition, registry
+from core.registry import GameDefinition, registry
 
 registry.register(GameDefinition(
     "Ratuki", 5, "Ratuki Slap game", "Home rules",

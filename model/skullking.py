@@ -1,6 +1,6 @@
 from typing import ClassVar
 
-from controllers.db import db
+from core.engine.db import db
 from model.pocha import PochaMatch
 
 

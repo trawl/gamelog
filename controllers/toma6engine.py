@@ -1,6 +1,6 @@
 from typing import cast
 
-from controllers.baseengine import readInput
+from core.engine.base import readInput
 from controllers.remigioengine import RemigioEngine
 from model.toma6 import Toma6Match
 

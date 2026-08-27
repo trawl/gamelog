@@ -1,4 +1,4 @@
-from controllers.db import GameLogDB, db
+from core.engine.db import GameLogDB, db
 
 _mainquery = """
 SELECT idMatch,idRound,nick, value AS completed

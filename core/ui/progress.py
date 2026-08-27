@@ -4,7 +4,7 @@ from PySide6.QtCore import Property, QEasingCurve, QPropertyAnimation, QRectF, Q
 from PySide6.QtGui import QColor, QFont, QLinearGradient, QPainter
 from PySide6.QtWidgets import QApplication, QWidget
 
-from gui.gamelogapplication import GamelogApplication
+from core.ui.gamelogapplication import GamelogApplication
 
 
 class StepProgressBar(QWidget):

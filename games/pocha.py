@@ -1,4 +1,4 @@
-from games.registry import GameDefinition, registry
+from core.registry import GameDefinition, registry
 
 registry.register(GameDefinition(
     "Pocha", 6, "Carcassonne board game", "Home rules", "model.pocha:PochaMatch",

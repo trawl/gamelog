@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.toma6engine import Toma6Engine
-from gui.game import GameNotImplementedException, GamePlayerWidget, PlayerColours
+from core.ui.game import GameNotImplementedException, GamePlayerWidget, PlayerColours
 from gui.remigio import (
     RemigioInputWidget,
     RemigioPlayerInputWidget,

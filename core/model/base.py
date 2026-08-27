@@ -1,7 +1,7 @@
 import datetime
 from abc import abstractmethod
 
-from controllers.db import db
+from core.engine.db import db
 
 
 class Player:

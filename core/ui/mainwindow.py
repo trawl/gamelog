@@ -10,8 +10,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from controllers.db import db
-from gui.newgame import NewGameWidget
+from core.engine.db import db
+from core.ui.newgame import NewGameWidget
 
 
 class MainWindow(QMainWindow):

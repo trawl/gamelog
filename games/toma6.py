@@ -1,4 +1,4 @@
-from games.registry import GameDefinition, registry
+from core.registry import GameDefinition, registry
 
 registry.register(GameDefinition(
     "Toma6", 10, "Toma6 card game", "Home rules", "model.toma6:Toma6Match",

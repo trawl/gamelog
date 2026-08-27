@@ -5,7 +5,7 @@ from PySide6.QtCore import QFile, QObject, Qt, QTextStream, Signal
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QApplication
 
-from controllers.settings import appsettings
+from core.engine.settings import appsettings
 
 
 class Theme(StrEnum):

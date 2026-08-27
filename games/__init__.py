@@ -3,7 +3,7 @@
 from importlib import import_module
 from pkgutil import iter_modules
 
-from games.registry import registry
+from core.registry import registry
 
 _loaded = False
 
@@ -18,9 +18,7 @@ def load_builtin_games() -> None:
     if _loaded:
         return
     module_names = sorted(
-        module.name
-        for module in iter_modules(__path__, f"{__name__}.")
-        if module.name != "games.registry"
+        module.name for module in iter_modules(__path__, f"{__name__}.")
     )
     for module_name in module_names:
         import_module(module_name)

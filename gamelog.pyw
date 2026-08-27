@@ -9,10 +9,10 @@ from games import load_builtin_games
 # Register game metadata before the UI imports initialize application settings.
 load_builtin_games()
 
-from gui.gamelogapplication import GamelogApplication
-from gui.languagechooser import LanguageManager
-from gui.mainwindow import MainWindow
-from gui.thememanager import ThemeManager
+from core.ui.gamelogapplication import GamelogApplication
+from core.ui.languagechooser import LanguageManager
+from core.ui.mainwindow import MainWindow
+from core.ui.thememanager import ThemeManager
 
 if __name__ == "__main__":
     if sys.platform.startswith("win"):

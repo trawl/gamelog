@@ -1,9 +1,9 @@
 import sys
 from typing import cast
 
-from controllers.baseengine import RoundGameEngine, readInput
-from controllers.db import db
-from games.registry import registry
+from core.engine.base import RoundGameEngine, readInput
+from core.engine.db import db
+from core.registry import registry
 
 
 class ResumeEngine:

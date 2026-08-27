@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.ratukiengine import RatukiEngine
-from gui.game import (
+from core.ui.game import (
     GameInputWidget,
     GameNotImplementedException,
     GameRoundPlot,

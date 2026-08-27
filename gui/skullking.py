@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.skullkingengine import SkullKingEngine
-from gui.game import (
+from core.ui.game import (
     BonusButton,
     GameInputWidget,
     GameNotImplementedException,
@@ -35,8 +35,8 @@ from gui.game import (
     GameWidget,
     PlayerColours,
 )
-from gui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
-from gui.progress import StepProgressBar
+from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
+from core.ui.progress import StepProgressBar
 
 i18n = QCoreApplication.translate
 
