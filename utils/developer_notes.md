@@ -8,6 +8,72 @@ uv run gamelog.pyw
 ```
 This will automatically create a local python venv under .venv with the necessary dependencies.
 
+## Project layout
+The code is split into a game-agnostic framework and one self-contained package
+per game:
+
+```
+core/                     the framework — rarely touched when adding a game
+  registry.py             GameDefinition + registry + object creation
+  model/base.py           base match / round models
+  engine/                 base engine, stats, resume, db, settings
+  ui/                     base widgets (GameWidget, stats, plots, dialogs, ...)
+  logging_config.py       log-level resolution
+  resources/              shared icons / styles / i18n
+games/
+  __init__.py             discovery: imports every game sub-package
+  <name>/                 ONE package per game
+    __init__.py           registers a GameDefinition (import side-effect)
+    model.py              Match / Round subclasses (rules, scoring, persistence)
+    engine.py             engine (+ optional stats engines)
+    widget.py             Qt board widget (+ optional quick-stats widget)
+    icons/ styles/ i18n/  optional, per-game assets
+```
+
+Discovery is automatic: `load_builtin_games()` imports every sub-package under
+`games/`, and each one registers itself. `GameDefinition` refers to its classes
+by `"module:Class"` strings, so widgets (and Qt) aren't imported until a match
+is actually created — registration itself stays Qt-free.
+
+## Adding a new game
+Adding a game is dropping in a directory; no other files need editing.
+
+1. Create `games/<name>/` with `model.py`, `engine.py`, `widget.py`.
+2. **model.py** — subclass `GenericRoundMatch` (or `GenericMatch`) and implement
+   the rules: `computeWinner()`, per-round scoring, and any extra persistence.
+3. **engine.py** — subclass `RoundGameEngine` (or `GameEngine`).
+4. **widget.py** — subclass `GameWidget` and provide its input / detail widgets.
+5. **__init__.py** — register the game:
+
+   ```python
+   from core.registry import GameDefinition, registry
+
+   registry.register(
+       GameDefinition(
+           "My Game",                 # name (shown in the UI, stored in the DB)
+           6,                         # max players
+           "Short description",
+           "Home rules",
+           "games.mygame.model:MyGameMatch",
+           "games.mygame.engine:MyGameEngine",
+           "games.mygame.widget:MyGameWidget",
+           # Optional, omit if not needed:
+           # "games.mygame.widget:MyGameQSTW",              quick-stats widget
+           # "games.mygame.engine:MyGameStatsEngine",       stats engine
+           # "games.mygame.engine:MyGameParticularStatsEngine",
+       )
+   )
+   ```
+
+6. (Optional) drop assets into `games/<name>/{icons,styles,i18n}` and run
+   `python utils/build_resources.py`; add translations with
+   `python utils/build_translations.py`.
+7. Add a test (a save/resume round-trip and a winner-rule check) under `tests/`.
+
+Existing games make good templates — e.g. `games/ratuki/` for a simple
+score-to-a-target game, `games/skullking/` for one with bidding and custom
+statistics.
+
 ## Running the tests
 The test suite lives in `tests/` and runs headlessly (no display, no real
 database — each test gets its own throwaway SQLite file). Run it with:
