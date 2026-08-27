@@ -4,7 +4,7 @@ registry.register(
     GameDefinition(
         "Pocha",
         6,
-        "Carcassonne board game",
+        "Spanish trick-taking card game",
         "Home rules",
         "games.pocha.model:PochaMatch",
         "games.pocha.engine:PochaEngine",
