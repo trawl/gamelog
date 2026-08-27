@@ -35,9 +35,14 @@ def gamedb(tmp_path):
 
 @pytest.fixture
 def settings(gamedb):
-    """Application settings backed by the per-test database."""
+    """Application settings backed by the per-test database.
+
+    In-memory caches are reset so each test starts from a clean slate.
+    """
     from core.engine.settings import appsettings
 
+    appsettings.settings["env"].clear()
+    appsettings.settings["db"].clear()
     appsettings.dbseed()  # ensure the AppSettings table exists in this DB
     appsettings.refresh()
     return appsettings
