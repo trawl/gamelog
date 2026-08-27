@@ -21,6 +21,27 @@ The suite covers the game registry, the parameterised SQL / persistence layer
 and a widget-construction smoke test for every game. It needs the `dev`
 dependency group (installed automatically by `uv run`/`uv sync`).
 
+To see which code is exercised:
+
+```
+uv run pytest --cov --cov-report=term-missing
+```
+
+## Pre-commit hooks
+Optional but recommended: run ruff (lint + format) automatically before each
+commit. Install the git hook once:
+
+```
+uv run pre-commit install
+```
+
+The hooks call the project's own ruff (via `uv run`), so they always match the
+version used in CI. Run them manually against everything with:
+
+```
+uv run pre-commit run --all-files
+```
+
 ## I18N support
 Translations are **split by unit**: framework strings live in
 `core/resources/i18n/core_<locale>.ts`, and each game owns

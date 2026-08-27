@@ -1,0 +1,22 @@
+# Pre-commit hooks. Install once with:  uv run pre-commit install
+#
+# These run the project's own ruff (the dev dependency) via `uv run`, so the
+# hook and CI always use the exact same ruff version — no separate pin to keep
+# in sync. Tests are intentionally left to CI (too slow for every commit).
+repos:
+  - repo: local
+    hooks:
+      # --force-exclude makes ruff honour [tool.ruff] extend-exclude even for
+      # the files pre-commit passes explicitly (e.g. generated resources_rc.py).
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --fix --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
