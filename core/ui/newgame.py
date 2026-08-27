@@ -425,9 +425,7 @@ class ResumeBox(QGroupBox):
             gameengine = self.engine
             if self.engine:
                 gameengine = self.engine.resume(idMatch)
-            matchTab = registry.create_widget(
-                self.game, None, gameengine, self._parent
-            )
+            matchTab = registry.create_widget(self.game, None, gameengine, self._parent)
             if matchTab:
                 matchTab.restartRequested.connect(self.restartGame)
                 if self._parent:

@@ -27,8 +27,12 @@ class QwirkleMatch(GenericRoundMatch):
                     "INSERT OR REPLACE INTO RoundStatistics "
                     "(idMatch,nick,idRound,key,value) "
                     "VALUES (?,?,?,'qwirkles',?);",
-                    (self.idMatch, entry.getPlayer(), entry.getNumEntry(),
-                     entry.getQwirkles()),
+                    (
+                        self.idMatch,
+                        entry.getPlayer(),
+                        entry.getNumEntry(),
+                        entry.getQwirkles(),
+                    ),
                 )
 
     def computeWinner(self):
@@ -40,7 +44,7 @@ class QwirkleMatch(GenericRoundMatch):
             self.winner = candidates.pop()
             return
         # Draw: check who's got more qwirkles
-        qwirkles_tally = {player: 0 for player in candidates}
+        qwirkles_tally = dict.fromkeys(candidates, 0)
         for entry in self.getRounds():
             qwirkles = entry.getQwirkles()
             if qwirkles:
@@ -60,7 +64,7 @@ class QwirkleMatch(GenericRoundMatch):
             return
 
         # Draw: Check who's got max single play score
-        max_entry_scores = {player: 0 for player in candidates}
+        max_entry_scores = dict.fromkeys(candidates, 0)
         for entry in self.getRounds():
             try:
                 max_entry_scores[entry.getPlayer()] = max(

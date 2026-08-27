@@ -1896,7 +1896,7 @@ class CardWidget(QWidget):
         return self._colour
 
     def setColour(self, colour):
-        if type(colour) == str:
+        if isinstance(colour, str):
             self._colour = QColor(colour)
         else:
             self._colour = colour

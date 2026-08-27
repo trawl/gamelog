@@ -41,8 +41,7 @@ class GenericMatch:
         if not isinstance(idMatch, int):
             return False
         cur = db.execute(
-            "SELECT Game_name,state,started,elapsed "
-            "FROM Match WHERE idMatch =?;",
+            "SELECT Game_name,state,started,elapsed FROM Match WHERE idMatch =?;",
             (idMatch,),
         )
         if not cur:
@@ -144,8 +143,13 @@ class GenericMatch:
                 "INSERT INTO Match (Game_name, state, started,"
                 "finished,elapsed) "
                 "VALUES (?,?,?,?,?);",
-                (self.game, self.state, str(self.start), str(self.finish),
-                 self.elapsed),
+                (
+                    self.game,
+                    self.state,
+                    str(self.start),
+                    str(self.finish),
+                    self.elapsed,
+                ),
             )
             self.idMatch = cur.lastrowid
         else:
@@ -153,8 +157,14 @@ class GenericMatch:
                 "INSERT OR REPLACE INTO Match (idMatch,Game_name,"
                 "state,started,finished,elapsed) "
                 "VALUES (?,?,?,?,?,?);",
-                (self.idMatch, self.game, self.state, str(self.start),
-                 str(self.finish), self.elapsed),
+                (
+                    self.idMatch,
+                    self.game,
+                    self.state,
+                    str(self.start),
+                    str(self.finish),
+                    self.elapsed,
+                ),
             )
         for p in self.players:
             winner = 0
@@ -272,8 +282,7 @@ class GenericRoundMatch(GenericMatch):
             self.dealer = str(row["value"])
 
         cur = db.execute(
-            "SELECT value FROM MatchExtras "
-            "WHERE idMatch =? and key='DealingPolicy';",
+            "SELECT value FROM MatchExtras WHERE idMatch =? and key='DealingPolicy';",
             (idMatch,),
         )
         row = cur.fetchone()
@@ -318,9 +327,7 @@ class GenericRoundMatch(GenericMatch):
 
         #         db.execute("BEGIN")
         db.execute("DELETE FROM Round where idMatch=?;", (self.idMatch,))
-        db.execute(
-            "DELETE FROM RoundStatistics where idMatch=?;", (self.idMatch,)
-        )
+        db.execute("DELETE FROM RoundStatistics where idMatch=?;", (self.idMatch,))
 
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "

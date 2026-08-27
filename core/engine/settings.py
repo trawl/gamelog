@@ -113,7 +113,7 @@ class AppSettings:
                         value = value.lower() in ("true", "1", "y", "yes")
                 self.settings["db"][key] = value
             except KeyError:
-                raise Warning(f"Could not load unknown setting {key}")
+                raise Warning(f"Could not load unknown setting {key}") from None
 
     def __getitem__(self, name: str, /):
         return self.get(name)
@@ -133,9 +133,7 @@ class AppSettings:
     def set(self, key, value, persistent=True):
         if persistent:
             self.settings["db"][key] = value
-            db.execute(
-                "UPDATE `AppSettings` SET `value`=? WHERE key=?", (value, key)
-            )
+            db.execute("UPDATE `AppSettings` SET `value`=? WHERE key=?", (value, key))
         else:
             self.settings["env"][key] = value
 
@@ -151,9 +149,7 @@ class AppSettings:
             PRIMARY KEY (`key`) );""")
 
         for k, d in default_settings.items():
-            cur = db.execute(
-                "SELECT `key` FROM `AppSettings` WHERE `key`=?", (k,)
-            )
+            cur = db.execute("SELECT `key` FROM `AppSettings` WHERE `key`=?", (k,))
             if not cur.fetchone():
                 db.execute(
                     "INSERT OR REPLACE INTO `AppSettings`(`key`, `value`, `type`) "

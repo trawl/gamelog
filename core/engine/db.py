@@ -182,9 +182,7 @@ class GameLogDB:
         # Ensure we have all the games we support
         for definition in registry.definitions():
             ge = definition.database_row()
-            self.execute(
-                'INSERT OR IGNORE INTO "Game" VALUES (?,?,?,?)', ge
-            )
+            self.execute('INSERT OR IGNORE INTO "Game" VALUES (?,?,?,?)', ge)
 
     def getAvailableGames(self):
         cur = db.execute("Select name,maxPlayers,description,rules from Game")
@@ -232,9 +230,7 @@ class GameLogDB:
 
     def setPlayerFavourite(self, nick, isfav):
         flag = 1 if isfav else 0
-        db.execute(
-            "UPDATE Player SET favourite=? WHERE nick=?", (flag, nick)
-        )
+        db.execute("UPDATE Player SET favourite=? WHERE nick=?", (flag, nick))
 
 
 db = GameLogDB()

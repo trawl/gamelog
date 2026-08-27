@@ -8,6 +8,19 @@ uv run gamelog.pyw
 ```
 This will automatically create a local python venv under .venv with the necessary dependencies.
 
+## Running the tests
+The test suite lives in `tests/` and runs headlessly (no display, no real
+database — each test gets its own throwaway SQLite file). Run it with:
+
+```
+uv run pytest
+```
+
+The suite covers the game registry, the parameterised SQL / persistence layer
+(save & resume for every game), the statistics engines, log-level resolution,
+and a widget-construction smoke test for every game. It needs the `dev`
+dependency group (installed automatically by `uv run`/`uv sync`).
+
 ## I18N support
 Translations are **split by unit**: framework strings live in
 `core/resources/i18n/core_<locale>.ts`, and each game owns

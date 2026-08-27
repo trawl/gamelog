@@ -35,7 +35,9 @@ def _tool(name: str) -> str:
 
 def _units() -> list[tuple[str, Path, Path]]:
     """(name, sources_root, i18n_dir) for core and every game."""
-    units = [("core", PROJECT_ROOT / "core", PROJECT_ROOT / "core" / "resources" / "i18n")]
+    units = [
+        ("core", PROJECT_ROOT / "core", PROJECT_ROOT / "core" / "resources" / "i18n")
+    ]
     for game_dir in sorted((PROJECT_ROOT / "games").iterdir()):
         if game_dir.is_dir() and (game_dir / "__init__.py").exists():
             units.append((game_dir.name, game_dir, game_dir / "i18n"))
@@ -55,8 +57,13 @@ def build_unit(name: str, root: Path, i18n_dir: Path) -> None:
     ts_files = [i18n_dir / f"{name}_{locale}.ts" for locale in LOCALES]
     sources = _sources(root, name)
 
-    lupdate = [_tool("pyside6-lupdate"), *sources, "-ts",
-               *[str(t) for t in ts_files], "-no-obsolete"]
+    lupdate = [
+        _tool("pyside6-lupdate"),
+        *sources,
+        "-ts",
+        *[str(t) for t in ts_files],
+        "-no-obsolete",
+    ]
     subprocess.run(lupdate, check=True)
 
     for ts in ts_files:

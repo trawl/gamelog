@@ -88,9 +88,7 @@ class GameEngine:
             return 0
 
     def getGameMaxPlayers(self):
-        cur = db.execute(
-            "Select maxPlayers from Game where name=?", (self.game,)
-        )
+        cur = db.execute("Select maxPlayers from Game where name=?", (self.game,))
         r = cur.fetchone()
         return int(r["maxPlayers"])
 

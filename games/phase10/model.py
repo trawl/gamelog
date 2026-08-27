@@ -105,8 +105,7 @@ class Phase10Match(GenericRoundMatch):
             return False
 
         cur = db.execute(
-            "SELECT value FROM MatchExtras "
-            "WHERE idMatch =? and key='PhasesInOrder';",
+            "SELECT value FROM MatchExtras WHERE idMatch =? and key='PhasesInOrder';",
             (idMatch,),
         )
         if cur:
@@ -152,15 +151,18 @@ class Phase10Match(GenericRoundMatch):
                     "INSERT OR REPLACE INTO RoundStatistics "
                     "(idMatch,nick,idRound,key,value) "
                     "VALUES (?,?,?,'PhaseAimed',?);",
-                    (self.idMatch, player, rnd.getNumRound(),
-                     rnd.aimedPhase[player]),
+                    (self.idMatch, player, rnd.getNumRound(), rnd.aimedPhase[player]),
                 )
                 db.execute(
                     "INSERT OR REPLACE INTO RoundStatistics "
                     "(idMatch,nick,idRound,key,value) "
                     "VALUES (?,?,?,'PhaseCompleted',?);",
-                    (self.idMatch, player, rnd.getNumRound(),
-                     rnd.completedPhase[player]),
+                    (
+                        self.idMatch,
+                        player,
+                        rnd.getNumRound(),
+                        rnd.completedPhase[player],
+                    ),
                 )
 
     def getPhasesInOrderFlag(self):

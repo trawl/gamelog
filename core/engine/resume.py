@@ -23,9 +23,7 @@ class ResumeEngine:
             self.candidates[row["idMatch"]]["players"] = []
 
         for idMatch, match in self.candidates.items():
-            cur = db.execute(
-                "SELECT nick FROM MatchPlayer WHERE idMatch=?", (idMatch,)
-            )
+            cur = db.execute("SELECT nick FROM MatchPlayer WHERE idMatch=?", (idMatch,))
             for row in cur:
                 match["players"].append(str(row["nick"]))
 

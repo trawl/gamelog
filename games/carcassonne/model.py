@@ -35,8 +35,7 @@ class CarcassonneMatch(GenericRoundMatch):
                 "INSERT OR REPLACE INTO RoundStatistics "
                 "(idMatch,nick,idRound,key,value) "
                 "VALUES (?,?,?,'kind',?);",
-                (self.idMatch, entry.getPlayer(), entry.getNumEntry(),
-                 entry.getKind()),
+                (self.idMatch, entry.getPlayer(), entry.getNumEntry(), entry.getKind()),
             )
 
     def computeWinner(self):

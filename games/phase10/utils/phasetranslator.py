@@ -7,7 +7,7 @@ grammar = r"(\d)([src]|cr)(\d)"
 
 
 def main():
-    with open(inputfile, "r") as fd:
+    with open(inputfile) as fd:
         for line in fd:
             line = line.strip()
             if line:

@@ -13,10 +13,10 @@ load_builtin_games()
 # Resolve the log level from GAMELOG_LOG_LEVEL / the saved setting / default.
 configure_logging()
 
-from core.ui.gamelogapplication import GamelogApplication
-from core.ui.languagechooser import LanguageManager
-from core.ui.mainwindow import MainWindow
-from core.ui.thememanager import ThemeManager
+from core.ui.gamelogapplication import GamelogApplication  # noqa: E402
+from core.ui.languagechooser import LanguageManager  # noqa: E402
+from core.ui.mainwindow import MainWindow  # noqa: E402
+from core.ui.thememanager import ThemeManager  # noqa: E402
 
 if __name__ == "__main__":
     if sys.platform.startswith("win"):
