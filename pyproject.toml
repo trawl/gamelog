@@ -4,7 +4,10 @@ version = "2.0.0"
 description = "A utility to keep track of board games scores"
 requires-python = ">=3.12"
 dependencies = [
-    "PySide6",
+    # 6.5 is the floor: the theme manager relies on the QStyleHints
+    # color-scheme API (colorScheme / setColorScheme / colorSchemeChanged),
+    # which was introduced in Qt 6.5.
+    "PySide6>=6.5",
 ]
 [project.scripts]
 gamelog = "gamelog.pyw:__main__"
