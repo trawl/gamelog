@@ -1,5 +1,5 @@
+import logging
 import re
-import sys
 from typing import cast
 
 from PySide6 import QtCore, QtGui
@@ -36,6 +36,8 @@ from core.ui.game import (
 from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from core.ui.plots import PlotView
 from games.phase10.engine import Phase10Engine, Phase10MasterEngine
+
+logger = logging.getLogger(__name__)
 
 
 def getPhaseNames(phasecodes):
@@ -513,7 +515,7 @@ class Phase10PlayerWidget(GamePlayerWidget):
         try:
             score = int(score)
         except (ValueError, TypeError) as e:
-            print(f"[Phase10PlayerWidget.getScore] {e}", file=sys.stderr)
+            logger.warning("Phase10PlayerWidget.getScore failed: %s", e)
             self.roundPhaseClearedCheckbox.setChecked(False)
             return
 

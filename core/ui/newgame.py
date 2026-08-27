@@ -250,6 +250,10 @@ class NewGameWidget(Tab):
             app = QApplication.instance()
             if app:
                 cast(GamelogApplication, app).themeManager.set_theme(value)
+        elif name == "log_level":
+            from core.logging_config import set_log_level
+
+            set_log_level(value)
         else:
             self.retranslateUI()
 

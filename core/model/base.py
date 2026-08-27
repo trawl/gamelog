@@ -1,7 +1,10 @@
 import datetime
+import logging
 from abc import abstractmethod
 
 from core.engine.db import db
+
+logger = logging.getLogger(__name__)
 
 
 class Player:
@@ -117,23 +120,23 @@ class GenericMatch:
     def cancel(self):
         if not self.isCancelled() and not self.winner:
             self.flushState(self.CANCELLED)
-            print(f"{self.game} Match Cancelled at {self.finish}")
+            logger.info("%s match cancelled at %s", self.game, self.finish)
 
     def save(self):
         self.flushState(self.SAVED)
-        print(f"{self.game} Saved at {self.finish}")
+        logger.info("%s saved at %s", self.game, self.finish)
 
     def pause(self):
         if not self.isPaused():
             self.updateElapsed()
             self.state = self.PAUSED
-            print(f"{self.game} Paused at {self.finish}")
+            logger.debug("%s paused at %s", self.game, self.finish)
 
     def unpause(self):
         if self.isPaused():
             self.resumed = datetime.datetime.now(tz=datetime.UTC)
             self.state = self.RUNNING
-            print(f"{self.game} Resumed at {self.resumed}")
+            logger.debug("%s resumed at %s", self.game, self.resumed)
 
     def flushToDB(self):
         if self.idMatch is not None and self.idMatch < 0:

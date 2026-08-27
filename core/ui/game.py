@@ -1,4 +1,5 @@
 import ctypes
+import logging
 import shutil
 import subprocess
 import sys
@@ -59,6 +60,8 @@ from core.ui.settings import SettingsDialog
 from core.ui.tab import Tab
 
 # i18n = QApplication.translate
+
+logger = logging.getLogger(__name__)
 
 PlayerColours = [
     QtGui.QColor(237, 44, 48),
@@ -390,6 +393,10 @@ class GameWidget(Tab):
             app = QApplication.instance()
             if app:
                 cast(GamelogApplication, app).themeManager.set_theme(value)
+        elif name == "log_level":
+            from core.logging_config import set_log_level
+
+            set_log_level(value)
         else:
             self.retranslateUI()
 
@@ -508,9 +515,9 @@ class GameWidget(Tab):
             if interactive:
                 QMessageBox.warning(self, self.game, msg)
             else:
-                print(f"SANITYCHECK: {msg}", file=sys.stderr)
+                logger.debug("SANITYCHECK: %s", msg)
             return False
-        print(f"SANITYCHECK: winner={winner}", file=sys.stderr)
+        logger.debug("SANITYCHECK: winner=%s", winner)
         scores = self.gameInput.getScores()
         for player, score in scores.items():
             if not self.checkPlayerScore(player, score):
@@ -518,21 +525,21 @@ class GameWidget(Tab):
                 if interactive:
                     QMessageBox.warning(self, self.game, msg)
                 else:
-                    print(f"SANITYCHECK: {msg}", file=sys.stderr)
+                    logger.debug("SANITYCHECK: %s", msg)
                     return False
             extras = self.getPlayerExtraInfo(player)
             if extras is None:
                 msg = self.tr("No extras")
-                print(f"SANITYCHECK: {msg}", file=sys.stderr)
+                logger.debug("SANITYCHECK: %s", msg)
                 return False
-        print("SANITYCHECK: Ready to commit", file=sys.stderr)
+        logger.debug("SANITYCHECK: Ready to commit")
         return True
 
     def commitRound(self):
         if not self.commitRoundSanityCheck(interactive=True):
             return
         nround = self.engine.getNumRound()
-        print(f"Opening round {nround}")
+        logger.debug("Opening round %s", nround)
         self.engine.openRound(nround)
         winner = self.gameInput.getWinner()
         self.engine.setRoundWinner(winner)
@@ -753,10 +760,10 @@ class GameWidget(Tab):
     def toggleScreenLock(self, on=False):
         if not on:
             self.screen_blocker.start()
-            print("Enabled Screensaver")
+            logger.debug("Enabled screensaver")
         else:
             self.screen_blocker.stop()
-            print("Disabled Screensaver")
+            logger.debug("Disabled screensaver")
 
     def editGameTime(self):
         if self.finished:
@@ -802,7 +809,7 @@ class GameInputWidget(QWidget):
             piw.reset()
 
     def changedWinner(self, winner):
-        print(f"Changing winner to {winner}")
+        logger.debug("Changing winner to %s", winner)
         winner = str(winner)
         if self.winnerSelected != "":
             self.playerInputList[self.winnerSelected].reset()
@@ -981,9 +988,9 @@ class GameRoundsDetail(QTabWidget):
             self.gamestats.updateContent(
                 self.engine.getGame(), self.engine.getListPlayers()
             )
-        except Exception as e:  # noqa: BLE001
+        except Exception:
             # Defensive: a stats refresh must never take down the board.
-            print(f"[UpdateStats] {e}", file=sys.stderr)
+            logger.warning("Stats update failed", exc_info=True)
             self.gamestats.update()
 
     def deleteRound(self, _nround):

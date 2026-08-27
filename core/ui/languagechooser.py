@@ -1,3 +1,4 @@
+import logging
 from typing import ClassVar
 
 from PySide6 import QtCore
@@ -23,6 +24,8 @@ from PySide6.QtWidgets import (
 )
 
 from core.engine.settings import appsettings
+
+logger = logging.getLogger(__name__)
 
 
 class LanguageManager(QObject):
@@ -121,7 +124,7 @@ class LanguageButton(QToolButton):
 
     def refresh(self):
         locale = self.lm.getCurrentLocale()
-        print(f"Refreshing Language button for {locale}")
+        logger.debug("Refreshing language button for %s", locale)
         icon = next(
             (
                 data["icon"]
@@ -140,7 +143,11 @@ class LanguageButton(QToolButton):
         if locale == "C":
             locale = "en_GB"
         if locale != self.lm.getCurrentLocale():
-            print(f"Changing language from {self.lm.getCurrentLocale()} to {locale}")
+            logger.debug(
+                "Changing language from %s to %s",
+                self.lm.getCurrentLocale(),
+                locale,
+            )
             self.lm.loadTranslator(locale)
         icon = next(
             (

@@ -1,3 +1,4 @@
+import logging
 from enum import StrEnum
 from typing import cast
 
@@ -6,6 +7,8 @@ from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QApplication
 
 from core.engine.settings import appsettings
+
+logger = logging.getLogger(__name__)
 
 
 class Theme(StrEnum):
@@ -48,7 +51,7 @@ class ThemeManager(QObject):
         return Theme.LIGHT
 
     def set_theme(self, theme: Theme | str) -> None:
-        print(f"Setting theme to {theme}")
+        logger.debug("Setting theme to %s", theme)
         theme = Theme(theme)
 
         if theme == self._theme:
@@ -80,13 +83,13 @@ class ThemeManager(QObject):
                 stylesheet.readAll()
             )
         else:
-            print(f"Could not load :/styles/{self.system_theme}.qss")
+            logger.warning("Could not load :/styles/%s.qss", self.system_theme)
 
     def _system_theme_changed(
         self,
         scheme: Qt.ColorScheme,
     ) -> None:
-        print("System theme changed!")
+        logger.debug("System theme changed")
         # Only propagate the change when following the system.
         if self._theme == Theme.SYSTEM:
             QGuiApplication.styleHints().unsetColorScheme()

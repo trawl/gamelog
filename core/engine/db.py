@@ -1,9 +1,12 @@
 import datetime
+import logging
 import os
 import sqlite3 as lite
 import sys
 from pathlib import Path
 from typing import ClassVar
+
+logger = logging.getLogger(__name__)
 
 APP_NAME = "Gamelog"
 
@@ -115,7 +118,7 @@ class GameLogDB:
         else:
             dbpath = Path(dbpath)
         try:
-            print(f"Loading database from {dbpath}")
+            logger.info("Loading database from %s", dbpath)
             self.con = lite.connect(str(dbpath))
             self._checkDB()
         except lite.Error as e:

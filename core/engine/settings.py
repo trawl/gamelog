@@ -52,6 +52,19 @@ default_settings = {
             "Application appearance",
         ),
     },
+    "log_level": {
+        "value": "WARNING",
+        "type": "str",
+        "choices": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        "displayname": QCoreApplication.translate(
+            "AppSettings",
+            "Log level",
+        ),
+        "description": QCoreApplication.translate(
+            "AppSettings",
+            "Verbosity of diagnostic logging (GAMELOG_LOG_LEVEL overrides)",
+        ),
+    },
 }
 
 

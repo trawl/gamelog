@@ -1,4 +1,5 @@
 import datetime
+import logging
 import random
 import sys
 from abc import abstractmethod
@@ -8,6 +9,8 @@ from typing import TypeVar
 from core.engine.db import db
 from core.model.base import GenericRoundMatch, Player
 from core.registry import registry
+
+logger = logging.getLogger(__name__)
 
 
 class GameEngine:
@@ -119,7 +122,7 @@ class GameEngine:
         self.match.setStartTime(start)
         self.match.setFinishTime(finish)
         self.match.setGameSeconds(seconds)
-        print(f"UPDATED TIMES: {start} | {finish} | {seconds}")
+        logger.debug("Updated times: %s | %s | %s", start, finish, seconds)
         self.match.flushToDB()
 
     def cancelMatch(self):
@@ -202,6 +205,11 @@ class RoundGameEngine(GameEngine):
         self.match.setDealer(newdealer)
 
     def printStats(self):
+        # The board is a verbose console dump; skip it entirely unless debug
+        # logging is on. (Kept as prints so the ASCII board stays intact,
+        # including subclass printExtra* hooks.)
+        if not logger.isEnabledFor(logging.DEBUG):
+            return
         lastround = self.getNumRound() - 1
         if lastround == 0:
             print("===========================")
@@ -257,6 +265,11 @@ class RoundGameEngine(GameEngine):
     #
 
     def gameStub(self):
+        # CLI test harness: turn on debug logging so printStats() shows the
+        # board (it is silent at the default level).
+        from core.logging_config import configure_logging
+
+        configure_logging("DEBUG")
         print(f"Welcome to {self.getGame()} Engine Stub")
 
         if not db.isConnected():

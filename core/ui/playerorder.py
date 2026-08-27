@@ -1,3 +1,5 @@
+import logging
+
 from PySide6.QtWidgets import (
     QDialog,
     QGroupBox,
@@ -37,9 +39,12 @@ class PlayerOrderWidget(QWidget):
     #     print("'%s' was dropped onto me." % event)
 
 
+logger = logging.getLogger(__name__)
+
+
 class PlayerTile(QGroupBox):
     def __init__(self, player, isDealer=False, parent=None):
-        print(f"Creaing tile for {player}")
+        logger.debug("Creating tile for %s", player)
         super().__init__(parent)
         self.player = player
         self.isDealer = isDealer

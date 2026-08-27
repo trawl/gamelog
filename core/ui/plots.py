@@ -1,3 +1,4 @@
+import logging
 import sys
 
 from PySide6 import QtCore, QtGui
@@ -13,6 +14,8 @@ from PySide6.QtWidgets import (
     QGraphicsSimpleTextItem,
     QGraphicsView,
 )
+
+logger = logging.getLogger(__name__)
 
 colours = [
     QtGui.QColor(237, 44, 48),
@@ -210,8 +213,11 @@ class LinePlot(QGraphicsItem):
         try:
             unitincrement = self.aheight / float(self.yvmax - self.yvmin)
         except ZeroDivisionError:
-            msg = "Division by zero in drawVRefs. Limits are {}-{}"
-            print(msg.format(self.yvmin, self.yvmax))
+            logger.warning(
+                "Division by zero in drawVRefs. Limits are %s-%s",
+                self.yvmin,
+                self.yvmax,
+            )
 
         while unitincrement * factor < minsep:
             provfactor = 2 * factor

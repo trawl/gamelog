@@ -1,3 +1,4 @@
+import logging
 from typing import cast
 
 from PySide6 import QtCore
@@ -23,6 +24,8 @@ from core.ui.game import (
 )
 from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from games.scrabble.engine import ScrabbleEngine
+
+logger = logging.getLogger(__name__)
 
 
 class ScrabbleWidget(GameWidget):
@@ -73,7 +76,7 @@ class ScrabbleWidget(GameWidget):
             if interactive:
                 QMessageBox.warning(self, self.game, msg)
             else:
-                print(f"[sanity] {msg}")
+                logger.debug("[sanity] %s", msg)
             return False
 
         if not self.checkPlayerScore(player, score, bonuses):
@@ -81,7 +84,7 @@ class ScrabbleWidget(GameWidget):
             if interactive:
                 QMessageBox.warning(self, self.game, msg)
             else:
-                print(f"[sanity] {msg}")
+                logger.debug("[sanity] %s", msg)
             return False
         return True
 

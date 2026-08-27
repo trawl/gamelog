@@ -1,5 +1,5 @@
 import datetime
-import sys
+import logging
 
 from PySide6 import QtCore
 from PySide6.QtCore import QCoreApplication
@@ -21,6 +21,8 @@ from core.engine.settings import appsettings
 from core.registry import registry
 from core.ui.tab import Tab
 
+logger = logging.getLogger(__name__)
+
 
 class QuickStatsTW(QTabWidget):
     def __init__(self, game, players, parent):
@@ -37,8 +39,8 @@ class QuickStatsTW(QTabWidget):
         self.initStatsWidgets()
         try:
             self.ps.updatePlayers(self.players)
-        except Exception as e:  # noqa: BLE001
-            print(f"[QwickStatsTW Init] {e}", file=sys.stderr)
+        except Exception:
+            logger.warning("Quick-stats init failed", exc_info=True)
         self.addTab(self.gs, "")
         self.addTab(self.ps, "")
         self.retranslateUI()

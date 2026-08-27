@@ -40,8 +40,10 @@ class ResumeEngine:
 
 
 if __name__ == "__main__":
+    from core.logging_config import configure_logging
     from games import load_builtin_games
 
+    configure_logging("DEBUG")
     load_builtin_games()
     if not db.isConnected():
         db.connectDB()

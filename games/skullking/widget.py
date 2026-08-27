@@ -1,3 +1,4 @@
+import logging
 from typing import cast
 
 from PySide6 import QtCore, QtGui
@@ -37,6 +38,8 @@ from core.ui.game import (
 from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from core.ui.progress import StepProgressBar
 from games.skullking.engine import SkullKingEngine
+
+logger = logging.getLogger(__name__)
 
 i18n = QCoreApplication.translate
 
@@ -149,7 +152,7 @@ class SkullKingWidget(GameWidget):
             if interactive:
                 QMessageBox.warning(self, self.game, msg)
             else:
-                print(msg)
+                logger.debug(msg)
             return False
         if hands == won + 2 and self.engine.getScoringMode() != "classic_scoring":
             if interactive:
@@ -206,7 +209,7 @@ class SkullKingWidget(GameWidget):
             if interactive:
                 QMessageBox.warning(self, self.game, msg)
             else:
-                print(msg)
+                logger.debug(msg)
             return False
         # Validate bonuses
         if self.engine.getScoringMode() != "classic_scoring":
@@ -227,14 +230,14 @@ class SkullKingWidget(GameWidget):
                 if interactive:
                     QMessageBox.warning(self, self.game, msg)
                 else:
-                    print(msg)
+                    logger.debug(msg)
                 return False
             if loots > 4:
                 msg = self.tr("There are more than 4 Loot bonuses selected.")
                 if interactive:
                     QMessageBox.warning(self, self.game, msg)
                 else:
-                    print(msg)
+                    logger.debug(msg)
                 return False
         return True
 
@@ -298,7 +301,7 @@ class SkullKingInputWidget(GameInputWidget):
                 bonus_button.bonusChanged.connect(self.bonusChangedAction)
                 bonus_button.bonusChanged.connect(self.changed)
 
-        print(f"trying to set focus to {self.engine.getListPlayers()[0]}")
+        logger.debug("Trying to set focus to %s", self.engine.getListPlayers()[0])
         self.playerInputList[self.engine.getListPlayers()[0]].setFocus()
         self.updateCandidateAction()
 
@@ -1017,7 +1020,7 @@ class SkullKingRoundsDetail(GameRoundsDetail):
         return SkullKingRoundPlot(self.engine, self)
 
     def createQSBox(self, parent=None):
-        print("Creating SkullKingQSTW")
+        logger.debug("Creating SkullKingQSTW")
         return SkullKingQSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
 
 

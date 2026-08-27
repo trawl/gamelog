@@ -1,7 +1,10 @@
+import logging
 import random
 
 from core.engine.db import db
 from core.model.base import GenericRound, GenericRoundMatch
+
+logger = logging.getLogger(__name__)
 
 phases = {
     "Phase10": [
@@ -166,7 +169,7 @@ class Phase10Match(GenericRoundMatch):
     def setPhasesInOrderFlag(self, flag):
         if flag not in [True, False]:
             return
-        print(f"Setting phases in order flag to {flag}")
+        logger.debug("Setting phases-in-order flag to %s", flag)
         self.phasesinorder = flag
 
     def getPhases(self):
