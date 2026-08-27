@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 from typing import ClassVar
 
-from PySide6.QtCore import QCoreApplication, QStandardPaths
+APP_NAME = "Gamelog"
 
 
 def _project_root() -> Path:
@@ -20,6 +20,44 @@ def _project_root() -> Path:
             return parent
     # Fallback: repository root relative to this module's current location.
     return here.parents[2]
+
+
+def _is_android() -> bool:
+    # CPython exposes sys.getandroidapilevel() only on Android builds.
+    return hasattr(sys, "getandroidapilevel")
+
+
+def _app_data_dir() -> Path:
+    """OS-standard per-user writable data directory for the application.
+
+    Pure-Python equivalent of Qt's ``QStandardPaths.AppDataLocation`` on the
+    desktop platforms, so the persistence layer stays free of any Qt import
+    there.  Android reports ``sys.platform == "linux"`` but its app sandbox is
+    not discoverable from the environment (no usable HOME/XDG paths), so on
+    that platform we defer to Qt's writable location.  The Qt import is lazy
+    and confined to this branch, which is never taken on desktop, so the
+    desktop import path remains Qt-free.
+    """
+    if _is_android():
+        from PySide6.QtCore import QCoreApplication, QStandardPaths
+
+        if not QCoreApplication.applicationName():
+            QCoreApplication.setApplicationName(APP_NAME)
+        location = QStandardPaths.writableLocation(
+            QStandardPaths.StandardLocation.AppDataLocation
+        )
+        if location:
+            return Path(location)
+        # Defensive fallback should Qt yield nothing on this device.
+        return Path(os.environ.get("HOME", "/data/local/tmp")) / APP_NAME
+
+    if sys.platform.startswith("win"):
+        base = os.environ.get("APPDATA") or (Path.home() / "AppData" / "Roaming")
+    elif sys.platform == "darwin":
+        base = Path.home() / "Library" / "Application Support"
+    else:  # Linux / other POSIX
+        base = os.environ.get("XDG_DATA_HOME") or (Path.home() / ".local" / "share")
+    return Path(base) / APP_NAME
 
 
 class GameLogDB:
@@ -50,14 +88,7 @@ class GameLogDB:
             return dbpath
 
         # Last, for proper native app mode, use standard OS writable location
-        if not QCoreApplication.applicationName():
-            QCoreApplication.setApplicationName("Gamelog")
-
-        data_dir = Path(
-            QStandardPaths.writableLocation(
-                QStandardPaths.StandardLocation.AppDataLocation
-            )
-        )
+        data_dir = _app_data_dir()
         try:
             data_dir.mkdir(parents=True, exist_ok=True)
         except OSError as e:
