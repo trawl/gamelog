@@ -9,21 +9,25 @@ uv run gamelog.pyw
 This will automatically create a local python venv under .venv with the necessary dependencies.
 
 ## I18N support
-Whenever there has been some change in the code that includes translatable text, you need to follow these steps to incorporate it to the application:
+Translations are **split by unit**: framework strings live in
+`core/resources/i18n/core_<locale>.ts`, and each game owns
+`games/<name>/i18n/<name>_<locale>.ts`. A string is assigned to a unit by the
+source file it appears in, so a game's translations travel with the game.
 
-1. Update the language files from the code:
+Whenever code with translatable text changes:
+
+1. Sync and compile every catalogue (`lupdate` + `lrelease` per unit):
 ```
-pyside6-lupdate core/**/*.py games/**/*.py -ts core/resources/i18n/*.ts
+python utils/build_translations.py
 ```
 
-2. Use Linguist to provide the necessary translations:
+2. Translate any new (unfinished) strings with Linguist, then re-run the
+   command above to recompile:
 ```
-pyside6-linguist core/resources/i18n/*.ts &
+pyside6-linguist core/resources/i18n/core_*.ts games/*/i18n/*.ts &
 ```
 
-3. From Linguist, click save all, then release all.
-
-4. Refresh resources as explained below.
+3. Refresh the resource bundle as explained below.
 
 ## Resources (styles, icons, translations)
 Resources are **auto-discovered** and compiled into `resources_rc.py`. You never

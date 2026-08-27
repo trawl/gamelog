@@ -3,6 +3,7 @@ from typing import ClassVar
 from PySide6 import QtCore
 from PySide6.QtCore import (
     QCoreApplication,
+    QDir,
     QLocale,
     QObject,
     QSize,
@@ -30,8 +31,7 @@ class LanguageManager(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
         # Default to system language, fallback to English if not available
-        self.translator = None
-        self.qt_translator = None
+        self.translators: list[QTranslator] = []
         default_locale = appsettings["language"]
         self.current_locale = (
             default_locale
@@ -42,27 +42,39 @@ class LanguageManager(QObject):
         self.loadTranslator(self.current_locale)
 
     def loadTranslator(self, lang):
-        translator = QTranslator()
         if lang.lower() == "system":
             lang = QLocale.system().name()
         if lang == "C":
             lang = "en_GB"
-        ret = translator.load(lang, ":i18n/")
+
+        new_translators: list[QTranslator] = []
+
+        # Qt's own base catalogue is keyed by language root (e.g. "en").
         qt_translator = QTranslator()
-        qt_qm = "qtbase_" + lang.split("_")[0]
-        qt_translator.load(qt_qm, ":i18n/")
-        if ret:
-            if self.translator:
-                QCoreApplication.removeTranslator(self.translator)
-            if self.qt_translator:
-                QCoreApplication.removeTranslator(self.qt_translator)
-            self.qt_translator = qt_translator
-            self.translator = translator
-            self.current_locale = lang
-            QCoreApplication.installTranslator(self.qt_translator)
-            QCoreApplication.installTranslator(self.translator)
-            self.languageChanged.emit(QLocale(lang))
-            # appsettings.set("language", lang)
+        if qt_translator.load("qtbase_" + lang.split("_")[0], ":i18n/"):
+            new_translators.append(qt_translator)
+
+        # Application catalogues: core + one per game, auto-discovered from the
+        # bundle. A game contributes its translations simply by shipping a
+        # ``<game>_<locale>.qm`` — no change needed here.
+        loaded_app = False
+        for name in QDir(":/i18n").entryList([f"*_{lang}.qm"], QDir.Filter.Files):
+            translator = QTranslator()
+            if translator.load(name, ":i18n/"):
+                new_translators.append(translator)
+                loaded_app = True
+
+        if not loaded_app:
+            # Unknown/unavailable locale: keep the current language.
+            return
+
+        for translator in self.translators:
+            QCoreApplication.removeTranslator(translator)
+        self.translators = new_translators
+        for translator in self.translators:
+            QCoreApplication.installTranslator(translator)
+        self.current_locale = lang
+        self.languageChanged.emit(QLocale(lang))
 
     def getCurrentLocale(self):
         return self.current_locale
