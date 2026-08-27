@@ -625,17 +625,15 @@ class GameWidget(Tab):
         game = self.engine.getGame()
         if game is None:
             game = ""
-        if isinstance(self.engine, EntryGameEngine):
+        if isinstance(self.engine, EntryGameEngine) or not hasattr(
+            self.engine, "getNumRound"
+        ):
             self.roundTitleLabel.setText(game)
         else:
-            try:
-                nround = self.engine.getNumRound()
-                # self.roundGroup.setTitle(self.tr("Round {0}").format(str(nround)))
-                self.roundTitleLabel.setText(
-                    self.tr("{} - Round {}").format(game, str(nround))
-                )
-            except AttributeError:
-                self.roundTitleLabel.setText(game)
+            nround = self.engine.getNumRound()
+            self.roundTitleLabel.setText(
+                self.tr("{} - Round {}").format(game, str(nround))
+            )
 
     def updatePanel(self):
         self.updateScores()
@@ -648,17 +646,15 @@ class GameWidget(Tab):
             self.dealerPolicyCheckBox.setDisabled(self.engine.getNumRound() > 1)
         if self.engine.getWinner():
             self.setWinner()
-            try:
+            # updateStats is optional on the detail widget; call it only when
+            # present so a real error inside it is not silently swallowed.
+            if hasattr(self.detailGroup, "updateStats"):
                 self.detailGroup.updateStats()  # pyright: ignore[reportAttributeAccessIssue]
-            except AttributeError:
-                pass
         else:
             self.setRoundTitle()
             self.gameInput.setFocus()
-            try:
+            if hasattr(self.detailGroup, "updateRound"):
                 self.detailGroup.updateRound()  # pyright: ignore[reportAttributeAccessIssue]
-            except AttributeError:
-                pass
         if self.engine.getWinner() and self.engine.requiresExplicitFinish():
             self.finishButton.setDisabled(True)
         self.guardCommitButton()
@@ -677,23 +673,31 @@ class GameWidget(Tab):
         return {}
 
     def unsetDealer(self):
+        # Some widgets (e.g. Phase10) don't use per-player boxes.
+        if not hasattr(self, "playerGroupBox"):
+            return
+        # KeyError: there may be no current dealer (e.g. dealer-less games).
         try:
             self.playerGroupBox[self.engine.getDealer()].unsetDealer()
-        except (AttributeError, KeyError):
+        except KeyError:
             pass
 
     def setDealer(self):
+        if not hasattr(self, "playerGroupBox"):
+            return
         try:
             self.playerGroupBox[self.engine.getDealer()].setDealer()
-        except (AttributeError, KeyError):
+        except KeyError:
             pass
 
     def updateScores(self):
+        if not hasattr(self, "playerGroupBox"):
+            return
         try:
             for player in self.players:
                 score = self.engine.getScoreFromPlayer(player)
                 self.playerGroupBox[player].updateDisplay(score)
-        except (AttributeError, KeyError):
+        except KeyError:
             pass
 
     def setWinner(self):
@@ -708,11 +712,12 @@ class GameWidget(Tab):
             self.gameInput.hide()
         self.toggleScreenLock(True)
         winner = self.engine.getWinner()
-        try:
-            if winner in self.players:
-                self.playerGroupBox[winner].setWinner()
-        except (AttributeError, KeyError):
-            pass
+        if hasattr(self, "playerGroupBox"):
+            try:
+                if winner in self.players:
+                    self.playerGroupBox[winner].setWinner()
+            except KeyError:
+                pass
 
     def changePlayerOrder(self):
         originaldealer = self.engine.getDealer()
@@ -741,10 +746,8 @@ class GameWidget(Tab):
                 self.playerGroupBox[player].setColour(PlayerColours[i])
         except AttributeError:
             pass
-        try:
+        if hasattr(self.detailGroup, "updatePlayerOrder"):
             self.detailGroup.updatePlayerOrder()  # pyright: ignore[reportAttributeAccessIssue]
-        except AttributeError:
-            pass
         self.gameInput.updatePlayerOrder()
 
     def toggleScreenLock(self, on=False):
@@ -978,7 +981,8 @@ class GameRoundsDetail(QTabWidget):
             self.gamestats.updateContent(
                 self.engine.getGame(), self.engine.getListPlayers()
             )
-        except Exception as e:  # noqa: BLE001 # noqa: BLE001
+        except Exception as e:  # noqa: BLE001
+            # Defensive: a stats refresh must never take down the board.
             print(f"[UpdateStats] {e}", file=sys.stderr)
             self.gamestats.update()
 
