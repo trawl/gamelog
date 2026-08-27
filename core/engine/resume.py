@@ -37,14 +37,14 @@ class ResumeEngine:
 
 
 if __name__ == "__main__":
+    from games import load_builtin_games
+
+    load_builtin_games()
     if not db.isConnected():
         db.connectDB()
-    pmt = "Game to play (Phase10/Phase10Master/Remigio/Ratuki/Carcassone): "
-    game = readInput(
-        pmt,
-        str,
-        lambda x: x in ["Phase10", "Phase10Master", "Remigio", "Ratuki", "Carcassone"],
-    )
+    valid_games = [definition.name for definition in registry.definitions()]
+    pmt = "Game to play ({}): ".format("/".join(valid_games))
+    game = readInput(pmt, str, lambda x: x in valid_games)
     re = ResumeEngine(game)
     candidates = re.getCandidates()
     if not len(candidates):
