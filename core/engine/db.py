@@ -8,6 +8,15 @@ from typing import ClassVar
 APP_NAME = "Gamelog"
 
 
+class DatabaseError(Exception):
+    """Raised when a database operation fails.
+
+    The persistence layer surfaces failures as this exception rather than
+    terminating the process, so callers (or the application's top-level
+    handler) can decide how to recover.
+    """
+
+
 def _project_root() -> Path:
     """Locate the repository root by walking up to the ``pyproject.toml``.
 
@@ -78,8 +87,9 @@ class GameLogDB:
             try:
                 dbdir.mkdir(parents=True, exist_ok=True)
             except OSError as e:
-                self._printError(f"Error creating DB: {e.args[0]}")
-                sys.exit(1)
+                raise DatabaseError(
+                    f"Could not create database directory {dbdir}: {e}"
+                ) from e
             return dbpath
 
         # Second, load the local development database if exists
@@ -92,8 +102,9 @@ class GameLogDB:
         try:
             data_dir.mkdir(parents=True, exist_ok=True)
         except OSError as e:
-            self._printError(f"Error creating DB: {e.args[0]}")
-            sys.exit(1)
+            raise DatabaseError(
+                f"Could not create database directory {data_dir}: {e}"
+            ) from e
 
         return data_dir / "gamelog.db"
 
@@ -107,8 +118,8 @@ class GameLogDB:
             print(f"Loading database from {dbpath}")
             self.con = lite.connect(str(dbpath))
             self._checkDB()
-        except Exception as e:  # noqa: BLE001
-            self._printError(f"Error connecting to DB: {e.args[0]}")
+        except lite.Error as e:
+            raise DatabaseError(f"Could not open database {dbpath}: {e}") from e
         self.dbpath = dbpath
         db.execute("PRAGMA synchronous=OFF")
 
@@ -133,8 +144,7 @@ class GameLogDB:
                 cur.execute(query, params)
                 return cur
         except lite.Error as e:
-            self._printError(f"Error running query {query}\n {e.args[0]}")
-            sys.exit(1)
+            raise DatabaseError(f"Error running query: {query}\n{e}") from e
 
     def queryDict(self, query, params=()):
         result = []
@@ -154,8 +164,7 @@ class GameLogDB:
                 cur.executescript(script)
                 return cur
         except lite.Error as e:
-            self._printError(f"Error running script: {e.args[0]}")
-            sys.exit(1)
+            raise DatabaseError(f"Error running script: {e}") from e
 
     def _checkDB(self):
         from core.registry import registry
@@ -223,12 +232,6 @@ class GameLogDB:
         db.execute(
             "UPDATE Player SET favourite=? WHERE nick=?", (flag, nick)
         )
-
-    def _printError(self, message):
-        # Python 2 syntax
-        #         print >> sys.stderr, message
-        # Python 3 syntax
-        print(message, file=sys.stderr)
 
 
 db = GameLogDB()
