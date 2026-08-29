@@ -1,4 +1,8 @@
-from typing import cast
+"""Player list widgets and model with drag-drop, favourites and dealer."""
+
+from __future__ import annotations
+
+from typing import Any, cast
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
@@ -7,6 +11,7 @@ from PySide6.QtWidgets import (
     QListView,
     QPushButton,
     QVBoxLayout,
+    QWidget,
 )
 
 from core.engine.db import db
@@ -17,10 +22,12 @@ dealerIcon = ":/icons/cards.png"
 
 
 class PlayerOrderDialog(QDialog):
+    """Dialog to reorder players and pick the dealer for a running match."""
+
     playerOrderChanged = QtCore.Signal()
     dealerChanged = QtCore.Signal()
 
-    def __init__(self, engine, parent=None):
+    def __init__(self, engine: Any, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.engine = engine
         self.originalOrder = self.engine.getListPlayers()
@@ -33,13 +40,14 @@ class PlayerOrderDialog(QDialog):
         self.widgetlayout.addWidget(self.pow)
         self.widgetlayout.addWidget(self.okbutton)
 
-    def getNewDealer(self):
+    def getNewDealer(self) -> str | None:
         return self.pow.getDealer()
 
-    def getNewOrder(self):
+    def getNewOrder(self) -> list[str]:
         return cast("PlayerListModel", self.pow.model()).retrievePlayers()
 
-    def changeOrder(self):
+    def changeOrder(self) -> None:
+        """Accept if the order or dealer changed, otherwise reject."""
         players = cast("PlayerListModel", self.pow.model()).retrievePlayers()
         dealer = self.pow.getDealer()
         if players != self.originalOrder or dealer != self.originalDealer:
@@ -49,14 +57,16 @@ class PlayerOrderDialog(QDialog):
 
 
 class PlayerList(QListView):
+    """List view of players supporting drag-drop, favourites and dealer."""
+
     doubleclickeditem = QtCore.Signal(str)
     changed = QtCore.Signal()
 
-    def __init__(self, engine=None, parent=None):
+    def __init__(self, engine: Any = None, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.engine = engine
-        self.max_players = None
-        self.twin_list = None
+        self.max_players: int | None = None
+        self.twin_list: PlayerList | None = None
         self.setStyleSheet("""
         QListView::item:selected {
             background: transparent;
@@ -84,7 +94,8 @@ class PlayerList(QListView):
         self.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.openMenu)
 
-    def addItem(self, text):
+    def addItem(self, text: str) -> bool:
+        """Add ``text`` as a player unless full or already present."""
         if self._canAcceptItem() and not any(
             self._model.item(i).text() == text for i in range(self._model.rowCount())
         ):
@@ -93,31 +104,34 @@ class PlayerList(QListView):
             return True
         return False
 
-    def _canAcceptItem(self):
+    def _canAcceptItem(self) -> bool:
         model = self.model()
         return self.max_players is None or model.rowCount() < self.max_players
 
-    def dragEnterEvent(self, event):
+    def dragEnterEvent(self, event: QtGui.QDragEnterEvent) -> None:
+        """Accept a drag only while there is room for another player."""
         super().dragEnterEvent(event)
         if self._canAcceptItem():
             event.acceptProposedAction()
         else:
             event.ignore()
 
-    def dragMoveEvent(self, event):
+    def dragMoveEvent(self, event: QtGui.QDragMoveEvent) -> None:
+        """Accept a move drag only while there is room for another player."""
         super().dragMoveEvent(event)
         if self._canAcceptItem():
             event.acceptProposedAction()
         else:
             event.ignore()
 
-    def setMaxPlayers(self, maxp):
+    def setMaxPlayers(self, maxp: int | None) -> None:
         self.max_players = maxp
 
-    def setTwinList(self, tl):
+    def setTwinList(self, tl: PlayerList) -> None:
         self.twin_list = tl
 
-    def mouseDoubleClickEvent(self, event):
+    def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent) -> None:
+        """Toggle the dealer, or move the item to the twin list, on click."""
         item = self.indexAt(event.pos())
         try:
             player = str(item.data().toString())
@@ -136,7 +150,8 @@ class PlayerList(QListView):
                 self.changed.emit()
         return QListView.mouseDoubleClickEvent(self, event)
 
-    def openMenu(self, position):
+    def openMenu(self, position: QtCore.QPoint) -> None:
+        """Context menu action: set the dealer or toggle a favourite."""
         item = self.indexAt(position)
         if item.row() < 0:
             return
@@ -155,25 +170,32 @@ class PlayerList(QListView):
                     icon = favouriteIcon
                 self._model.addIcon(self._model.itemFromIndex(item), icon)
 
-    def setDealer(self, item, player):
+    def setDealer(self, item: QtCore.QModelIndex, player: str) -> None:
+        """Move the dealer marker from the current dealer to ``item``."""
+        dealer = self._model.dealer
         icon = standardIcon
-        if db.isPlayerFavourite(self._model.dealer):
+        if dealer is not None and db.isPlayerFavourite(dealer):
             icon = favouriteIcon
-        self._model.addIcon(self._model.itemFromPlayer(self._model.dealer), icon)
+        self._model.addIcon(self._model.itemFromPlayer(dealer), icon)
         self._model.addIcon(self._model.itemFromIndex(item), dealerIcon)
         self._model.dealer = player
 
-    def getDealer(self):
+    def getDealer(self) -> str | None:
         return self._model.dealer
 
 
 class PlayerListModel(QtGui.QStandardItemModel):
-    def __init__(self, engine=None, parent=None):
+    """Item model backing a :class:`PlayerList`, tracking the dealer."""
+
+    def __init__(
+        self, engine: Any = None, parent: QtCore.QObject | None = None
+    ) -> None:
         super().__init__(parent)
         self.engine = engine
-        self.dealer = None
+        self.dealer: str | None = None
 
-    def addPlayer(self, player, row=None):
+    def addPlayer(self, player: str, row: int | None = None) -> None:
+        """Add ``player`` with the right icon at ``row`` (or at the end)."""
         item = QtGui.QStandardItem(player)
         item.setEditable(False)
         item.setDropEnabled(False)
@@ -192,17 +214,19 @@ class PlayerListModel(QtGui.QStandardItemModel):
         else:
             self.appendRow(item)
 
-    def addIcon(self, item, icon):
+    def addIcon(self, item: Any, icon: str) -> None:
         item.setIcon(QtGui.QIcon(icon))
 
-    def retrievePlayers(self):
+    def retrievePlayers(self) -> list[str]:
+        """Return the player nicks in their current order."""
         players = []
         for i in range(self.rowCount()):
             nick = str(self.item(i).text())
             players.append(nick)
         return players
 
-    def itemFromPlayer(self, player):
+    def itemFromPlayer(self, player: str | None) -> QtGui.QStandardItem | None:
+        """Return the item whose text matches ``player``, or ``None``."""
         for i in range(self.rowCount()):
             item = self.item(i)
             nick = str(item.text())

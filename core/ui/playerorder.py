@@ -1,4 +1,9 @@
+"""Dialog and widgets for viewing/arranging the player order."""
+
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING
 
 from PySide6.QtWidgets import (
     QDialog,
@@ -9,9 +14,16 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+if TYPE_CHECKING:
+    from PySide6.QtGui import QDragEnterEvent
+
+    from core.engine.base import GameEngine
+
 
 class PlayerOrderDialog(QDialog):
-    def __init__(self, engine, parent=None):
+    """Modal dialog wrapping the player-order widget for a match."""
+
+    def __init__(self, engine: GameEngine, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.engine = engine
         self.setWindowTitle(self.tr("Player Order"))
@@ -21,7 +33,9 @@ class PlayerOrderDialog(QDialog):
 
 
 class PlayerOrderWidget(QWidget):
-    def __init__(self, engine, parent=None):
+    """Vertical stack of draggable player tiles for reordering."""
+
+    def __init__(self, engine: GameEngine, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.engine = engine
         self.players = self.engine.getListPlayers()
@@ -32,7 +46,7 @@ class PlayerOrderWidget(QWidget):
                 PlayerTile(player, self.engine.getDealer() == player, self)
             )
 
-    def dragEnterEvent(self, event):
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         event.accept()
 
     # def dropEvent(self, event):
@@ -43,7 +57,11 @@ logger = logging.getLogger(__name__)
 
 
 class PlayerTile(QGroupBox):
-    def __init__(self, player, isDealer=False, parent=None):
+    """A single player's tile, flagged when that player is the dealer."""
+
+    def __init__(
+        self, player: str, isDealer: bool = False, parent: QWidget | None = None
+    ) -> None:
         logger.debug("Creating tile for %s", player)
         super().__init__(parent)
         self.player = player

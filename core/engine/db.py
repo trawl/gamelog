@@ -1,3 +1,12 @@
+"""SQLite persistence layer.
+
+Exposes a single shared :class:`GameLogDB` instance (``db``) used across the
+application. Failures surface as :class:`DatabaseError` rather than terminating
+the process.
+"""
+
+from __future__ import annotations
+
 import datetime
 import logging
 import os
@@ -73,15 +82,22 @@ def _app_data_dir() -> Path:
 
 
 class GameLogDB:
+    """Borg-singleton wrapper around the application's SQLite connection.
+
+    Every instance shares one connection and path via ``__shared_state``, so
+    ``GameLogDB()`` anywhere yields the same live database.
+    """
+
     __shared_state: ClassVar[dict] = {}
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.__dict__ = self.__shared_state
-        self.dbpath = None
+        self.dbpath: Path | None = None
         if not hasattr(self, "con"):
-            self.con = None
+            self.con: lite.Connection | None = None
 
-    def getDBLocation(self):
+    def getDBLocation(self) -> Path:
+        """Resolve the database file: env override, dev DB, then OS data dir."""
         # First, environment
         dbpath = os.getenv("GAMELOG_DB")
         if dbpath:
@@ -111,7 +127,8 @@ class GameLogDB:
 
         return data_dir / "gamelog.db"
 
-    def connectDB(self, dbpath=None):
+    def connectDB(self, dbpath: str | Path | None = None) -> None:
+        """Open (or reopen) the database, verifying/creating the schema."""
         self.disconnectDB()
         if not dbpath:
             dbpath = self.getDBLocation()
@@ -126,18 +143,20 @@ class GameLogDB:
         self.dbpath = dbpath
         db.execute("PRAGMA synchronous=OFF")
 
-    def isConnected(self):
+    def isConnected(self) -> bool:
         return self.con is not None
 
-    def disconnectDB(self):
+    def disconnectDB(self) -> None:
+        """Close the connection if open."""
         if self.con:
             self.con.close()
         self.dbpath = None
 
-    def getDBPath(self):
+    def getDBPath(self) -> Path | None:
         return self.dbpath
 
-    def execute(self, query, params=()):
+    def execute(self, query: str, params: tuple = ()) -> lite.Cursor:
+        """Run a parameterised statement in a transaction, returning the cursor."""
         if self.con is None:
             raise RuntimeError("Database not connected")
         try:
@@ -149,7 +168,8 @@ class GameLogDB:
         except lite.Error as e:
             raise DatabaseError(f"Error running query: {query}\n{e}") from e
 
-    def queryDict(self, query, params=()):
+    def queryDict(self, query: str, params: tuple = ()) -> list[dict]:
+        """Run a query and return its rows as a list of column-keyed dicts."""
         result = []
         for row in self.execute(query, params):
             entry = {}
@@ -158,7 +178,8 @@ class GameLogDB:
             result.append(entry)
         return result
 
-    def _executeScript(self, script):
+    def _executeScript(self, script: str) -> lite.Cursor:
+        """Run a multi-statement SQL script (used to create the schema)."""
         if self.con is None:
             raise RuntimeError("Database not connected")
         try:
@@ -169,7 +190,8 @@ class GameLogDB:
         except lite.Error as e:
             raise DatabaseError(f"Error running script: {e}") from e
 
-    def _checkDB(self):
+    def _checkDB(self) -> None:
+        """Create the schema if absent and register every known game."""
         from core.registry import registry
         from games import load_builtin_games
 
@@ -184,7 +206,8 @@ class GameLogDB:
             ge = definition.database_row()
             self.execute('INSERT OR IGNORE INTO "Game" VALUES (?,?,?,?)', ge)
 
-    def getAvailableGames(self):
+    def getAvailableGames(self) -> dict[str, dict]:
+        """Return every game in the DB, keyed by name."""
         cur = db.execute("Select name,maxPlayers,description,rules from Game")
         games = {}
         for row in cur:
@@ -194,7 +217,8 @@ class GameLogDB:
             games[row["name"]]["rules"] = row["rules"]
         return games
 
-    def getLastGame(self):
+    def getLastGame(self) -> str | None:
+        """Return the name of the most recently played game, or ``None``."""
         cur = db.execute("Select Game_name from Match order by idMatch desc limit 1")
         if not cur:
             return None
@@ -203,23 +227,25 @@ class GameLogDB:
             return None
         return str(row["Game_name"])
 
-    def getPlayerNicks(self):
+    def getPlayerNicks(self) -> list[str]:
+        """Return every registered player's nick, alphabetically."""
         cur = db.execute("Select nick from Player order by nick")
         return [row["nick"] for row in cur]
 
-    def getPlayers(self):
+    def getPlayers(self) -> lite.Cursor | list:
         cur = db.execute("Select * from Player order by nick")
         if cur:
             return cur
         return []
 
-    def addPlayer(self, nick, fullname):
+    def addPlayer(self, nick: str, fullname: str) -> None:
+        """Insert a new player record."""
         db.execute(
             "INSERT INTO Player(nick,fullName,dateCreation) VALUES(?,?,?)",
             (nick, fullname, str(datetime.datetime.now(tz=datetime.UTC))),
         )
 
-    def isPlayerFavourite(self, nick):
+    def isPlayerFavourite(self, nick: str) -> bool:
         cur = db.execute(
             "SELECT nick FROM Player WHERE nick=? and favourite=1", (nick,)
         )
@@ -228,7 +254,7 @@ class GameLogDB:
         else:
             return True
 
-    def setPlayerFavourite(self, nick, isfav):
+    def setPlayerFavourite(self, nick: str, isfav: bool) -> None:
         flag = 1 if isfav else 0
         db.execute("UPDATE Player SET favourite=? WHERE nick=?", (flag, nick))
 

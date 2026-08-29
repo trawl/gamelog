@@ -1,3 +1,7 @@
+"""Carcassonne play-time and statistics engines."""
+
+from __future__ import annotations
+
 from typing import cast
 
 from core.engine.base import EntryGameEngine, readInput
@@ -7,12 +11,15 @@ from games.carcassonne.model import CarcassonneMatch
 
 
 class CarcassonneEngine(EntryGameEngine):
-    def __init__(self):
+    """Entry-scored engine driving a Carcassonne match."""
+
+    def __init__(self) -> None:
         if not hasattr(self, "game"):
             self.game = "Carcassonne"
         EntryGameEngine.__init__(self)
 
-    def runStubRoundPlayer(self, player, winner=None):
+    def runStubRoundPlayer(self, player: str, winner: str | None = None) -> None:
+        """CLI harness: read one player's score and feature kind, then record it."""
         entry_kinds = self.getEntryKinds()
         score = readInput(
             f"{player} score: ",
@@ -24,11 +31,11 @@ class CarcassonneEngine(EntryGameEngine):
         kind = readInput("Kind: ", str, lambda x: x in entry_kinds, errmsg)
         self.addEntry(player, score, {"kind": kind})
 
-    def getEntryKinds(self):
+    def getEntryKinds(self) -> list[str]:
         self.match = cast("CarcassonneMatch", self.match)
         return self.match.getEntryKinds()
 
-    def requiresExplicitFinish(self):
+    def requiresExplicitFinish(self) -> bool:
         return True
 
 
@@ -38,6 +45,8 @@ if __name__ == "__main__":
 
 
 class CarcassonneStatsQueries:
+    """SQL query templates for Carcassonne single-kind and match-kind records."""
+
     singleKindRecordQuery = """
     SELECT value as "record",
         Round.score as "points",
@@ -80,17 +89,20 @@ class CarcassonneStatsQueries:
 
 
 class CarcassonneStatsEngine(StatsEngine):
-    def __init__(self):
+    """Adds Carcassonne single-kind and match-kind record statistics."""
+
+    def __init__(self) -> None:
         super().__init__()
-        self.singleKindRecord = []
+        self.singleKindRecord: list[dict] = []
         q = CarcassonneStatsQueries()
         self._singleKindRecordQuery = q.singleKindRecordQuery
         self._matchKindRecordQuery = q.matchKindRecordQuery
 
-    def update(self, players=None):
+    def update(self, players: list[str] | None = None) -> None:
+        """Refresh base statistics plus the per-kind Carcassonne records."""
         super().update()
         self.singleKindRecord = []
-        self.matchKindRecord = []
+        self.matchKindRecord: list[dict] = []
 
         for kind in ("City", "Road", "Field"):
             q = self._singleKindRecordQuery.format(kind)
@@ -100,15 +112,18 @@ class CarcassonneStatsEngine(StatsEngine):
             q = self._matchKindRecordQuery.format(kind)
             self.matchKindRecord += db.queryDict(q, self._bound_params(q))
 
-    def getSingleKindRecords(self):
+    def getSingleKindRecords(self) -> list[dict]:
         return self.singleKindRecord
 
-    def getMatchKindRecords(self):
+    def getMatchKindRecords(self) -> list[dict]:
         return self.matchKindRecord
 
 
 class CarcassonneParticularStatsEngine(CarcassonneStatsEngine, ParticularStatsEngine):
-    def updatePlayers(self, players):
+    """Carcassonne record statistics restricted to an exact set of players."""
+
+    def updatePlayers(self, players: list[str] | None) -> None:
+        """Splice the player filter into the Carcassonne record queries."""
         super().updatePlayers(players)
         if players:
             q = CarcassonneStatsQueries()

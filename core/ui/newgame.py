@@ -1,7 +1,12 @@
+"""New-game tab: player selection, game choice and saved-game resume."""
+
+from __future__ import annotations
+
 import datetime
-from typing import cast
+from typing import Any, cast
 
 from PySide6.QtCore import Signal
+from PySide6.QtGui import QShowEvent
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -31,12 +36,15 @@ from core.ui.tab import Tab
 
 
 class NewGameWidget(Tab):
-    def __init__(self, parent=None):
+    """Tab for choosing a game, picking players and starting or resuming."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self._parent = parent
+        self._parent: Any = parent
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Lay out the player and game group boxes side by side."""
         # Setup Layouts
         self.widgetLayout = QHBoxLayout(self)
         self.leftColumnLayout = QVBoxLayout()
@@ -60,7 +68,8 @@ class NewGameWidget(Tab):
 
     #        self.retranslateUI()
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
+        """Re-apply translated button and group titles."""
         self.updateGameInfo()
         # self.playersGroupBox.setTitle(self.tr("Players"))
         self.startGameButton.setText("▶")
@@ -75,7 +84,8 @@ class NewGameWidget(Tab):
         if self.gameStatsBox:
             self.gameStatsBox.retranslateUI()
 
-    def populateGamesGroupBox(self):
+    def populateGamesGroupBox(self) -> None:
+        """Build the game selector, settings controls and resume box."""
         self.gameGroupBoxLayout = QVBoxLayout(self.gameGroupBox)
         self.gameNameLayout = QHBoxLayout()
         self.gameGroupBoxLayout.addLayout(self.gameNameLayout)
@@ -157,7 +167,8 @@ class NewGameWidget(Tab):
 
         self.gameComboBox.currentIndexChanged.connect(self.updateGameInfo)
 
-    def updateGameInfo(self, _foo=0):
+    def updateGameInfo(self, _foo: int = 0) -> None:
+        """Refresh the player limit, stats box and resume list for the game."""
         game = str(self.gameComboBox.currentText())
         max_players = self.games[game]["maxPlayers"]
         self.playersInGameList.setMaxPlayers(max_players)
@@ -174,13 +185,14 @@ class NewGameWidget(Tab):
             # print("UGI deleting")
             self.gameStatsBox.deleteLater()
 
-        self.gameStatsBox = registry.create_quick_stats(game, None, self)
+        self.gameStatsBox = registry.create_quick_stats(game, [], self)
         self.gameGroupBoxLayout.addWidget(self.gameStatsBox)
         self.gameGroupBoxLayout.setStretchFactor(self.gameStatsBox, 10)
         self.updateStats()
         self.resumeGroup.changeGame(game)
 
-    def updateStats(self):
+    def updateStats(self) -> None:
+        """Push the currently selected players into the quick-stats box."""
         if self.gameStatsBox:
             try:
                 self.gameStatsBox.updateContent(
@@ -193,7 +205,8 @@ class NewGameWidget(Tab):
                 # Should not happen, but silently ignore
                 pass
 
-    def populatePlayersGroupBox(self):
+    def populatePlayersGroupBox(self) -> None:
+        """Build the in-game and available player lists and their buttons."""
         self.playersGroupBoxLayout = QVBoxLayout(self.playersGroupBox)
         # Start button
 
@@ -231,19 +244,22 @@ class NewGameWidget(Tab):
         self.newPlayerButton.clicked.connect(self.createNewPlayer)
         self.playersButtonsLayout.addWidget(self.newPlayerButton)
 
-    def onPlay(self):
+    def onPlay(self) -> None:
+        """Start a new game, or resume the selected saved one."""
         if self.resumeGroup.getSelectedSavedGame() == 0:
             self.createNewGame()
         else:
             self.resumeGroup.resumeGame()
 
-    def onSettings(self):
+    def onSettings(self) -> None:
+        """Open the settings dialog and watch for setting changes."""
         sd = SettingsDialog(parent=self)
         sd.settingChanged.connect(self.watchSettingChange)
         # sd.settingChanged.connect(self.retranslateUI)
         sd.exec()
 
-    def watchSettingChange(self, name, value):
+    def watchSettingChange(self, name: str, value: Any) -> None:
+        """React to a changed setting (language, theme, log level or other)."""
         if name == "language":
             self.languageChooser.changeLanguage(value)
         elif name == "theme":
@@ -257,7 +273,8 @@ class NewGameWidget(Tab):
         else:
             self.retranslateUI()
 
-    def createNewGame(self):
+    def createNewGame(self) -> None:
+        """Validate the player count and open a new match tab for the game."""
         game = str(self.gameComboBox.currentText())
         maxPlayers = self.games[game]["maxPlayers"]
         players = cast(
@@ -281,7 +298,8 @@ class NewGameWidget(Tab):
                 QMessageBox.warning(self, tit, self.tr("Widget not implemented"))
                 return
 
-    def restartGame(self, gamewidget):
+    def restartGame(self, gamewidget: Any) -> None:
+        """Close the given match tab and open a fresh one with same players."""
         players = gamewidget.players
         game = gamewidget.game
         if self._parent:
@@ -296,16 +314,19 @@ class NewGameWidget(Tab):
             QMessageBox.warning(self, "Warning", self.tr("Widget not implemented"))
             return
 
-    def createNewPlayer(self):
+    def createNewPlayer(self) -> None:
+        """Open the new-player dialog and add the created player when done."""
         npd = NewPlayerDialog(self)
         npd.addedNewPlayer.connect(self.addPlayer)
         npd.exec_()
 
-    def addPlayer(self, player):
+    def addPlayer(self, player: str) -> None:
+        """Add a newly created player to the available-players list."""
         player = str(player)
         cast("PlayerListModel", self.playersAvailableList.model()).addPlayer(player)
 
-    def showEvent(self, event):
+    def showEvent(self, event: QShowEvent) -> None:
+        """Refresh the stats box and resume list when the tab is shown."""
         if (
             hasattr(self, "gameStatsBox")
             and hasattr(self, "gameComboBox")
@@ -318,18 +339,21 @@ class NewGameWidget(Tab):
 
 
 class ResumeBox(QGroupBox):
+    """List of saved games for the current game, with resume and delete."""
+
     restartRequested = Signal(QWidget)
     savedGameSelected = Signal(bool)
 
-    def __init__(self, parent):
+    def __init__(self, parent: QWidget | None) -> None:
         super().__init__(parent)
-        self.engine = None
-        self.game = None
-        self._parent = parent
-        self.matches = []
+        self.engine: ResumeEngine | None = None
+        self.game: str | None = None
+        self._parent: Any = parent
+        self.matches: list[int] = []
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Build the saved-game list and its delete button."""
         self.widgetLayout = QHBoxLayout(self)
         self.savedlist = QListWidget(self)
         self.savedlist.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -355,7 +379,8 @@ class ResumeBox(QGroupBox):
         # self.buttonLayout.addStretch()
         self.retranslateUI()
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
+        """Re-apply the translated delete-button label."""
         # self.setTitle(self.tr("Saved Games"))
         # self.resumebutton.setText(self.tr("Resume"))
         # self.cancelbutton.setText(self.tr("Delete"))
@@ -365,7 +390,8 @@ class ResumeBox(QGroupBox):
         else:
             self.cancelbutton.setText("⌫")
 
-    def changeGame(self, game):
+    def changeGame(self, game: str) -> None:
+        """Reload the saved-game list for ``game``, hiding it when empty."""
         self.game = game
         self.engine = ResumeEngine(game)
         self.savedlist.clear()
@@ -406,19 +432,22 @@ class ResumeBox(QGroupBox):
             # self.resumebutton.show()
             self.cancelbutton.show()
 
-    def getSelectedSavedGame(self):
+    def getSelectedSavedGame(self) -> int:
+        """Return the selected row (0 means the 'start a new game' entry)."""
         selected = self.savedlist.selectedIndexes()
         if not selected:
             return 0
         else:
             return self.savedlist.selectedIndexes()[0].row()
 
-    def onSelectionChange(self):
+    def onSelectionChange(self) -> None:
+        """Enable delete and signal whether a saved match is selected."""
         is_saved_match_selected = self.getSelectedSavedGame() != 0
         self.cancelbutton.setEnabled(is_saved_match_selected)
         self.savedGameSelected.emit(is_saved_match_selected)
 
-    def resumeGame(self):
+    def resumeGame(self) -> None:
+        """Resume the selected saved match in a new tab."""
         selected = self.savedlist.selectedIndexes()
         if len(selected) > 0:
             idMatch = self.matches[selected[0].row()]
@@ -432,10 +461,12 @@ class ResumeBox(QGroupBox):
                     matchTab.closeRequested.connect(self._parent.removeTab)
                     self._parent.newTab(matchTab, self.game)
 
-    def restartGame(self, gamewidget):
+    def restartGame(self, gamewidget: QWidget) -> None:
+        """Bubble a restart request up to the parent tab."""
         self.restartRequested.emit(gamewidget)
 
-    def deleteGame(self):
+    def deleteGame(self) -> bool | None:
+        """Confirm and cancel the selected saved game, then refresh the list."""
         selected = self.savedlist.selectedIndexes()
         if len(selected) > 0:
             idMatch = self.matches[selected[0].row()]
@@ -455,4 +486,4 @@ class ResumeBox(QGroupBox):
                 gameengine = self.engine.resume(idMatch)
                 if gameengine:
                     gameengine.cancelMatch()
-            self.changeGame(self.game)
+            self.changeGame(cast("str", self.game))

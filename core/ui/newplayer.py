@@ -1,3 +1,7 @@
+"""Dialog for creating a new player record."""
+
+from __future__ import annotations
+
 from PySide6 import QtCore
 from PySide6.QtWidgets import (
     QDialog,
@@ -6,21 +10,25 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QVBoxLayout,
+    QWidget,
 )
 
 from core.engine.db import db
 
 
 class NewPlayerDialog(QDialog):
+    """Modal dialog to register a new player, guarding against duplicates."""
+
     addedNewPlayer = QtCore.Signal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.initUI()
         self.setWindowTitle(self.tr("New Player"))
         self.existingplayers = [str(nick).lower() for nick in db.getPlayerNicks()]
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Build the nick/name fields, warning label and Create button."""
         self.vlayout = QVBoxLayout(self)
         self.glayout = QGridLayout()
         self.vlayout.addLayout(self.glayout)
@@ -46,7 +54,8 @@ class NewPlayerDialog(QDialog):
         self.vlayout.addWidget(self.createbutton)
         self.show()
 
-    def checkExisting(self, _discard):
+    def checkExisting(self, _discard: str) -> None:
+        """Validate the nick and toggle the Create button accordingly."""
         tempnick = str(self.nicklineedit.text())
         if len(tempnick) < 3:
             self.existinglabel.setText("")
@@ -59,7 +68,8 @@ class NewPlayerDialog(QDialog):
             self.existinglabel.setText("")
             self.createbutton.setEnabled(len(self.namelineedit.text()) > 0)
 
-    def createAction(self):
+    def createAction(self) -> None:
+        """Persist the new player, emit the signal and accept the dialog."""
         nick = str(self.nicklineedit.text())
         db.addPlayer(nick, str(self.namelineedit.text()))
         self.existingplayers.append(nick)

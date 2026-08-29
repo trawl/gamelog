@@ -1,4 +1,11 @@
+"""Qwirkle board widget, built by specialising the Scrabble widgets."""
+
+from __future__ import annotations
+
+from typing import cast
+
 from PySide6 import QtCore
+from PySide6.QtWidgets import QWidget
 
 from core.ui.game import (
     BonusButton,
@@ -17,18 +24,23 @@ from games.scrabble.widget import (
 
 
 class QwirkleWidget(ScrabbleWidget):
-    def createEngine(self):
+    """Board widget for Qwirkle (Scrabble-style entry scoring with qwirkles)."""
+
+    def createEngine(self) -> None:
         if self.game != "Qwirkle":
             raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = QwirkleEngine()
 
-    def createGameInputWidget(self, parent=None):  # pyright: ignore[reportIncompatibleMethodOverride]
+    def createGameInputWidget(self, parent: QWidget | None = None):  # pyright: ignore[reportIncompatibleMethodOverride]
         return QwirkleInputWidget(self.engine, parent)
 
-    def createRoundsDetail(self, parent=None):
+    def createRoundsDetail(self, parent: QWidget | None = None):
         return QwirkleEntriesDetail(self.engine, parent)
 
-    def checkPlayerScore(self, player, score, extras=None):
+    def checkPlayerScore(
+        self, player: str, score: int, extras: dict | None = None
+    ) -> bool:
+        """Validate a Qwirkle entry: non-negative and consistent with qwirkles."""
         try:
             if score < 0 or not extras:
                 return False
@@ -39,16 +51,19 @@ class QwirkleWidget(ScrabbleWidget):
 
 
 class QwirkleInputWidget(ScrabbleInputWidget):
+    """Score-entry widget adding qwirkle bonus buttons."""
+
     spacePressed = QtCore.Signal()
 
-    def initUI(self):
+    def initUI(self) -> None:
         super().initUI()
         self.scoreSpinBox.setRange(-1, 84, 0)
         self.reset()
 
-    def createBonusButtons(self):
+    def createBonusButtons(self) -> None:
+        """Build one bonus button per configured qwirkle bonus."""
         self.currentPlayerBoxLayout.insertSpacing(0, 64)
-        for b, maxreps in self.engine.getBonuses().items():
+        for b, maxreps in cast("QwirkleEngine", self.engine).getBonuses().items():
             bb = BonusButton(
                 b, maxreps, colour=None, size=64, parent=self.currentPlayerBox
             )
@@ -60,32 +75,42 @@ class QwirkleInputWidget(ScrabbleInputWidget):
 
 
 class QwirkleEntriesDetail(ScrabbleEntriesDetail):
-    def createRoundTable(self, engine, parent=None):
+    """Rounds-detail tab set for Qwirkle."""
+
+    def createRoundTable(self, engine, parent: QWidget | None = None):
         return QwirkleRoundTable(self.engine, parent)
 
-    def createRoundPlot(self, engine, parent=None):
+    def createRoundPlot(self, engine, parent: QWidget | None = None):
         return QwirkleEntriesPlot(self.engine, self)
 
-    def createQSBox(self, parent=None):
-        return QwirkleQSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
+    def createQSBox(self, parent: QWidget | None = None):
+        return QwirkleQSTW(
+            self.engine.getGame(),  # pyright: ignore[reportArgumentType]
+            self.engine.getListPlayers(),
+            self,
+        )
 
 
 class QwirkleRoundTable(ScrabbleRoundTable):
-    pass
+    """Per-entry score table for Qwirkle."""
 
 
 class QwirkleEntriesPlot(ScrabbleEntriesPlot):
-    pass
+    """Score-over-time plot for Qwirkle."""
 
 
 class QwirkleQSTW(ScrabbleQSTW):
-    def initStatsWidgets(self):
+    """Quick-stats tab set for Qwirkle."""
+
+    def initStatsWidgets(self) -> None:
         self.gs = QwirkleQSBox(self.game, self)
         self.ps = QwirklePQSBox(self.game, self)
 
 
 class QwirkleQSBox(GeneralQuickStats):
-    def __init__(self, gname, parent=None):
+    """General quick-stats page adding best-play and max-qwirkles columns."""
+
+    def __init__(self, gname: str, parent: QWidget | None = None) -> None:
         super().__init__(gname, parent)
         self.playerStatsKeys.append("max_round_score")
         self.playerStatsHeaders.append(self.tr("Best Play"))
@@ -104,4 +129,4 @@ class QwirkleQSBox(GeneralQuickStats):
 
 
 class QwirklePQSBox(QwirkleQSBox, ParticularQuickStats):
-    pass
+    """Player-filtered variant of the Qwirkle quick-stats page."""

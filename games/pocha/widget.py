@@ -1,8 +1,12 @@
+"""Qt scoreboard widgets for Pocha: hand-bidding input, round table and plot."""
+
+from __future__ import annotations
+
 from typing import cast
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication
-from PySide6.QtGui import QColor
+from PySide6.QtGui import QColor, QKeyEvent
 from PySide6.QtWidgets import (
     QButtonGroup,
     QFrame,
@@ -18,6 +22,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from core.model.base import GenericRound
 from core.ui.game import (
     GameInputWidget,
     GameNotImplementedException,
@@ -33,6 +38,8 @@ from games.pocha.engine import PochaEngine
 
 
 class PochaWidget(GameWidget):
+    """Scoreboard tab for Pocha, adding deck-suit selection and hand progress."""
+
     QCoreApplication.translate("PochaWidget", "going up")
     QCoreApplication.translate("PochaWidget", "going down")
     QCoreApplication.translate("PochaWidget", "hand")
@@ -46,30 +53,35 @@ class PochaWidget(GameWidget):
     QCoreApplication.translate("PochaWidget", "spades")
     QCoreApplication.translate("PochaWidget", "clovers")
 
-    def createEngine(self):
+    def createEngine(self) -> None:
         if self.game != "Pocha":
             raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = PochaEngine()
 
-    def initUI(self):
+    def initUI(self) -> None:
         super().initUI()
         self.retranslateUI()
 
-    def createGameInputWidget(self, parent=None):
+    def createGameInputWidget(self, parent: QWidget | None = None) -> PochaInputWidget:
         return PochaInputWidget(self.engine, parent)
 
-    def createRoundsDetail(self, parent=None):
+    def createRoundsDetail(self, parent: QWidget | None = None) -> PochaRoundsDetail:
         return PochaRoundsDetail(self.engine, parent)
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
         super().retranslateUI()
         self.spanishSuitRadio.setText(self.tr("Spanish Deck"))
         self.frenchSuitRadio.setText(self.tr("French Deck"))
         self.detailGroup.retranslateUI()
 
-    def addExtraConfig(self):
+    def addExtraConfig(self) -> None:
+        """Add the hand-progress bar and the Spanish/French deck selector."""
         super().addExtraConfig()
-        self.progressBar = StepProgressBar(self.engine.getRoundSequence(), self)
+        self.progressBar = StepProgressBar(
+            # Hand counts (ints) are rendered as step labels via str().
+            cast("PochaEngine", self.engine).getRoundSequence(),  # pyright: ignore[reportArgumentType]
+            self,
+        )
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         # self.matchGroupLayout.addWidget(self.progressBar)
         self.matchGroupLayout.insertWidget(1, self.progressBar)
@@ -79,29 +91,35 @@ class PochaWidget(GameWidget):
         self.matchGroupLayout.addLayout(self.configLayout)
         self.suitTypeGroup = QButtonGroup(self)
         self.spanishSuitRadio = QRadioButton(self)
-        self.spanishSuitRadio.setChecked(self.engine.getSuitType() == "spanish")
+        self.spanishSuitRadio.setChecked(
+            cast("PochaEngine", self.engine).getSuitType() == "spanish"
+        )
         self.spanishSuitRadio.toggled.connect(self.changeSuit)
         self.suitTypeGroup.addButton(self.spanishSuitRadio)
         self.configLayout.addWidget(self.spanishSuitRadio)
         self.frenchSuitRadio = QRadioButton(self)
         self.suitTypeGroup.addButton(self.frenchSuitRadio)
         self.configLayout.addWidget(self.frenchSuitRadio)
-        self.frenchSuitRadio.setChecked(self.engine.getSuitType() == "french")
+        self.frenchSuitRadio.setChecked(
+            cast("PochaEngine", self.engine).getSuitType() == "french"
+        )
         self.dealerPolicyCheckBox.hide()
 
-    def changeSuit(self, *_args):
+    def changeSuit(self, *_args) -> None:
+        """Switch the engine between the Spanish and French card decks."""
         if self.spanishSuitRadio.isChecked():
-            self.engine.setSuitType("spansih")
+            cast("PochaEngine", self.engine).setSuitType("spansih")
         elif self.frenchSuitRadio.isChecked():
-            self.engine.setSuitType("french")
+            cast("PochaEngine", self.engine).setSuitType("french")
         self.retranslateUI()
 
-    def setRoundTitle(self):
+    def setRoundTitle(self) -> None:
+        """Show the game name plus the current hand count and direction."""
         if self.engine.getWinner():
             self.roundTitleLabel.setText(f"{self.engine.getGame()}")
             return
-        hands = self.engine.getHands()
-        direction = self.engine.getDirection()
+        hands = cast("PochaEngine", self.engine).getHands()
+        direction = cast("PochaEngine", self.engine).getDirection()
         if hands == 1:
             self.roundTitleLabel.setText(
                 "{} - {} {} {}".format(
@@ -121,18 +139,21 @@ class PochaWidget(GameWidget):
                 )
             )
 
-    def checkPlayerScore(self, player, score, extras=None):
+    def checkPlayerScore(
+        self, player: str, score: int, extras: dict | None = None
+    ) -> bool:
         return True
 
-    def updatePanel(self):
+    def updatePanel(self) -> None:
         super().updatePanel()
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         # self.spanishSuitRadio.setDisabled(self.engine.getNumRound() > 1)
         # self.frenchSuitRadio.setDisabled(self.engine.getNumRound() > 1)
 
-    def commitRoundSanityCheck(self, interactive=False):
-        hands = self.engine.getHands()
-        wonhands = cast(PochaInputWidget, self.gameInput).getWonHands()
+    def commitRoundSanityCheck(self, interactive: bool = False) -> bool:
+        """Verify the selected won hands add up to the number played."""
+        hands = cast("PochaEngine", self.engine).getHands()
+        wonhands = cast("PochaInputWidget", self.gameInput).getWonHands()
         won = sum(wonhands.values())
         if min(wonhands.values()) < 0:
             msg = self.tr("There are players with no selected won hands.")
@@ -151,16 +172,19 @@ class PochaWidget(GameWidget):
             return False
         return True
 
-    def setFocus(self, _reason=None):
+    def setFocus(self, _reason=None) -> None:
         self.gameInput.setFocus()
 
 
 class PochaInputWidget(GameInputWidget):
-    def __init__(self, engine, parent=None):
-        super().__init__(engine, parent)
-        self.lastChoices = []
+    """Per-player expected/won hand selectors making up a Pocha round."""
 
-    def initUI(self):
+    def __init__(self, engine, parent: QWidget | None = None) -> None:
+        super().__init__(engine, parent)
+        self.lastChoices: list[tuple[str, str]] = []
+
+    def initUI(self) -> None:
+        """Lay out one hand-selector box per player in a grid."""
         self.widgetLayout = QGridLayout(self)
         players = self.engine.getListPlayers()
         if len(players) == 4:
@@ -182,29 +206,32 @@ class PochaInputWidget(GameInputWidget):
             self.playerInputList[player].handsClicked.connect(self.newChoice)
             self.playerInputList[player].changed.connect(self.changed)
 
-    def newChoice(self, mode, player):
+    def newChoice(self, mode: str, player: str) -> None:
         self.lastChoices.append((mode, player))
 
-    def reset(self):
+    def reset(self) -> None:
         super().reset()
         self.lastChoices = []
 
-    def getWonHands(self):
+    def getWonHands(self) -> dict[str, int]:
+        """Return each player's currently selected number of won hands."""
         won = {}
         for player, piw in self.playerInputList.items():
             won[player] = piw.getWonHands()
         return won
 
-    def getExpectedHands(self):
+    def getExpectedHands(self) -> dict[str, int]:
+        """Return each player's currently selected number of expected hands."""
         expected = {}
         for player, piw in self.playerInputList.items():
             expected[player] = piw.getExpectedHands()
         return expected
 
-    def checkExpected(self):
+    def checkExpected(self) -> None:
+        """Enable/disable selectors so the forbidden bid stays unavailable."""
         notselected = []
         totalexpected = 0
-        hands = self.engine.getHands()
+        hands = cast("PochaEngine", self.engine).getHands()
         for player, piw in self.playerInputList.items():
             expected = piw.getExpectedHands()
             if expected < 0:
@@ -221,7 +248,8 @@ class PochaInputWidget(GameInputWidget):
                 piw.refreshButtons()
             piw.disableWonRow(len(notselected) == 0 and forbidden == 0)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        """Feed number keys into the selectors; Backspace undoes the last choice."""
         numberkeys = [
             QtCore.Qt.Key.Key_0,
             QtCore.Qt.Key.Key_1,
@@ -247,7 +275,7 @@ class PochaInputWidget(GameInputWidget):
                 pass
 
         try:
-            number = numberkeys.index(event.key())
+            number = numberkeys.index(cast("QtCore.Qt.Key", event.key()))
         except ValueError:
             return super().keyPressEvent(event)
 
@@ -256,12 +284,13 @@ class PochaInputWidget(GameInputWidget):
 
         return super().keyPressEvent(event)
 
-    def feedNumber(self, number):
+    def feedNumber(self, number: int) -> None:
+        """Apply ``number`` to the next unset expected (then won) selector in order."""
         players = self.engine.getListPlayers()
         expected_hands = self.getExpectedHands()
         won_hands = self.getWonHands()
         dealer = self.engine.getDealer()
-        first_player = (players.index(dealer) + 1) % len(players)
+        first_player = (players.index(cast("str", dealer)) + 1) % len(players)
         hand_player_order = players[first_player:] + players[0:first_player]
         if any(value < 0 for value in expected_hands.values()):
             for player in hand_player_order:
@@ -278,7 +307,8 @@ class PochaInputWidget(GameInputWidget):
 
         return
 
-    def updatePlayerOrder(self):
+    def updatePlayerOrder(self) -> None:
+        """Re-lay the player selectors and recolour them in the new order."""
         #         QWidget().setLayout(self.layout())
         trash = QWidget()
         trash_layout = self.layout()
@@ -293,12 +323,20 @@ class PochaInputWidget(GameInputWidget):
 
 
 class PochaPlayerInputWidget(QGroupBox):
+    """A single player's expected/won hand button rows for one round."""
+
     winnerSet = QtCore.Signal(str)
     newExpected = QtCore.Signal()
     handsClicked = QtCore.Signal(str, str)
     changed = QtCore.Signal()
 
-    def __init__(self, player, engine, colour=None, parent=None):
+    def __init__(
+        self,
+        player: str,
+        engine,
+        colour: QColor | None = None,
+        parent: QWidget | None = None,
+    ) -> None:
         super().__init__(parent)
         self.player = player
         self.engine = engine
@@ -316,7 +354,7 @@ class PochaPlayerInputWidget(QGroupBox):
         self.ebLayout.setContentsMargins(2, 2, 2, 2)
         self.expectedGroup = QButtonGroup(self)
         self.expectedGroup.buttonReleased.connect(self.expectedClickedAction)
-        self.expectedButtons = []
+        self.expectedButtons: list[PochaHandsButton] = []
 
         self.wonGroupBox = QFrame(self)
         self.mainLayout.addWidget(self.wonGroupBox)
@@ -325,7 +363,7 @@ class PochaPlayerInputWidget(QGroupBox):
         self.wbLayout.setContentsMargins(2, 2, 2, 2)
         self.wonGroup = QButtonGroup(self)
         self.wonGroup.buttonReleased.connect(self.wonClickedAction)
-        self.wonButtons = []
+        self.wonButtons: list[PochaHandsButton] = []
         for i in range(-1, 9):
             button = PochaHandsButton(str(i), self)
             self.expectedGroup.addButton(button, i)
@@ -349,13 +387,15 @@ class PochaPlayerInputWidget(QGroupBox):
         self.setColour(self.pcolour)
         self.reset()
 
-    def reset(self):
+    def reset(self) -> None:
+        """Reset both rows to zero and re-enable them for a fresh round."""
         self.expectedButtons[0].setChecked(True)
         self.wonButtons[0].setChecked(True)
         self.refreshButtons()
         self.disableWonRow()
 
-    def refreshButtons(self, forbidden=-1):
+    def refreshButtons(self, forbidden: int = -1) -> None:
+        """Show/enable only the hand buttons valid for the current hand count."""
         hands = self.engine.getHands()
         for eb, wb in zip(self.expectedButtons, self.wonButtons, strict=False):
             if int(eb.text()) > hands or int(eb.text()) < 0:
@@ -371,22 +411,24 @@ class PochaPlayerInputWidget(QGroupBox):
                 eb.setDisabled(True)
             wb.setDisabled(int(wb.text()) > hands)
 
-    def disableWonRow(self, disable=True):
+    def disableWonRow(self, disable: bool = True) -> None:
+        """Disable the won-hands row until an expected bid has been made."""
         if self.getExpectedHands() < 0:
             self.wonGroupBox.setDisabled(True)
         else:
             self.wonGroupBox.setDisabled(disable)
 
-    def enableWonGroup(self, _button):
+    def enableWonGroup(self, _button) -> None:
         self.newExpected.emit()
 
-    def isWinner(self):
+    def isWinner(self) -> bool:
         return False
 
-    def getPlayer(self):
+    def getPlayer(self) -> str:
         return self.player
 
-    def getScore(self):
+    def getScore(self) -> int:
+        """Compute this player's round score from their expected/won bids."""
         expected = self.expectedGroup.checkedId()
         won = self.wonGroup.checkedId()
         if expected < 0 or won < 0:
@@ -395,13 +437,14 @@ class PochaPlayerInputWidget(QGroupBox):
             return 10 + 3 * won
         return -3 * abs(expected - won)
 
-    def getWonHands(self):
+    def getWonHands(self) -> int:
         return self.wonGroup.checkedId()
 
-    def getExpectedHands(self):
+    def getExpectedHands(self) -> int:
         return self.expectedGroup.checkedId()
 
-    def setExpectedHands(self, number):
+    def setExpectedHands(self, number: int) -> bool:
+        """Select ``number`` expected hands; return whether it was applied."""
         if number < 0:
             self.expectedButtons[0].toggle()
             return True
@@ -411,7 +454,8 @@ class PochaPlayerInputWidget(QGroupBox):
             return True
         return False
 
-    def setWonHands(self, number):
+    def setWonHands(self, number: int) -> bool:
+        """Select ``number`` won hands; return whether it was applied."""
         if number < 0:
             self.wonButtons[0].toggle()
             return True
@@ -421,13 +465,14 @@ class PochaPlayerInputWidget(QGroupBox):
             return True
         return False
 
-    def expectedClickedAction(self, _):
+    def expectedClickedAction(self, _) -> None:
         self.handsClicked.emit("expected", self.player)
 
-    def wonClickedAction(self, _):
+    def wonClickedAction(self, _) -> None:
         self.handsClicked.emit("won", self.player)
 
-    def setColour(self, colour):
+    def setColour(self, colour: QColor) -> None:
+        """Restyle the box and its buttons in ``colour``."""
         self.pcolour = colour
         css = f"""
             QGroupBox {{ font-size: 24px; font-weight: bold; color: {self.pcolour.name()}; }}
@@ -456,7 +501,9 @@ class PochaPlayerInputWidget(QGroupBox):
 
 
 class PochaHandsButton(QPushButton):
-    def __init__(self, text="", parent=None):
+    """A small checkable button standing for one possible hand count."""
+
+    def __init__(self, text: str = "", parent: QWidget | None = None) -> None:
         super().__init__(text, parent)
         self.setCheckable(True)
         self.setMinimumSize(25, 25)
@@ -466,14 +513,14 @@ class PochaHandsButton(QPushButton):
         self.toggled.connect(self.setColour)
         self.setColour(False)
 
-    def setColour(self, _toggle):
+    def setColour(self, _toggle) -> None:
         return
         # if _toggle:
         #     self.setStyleSheet("background-color: red; font: bold")
         # else:
         #     self.setStyleSheet("background-color: lightgreen; font: normal")
 
-    def setDisabled(self, disabled=True):
+    def setDisabled(self, disabled: bool = True) -> None:
         return super().setDisabled(disabled)
         if disabled:
             self.setStyleSheet("background-color: none; font: normal")
@@ -483,27 +530,36 @@ class PochaHandsButton(QPushButton):
 
 
 class PochaRoundsDetail(GameRoundsDetail):
-    def __init__(self, engine, parent=None):
+    """Rounds-detail panel for Pocha, opening on the score plot."""
+
+    def __init__(self, engine, parent: QWidget | None = None) -> None:
         self.bgcolors = [0xCCFF99, 0xFFCC99]
         super().__init__(engine, parent)
         self.setCurrentWidget(self.plot)
 
-    def createRoundTable(self, engine, parent=None):
+    def createRoundTable(self, engine, parent: QWidget | None = None):
         return PochaRoundTable(self.engine, self.bgcolors, parent)
 
-    def createRoundPlot(self, engine, parent=None):
+    def createRoundPlot(self, engine, parent: QWidget | None = None):
         return PochaRoundPlot(self.engine, self)
 
-    def createQSBox(self, parent=None):
-        return PochaQSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
+    def createQSBox(self, parent: QWidget | None = None):
+        return PochaQSTW(
+            self.engine.getGame(),  # pyright: ignore[reportArgumentType]
+            self.engine.getListPlayers(),
+            self,
+        )
 
 
 class PochaRoundTable(GameRoundTable):
-    def __init__(self, engine, bgcolors, parent=None):
+    """Per-round score table for Pocha, colouring gains and losses."""
+
+    def __init__(self, engine, bgcolors: list[int], parent: QWidget | None = None):
         self.bgcolors = bgcolors
         super().__init__(engine, parent)
 
-    def insertRound(self, r):
+    def insertRound(self, r: GenericRound) -> None:
+        """Append a row for round ``r`` with per-player scores and the winner."""
         winner = r.getWinner()
         i = r.getNumRound() - 1
         self.insertRow(i)
@@ -537,10 +593,13 @@ class PochaRoundTable(GameRoundTable):
 
 
 class PochaRoundPlot(GameRoundPlot):
-    def retranslatePlot(self):
+    """Cumulative score-over-rounds plot for Pocha."""
+
+    def retranslatePlot(self) -> None:
         self.updatePlot()
 
-    def updatePlot(self):
+    def updatePlot(self) -> None:
+        """Redraw the running-total series, one line per player."""
         super().updatePlot()
         if not self.isPlotInited():
             return
@@ -572,17 +631,21 @@ class PochaRoundPlot(GameRoundPlot):
 
 
 class PochaQSTW(QuickStatsTW):
-    def initStatsWidgets(self):
+    """Quick-stats tab set for Pocha."""
+
+    def initStatsWidgets(self) -> None:
         self.gs = PochaQSBox(self.game, self)
         self.ps = PochaPQSBox(self.game, self)
 
 
 class PochaQSBox(GeneralQuickStats):
+    """General quick-stats page adding Pocha hit and best-round columns."""
+
     QCoreApplication.translate("GeneralQuickStats", "Max Hits")
     QCoreApplication.translate("GeneralQuickStats", "Min Hits")
     QCoreApplication.translate("GeneralQuickStats", "Best Round")
 
-    def __init__(self, gname, parent):
+    def __init__(self, gname: str, parent) -> None:
         super().__init__(gname, parent)
         self.playerStatsKeys.append("max_hits")
         self.playerStatsHeaders.append("Max Hits")
@@ -603,4 +666,4 @@ class PochaQSBox(GeneralQuickStats):
 
 
 class PochaPQSBox(PochaQSBox, ParticularQuickStats):
-    pass
+    """Player-filtered variant of the Pocha quick-stats page."""

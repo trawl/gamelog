@@ -1,4 +1,12 @@
+"""Application settings: defaults, persistence and environment overrides.
+
+``default_settings`` declares every known setting (type, choices, translatable
+labels). :class:`AppSettings` layers three sources, highest priority first:
+environment variables (``GAMELOG_<SETTING>``), the database, then the defaults.
+"""
+
 import os
+from typing import Any
 
 from PySide6.QtCore import QCoreApplication
 
@@ -68,19 +76,25 @@ default_settings = {
 
 
 class AppSettings:
-    # textInButtons = False
-    def __init__(self):
-        self.settings = {"db": {}, "env": {}, "defaults": default_settings}
+    """Read/write access to settings, resolving env over DB over defaults."""
+
+    def __init__(self) -> None:
+        self.settings: dict[str, dict] = {
+            "db": {},
+            "env": {},
+            "defaults": default_settings,
+        }
         if not db.isConnected():
             db.connectDB()
         self.dbseed()
         self.refresh()
 
-    def refresh(self):
+    def refresh(self) -> None:
+        """Reload the env and DB layers over the defaults."""
         self.loadFromEnv()
         self.loadFromDB()
 
-    def loadFromEnv(self):
+    def loadFromEnv(self) -> None:
         # A GAMELOG_<SETTING> environment variable overrides the matching
         # setting, e.g. GAMELOG_LOG_LEVEL -> "log_level". Only known settings
         # are honoured (GAMELOG_DB and the like are handled elsewhere).
@@ -92,28 +106,30 @@ class AppSettings:
             if key in default_settings:
                 self.settings["env"][key] = value
 
-    def loadFromDB(self):
+    def loadFromDB(self) -> None:
+        """Load persisted settings, coercing each to its declared type."""
         cur = db.execute("SELECT key,value,type FROM AppSettings")
         for row in cur:
             key = row["key"]
             value = row["value"]
             try:
-                type = default_settings[row["key"]]["type"]
+                setting_type = default_settings[row["key"]]["type"]
                 if row["type"] in ("int", "float", "bool"):
-                    if type == "int":
+                    if setting_type == "int":
                         value = int(value)
-                    elif type == "float":
+                    elif setting_type == "float":
                         value = float(value)
-                    elif type == "bool":
+                    elif setting_type == "bool":
                         value = value.lower() in ("true", "1", "y", "yes")
                 self.settings["db"][key] = value
             except KeyError:
                 raise Warning(f"Could not load unknown setting {key}") from None
 
-    def __getitem__(self, name: str, /):
+    def __getitem__(self, name: str, /) -> Any:
         return self.get(name)
 
-    def get(self, key):
+    def get(self, key: str) -> Any:
+        """Return the effective value of ``key`` (env, then DB), or ``None``."""
         try:
             return self.settings["env"][key]
         except KeyError:
@@ -122,17 +138,19 @@ class AppSettings:
             except KeyError:
                 return None
 
-    def getSettings(self):
+    def getSettings(self) -> dict[str, dict]:
         return self.settings
 
-    def set(self, key, value, persistent=True):
+    def set(self, key: str, value: Any, persistent: bool = True) -> None:
+        """Set ``key``; persist to the DB unless ``persistent`` is False."""
         if persistent:
             self.settings["db"][key] = value
             db.execute("UPDATE `AppSettings` SET `value`=? WHERE key=?", (value, key))
         else:
             self.settings["env"][key] = value
 
-    def dbseed(self):
+    def dbseed(self) -> None:
+        """Create the AppSettings table if missing and insert any new defaults."""
         cur = db.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='AppSettings'"
         )

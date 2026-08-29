@@ -1,3 +1,7 @@
+"""Scrabble scoreboard widgets: per-turn score input, entry table and plot."""
+
+from __future__ import annotations
+
 import logging
 from typing import cast
 
@@ -8,6 +12,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QSizePolicy,
     QTableWidgetItem,
+    QWidget,
 )
 
 from core.engine.settings import appsettings
@@ -29,29 +34,35 @@ logger = logging.getLogger(__name__)
 
 
 class ScrabbleWidget(GameWidget):
-    def createEngine(self):
+    """Scoreboard tab for Scrabble: one score entry per player turn."""
+
+    def createEngine(self) -> None:
         if self.game != "Scrabble":
             raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = ScrabbleEngine()
 
-    def initUI(self):
+    def initUI(self) -> None:
         super().initUI()
         self.dealerPolicyCheckBox.hide()
 
-        cast(ScrabbleInputWidget, self.gameInput).placeCommitButton(
+        cast("ScrabbleInputWidget", self.gameInput).placeCommitButton(
             self.commitRoundButton
         )
-        cast(ScrabbleInputWidget, self.gameInput).placeUndoButton(self.undoButton)
+        cast("ScrabbleInputWidget", self.gameInput).placeUndoButton(self.undoButton)
         for b in (self.commitRoundButton, self.undoButton):
             b.setSizePolicy(
                 QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
             )
         self.retranslateUI()
 
-    def createGameInputWidget(self, parent=None):  # pyright: ignore[reportIncompatibleMethodOverride]
+    def createGameInputWidget(
+        self, parent: QWidget | None = None
+    ) -> ScrabbleInputWidget:  # pyright: ignore[reportIncompatibleMethodOverride]
         return ScrabbleInputWidget(self.engine, parent)
 
-    def createRoundsDetail(self, parent=None):
+    def createRoundsDetail(
+        self, parent: QWidget | None = None
+    ) -> ScrabbleEntriesDetail:
         return ScrabbleEntriesDetail(self.engine, parent)
 
     # def retranslateUI(self):
@@ -63,11 +74,14 @@ class ScrabbleWidget(GameWidget):
     #     self.gameInput.retranslateUI()
     #     self.detailGroup.retranslateUI()
 
-    def checkPlayerScore(self, player, score, extras=None):
+    def checkPlayerScore(
+        self, player: str, score: int, extras: dict | None = None
+    ) -> bool:
         return bool(score)
 
-    def commitRoundSanityCheck(self, interactive=False):
-        gi = cast(ScrabbleInputWidget, self.gameInput)
+    def commitRoundSanityCheck(self, interactive: bool = False) -> bool:
+        """Validate that a player is selected and their score is acceptable."""
+        gi = cast("ScrabbleInputWidget", self.gameInput)
         player = gi.getPlayer()
         bonuses = gi.getBonuses()
         score = gi.getScore()
@@ -79,7 +93,7 @@ class ScrabbleWidget(GameWidget):
                 logger.debug("[sanity] %s", msg)
             return False
 
-        if not self.checkPlayerScore(player, score, bonuses):
+        if not self.checkPlayerScore(cast("str", player), cast("int", score), bonuses):
             msg = self.tr("{} score is not valid").format(player)
             if interactive:
                 QMessageBox.warning(self, self.game, msg)
@@ -88,16 +102,19 @@ class ScrabbleWidget(GameWidget):
             return False
         return True
 
-    def commitRound(self):
+    def commitRound(self) -> None:
+        """Record the current player's score and bonuses as one entry."""
         if not self.commitRoundSanityCheck(interactive=True):
             return
         # Once here, we can commit round
         self.unsetDealer()
-        gi = cast(ScrabbleInputWidget, self.gameInput)
+        gi = cast("ScrabbleInputWidget", self.gameInput)
         player = gi.getPlayer()
         bonuses = gi.getBonuses()
         score = gi.getScore()
-        self.engine.addEntry(player, score, bonuses)
+        cast("ScrabbleEngine", self.engine).addEntry(
+            cast("str", player), cast("int", score), bonuses
+        )
         self.engine.printStats()
         self.updatePanel()
         if not self.engine.getWinner():
@@ -105,17 +122,19 @@ class ScrabbleWidget(GameWidget):
         elif self.hideInputOnFinish:
             self.gameInput.hide()
 
-    def setDealer(self):
+    def setDealer(self) -> None:
         super().setDealer()
         self.gameInput.reset()
 
 
 class ScrabbleInputWidget(GameInputWidget):
-    def __init__(self, engine, parent):
+    """Single-player score entry with a score field and bonus buttons."""
+
+    def __init__(self, engine, parent) -> None:
         self.active_player = engine.getDealer()
         super().__init__(engine, parent)
 
-    def initUI(self):
+    def initUI(self) -> None:
         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout = QHBoxLayout(self)
         self.currentPlayerBox = QGroupBox(self)
@@ -129,8 +148,9 @@ class ScrabbleInputWidget(GameInputWidget):
         self.createBonusButtons()
         self.reset()
 
-    def createBonusButtons(self):
-        for b, maxreps in self.engine.getBonuses().items():
+    def createBonusButtons(self) -> None:
+        """Build one bonus button per configured Scrabble bonus."""
+        for b, maxreps in cast("ScrabbleEngine", self.engine).getBonuses().items():
             bb = BonusButton(
                 b, maxreps, colour=None, size=32, parent=self.currentPlayerBox
             )
@@ -138,7 +158,7 @@ class ScrabbleInputWidget(GameInputWidget):
             self.currentPlayerBoxLayout.addWidget(bb)
             bb.bonusChanged.connect(self.changed)
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
         if appsettings["text_in_buttons"]:
             css = """
                 QPushButton {
@@ -155,7 +175,7 @@ class ScrabbleInputWidget(GameInputWidget):
         self.commitButton.setStyleSheet(css)
         self.undoButton.setStyleSheet(css)
 
-    def placeCommitButton(self, cb):
+    def placeCommitButton(self, cb) -> None:
         # cb.setStyleSheet("""
         #     QPushButton {
         #         font-size: 48px;
@@ -165,7 +185,7 @@ class ScrabbleInputWidget(GameInputWidget):
         self.commitButton = cb
         self.widgetLayout.addWidget(cb, 1)
 
-    def placeUndoButton(self, ub):
+    def placeUndoButton(self, ub) -> None:
         # ub.setStyleSheet("""
         #     QPushButton {
         #         font-size: 48px;
@@ -175,16 +195,16 @@ class ScrabbleInputWidget(GameInputWidget):
         self.undoButton = ub
         self.widgetLayout.insertWidget(0, ub, 1)
 
-    def getPlayer(self):
+    def getPlayer(self) -> str | None:
         return self.active_player
 
-    def getBonuses(self):
+    def getBonuses(self) -> dict:
         return {b: bb.getValue() for b, bb in self.bonusButtons.items()}
 
-    def getScore(self):
+    def getScore(self) -> int | None:
         return self.scoreSpinBox.value()
 
-    def setColour(self, colour):
+    def setColour(self, colour) -> None:
         css = """
             QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}
             QGroupBox:focus-within {{ border: 2px solid #0078d7; background-color: #e6f1fb;}}
@@ -202,10 +222,13 @@ class ScrabbleInputWidget(GameInputWidget):
         for bb in self.bonusButtons.values():
             bb.setColour(colour)
 
-    def reset(self):
+    def reset(self) -> None:
+        """Reset the entry to the current dealer with a cleared score field."""
         self.active_player = self.engine.getDealer()
         self.setColour(
-            PlayerColours[self.engine.getListPlayers().index(self.active_player)]
+            PlayerColours[
+                self.engine.getListPlayers().index(cast("str", self.active_player))
+            ]
         )
         self.currentPlayerBox.setTitle(f"{self.active_player}")
         self.scoreSpinBox.reset()
@@ -213,7 +236,7 @@ class ScrabbleInputWidget(GameInputWidget):
             bb.setChecked(False)
         self.scoreSpinBox.setFocus()
 
-    def updatePlayerOrder(self):
+    def updatePlayerOrder(self) -> None:
         self.reset()
 
     # def keyPressEvent(self, event):
@@ -224,22 +247,32 @@ class ScrabbleInputWidget(GameInputWidget):
 
 
 class ScrabbleEntriesDetail(GameRoundsDetail):
-    def __init__(self, engine, parent=None):
+    """Entries detail panel for Scrabble, defaulting to the plot tab."""
+
+    def __init__(self, engine, parent=None) -> None:
         super().__init__(engine, parent)
         self.setCurrentWidget(self.plot)
 
-    def createRoundTable(self, engine, parent=None):
+    def createRoundTable(self, engine, parent=None) -> ScrabbleRoundTable:
         return ScrabbleRoundTable(self.engine, parent)
 
-    def createRoundPlot(self, engine, parent=None):
+    def createRoundPlot(self, engine, parent=None) -> ScrabbleEntriesPlot:
         return ScrabbleEntriesPlot(self.engine, self)
 
-    def createQSBox(self, parent=None):
-        return ScrabbleQSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
+    def createQSBox(self, parent=None) -> ScrabbleQSTW:
+        # getGame() is typed str | None; a live engine always has a game name.
+        return ScrabbleQSTW(
+            self.engine.getGame(),  # pyright: ignore[reportArgumentType]
+            self.engine.getListPlayers(),
+            self,
+        )
 
 
 class ScrabbleRoundTable(GameRoundTable):
-    def insertRound(self, entry):
+    """Grid of scoring entries, one column per player, marking bonus turns."""
+
+    def insertRound(self, entry) -> None:
+        """Place ``entry``'s score (and bonus stars) in its player's column."""
         players = self.engine.getListPlayers()
         i = (entry.getNumRound() - 1) // len(players)
         j = players.index(entry.getPlayer())
@@ -267,7 +300,7 @@ class ScrabbleRoundTable(GameRoundTable):
             item.setText(text)
         self.scrollToBottom()
 
-    def openTableMenu(self, position):
+    def openTableMenu(self, position) -> None:
         # Use Undo to remove
         return
         # players = self.engine.getListPlayers()
@@ -303,7 +336,9 @@ class ScrabbleRoundTable(GameRoundTable):
 
 
 class ScrabbleEntriesPlot(GameRoundPlot):
-    def updatePlot(self):
+    """Cumulative-score plot advancing only the player who scored each entry."""
+
+    def updatePlot(self) -> None:
         if not self.isPlotInited():
             return
         super().updatePlot()
@@ -332,13 +367,17 @@ class ScrabbleEntriesPlot(GameRoundPlot):
 
 
 class ScrabbleQSTW(QuickStatsTW):
-    def initStatsWidgets(self):
+    """Quick-stats tab set for Scrabble."""
+
+    def initStatsWidgets(self) -> None:
         self.gs = ScrabbleQSBox(self.game, self)
         self.ps = ScrabblePQSBox(self.game, self)
 
 
 class ScrabbleQSBox(GeneralQuickStats):
-    def __init__(self, gname, parent=None):
+    """General quick-stats page adding best-play and max-bonus columns."""
+
+    def __init__(self, gname, parent=None) -> None:
         super().__init__(gname, parent)
         self.playerStatsKeys.append("max_round_score")
         self.playerStatsHeaders.append(self.tr("Best Play"))
@@ -357,4 +396,4 @@ class ScrabbleQSBox(GeneralQuickStats):
 
 
 class ScrabblePQSBox(ScrabbleQSBox, ParticularQuickStats):
-    pass
+    """Player-filtered variant of the Scrabble quick-stats page."""

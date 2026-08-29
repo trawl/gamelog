@@ -1,14 +1,26 @@
+"""LCD-style elapsed-time clock widget with pause blinking."""
+
+from __future__ import annotations
+
 import datetime
 
 from PySide6 import QtCore
 from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QTimer
-from PySide6.QtWidgets import QFrame, QGraphicsOpacityEffect, QLCDNumber
+from PySide6.QtGui import QMouseEvent
+from PySide6.QtWidgets import (
+    QFrame,
+    QGraphicsOpacityEffect,
+    QLCDNumber,
+    QWidget,
+)
 
 
 class GameClock(QLCDNumber):
+    """LCD clock showing elapsed match time, blinking colons and pause state."""
+
     doubleClicked = QtCore.Signal()
 
-    def __init__(self, elapsed=0, parent=None):
+    def __init__(self, elapsed: int = 0, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setSegmentStyle(QLCDNumber.SegmentStyle.Filled)
         self.startTime = datetime.datetime.now(tz=datetime.UTC)
@@ -36,7 +48,8 @@ class GameClock(QLCDNumber):
         self.blinkAnim.setKeyValueAt(1.0, 1.0)
         self.blinkAnim.setEasingCurve(QEasingCurve.Type.InOutSine)
 
-    def showTime(self, elapsed=None):
+    def showTime(self, elapsed: int | None = None) -> None:
+        """Refresh the display, computing elapsed time when not given."""
         if not elapsed:
             now = datetime.datetime.now(tz=datetime.UTC)
             timediff = now - self.startTime
@@ -55,7 +68,8 @@ class GameClock(QLCDNumber):
 
         self.showcolons = not self.showcolons
 
-    def pauseTimer(self):
+    def pauseTimer(self) -> None:
+        """Freeze the clock, bank the elapsed time and start blinking."""
         self.timer.stop()
         self.showcolons = True
         self.showTime()
@@ -64,7 +78,8 @@ class GameClock(QLCDNumber):
         self.accumulated += timediff.seconds
         self.blinkAnim.start()
 
-    def unpauseTimer(self):
+    def unpauseTimer(self) -> None:
+        """Resume ticking from now and stop the pause blink animation."""
         self.blinkAnim.stop()
         self.opacityEffect.setOpacity(1.0)
         self._paintenabled = True
@@ -73,13 +88,14 @@ class GameClock(QLCDNumber):
         self.showcolons = True
         self.showTime()
 
-    def stopTimer(self):
+    def stopTimer(self) -> None:
+        """Stop the clock and reset the accumulated time to zero."""
         self.timer.stop()
         self.showcolons = True
         self.showTime()
         self.starTime = None
         self.accumulated = 0
 
-    def mouseDoubleClickEvent(self, event):
+    def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:
         self.doubleClicked.emit()
         super().mouseDoubleClickEvent(event)

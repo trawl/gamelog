@@ -1,5 +1,9 @@
+"""Dialog for manually editing a match's start, finish and duration."""
+
+from __future__ import annotations
+
 import datetime
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from PySide6.QtCore import QDateTime, QTime
 from PySide6.QtWidgets import (
@@ -11,9 +15,16 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
+if TYPE_CHECKING:
+    from PySide6.QtWidgets import QWidget
+
+    from core.engine.base import GameEngine
+
 
 class MatchTimesEditDialog(QDialog):
-    def __init__(self, engine, parent=None):
+    """Modal editor for a match's start/finish times and elapsed duration."""
+
+    def __init__(self, engine: GameEngine, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.engine = engine
         self.setWindowTitle(self.tr("Match Times Edit"))
@@ -23,16 +34,17 @@ class MatchTimesEditDialog(QDialog):
         self.starttime = QDateTimeEdit(self)
         self.starttime.setCalendarPopup(True)
         self.starttime.setDisplayFormat("yyyy-MM-dd HH:mm:ss")
-        self.starttime.setDateTime(
-            self.engine.getStartTime().replace(microsecond=0).astimezone()
-        )
+        # PySide accepts a datetime at runtime; the bundled stub only lists QDateTime.
+        start = self.engine.getStartTime()
+        if start is not None:
+            self.starttime.setDateTime(start.replace(microsecond=0).astimezone())  # pyright: ignore[reportArgumentType]
         self.formlayout.addRow(self.tr("Start"), self.starttime)
         self.finishtime = QDateTimeEdit(self)
         self.finishtime.setCalendarPopup(True)
         self.finishtime.setDisplayFormat("yyyy-MM-dd HH:mm:ss")
-        self.finishtime.setDateTime(
-            self.engine.getFinishTime().replace(microsecond=0).astimezone()
-        )
+        finish = self.engine.getFinishTime()
+        if finish is not None:
+            self.finishtime.setDateTime(finish.replace(microsecond=0).astimezone())  # pyright: ignore[reportArgumentType]
         self.formlayout.addRow(self.tr("Finish"), self.finishtime)
         self.elapsed = QTimeEdit(self)
         self.elapsed.setDisplayFormat("HH:mm:ss")
@@ -51,11 +63,12 @@ class MatchTimesEditDialog(QDialog):
         self.finishtime.dateTimeChanged.connect(self._sanitycheck)
         self.elapsed.timeChanged.connect(self._sanitycheck)
 
-    def _elapsedseconds(self):
+    def _elapsedseconds(self) -> int:
         t = self.elapsed.time()
         return t.hour() * 3600 + t.minute() * 60 + t.second()
 
-    def _sanitycheck(self):
+    def _sanitycheck(self) -> None:
+        """Enable Save only when start < finish < now and duration fits."""
         now = QDateTime.currentDateTime()
         start = self.starttime.dateTime()
         end = self.finishtime.dateTime()
@@ -63,7 +76,8 @@ class MatchTimesEditDialog(QDialog):
         valid = start < end < now and elapsed > 0 and elapsed <= start.secsTo(end)
         self.buttonbox.button(QDialogButtonBox.StandardButton.Save).setEnabled(valid)
 
-    def _recompute_elapsed(self):
+    def _recompute_elapsed(self) -> None:
+        """Set the duration field to the span between start and finish."""
         start = self.starttime.dateTime()
         end = self.finishtime.dateTime()
         delta = max(start.secsTo(end), 0)
@@ -72,7 +86,8 @@ class MatchTimesEditDialog(QDialog):
         s = delta % 60
         self.elapsed.setTime(QTime(h, m, s))
 
-    def _onsave(self):
+    def _onsave(self) -> None:
+        """Persist the edited times to the engine and accept the dialog."""
         start = self.starttime.dateTime().toPython()
         finish = self.finishtime.dateTime().toPython()
         self.engine.updateTimes(

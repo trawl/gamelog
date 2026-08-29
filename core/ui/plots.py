@@ -1,8 +1,13 @@
+"""Lightweight QGraphics-based line plotting widgets for match score charts."""
+
+from __future__ import annotations
+
 import logging
 import sys
+from collections.abc import Sequence
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QPalette
+from PySide6.QtGui import QPalette, QResizeEvent
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -13,6 +18,8 @@ from PySide6.QtWidgets import (
     QGraphicsScene,
     QGraphicsSimpleTextItem,
     QGraphicsView,
+    QStyleOptionGraphicsItem,
+    QWidget,
 )
 
 logger = logging.getLogger(__name__)
@@ -31,7 +38,11 @@ colours = [
 
 
 class PlotView(QGraphicsView):
-    def __init__(self, clrs=colours, parent=None):
+    """Scrollable view hosting a single :class:`LinePlot` scene item."""
+
+    def __init__(
+        self, clrs: Sequence[QtGui.QColor] = colours, parent: QWidget | None = None
+    ) -> None:
         QGraphicsView.__init__(self, parent)
         self.setFrameShape(QFrame.Shape.HLine)
         self._scene = QGraphicsScene(self)
@@ -39,28 +50,31 @@ class PlotView(QGraphicsView):
         self.setMinimumSize(100, 100)
         self.colours = clrs
 
-    def setBackground(self, colour):
+    def setBackground(self, colour: QtGui.QColor) -> None:
+        """Paint the view background with an opaque copy of ``colour``."""
         colour.setAlphaF(1.0)
         brush = QtGui.QBrush(colour)
         self.setBackgroundBrush(brush)
 
-    def addLinePlot(self):
+    def addLinePlot(self) -> None:
+        """Create the plot item and add it to the scene."""
         self.plot = LinePlot(self.colours)
         self._scene.addItem(self.plot)
 
-    def addHHeaders(self, headers):
+    def addHHeaders(self, headers: Sequence[str]) -> None:
         self.plot.addHHeaders(headers)
 
-    def addSeries(self, series, label):
+    def addSeries(self, series: Sequence[float], label: str) -> None:
         self.plot.plot(series, label)
 
-    def clearPlotContents(self):
+    def clearPlotContents(self) -> None:
         self.plot.clearPlotContents()
 
-    def addLimit(self, value):
+    def addLimit(self, value: float) -> None:
         self.plot.addLimitLine(value)
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        """Resize the scene rect to the viewport and reflow the plot."""
         super().resizeEvent(event)
         self._scene.setSceneRect(
             QtCore.QRectF(0, 0, event.size().width(), event.size().height())
@@ -70,7 +84,8 @@ class PlotView(QGraphicsView):
             # self.plot.updatePlot()
             QtCore.QTimer.singleShot(0, self.plot.updatePlot)
 
-    def _update_viewport_mask(self):
+    def _update_viewport_mask(self) -> None:
+        """Round the viewport corners with a rounded-rect clip mask."""
         radius = 8
         rect = self.viewport().rect()
 
@@ -87,7 +102,11 @@ class PlotView(QGraphicsView):
 
 
 class LinePlot(QGraphicsItem):
-    def __init__(self, clrs=(), parent=None):
+    """Graphics item that draws axes, reference lines and multiple series."""
+
+    def __init__(
+        self, clrs: Sequence[QtGui.QColor] = (), parent: QGraphicsItem | None = None
+    ) -> None:
         super().__init__(parent)
         self.hmargin = 50
         self.vmargin = 40
@@ -97,10 +116,10 @@ class LinePlot(QGraphicsItem):
         self.xvmax = 0
         self.yvmin = 0
         self.yvmax = 0
-        self.seriesLabels = []
-        self.seriesData = []
-        self.hheaders = []
-        self.limitvalue = None
+        self.seriesLabels: list[str] = []
+        self.seriesData: list[Sequence[float]] = []
+        self.hheaders: Sequence[str] = []
+        self.limitvalue: float | None = None
         self.changed = False
         self.colours = clrs
         self.dark_mode = False
@@ -108,24 +127,38 @@ class LinePlot(QGraphicsItem):
         if QPalette().color(QPalette.ColorRole.Window).red() < 128:
             self.dark_mode = True
 
-    def boundingRect(self):
+    def boundingRect(self) -> QtCore.QRectF:
         return QtCore.QRectF(
             0, 0, self.awidth + self.hmargin * 2, self.aheight + self.vmargin * 2
         )
 
-    def addHHeaders(self, headers):
+    def addHHeaders(self, headers: Sequence[str]) -> None:
         self.hheaders = headers
 
-    def plot(self, data, label="", _linewidth=5.0, _linestyle="-", _marker="o"):
+    def plot(
+        self,
+        data: Sequence[float],
+        label: str = "",
+        _linewidth: float = 5.0,
+        _linestyle: str = "-",
+        _marker: str = "o",
+    ) -> None:
+        """Queue a data series for drawing on the next update."""
         self.seriesLabels.append(label)
         self.seriesData.append(data)
         self.changed = True
 
-    def addLimitLine(self, value):
+    def addLimitLine(self, value: float) -> None:
         self.limitvalue = value
         self.updatePlot()
 
-    def paint(self, painter, options, widget=None):
+    def paint(
+        self,
+        painter: QtGui.QPainter,
+        options: QStyleOptionGraphicsItem,
+        widget: QWidget | None = None,
+    ) -> None:
+        """Repaint the plot, re-laying it out on theme or data changes."""
         new_theme = QPalette().color(QPalette.ColorRole.Window).red() < 128
         if self.dark_mode != new_theme:
             self.dark_mode = new_theme
@@ -134,24 +167,28 @@ class LinePlot(QGraphicsItem):
             self.updatePlot()
             self.changed = False
 
-    def updatePlot(self):
+    def updatePlot(self) -> None:
+        """Clear and redraw the axes, limit line and all series."""
         self.clearPlot()
         self.decorateAxes()
         self.paintLimitLine()
         self.paintSeries()
 
-    def clearPlotContents(self):
+    def clearPlotContents(self) -> None:
+        """Drop all queued series and any limit line."""
         self.seriesLabels = []
         self.seriesData = []
         self.limitvalue = None
 
-    def clearPlot(self):
+    def clearPlot(self) -> None:
+        """Remove every child graphics item from the scene."""
         for item in self.childItems():
             self.scene().removeItem(item)
             del item
         self.changed = True
 
-    def decorateAxes(self):
+    def decorateAxes(self) -> None:
+        """Draw the plot frame and its horizontal/vertical reference lines."""
         rect = QGraphicsRectItem(
             self.hmargin, self.vmargin, self.awidth, self.aheight, self
         )
@@ -166,7 +203,8 @@ class LinePlot(QGraphicsItem):
         self.drawVRefs()
         self.drawHRefs()
 
-    def computeAxesBoundaries(self):
+    def computeAxesBoundaries(self) -> None:
+        """Recompute the value ranges mapped onto the drawable plot area."""
         self.awidth = self.scene().sceneRect().width() - self.hmargin * 2
         self.aheight = self.scene().sceneRect().height() - self.vmargin * 2
         xmax = max([len(ser) - 1 for ser in self.seriesData] + [1])
@@ -204,7 +242,8 @@ class LinePlot(QGraphicsItem):
 
         self.yvmax = ymax + gymargin
 
-    def drawVRefs(self):
+    def drawVRefs(self) -> None:
+        """Draw horizontal gridlines and their y-axis value labels."""
         if self.yvmax < self.yvmin or self.aheight <= 0:
             return
         minsep = 30
@@ -283,7 +322,8 @@ class LinePlot(QGraphicsItem):
             py -= unitincrement * factor
             vy += factor
 
-    def drawHRefs(self):
+    def drawHRefs(self) -> None:
+        """Draw vertical gridlines and their x-axis header labels."""
         if self.xvmax < self.xvmin or self.awidth <= 0:
             return
         minsep = 30
@@ -340,7 +380,8 @@ class LinePlot(QGraphicsItem):
             px += unitincrement * factor
             vx += factor
 
-    def paintLimitLine(self):
+    def paintLimitLine(self) -> None:
+        """Draw the dotted horizontal limit line, if one is set."""
         if self.limitvalue is None:
             return
         pstart = self.value2point(self.xvmin, self.limitvalue)
@@ -356,7 +397,8 @@ class LinePlot(QGraphicsItem):
         pen.setStyle(QtCore.Qt.PenStyle.DotLine)
         limitline.setPen(pen)
 
-    def paintSeriesOrig(self):
+    def paintSeriesOrig(self) -> None:
+        """Draw each series independently (original, non-merged renderer)."""
         for i, ser in enumerate(self.seriesData):
             pp = None
             colour = self.colours[i]
@@ -368,7 +410,8 @@ class LinePlot(QGraphicsItem):
                     PlotLine(pp.x(), pp.y(), point.x(), point.y(), 5, colour, self)
                 pp = point
 
-    def paintSeries(self):
+    def paintSeries(self) -> None:
+        """Draw all series, merging overlapping points and segments by colour."""
         coordinate_colours = {}
         line_colours = {}
         pp = (0, 0)
@@ -408,7 +451,8 @@ class LinePlot(QGraphicsItem):
             point = self.value2point(vx, vy)
             PlotDot(point.x(), point.y(), 20, colours, self)
 
-    def value2point(self, vx, vy):
+    def value2point(self, vx: float, vy: float) -> QtCore.QPointF:
+        """Map a ``(vx, vy)`` data value to a scene coordinate."""
         px = self.hmargin + vx * self.awidth / float(self.xvmax - self.xvmin)
         py = (
             self.vmargin
@@ -419,7 +463,18 @@ class LinePlot(QGraphicsItem):
 
 
 class PlotLine(QGraphicsLineItem):
-    def __init__(self, x1, y1, x2, y2, linewidth=None, colour=None, parent=None):
+    """A styled line segment with optional width and colour."""
+
+    def __init__(
+        self,
+        x1: float,
+        y1: float,
+        x2: float,
+        y2: float,
+        linewidth: float | None = None,
+        colour=None,
+        parent: QGraphicsItem | None = None,
+    ) -> None:
         super().__init__(x1, y1, x2, y2, parent)
         pen = self.pen()
         if linewidth:
@@ -428,14 +483,29 @@ class PlotLine(QGraphicsLineItem):
             pen.setColor(colour)
         self.setPen(pen)
 
-    def paint(self, painter, options, widget=None):
+    def paint(
+        self,
+        painter: QtGui.QPainter,
+        options: QStyleOptionGraphicsItem,
+        widget: QWidget | None = None,
+    ) -> None:
+        """Draw the line with antialiasing enabled for this item only."""
         painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, True)
         super().paint(painter, options, widget)
         painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, False)
 
 
 class PlotDot(QGraphicsEllipseItem):
-    def __init__(self, x, y, width, colours=(), parent=None):
+    """A data-point marker drawn as a pie split across one or more colours."""
+
+    def __init__(
+        self,
+        x: float,
+        y: float,
+        width: float,
+        colours=(),
+        parent: QGraphicsItem | None = None,
+    ) -> None:
         radius = width / 2.0
         super().__init__(x - radius, y - radius, width, width, parent)
         try:
@@ -446,14 +516,21 @@ class PlotDot(QGraphicsEllipseItem):
 
     #         self.setAcceptHoverEvents(True)
 
-    def setMetaData(self, md):
+    def setMetaData(self, md: dict) -> None:
+        """Set the tooltip from a ``label``/``x``/``y`` metadata dict."""
         try:
             tt = "{}: ({},{})".format(md["label"], md["x"], md["y"])
             self.setToolTip(tt)
         except KeyError:
             pass
 
-    def paint(self, painter, options, widget=None):
+    def paint(
+        self,
+        painter: QtGui.QPainter,
+        options: QStyleOptionGraphicsItem,
+        widget: QWidget | None = None,
+    ) -> None:
+        """Draw the marker as antialiased pie slices, one per colour."""
         painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, True)
         # brush = self.brush()
         # brush.setStyle(QtCore.Qt.BrushStyle.SolidPattern)

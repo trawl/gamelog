@@ -1,3 +1,7 @@
+"""Pocha game engine and its statistics engines."""
+
+from __future__ import annotations
+
 from typing import cast
 
 from core.engine.base import RoundGameEngine, readInput
@@ -7,13 +11,16 @@ from games.pocha.model import PochaMatch
 
 
 class PochaEngine(RoundGameEngine):
-    def __init__(self):
+    """Round engine for Pocha: tracks hands, suit type and dealing direction."""
+
+    def __init__(self) -> None:
         if not hasattr(self, "game"):
             self.game = "Pocha"
         super().__init__()
         self.setSuitType()
 
-    def runRoundPlayer(self, player, winner=None):
+    def runRoundPlayer(self, player: str, winner: str | None = None) -> None:
+        """CLI harness: read ``player``'s round score and record it."""
         score = readInput(
             f"{player} round score: ",
             int,
@@ -22,7 +29,8 @@ class PochaEngine(RoundGameEngine):
         )
         self.addRoundInfo(player, score)
 
-    def getHands(self, rnd=None):
+    def getHands(self, rnd: int | None = None) -> int:
+        """Return the number of cards dealt in round ``rnd`` (default: current)."""
         index = self.getNumRound() - 1
         if rnd is not None:
             index = rnd - 1
@@ -31,7 +39,8 @@ class PochaEngine(RoundGameEngine):
         except IndexError:
             return 1
 
-    def getDirection(self, rnd=None):
+    def getDirection(self, rnd: int | None = None) -> str:
+        """Return the dealing direction/suit for round ``rnd`` (default: current)."""
         index = self.getNumRound() - 1
         if rnd is not None:
             index = rnd - 1
@@ -40,23 +49,28 @@ class PochaEngine(RoundGameEngine):
         except IndexError:
             return self.directions[-1]
 
-    def setSuitType(self, st="spanish"):
+    def setSuitType(self, st: str = "spanish") -> None:
+        """Choose the card deck and build the per-round direction sequence."""
         self.suitType = st
         slope = (len(cast("PochaMatch", self.match).getHands()) - 4) // 2
         if st == "french":
             suits = ["diamonds", "hearts", "spades", "clovers"]
         else:
             suits = ["coins", "cups", "swords", "clubs"]
-        self.directions = ["going up"] * slope + suits + ["going down"] * slope
+        self.directions: list[str] = (
+            ["going up"] * slope + suits + ["going down"] * slope
+        )
 
-    def getSuitType(self):
+    def getSuitType(self) -> str:
         return self.suitType
 
-    def getRoundSequence(self):
+    def getRoundSequence(self) -> list[int]:
         return cast("PochaMatch", self.match).getHands()
 
 
 class PochaStatsQueries:
+    """SQL query templates for Pocha statistics (``#GAMENAME#`` substituted in)."""
+
     hitsQuery = """
     SELECT player, max(hits) as "max_hits", min(hits) as "min_hits" from (
         SELECT Round.idMatch as idm, Round.nick as "player",
@@ -84,18 +98,22 @@ class PochaStatsQueries:
 
 
 class PochaStatsEngine(StatsEngine):
-    def __init__(self):
+    """App-wide Pocha statistics: hit counts and extreme round scores."""
+
+    def __init__(self) -> None:
         super().__init__()
         self.singleKindRecord = None
         self.game = "Pocha"
         self.define_queries()
 
-    def define_queries(self):
+    def define_queries(self) -> None:
+        """Bind the game name into this engine's query templates."""
         q = PochaStatsQueries()
         self._hitsQuery = q.hitsQuery.replace("#GAMENAME#", self.game)
         self._extremeRounds = q.extremeRounds.replace("#GAMENAME#", self.game)
 
-    def update(self, players=None):
+    def update(self, players: list[str] | None = None) -> None:
+        """Refresh base statistics, then fold in Pocha hit/extreme-round figures."""
         super().update()
         # print(f"Updating {self.game} stats...")
         self.hitsRecord = db.queryDict(
@@ -126,7 +144,10 @@ class PochaStatsEngine(StatsEngine):
 
 
 class PochaParticularStatsEngine(PochaStatsEngine, ParticularStatsEngine):
-    def updatePlayers(self, players):
+    """Pocha statistics restricted to matches with an exact set of players."""
+
+    def updatePlayers(self, players: list[str] | None) -> None:
+        """Splice the player filter into the Pocha-specific queries too."""
         super().updatePlayers(players)
         if players:
             self.define_queries()

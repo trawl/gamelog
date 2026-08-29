@@ -1,5 +1,11 @@
+"""Phase 10 match and round models."""
+
+from __future__ import annotations
+
 import logging
 import random
+from collections.abc import Sequence
+from typing import cast
 
 from core.engine.db import db
 from core.model.base import GenericRound, GenericRoundMatch
@@ -35,22 +41,29 @@ phases = {
 
 
 class Phase10Match(GenericRoundMatch):
-    def __init__(self, players=()):
+    """Round-based match for Phase 10, tracking phases cleared per player."""
+
+    def __init__(self, players: Sequence[str] = ()) -> None:
         super().__init__(players)
         self.game = "Phase10"
         self.phasesinorder = True
-        self.phasesCleared = {}  # player -> list of phases cleared
+        self.phasesCleared: dict[
+            str, list[int]
+        ] = {}  # player -> list of phases cleared
 
-    def playerStart(self, player):
+    def playerStart(self, player: str) -> None:
         self.phasesCleared[player] = []
 
-    def playerAddRound(self, player, rnd):
+    def playerAddRound(self, player: str, rnd: GenericRound) -> None:
+        """Record the phase cleared by ``player`` in ``rnd``, if any."""
+        rnd = cast("Phase10Round", rnd)
         if rnd.completedPhase[player]:
             self.phasesCleared[player].append(rnd.completedPhase[player])
 
-    def deleteRound(self, nrnd):
+    def deleteRound(self, nrnd: int) -> None:
+        """Drop the round's cleared phases before removing it from the match."""
         try:
-            rnd = self.rounds[nrnd - 1]
+            rnd = cast("Phase10Round", self.rounds[nrnd - 1])
         except KeyError:
             return
         for player in self.getPlayers():
@@ -58,7 +71,12 @@ class Phase10Match(GenericRoundMatch):
                 self.phasesCleared[player].remove(rnd.completedPhase[player])
         super().deleteRound(nrnd)
 
-    def computeWinner(self):
+    def computeWinner(self) -> None:
+        """Pick the winner among players who cleared all 10 phases.
+
+        Ties break on lowest total score, then on lowest last-round score,
+        then at random.
+        """
         playersIn10 = []
         for p, pc in self.phasesCleared.items():
             if len(pc) == 10:
@@ -97,10 +115,11 @@ class Phase10Match(GenericRoundMatch):
 
             self.winner = random.choice(last_round_candidates)
 
-    def createRound(self, numround):
+    def createRound(self, numround: int) -> GenericRound:
         return Phase10Round(numround)
 
-    def resumeMatch(self, idMatch):
+    def resumeMatch(self, idMatch: int) -> bool:
+        """Reload the base match plus the phases-in-order flag and cleared phases."""
         if not super().resumeMatch(idMatch):
             return False
 
@@ -119,7 +138,8 @@ class Phase10Match(GenericRoundMatch):
 
         return True
 
-    def resumeExtraInfo(self, player, key, value):
+    def resumeExtraInfo(self, player: str, key: str, value: str | int) -> dict:
+        """Decode a persisted PhaseAimed/PhaseCompleted statistic row."""
         if player not in self.phasesCleared:
             self.phasesCleared[player] = []
         extra = {}
@@ -134,7 +154,8 @@ class Phase10Match(GenericRoundMatch):
                 extra["isCompleted"] = False
         return extra
 
-    def flushToDB(self):
+    def flushToDB(self) -> None:
+        """Persist the base match plus the phases-in-order flag and round stats."""
         super().flushToDB()
         if self.phasesinorder:
             inorderflag = 1
@@ -145,7 +166,7 @@ class Phase10Match(GenericRoundMatch):
             "VALUES (?,'PhasesInOrder',?);",
             (self.idMatch, inorderflag),
         )
-        for rnd in self.rounds:
+        for rnd in cast("list[Phase10Round]", self.rounds):
             for player in rnd.score.keys():  # noqa: SIM118
                 db.execute(
                     "INSERT OR REPLACE INTO RoundStatistics "
@@ -165,26 +186,29 @@ class Phase10Match(GenericRoundMatch):
                     ),
                 )
 
-    def getPhasesInOrderFlag(self):
+    def getPhasesInOrderFlag(self) -> bool:
         return self.phasesinorder
 
-    def setPhasesInOrderFlag(self, flag):
+    def setPhasesInOrderFlag(self, flag: bool) -> None:
         if flag not in [True, False]:
             return
         logger.debug("Setting phases-in-order flag to %s", flag)
         self.phasesinorder = flag
 
-    def getPhases(self):
+    def getPhases(self) -> list[str]:
         return phases[self.game]
 
 
 class Phase10Round(GenericRound):
-    def __init__(self, numround):
-        GenericRound.__init__(self, numround)
-        self.completedPhase = {}
-        self.aimedPhase = {}
+    """A Phase 10 round: adds each player's aimed and completed phase."""
 
-    def addExtraInfo(self, player, extras):
+    def __init__(self, numround: int) -> None:
+        GenericRound.__init__(self, numround)
+        self.completedPhase: dict[str, int] = {}
+        self.aimedPhase: dict[str, int] = {}
+
+    def addExtraInfo(self, player: str, extras: dict) -> None:
+        """Store the player's aimed phase and whether it was completed."""
         try:
             self.aimedPhase[player] = extras["aimedPhase"]
             if extras["isCompleted"]:
@@ -194,13 +218,13 @@ class Phase10Round(GenericRound):
         except KeyError:
             pass
 
-    def getPlayerAimedPhase(self, player):
+    def getPlayerAimedPhase(self, player: str) -> int:
         try:
             return self.aimedPhase[player]
         except KeyError:
             return 0
 
-    def getPlayerCompletedPhase(self, player):
+    def getPlayerCompletedPhase(self, player: str) -> int:
         try:
             return self.completedPhase[player]
         except KeyError:
@@ -208,6 +232,8 @@ class Phase10Round(GenericRound):
 
 
 class Phase10MasterMatch(Phase10Match):
-    def __init__(self, players=()):
+    """Phase 10 Master variant, using the harder Master phase list."""
+
+    def __init__(self, players: Sequence[str] = ()) -> None:
         super().__init__(players)
         self.game = "Phase10Master"

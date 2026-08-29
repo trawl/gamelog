@@ -10,6 +10,13 @@ GameType = str | type[Any]
 
 @dataclass(frozen=True)
 class GameDefinition:
+    """Immutable description of one game and how to build its objects.
+
+    Factory fields are either a class or a lazy ``"module:Class"`` reference
+    (resolved on demand by :meth:`resolve`), so registering a game never
+    imports its Qt widgets. Optional factories fall back to framework defaults.
+    """
+
     name: str
     max_players: int
     description: str
@@ -22,10 +29,12 @@ class GameDefinition:
     particular_stats_engine_factory: GameType | None = None
 
     def database_row(self) -> tuple[str, int, str, str]:
+        """Return the columns stored in the Game table for this game."""
         return (self.name, self.max_players, self.description, self.rules)
 
     @staticmethod
     def resolve(factory: GameType) -> type[Any]:
+        """Resolve a factory reference to a class, importing it if needed."""
         if not isinstance(factory, str):
             return factory
         module_name, separator, class_name = factory.partition(":")
@@ -39,13 +48,19 @@ class GameDefinition:
     # defaults.  Defaults are imported lazily so that building, say, a match
     # never drags in the Qt widget stack.
 
-    def create_match(self, players=()) -> Any:
+    def create_match(self, players: Sequence[str] = ()) -> Any:
         return self.resolve(self.match_factory)(players)
 
     def create_engine(self) -> Any:
         return self.resolve(self.engine_factory)()
 
-    def create_widget(self, gname, players=None, engine=None, parent=None) -> Any:
+    def create_widget(
+        self,
+        gname: str,
+        players: Sequence[str] | None = None,
+        engine: Any = None,
+        parent: Any = None,
+    ) -> Any:
         return self.resolve(self.widget_factory)(gname, players, engine, parent)
 
     def create_stats_engine(self) -> Any:
@@ -62,7 +77,9 @@ class GameDefinition:
 
         return ParticularStatsEngine()
 
-    def create_quick_stats(self, gname, players, parent) -> Any:
+    def create_quick_stats(
+        self, gname: str, players: Sequence[str], parent: Any
+    ) -> Any:
         if self.quick_stats_factory:
             return self.resolve(self.quick_stats_factory)(gname, players, parent)
         from core.ui.gamestats import QuickStatsTW
@@ -71,20 +88,30 @@ class GameDefinition:
 
 
 class GameRegistry:
+    """Registry of every known game, keyed by name.
+
+    Games register themselves at import time; the ``create_*`` helpers resolve
+    a game by name and delegate to its definition, falling back to the
+    framework defaults when the name is unknown.
+    """
+
     def __init__(self) -> None:
         self._definitions: dict[str, GameDefinition] = {}
 
     def register(self, definition: GameDefinition) -> None:
+        """Add a game definition, rejecting a duplicate name."""
         if definition.name in self._definitions:
             raise ValueError(f"Game already registered: {definition.name}")
         self._definitions[definition.name] = definition
 
     def get(self, name: str | None) -> GameDefinition | None:
+        """Return the definition for ``name``, or ``None`` if not registered."""
         if name is None:
             return None
         return self._definitions.get(name)
 
     def definitions(self) -> Sequence[GameDefinition]:
+        """Return all registered game definitions."""
         return tuple(self._definitions.values())
 
     def _ensure_loaded(self) -> None:
@@ -99,7 +126,7 @@ class GameRegistry:
     # definition, falling back to the framework defaults when the game is
     # unknown.  These replace the former per-layer factory classes.
 
-    def create_match(self, name: str | None, players=()) -> Any:
+    def create_match(self, name: str | None, players: Sequence[str] = ()) -> Any:
         self._ensure_loaded()
         definition = self.get(name)
         if definition:
@@ -118,13 +145,17 @@ class GameRegistry:
         return GameEngine()
 
     def create_widget(
-        self, name: str | None, players=None, engine=None, parent=None
+        self,
+        name: str | None,
+        players: Sequence[str] | None = None,
+        engine: Any = None,
+        parent: Any = None,
     ) -> Any:
         self._ensure_loaded()
         definition = self.get(name)
         if not definition:
             return None
-        return definition.create_widget(name, players, engine, parent)
+        return definition.create_widget(definition.name, players, engine, parent)
 
     def create_stats_engine(self, name: str | None) -> Any:
         self._ensure_loaded()
@@ -144,14 +175,17 @@ class GameRegistry:
 
         return ParticularStatsEngine()
 
-    def create_quick_stats(self, name: str | None, players, parent) -> Any:
+    def create_quick_stats(
+        self, name: str | None, players: Sequence[str], parent: Any
+    ) -> Any:
         self._ensure_loaded()
         definition = self.get(name)
         if definition:
-            return definition.create_quick_stats(name, players, parent)
+            return definition.create_quick_stats(definition.name, players, parent)
         from core.ui.gamestats import QuickStatsTW
 
-        return QuickStatsTW(name, players, parent)
+        # Unknown-game fallback: name is only None in degenerate/unused paths.
+        return QuickStatsTW(name or "", players, parent)
 
 
 registry = GameRegistry()

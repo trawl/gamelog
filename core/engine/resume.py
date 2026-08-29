@@ -1,15 +1,21 @@
+"""Discovery of saved matches and reconstruction of their engines."""
+
+from __future__ import annotations
+
 import sys
 from typing import cast
 
-from core.engine.base import RoundGameEngine, readInput
+from core.engine.base import GameEngine, RoundGameEngine, readInput
 from core.engine.db import db
 from core.registry import registry
 
 
 class ResumeEngine:
-    def __init__(self, game):
+    """Lists the saved matches for a game and rebuilds an engine from one."""
+
+    def __init__(self, game: str) -> None:
         self.game = game
-        self.candidates = {}
+        self.candidates: dict[int, dict] = {}
         cur = db.execute(
             "SELECT idMatch, started, finished, elapsed "
             "FROM Match WHERE state=4 and Game_name=?",
@@ -27,10 +33,12 @@ class ResumeEngine:
             for row in cur:
                 match["players"].append(str(row["nick"]))
 
-    def getCandidates(self):
+    def getCandidates(self) -> dict[int, dict]:
+        """Return the saved matches, keyed by match id."""
         return self.candidates
 
-    def resume(self, idMatch):
+    def resume(self, idMatch: int) -> GameEngine | None:
+        """Rebuild and return the engine for ``idMatch``, or ``None``."""
         engine = registry.create_engine(self.game)
         if engine and engine.resume(idMatch):
             return engine

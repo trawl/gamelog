@@ -1,3 +1,7 @@
+"""Qt scoreboard widgets: the game tab, score input, plots and helper widgets."""
+
+from __future__ import annotations
+
 import ctypes
 import logging
 import shutil
@@ -22,9 +26,13 @@ from PySide6.QtGui import (
     QColor,
     QFont,
     QImage,
+    QKeyEvent,
+    QMouseEvent,
     QPainter,
     QPainterPath,
+    QPaintEvent,
     QShortcut,
+    QWheelEvent,
 )
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
@@ -47,8 +55,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from core.engine.base import EntryGameEngine
+from core.engine.base import EntryGameEngine, RoundGameEngine
 from core.engine.settings import appsettings
+from core.model.base import GenericRound
 from core.ui.clock import GameClock
 from core.ui.gamelogapplication import GamelogApplication
 from core.ui.gamestats import QuickStatsTW
@@ -83,13 +92,21 @@ PlayerColours = [
 
 
 class GameWidget(Tab):
+    """Scoreboard tab: score input, round detail, clock and match controls."""
+
     QCoreApplication.translate("GameWidget", "Scoreboard")
 
-    def __init__(self, game, players, engine=None, parent=None):
+    def __init__(
+        self,
+        game: str,
+        players: list[str],
+        engine: RoundGameEngine | None = None,
+        parent: QWidget | None = None,
+    ) -> None:
         super().__init__(parent)
         self.game = game
         if engine is not None:
-            self.engine = engine
+            self.engine: RoundGameEngine = engine
             self.players = self.engine.getListPlayers()
         else:
             self.players = players
@@ -105,7 +122,8 @@ class GameWidget(Tab):
         self.toggleScreenLock()
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Build the scoreboard layout, buttons, clock and player widgets."""
         # Set up the main grid
         self.setStyleSheet("QGroupBox { font-size: 120%; font-weight: bold; }")
         self._base_stylesheet = self.styleSheet()
@@ -288,7 +306,7 @@ class GameWidget(Tab):
 
         QtCore.QTimer.singleShot(500, self.gameInput.setFocus)
 
-    def _gameStyleSlug(self):
+    def _gameStyleSlug(self) -> str | None:
         """Package name of the concrete game (e.g. ``skullking``), or None.
 
         Derived from the widget's module so a game needs no extra metadata:
@@ -300,14 +318,15 @@ class GameWidget(Tab):
             return parts[1]
         return None
 
-    def _currentThemeName(self):
+    def _currentThemeName(self) -> str:
+        """Return the effective theme name, defaulting to ``light``."""
         app = QApplication.instance()
         theme_manager = getattr(app, "themeManager", None)
         if theme_manager is not None:
             return str(theme_manager.effective_theme())
         return "light"
 
-    def _loadGameStylesheet(self, slug):
+    def _loadGameStylesheet(self, slug: str) -> str:
         """Return the game's qss for the current theme, or '' if none ships.
 
         Prefers a theme-specific ``<slug>.<theme>.qss`` and falls back to a
@@ -322,13 +341,14 @@ class GameWidget(Tab):
                 return text
         return ""
 
-    def _connectThemeStylesheet(self):
+    def _connectThemeStylesheet(self) -> None:
+        """Re-apply the game stylesheet whenever the theme changes."""
         app = QApplication.instance()
         theme_manager = getattr(app, "themeManager", None)
         if theme_manager is not None:
             theme_manager.themeChanged.connect(self._applyGameStylesheet)
 
-    def _applyGameStylesheet(self, *_args):
+    def _applyGameStylesheet(self, *_args) -> None:
         """Layer the game's stylesheet on top of the widget's base styles.
 
         Scoped to this game widget (and its children), so it augments the
@@ -342,7 +362,8 @@ class GameWidget(Tab):
         game_qss = self._loadGameStylesheet(slug)
         self.setStyleSheet(f"{base}\n{game_qss}" if game_qss else base)
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
+        """Refresh all button labels and titles for the current language."""
         self.setRoundTitle()
         # self.matchGroup.setTitle(self.tr("Game Time"))
         if appsettings["text_in_buttons"]:
@@ -374,19 +395,23 @@ class GameWidget(Tab):
         self.detailGroup.retranslateUI()
         self.updateGameStatusLabel()
 
-    def createGameInputWidget(self, parent=None):
+    def createGameInputWidget(self, parent: QWidget | None = None) -> GameInputWidget:
+        """Build the score-input widget; games override for custom input."""
         return GameInputWidget(self.engine, parent)
 
-    def createRoundsDetail(self, parent=None):
+    def createRoundsDetail(self, parent: QWidget | None = None) -> GameRoundsDetail:
+        """Build the rounds/plot/stats detail panel; games may override."""
         return GameRoundsDetail(self.engine, parent)
 
-    def onSettings(self):
+    def onSettings(self) -> None:
+        """Open the settings dialog and react to changed settings."""
         sd = SettingsDialog(parent=self)
         sd.settingChanged.connect(self.watchSettingChange)
         # sd.settingChanged.connect(self.retranslateUI)
         sd.exec()
 
-    def watchSettingChange(self, name, value):
+    def watchSettingChange(self, name: str, value) -> None:
+        """Apply a single changed setting (language, theme, log level, ...)."""
         if name == "language":
             self.languageButton.changeLanguage(value)
         elif name == "theme":
@@ -400,7 +425,8 @@ class GameWidget(Tab):
         else:
             self.retranslateUI()
 
-    def addPlayerWidgets(self):
+    def addPlayerWidgets(self) -> None:
+        """Create a per-player score box for each player in the match."""
         self.playersLayout = QVBoxLayout()
         self.matchGroupLayout.addLayout(self.playersLayout)
         self.playerGroupBox = {}
@@ -412,10 +438,11 @@ class GameWidget(Tab):
             self.playersLayout.addWidget(pw)
             self.playerGroupBox[player] = pw
 
-    def addExtraConfig(self):
-        pass
+    def addExtraConfig(self) -> None:
+        """Hook for subclasses to add extra configuration widgets."""
 
-    def updateGameStatusLabel(self):
+    def updateGameStatusLabel(self) -> None:
+        """Show the winner or paused banner, or clear it when playing."""
         self.gameStatusLabel.setStyleSheet(
             "QLabel { font-size: 16px; font-weight:bold; color: red;}"
         )
@@ -430,7 +457,8 @@ class GameWidget(Tab):
             self.gameStatusLabel.setText(self.tr(""))
             # self.gameStatusLabel.hide()
 
-    def cancelMatch(self):
+    def cancelMatch(self) -> None:
+        """Leave the match, offering to save or discard it first."""
         if not self.isFinished():
             tit = self.tr("Leave Match")
             msg = self.tr("Do you want to save the current {} match?")
@@ -455,7 +483,8 @@ class GameWidget(Tab):
         self.toggleScreenLock(True)
         self.requestClose()
 
-    def restartMatch(self):
+    def restartMatch(self) -> None:
+        """Restart the match, offering to save the current one first."""
         if not self.isFinished():
             tit = self.tr("Restart Match")
             msg = self.tr("Do you want to save the current {} match?")
@@ -477,7 +506,8 @@ class GameWidget(Tab):
         self.toggleScreenLock(True)
         self.requestRestart()
 
-    def pauseMatch(self):
+    def pauseMatch(self) -> None:
+        """Toggle the match between paused and running, updating the UI."""
         if self.engine.isPaused():
             self.clock.unpauseTimer()
             self.commitRoundButton.setEnabled(self.commitRoundSanityCheck())
@@ -496,7 +526,8 @@ class GameWidget(Tab):
                 self.pauseMatchButton.setText("▶")
         self.updateGameStatusLabel()
 
-    def guardCommitButton(self):
+    def guardCommitButton(self) -> None:
+        """Enable/disable the commit button per the current input validity."""
         if self.commitRoundSanityCheck() and not self.engine.getWinner():
             self.commitRoundButton.setDisabled(False)
             self.gameInput.enterPressed.connect(self.commitRound)
@@ -507,8 +538,8 @@ class GameWidget(Tab):
                 self.gameInput.enterPressed.disconnect(self.commitRound)
                 self._commit_round_connection = False
 
-    def commitRoundSanityCheck(self, interactive=False):
-
+    def commitRoundSanityCheck(self, interactive: bool = False) -> bool:
+        """Check a winner and valid scores/extras before committing a round."""
         winner = self.gameInput.getWinner()
         if not winner:
             msg = self.tr("No winner selected")
@@ -535,7 +566,8 @@ class GameWidget(Tab):
         logger.debug("SANITYCHECK: Ready to commit")
         return True
 
-    def commitRound(self):
+    def commitRound(self) -> None:
+        """Record the current round's winner, scores and extras in the engine."""
         if not self.commitRoundSanityCheck(interactive=True):
             return
         nround = self.engine.getNumRound()
@@ -569,7 +601,8 @@ class GameWidget(Tab):
         elif self.hideInputOnFinish:
             self.gameInput.hide()
 
-    def undoCommit(self):
+    def undoCommit(self) -> None:
+        """Roll back the last committed round after confirmation."""
         if len(self.engine.getRounds()) == 0:
             return
 
@@ -595,7 +628,8 @@ class GameWidget(Tab):
         except KeyError:
             pass
 
-    def finish(self):
+    def finish(self) -> None:
+        """Finish the game explicitly after confirmation."""
         title = self.tr("Finish game")
         msg = self.tr("Are you sure you want to finish the current game?")
         ret = QMessageBox.question(
@@ -608,10 +642,13 @@ class GameWidget(Tab):
 
         if ret == QMessageBox.StandardButton.No:
             return
-        self.engine.finishGame()
+        # finishGame() exists only on EntryGameEngine; the finish button is
+        # shown only for engines that require an explicit finish.
+        self.engine.finishGame()  # pyright: ignore[reportAttributeAccessIssue]
         self.updatePanel()
 
-    def changeDealingPolicy(self, *args, **kwargs):
+    def changeDealingPolicy(self, *args, **kwargs) -> None:
+        """Switch between winner-deals and next-player-deals policies."""
         if self.dealerPolicyCheckBox.isChecked():
             self.dealerPolicyCheckBox.setText(self.tr("Winner deals"))
             self.engine.setDealingPolicy(self.engine.WinnerDealer)
@@ -619,16 +656,19 @@ class GameWidget(Tab):
             self.dealerPolicyCheckBox.setText(self.tr("Next player deals"))
             self.engine.setDealingPolicy(self.engine.RRDealer)
 
-    def closeMatch(self):
+    def closeMatch(self) -> None:
         self.engine.cancelMatch()
 
-    def saveMatch(self):
+    def saveMatch(self) -> None:
         self.engine.save()
 
-    def checkPlayerScore(self, player, score, extras=None):
+    def checkPlayerScore(
+        self, player: str, score: int, extras: dict | None = None
+    ) -> bool:
         return score >= 0
 
-    def setRoundTitle(self):
+    def setRoundTitle(self) -> None:
+        """Set the title label to the game name and current round number."""
         game = self.engine.getGame()
         if game is None:
             game = ""
@@ -642,7 +682,8 @@ class GameWidget(Tab):
                 self.tr("{} - Round {}").format(game, str(nround))
             )
 
-    def updatePanel(self):
+    def updatePanel(self) -> None:
+        """Refresh scores, detail, dealer and title after a state change."""
         self.updateScores()
         self.gameInput.reset()
         self.undoButton.setEnabled(
@@ -666,20 +707,22 @@ class GameWidget(Tab):
             self.finishButton.setDisabled(True)
         self.guardCommitButton()
 
-    def getGameName(self):
+    def getGameName(self) -> str:
         return self.game
 
-    def isFinished(self):
+    def isFinished(self) -> bool:
         return self.finished
 
     # To be implemented in subclasses
-    def createEngine(self):
-        pass
+    def createEngine(self) -> None:
+        """Hook for subclasses to build and assign ``self.engine``."""
 
-    def getPlayerExtraInfo(self, player):
+    def getPlayerExtraInfo(self, player: str) -> dict | None:
+        """Return per-player extra info for a round; games override this."""
         return {}
 
-    def unsetDealer(self):
+    def unsetDealer(self) -> None:
+        """Clear the dealer marker from the current dealer's score box."""
         # Some widgets (e.g. Phase10) don't use per-player boxes.
         if not hasattr(self, "playerGroupBox"):
             return
@@ -689,7 +732,8 @@ class GameWidget(Tab):
         except KeyError:
             pass
 
-    def setDealer(self):
+    def setDealer(self) -> None:
+        """Mark the current dealer's score box, if per-player boxes exist."""
         if not hasattr(self, "playerGroupBox"):
             return
         try:
@@ -697,7 +741,8 @@ class GameWidget(Tab):
         except KeyError:
             pass
 
-    def updateScores(self):
+    def updateScores(self) -> None:
+        """Push each player's current total score to their score box."""
         if not hasattr(self, "playerGroupBox"):
             return
         try:
@@ -707,7 +752,8 @@ class GameWidget(Tab):
         except KeyError:
             pass
 
-    def setWinner(self):
+    def setWinner(self) -> None:
+        """Lock the board and highlight the winner once the match ends."""
         self.finished = True
         self.pauseMatchButton.setDisabled(True)
         self.clock.stopTimer()
@@ -726,7 +772,8 @@ class GameWidget(Tab):
             except KeyError:
                 pass
 
-    def changePlayerOrder(self):
+    def changePlayerOrder(self) -> None:
+        """Open the reorder dialog and apply any new order or dealer."""
         originaldealer = self.engine.getDealer()
         pod = PlayerOrderDialog(self.engine, self)
         #         pod.dealerChanged.connect(self.changedDealer)
@@ -740,10 +787,12 @@ class GameWidget(Tab):
                 self.updatePlayerOrder()
             if originaldealer != newdealer:
                 self.unsetDealer()
-                self.engine.setDealer(newdealer)
+                # getNewDealer() may return None; setDealer ignores unknown players.
+                self.engine.setDealer(newdealer)  # pyright: ignore[reportArgumentType]
                 self.setDealer()
 
-    def updatePlayerOrder(self):
+    def updatePlayerOrder(self) -> None:
+        """Re-lay the player boxes and detail panel in the new player order."""
         try:
             for player in self.engine.getListPlayers():
                 self.playersLayout.removeWidget(self.playerGroupBox[player])
@@ -757,7 +806,8 @@ class GameWidget(Tab):
             self.detailGroup.updatePlayerOrder()  # pyright: ignore[reportAttributeAccessIssue]
         self.gameInput.updatePlayerOrder()
 
-    def toggleScreenLock(self, on=False):
+    def toggleScreenLock(self, on: bool = False) -> None:
+        """Start/stop the sleep blocker (``on=True`` re-enables the screensaver)."""
         if not on:
             self.screen_blocker.start()
             logger.debug("Enabled screensaver")
@@ -765,7 +815,8 @@ class GameWidget(Tab):
             self.screen_blocker.stop()
             logger.debug("Disabled screensaver")
 
-    def editGameTime(self):
+    def editGameTime(self) -> None:
+        """Open the match-times editor once the game has finished."""
         if self.finished:
             mted = MatchTimesEditDialog(self.engine, self)
             mted.exec_()
@@ -773,23 +824,26 @@ class GameWidget(Tab):
 
 
 class GameInputWidget(QWidget):
+    """Base score-input widget; games subclass it for their own controls."""
+
     enterPressed = QtCore.Signal()
     changed = QtCore.Signal()
 
-    def __init__(self, engine, parent=None):
+    def __init__(self, engine: RoundGameEngine, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.engine = engine
         self.winnerSelected = ""
-        self.playerInputList = {}
+        self.playerInputList: dict = {}
         self.initUI()
 
-    def initUI(self):
-        pass
+    def initUI(self) -> None:
+        """Build the input controls; overridden by concrete games."""
 
-    def retranslateUI(self):
-        pass
+    def retranslateUI(self) -> None:
+        """Refresh input labels for the current language; overridden."""
 
-    def getWinner(self):
+    def getWinner(self) -> str:
+        """Return the player with the highest current input score."""
         maxScore = -1000000
         for player, score in self.getScores().items():
             if score > maxScore:
@@ -797,40 +851,47 @@ class GameInputWidget(QWidget):
                 self.winnerSelected = player
         return self.winnerSelected
 
-    def getScores(self):
+    def getScores(self) -> dict[str, int]:
+        """Return the current per-player score map from the input widgets."""
         scores = {}
         for player, piw in self.playerInputList.items():
             scores[player] = piw.getScore()
         return scores
 
-    def reset(self):
+    def reset(self) -> None:
+        """Clear the selected winner and reset every player's input."""
         self.winnerSelected = ""
         for piw in self.playerInputList.values():
             piw.reset()
 
-    def changedWinner(self, winner):
+    def changedWinner(self, winner: str) -> None:
+        """Record a newly selected winner, resetting the previous one."""
         logger.debug("Changing winner to %s", winner)
         winner = str(winner)
         if self.winnerSelected != "":
             self.playerInputList[self.winnerSelected].reset()
         self.winnerSelected = winner
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() in (QtCore.Qt.Key.Key_Return, QtCore.Qt.Key.Key_Enter):
             self.enterPressed.emit()
             event.accept()
         return super().keyPressEvent(event)
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QMouseEvent) -> None:
         self.setFocus()
         return super().mousePressEvent(event)
 
-    def updatePlayerOrder(self):
-        pass
+    def updatePlayerOrder(self) -> None:
+        """Rebuild the input controls in the new player order; overridden."""
 
 
 class GamePlayerWidget(QGroupBox):
-    def __init__(self, nick, colour=None, parent=None):
+    """Per-player score box with an LCD readout and dealer/winner overlay."""
+
+    def __init__(
+        self, nick: str, colour: QColor | None = None, parent: QWidget | None = None
+    ) -> None:
         if not colour:
             colour = QtGui.QColor()
         super().__init__(parent)
@@ -838,7 +899,8 @@ class GamePlayerWidget(QGroupBox):
         self.pcolour = colour
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Build the LCD score display and load the overlay pixmaps."""
         self.setTitle(self.player)
         #        self.setMinimumWidth(300)
         self.mainLayout = QHBoxLayout(self)
@@ -880,26 +942,28 @@ class GamePlayerWidget(QGroupBox):
         self.bg_size = 40
         self.unsetDealer()
 
-    def updateDisplay(self, points):
+    def updateDisplay(self, points: int) -> None:
+        """Display ``points``, widening the LCD for 4-digit values."""
         if points >= 1000 or points <= -100:
             self.scoreLCD.setDigitCount(4)
         else:
             self.scoreLCD.setDigitCount(3)
         self.scoreLCD.display(points)
 
-    def setDealer(self):
+    def setDealer(self) -> None:
         self.background = self.dealerPixmap
         self.update()
 
-    def unsetDealer(self):
+    def unsetDealer(self) -> None:
         self.background = None
         self.update()
 
-    def setWinner(self):
+    def setWinner(self) -> None:
         self.background = self.winnerPixmap
         self.update()
 
-    def setColour(self, colour=None):
+    def setColour(self, colour: QColor | None = None) -> None:
+        """Recolour the box (title, LCD and dimmed-out state)."""
         if colour:
             self.pcolour = colour
         self.setStyleSheet(
@@ -912,7 +976,7 @@ class GamePlayerWidget(QGroupBox):
             )
         )
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
         super().paintEvent(event)
         if not self.background:
             return
@@ -931,14 +995,17 @@ class GamePlayerWidget(QGroupBox):
 
 
 class GameRoundsDetail(QTabWidget):
+    """Tabbed detail panel: rounds table, score plot and quick statistics."""
+
     edited = QtCore.Signal()
 
-    def __init__(self, engine, parent=None):
+    def __init__(self, engine: RoundGameEngine, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.engine = engine
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Build the table, plot and statistics tabs."""
         self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
         self.widgetLayout = QVBoxLayout(self)
 
@@ -959,7 +1026,8 @@ class GameRoundsDetail(QTabWidget):
         self.gamestats = self.createQSBox()
         self.addTab(self.gamestats, "")
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
+        """Refresh tab labels and child widgets for the current language."""
         # self.setTitle(i18n("GameRoundsDetail",'Details'))
         if appsettings["text_in_buttons"]:
             self.setTabText(self.indexOf(self.tableContainer), self.tr("Table"))
@@ -974,16 +1042,18 @@ class GameRoundsDetail(QTabWidget):
         self.updateRound()
         # self.updateStats()
 
-    def updatePlot(self):
+    def updatePlot(self) -> None:
         self.plot.updatePlot()
 
-    def updateRound(self):
+    def updateRound(self) -> None:
+        """Rebuild the rounds table from the engine and refresh the plot."""
         self.table.resetClear()
         for r in self.engine.getRounds():
             self.table.insertRound(r)
         self.updatePlot()
 
-    def updateStats(self):
+    def updateStats(self) -> None:
+        """Refresh the quick-stats tab, never letting a failure crash the board."""
         try:
             self.gamestats.updateContent(
                 self.engine.getGame(), self.engine.getListPlayers()
@@ -993,44 +1063,61 @@ class GameRoundsDetail(QTabWidget):
             logger.warning("Stats update failed", exc_info=True)
             self.gamestats.update()
 
-    def deleteRound(self, _nround):
+    def deleteRound(self, _nround: int) -> None:
         self.plot.updatePlot()
 
     # Implement in subclasses if necessary
-    def createRoundTable(self, _engine, parent):
+    def createRoundTable(
+        self, _engine: RoundGameEngine, parent: QWidget | None
+    ) -> GameRoundTable:
+        """Build the rounds table widget; games override for their columns."""
         return GameRoundTable(self, parent)
 
-    def createRoundPlot(self, _engine, parent):
+    def createRoundPlot(
+        self, _engine: RoundGameEngine, parent: QWidget | None
+    ) -> GameRoundPlot:
+        """Build the score-plot widget; games override for their plots."""
         return GameRoundPlot(self, parent)
 
-    def createQSBox(self):
-        return QuickStatsTW(self.engine.getGame(), self.engine.getListPlayers(), self)
+    def createQSBox(self) -> QuickStatsTW:
+        """Build the quick-statistics tab for this game and its players."""
+        # getGame() is typed str | None; a live engine always has a game name.
+        return QuickStatsTW(
+            self.engine.getGame(),  # pyright: ignore[reportArgumentType]
+            self.engine.getListPlayers(),
+            self,
+        )
 
-    def updatePlayerOrder(self):
+    def updatePlayerOrder(self) -> None:
         self.updateRound()
 
 
 class GameRoundTable(QTableWidget):
+    """Base rounds table: one column per player; games fill in the rows."""
+
     edited = QtCore.Signal()
 
-    def __init__(self, engine, parent=None):
+    def __init__(self, engine, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.engine = engine
         self.setColumnCount(len(self.engine.getListPlayers()))
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Set up the header labels and custom context menu."""
         self.setHorizontalHeaderLabels(self.engine.getListPlayers())
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.openTableMenu)
 
-    def resetClear(self):
+    def resetClear(self) -> None:
+        """Clear all rows and reset the header to the current player order."""
         self.setHorizontalHeaderLabels(self.engine.getListPlayers())
         self.clearContents()
         self.setRowCount(0)
 
-    def openTableMenu(self, position):
+    def openTableMenu(self, position: QtCore.QPoint) -> None:
+        """Show the right-click menu to delete the entry at ``position``."""
         item = self.indexAt(position)
         nentry = item.row() + 1
         if nentry <= 0 or self.engine.getWinner():
@@ -1059,20 +1146,24 @@ class GameRoundTable(QTableWidget):
             self.edited.emit()
 
     # ReImplement in subclasses
-    def insertRound(self, _rnd):
-        pass
+    def insertRound(self, _rnd: GenericRound) -> None:
+        """Append a table row for ``_rnd``; implemented by subclasses."""
 
 
 class GameRoundPlot(QWidget):
-    def __init__(self, engine, parent):
+    """Base score-plot widget wrapping a line-plot canvas."""
+
+    def __init__(self, engine, parent: QWidget | None) -> None:
         super().__init__(parent)
         self.plotinited = False
         self.engine = engine
-        self.parent = parent
+        # Deliberately shadows QObject.parent with the passed-in widget.
+        self.parent = parent  # pyright: ignore[reportAttributeAccessIssue]
         self.axiswidth = 0
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Create the plot canvas and add its line plot."""
         self.widgetLayout = QHBoxLayout(self)
         self.canvas = PlotView(PlayerColours, self)
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
@@ -1080,28 +1171,30 @@ class GameRoundPlot(QWidget):
         self.widgetLayout.addWidget(self.canvas)
         self.plotinited = True
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
         super().paintEvent(event)
         self.canvas.viewport().repaint()
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
         self.retranslatePlot()
 
-    def isPlotInited(self):
+    def isPlotInited(self) -> bool:
         return self.plotinited
 
-    def updatePlot(self):
-        pass
+    def updatePlot(self) -> None:
+        """Redraw the plot from current data; implemented by subclasses."""
 
-    def retranslatePlot(self):
-        pass
+    def retranslatePlot(self) -> None:
+        """Refresh plot labels for the current language; overridden."""
 
 
 class SpaceFilter(QtCore.QObject):
+    """Event filter that turns a Space key press into a ``spacePressed`` signal."""
+
     spacePressed = QtCore.Signal()
 
-    def eventFilter(self, obj, event):
+    def eventFilter(self, obj: QObject, event) -> bool:
         if (
             event.type() == QtCore.QEvent.Type.KeyPress
             and event.key() == QtCore.Qt.Key.Key_Space
@@ -1112,21 +1205,24 @@ class SpaceFilter(QtCore.QObject):
 
 
 class ScoreSpinBox(QWidget):
+    """A digits-only score field with up/down steppers and space handling."""
+
     valueChanged = QtCore.Signal(object)
     spacePressed = QtCore.Signal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self._value = 0
+        self._value: int | None = 0
         self._minimum = 0
         self._maximum = 200
         self._start = 0
         self._step = 1
         self._hideMinimum = True
-        self.pcolour = None
+        self.pcolour: QColor | None = None
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Build the line edit, stepper buttons, validator and styling."""
         self.line_edit = QLineEdit()
         self.line_edit.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.line_edit.setInputMethodHints(QtCore.Qt.InputMethodHint.ImhDigitsOnly)
@@ -1243,7 +1339,7 @@ class ScoreSpinBox(QWidget):
     # ------------------------------------------------------------------
     # Styling helper
     # ------------------------------------------------------------------
-    def _button_style(self):
+    def _button_style(self) -> str:
         return """
         QToolButton {
             font-size: 18px;
@@ -1253,14 +1349,15 @@ class ScoreSpinBox(QWidget):
         }
         """
 
-    def setHideMinimum(self, hidemin):
+    def setHideMinimum(self, hidemin: bool) -> None:
         self._hideMinimum = hidemin
 
-    def setColour(self, colour):
+    def setColour(self, colour: QColor) -> None:
         self.pcolour = colour
         self._updateStyle()
 
-    def _updateStyle(self):
+    def _updateStyle(self) -> None:
+        """Apply the coloured or colourless line-edit stylesheet."""
         if self.pcolour:
             self.line_edit.setStyleSheet(
                 self._text_css.format(
@@ -1270,10 +1367,11 @@ class ScoreSpinBox(QWidget):
         else:
             self.line_edit.setStyleSheet(self._text_css_colourless)
 
-    def value(self):
+    def value(self) -> int | None:
         return self._value
 
-    def setValue(self, value: int | None):
+    def setValue(self, value: int | None) -> None:
+        """Clamp and store ``value`` (``None`` clears the field)."""
         if value is None:
             if value != self._value:
                 self.valueChanged.emit(value)
@@ -1290,41 +1388,46 @@ class ScoreSpinBox(QWidget):
                 self.valueChanged.emit(value)
         self._update_buttons()
 
-    def setStep(self, step):
+    def setStep(self, step: int) -> None:
         self._step = step
 
-    def setFocus(self, reason=QtCore.Qt.FocusReason.OtherFocusReason):
+    def setFocus(
+        self, reason: QtCore.Qt.FocusReason = QtCore.Qt.FocusReason.OtherFocusReason
+    ) -> None:
         self.line_edit.setFocus(reason)
 
-    def _snap_to_step(self):
+    def _snap_to_step(self) -> None:
+        """Round the value down to the nearest multiple of the step size."""
         if self._value is not None and self._step > 1:
             offset = self._value - self._minimum
             new_value = self._minimum + (offset // self._step) * self._step
             if self._value != new_value:
                 self.setValue(new_value)
 
-    def step_up(self):
+    def step_up(self) -> None:
         self.line_edit.setFocus()
         if self._value is None:
             self.setValue(self._start)
         else:
             self.setValue(self._value + self._step)
 
-    def step_down(self):
+    def step_down(self) -> None:
         self.line_edit.setFocus()
         if self._value is None:
             self.setValue(self._start)
         else:
             self.setValue(self._value - self._step)
 
-    def _commit_text(self):
+    def _commit_text(self) -> None:
+        """Parse the line-edit text into the current value."""
         try:
             value = int(self.line_edit.text())
         except ValueError:
             value = self._value
         self.setValue(value)
 
-    def setRange(self, minimum: int, maximum: int, start=None):
+    def setRange(self, minimum: int, maximum: int, start: int | None = None) -> None:
+        """Set the allowed value range and the default start value."""
         self._minimum = minimum
         self._maximum = maximum
         self._start = minimum if start is None else start
@@ -1332,30 +1435,31 @@ class ScoreSpinBox(QWidget):
         self.line_edit.setValidator(self._validator)
         self.setValue(self._value)
 
-    def setMinimum(self, minimum: int):
+    def setMinimum(self, minimum: int) -> None:
         self.setRange(minimum, self._maximum)
 
-    def setMaximum(self, maximum: int):
+    def setMaximum(self, maximum: int) -> None:
         self.setRange(self._minimum, maximum)
 
-    def setSingleStep(self, step: int):
+    def setSingleStep(self, step: int) -> None:
         self._step = max(1, step)
 
-    def clear(self):
+    def clear(self) -> None:
         self.line_edit.clear()
 
-    def reset(self):
+    def reset(self) -> None:
         self.setValue(None)
 
-    def setReadOnly(self, ro):
+    def setReadOnly(self, ro: bool) -> None:
         self.line_edit.setReadOnly(ro)
         self.up_button.setDisabled(ro)
         self.down_button.setDisabled(ro)
 
-    def lineEdit(self):
+    def lineEdit(self) -> QLineEdit:
         return self.line_edit
 
-    def _update_buttons(self):
+    def _update_buttons(self) -> None:
+        """Enable/disable the steppers based on the value and bounds."""
         if not self.line_edit.isReadOnly():
             self.up_button.setEnabled(
                 self._value is None or self._value < self._maximum
@@ -1364,7 +1468,7 @@ class ScoreSpinBox(QWidget):
                 self._value is None or self._value > self._minimum
             )
 
-    def wheelEvent(self, event):
+    def wheelEvent(self, event: QWheelEvent) -> None:
         if self.line_edit.isReadOnly():
             return
         if event.angleDelta().y() > 0:
@@ -1373,22 +1477,24 @@ class ScoreSpinBox(QWidget):
             self.step_down()
         event.accept()
 
-    def textChangedAction(self, text):
+    def textChangedAction(self, text: str) -> None:
         try:
             self.valueChanged.emit(int(text))
         except ValueError:
             pass
 
-    def onSpacePressed(self):
+    def onSpacePressed(self) -> None:
         self.spacePressed.emit()
 
-    def setDisabled(self, o):
+    def setDisabled(self, o: bool) -> None:
         super().setDisabled(o)
         if o:
             self.setValue(self._start)
 
 
 class IconLabel(QLabel):
+    """A label whose enabled/disabled state is fixed (ignores toggling)."""
+
     #     def __init__(self,parent = None):
     #         super(IconLabel,self).__init__(parent)
     #         self._pixmap = None
@@ -1403,24 +1509,26 @@ class IconLabel(QLabel):
     #             self.setPixmap(self._pixmap.scaled(size,
     #                            size,QtCore.Qt.KeepAspectRatio,
     #                            QtCore.Qt.SmoothTransformation))
-    def setDisabled(self, b):
+    def setDisabled(self, b: bool) -> None:
         pass
 
-    def setEnabled(self, b):
+    def setEnabled(self, b: bool) -> None:
         pass
 
 
 class BonusButton(QPushButton):
+    """Circular toggle button counting a per-round bonus, with SVG/PNG icon."""
+
     bonusChanged = QtCore.Signal(str, object)
 
     def __init__(
         self,
         bonus_name: str,
         maximum: int = 1,
-        colour=None,
-        size=32,
-        parent=None,
-    ):
+        colour: QColor | None = None,
+        size: int = 32,
+        parent: QWidget | None = None,
+    ) -> None:
         super().__init__(parent)
 
         self.bonus_name = bonus_name
@@ -1430,8 +1538,8 @@ class BonusButton(QPushButton):
         self.highlight_colour = colour if colour else QColor(200, 0, 0)
 
         # Keep SVGs as SVGs and render them directly in paintEvent().
-        self.svg_renderer = None
-        self._disabled_svg_cache = {}
+        self.svg_renderer: QSvgRenderer | None = None
+        self._disabled_svg_cache: dict = {}
 
         svg_path = f":/icons/{bonus_name}.svg"
         png_path = f":/icons/{bonus_name}.png"
@@ -1522,10 +1630,11 @@ class BonusButton(QPushButton):
 
         self.clicked.connect(self.plusone)
 
-    def setColour(self, colour):
+    def setColour(self, colour: QColor) -> None:
         self.highlight_colour = colour
 
-    def plusone(self):
+    def plusone(self) -> None:
+        """Advance the bonus count by one (wrapping past the maximum)."""
         old_value = self.count
 
         self.count = (self.count + 1) % (self.maximum + 1)
@@ -1552,10 +1661,10 @@ class BonusButton(QPushButton):
         )
         self.update()
 
-    def get_fade_alpha(self):
+    def get_fade_alpha(self) -> float:
         return self._fade_alpha
 
-    def set_fade_alpha(self, value):
+    def set_fade_alpha(self, value: float) -> None:
         self._fade_alpha = float(value)
         self.update()
 
@@ -1565,22 +1674,23 @@ class BonusButton(QPushButton):
         set_fade_alpha,
     )
 
-    def getValue(self):
+    def getValue(self) -> int:
         return self.count if self.isEnabled() else 0
 
-    def setChecked(self, checked):
+    def setChecked(self, checked: bool) -> None:
         if not checked:
             self.count = 0
 
         super().setChecked(checked)
 
-    def sizeHint(self):
+    def sizeHint(self) -> QSize:
         return QtCore.QSize(
             self.button_size,
             self.button_size,
         )
 
-    def setMaximum(self, maximum):
+    def setMaximum(self, maximum: int) -> None:
+        """Set the count ceiling, clamping the current count to fit."""
         self.maximum = maximum
 
         if self.count > self.maximum:
@@ -1628,7 +1738,7 @@ class BonusButton(QPushButton):
 
         return self._disabled_svg_cache[key]
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
         painter = QPainter(self)
 
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
@@ -1771,9 +1881,11 @@ class BonusButton(QPushButton):
 
 
 class SleepBlocker:
-    def __init__(self):
+    """Cross-platform helper that keeps the screen and system awake."""
+
+    def __init__(self) -> None:
         self.platform = sys.platform
-        self.proc = None
+        self.proc: subprocess.Popen | None = None
         self.active = False
 
         # Windows constants
@@ -1781,7 +1893,8 @@ class SleepBlocker:
         self.ES_SYSTEM_REQUIRED = 0x00000001
         self.ES_DISPLAY_REQUIRED = 0x00000002
 
-    def start(self):
+    def start(self) -> None:
+        """Block sleep/screensaver for the current platform."""
         if self.active:
             return
 
@@ -1794,7 +1907,8 @@ class SleepBlocker:
 
         self.active = True
 
-    def stop(self):
+    def stop(self) -> None:
+        """Release the sleep/screensaver block for the current platform."""
         if not self.active:
             return
 
@@ -1808,66 +1922,68 @@ class SleepBlocker:
         self.active = False
 
     # -------- macOS --------
-    def _start_macos(self):
+    def _start_macos(self) -> None:
         self.proc = subprocess.Popen(
             ["caffeinate", "-dims"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
 
-    def _stop_macos(self):
+    def _stop_macos(self) -> None:
         if self.proc:
             self.proc.terminate()
             self.proc = None
 
     # -------- Windows --------
-    def _start_windows(self):
+    def _start_windows(self) -> None:
         ctypes.windll.kernel32.SetThreadExecutionState(
             self.ES_CONTINUOUS | self.ES_SYSTEM_REQUIRED | self.ES_DISPLAY_REQUIRED
         )
 
-    def _stop_windows(self):
+    def _stop_windows(self) -> None:
         ctypes.windll.kernel32.SetThreadExecutionState(self.ES_CONTINUOUS)
 
     # -------- Linux (X11 only) --------
-    def _start_linux(self):
+    def _start_linux(self) -> None:
         if shutil.which("xset"):
             subprocess.call(["xset", "s", "off"])
             subprocess.call(["xset", "-dpms"])
 
-    def _stop_linux(self):
+    def _stop_linux(self) -> None:
         if shutil.which("xset"):
             subprocess.call(["xset", "s", "on"])
             subprocess.call(["xset", "+dpms"])
 
 
 class GameNotImplementedException(Exception):
-    pass
+    """Raised when a requested game has no concrete implementation."""
 
 
 class CardWidget(QWidget):
+    """A small aspect-ratio-preserving playing-card widget."""
+
     ASPECT_RATIO = 2.5 / 3.5
     MAX_WIDTH = 20
     MAX_HEIGHT = int(MAX_WIDTH / ASPECT_RATIO)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setMaximumSize(self.MAX_WIDTH, self.MAX_HEIGHT)
         self.reset()
 
-    def sizeHint(self):
+    def sizeHint(self) -> QSize:
         return QSize(self.MAX_WIDTH, self.MAX_HEIGHT)
 
-    def minimumSizeHint(self):
+    def minimumSizeHint(self) -> QSize:
         return QSize(20, int(20 / self.ASPECT_RATIO))
 
-    def hasHeightForWidth(self):
+    def hasHeightForWidth(self) -> bool:
         return True
 
-    def heightForWidth(self, width):
+    def heightForWidth(self, width: int) -> int:
         return int(width / self.ASPECT_RATIO)
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
@@ -1892,49 +2008,54 @@ class CardWidget(QWidget):
                 self.rect(), QtCore.Qt.AlignmentFlag.AlignCenter, self._character
             )
 
-    def getColour(self):
+    def getColour(self) -> QColor:
         return self._colour
 
-    def setColour(self, colour):
+    def setColour(self, colour: QColor | str) -> None:
         if isinstance(colour, str):
             self._colour = QColor(colour)
         else:
             self._colour = colour
         self.update()
 
-    def getChar(self):
+    def getChar(self) -> str:
         return self._character
 
-    def setChar(self, character):
+    def setChar(self, character: str) -> None:
         self._character = character
         self.update()
 
-    def reset(self, colour=None, char=None):
+    def reset(self, colour: QColor | None = None, char: str | None = None) -> None:
+        """Reset the card's colour and character (both default to blank)."""
         self._colour = colour if colour else QColor("grey")
         self._character = str(char) if char else ""
         self.update()
 
 
 class ToggleGroupBox(QGroupBox):
-    def __init__(self, parent=None):
+    """A group box holding stacked screens that cycle on any child click."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
 
         self.current = 0
-        self.screens = []
+        self.screens: list[QWidget] = []
         self.widgetLayout = QStackedLayout(self)
 
-    def addScreen(self, widget):
+    def addScreen(self, widget: QWidget) -> None:
+        """Add a screen and route clicks on it (and its children) to toggle."""
         self._install_event_filters(widget)
         self.screens.append(widget)
         self.widgetLayout.addWidget(widget)
 
-    def _install_event_filters(self, widget):
+    def _install_event_filters(self, widget: QWidget) -> None:
+        """Install this filter on ``widget`` and all of its descendants."""
         widget.installEventFilter(self)
 
         for child in widget.findChildren(QObject):
             child.installEventFilter(self)
 
-    def eventFilter(self, watched, event):
+    def eventFilter(self, watched: QObject, event) -> bool:
         if (
             event.type() == QEvent.Type.MouseButtonPress
             and event.button() == QtCore.Qt.MouseButton.LeftButton
@@ -1944,7 +2065,8 @@ class ToggleGroupBox(QGroupBox):
 
         return super().eventFilter(watched, event)
 
-    def toggle(self):
+    def toggle(self) -> None:
+        """Advance to the next stacked screen, wrapping around."""
         if len(self.screens) < 2:
             return
         self.current = (self.current + 1) % len(self.screens)

@@ -1,3 +1,7 @@
+"""Light/dark/system theme handling and stylesheet application."""
+
+from __future__ import annotations
+
 import logging
 from enum import StrEnum
 from typing import cast
@@ -12,15 +16,19 @@ logger = logging.getLogger(__name__)
 
 
 class Theme(StrEnum):
+    """The three selectable themes; SYSTEM follows the OS colour scheme."""
+
     SYSTEM = "system"
     LIGHT = "light"
     DARK = "dark"
 
 
 class ThemeManager(QObject):
+    """Applies the active theme's stylesheet and reacts to OS scheme changes."""
+
     themeChanged = Signal(str)
 
-    def __init__(self, parent: QObject | None = None):
+    def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
 
         self._theme = Theme.SYSTEM
@@ -37,6 +45,7 @@ class ThemeManager(QObject):
         return self._theme
 
     def effective_theme(self) -> Theme:
+        """Return the concrete theme in force, resolving SYSTEM to light/dark."""
         if self._theme != Theme.SYSTEM:
             return self._theme
         return self.system_theme
@@ -51,6 +60,7 @@ class ThemeManager(QObject):
         return Theme.LIGHT
 
     def set_theme(self, theme: Theme | str) -> None:
+        """Switch to ``theme``, update the OS colour scheme and restyle."""
         logger.debug("Setting theme to %s", theme)
         theme = Theme(theme)
 
@@ -76,6 +86,7 @@ class ThemeManager(QObject):
         self.themeChanged.emit(theme)
 
     def _apply_stylesheet(self, theme: Theme) -> None:
+        """Load and install the QSS stylesheet for the current system theme."""
         file = QFile(f":/styles/{self.system_theme}.qss")
         if file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
             stylesheet = QTextStream(file)
@@ -89,6 +100,7 @@ class ThemeManager(QObject):
         self,
         scheme: Qt.ColorScheme,
     ) -> None:
+        """Restyle when the OS scheme changes, but only in SYSTEM mode."""
         logger.debug("System theme changed")
         # Only propagate the change when following the system.
         if self._theme == Theme.SYSTEM:

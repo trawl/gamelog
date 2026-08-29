@@ -1,3 +1,8 @@
+"""Skull King match model: Pocha with configurable rounds and bonus scoring."""
+
+from __future__ import annotations
+
+from collections.abc import KeysView, Sequence
 from typing import ClassVar
 
 from core.engine.db import db
@@ -5,6 +10,8 @@ from games.pocha.model import PochaMatch
 
 
 class SkullKingMatch(PochaMatch):
+    """Pocha variant adding selectable round sequences and bonus scoring modes."""
+
     roundModes: ClassVar[dict] = {
         "standard_rounds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         "even": [2, 4, 6, 8, 10],
@@ -32,7 +39,7 @@ class SkullKingMatch(PochaMatch):
         "cannonball": {"bonus": 0, "reps": 1}
     }
 
-    def __init__(self, players=()):
+    def __init__(self, players: Sequence[str] = ()) -> None:
         super().__init__(players)
         self.game = "Skull King"
         self.dealingp = 1
@@ -41,22 +48,23 @@ class SkullKingMatch(PochaMatch):
             self.scoringMode = "standard_scoring"
         self.setRoundMode("standard_rounds")
 
-    def getBonus(self, bonus_name):
+    def getBonus(self, bonus_name: str) -> int:
         try:
             return self.scoringModes[self.scoringMode][bonus_name]["bonus"]
         except KeyError:
             return 0
 
-    def getBonusReps(self, bonus_name):
+    def getBonusReps(self, bonus_name: str) -> int:
         try:
             return self.scoringModes[self.scoringMode][bonus_name]["reps"]
         except KeyError:
             return 0
 
-    def listBonusTypes(self):
+    def listBonusTypes(self) -> KeysView[str]:
         return self.scoringModes[self.scoringMode].keys()
 
-    def listScoringModes(self):
+    def listScoringModes(self) -> list[str]:
+        """List the scoring modes available for the current player count."""
         return [
             sm
             for sm in self.scoringModes
@@ -66,28 +74,31 @@ class SkullKingMatch(PochaMatch):
         ]
 
     @classmethod
-    def listRoundModes(cls):
+    def listRoundModes(cls) -> KeysView[str]:
         return cls.roundModes.keys()
 
-    def getScoringMode(self):
+    def getScoringMode(self) -> str:
         return self.scoringMode
 
-    def setScoringMode(self, smode):
+    def setScoringMode(self, smode: str) -> None:
+        """Set the active scoring mode, rejecting unknown names."""
         if smode not in self.scoringModes:
             raise ValueError(
                 f"Invalid Scoring Mode type {smode}. Possible values are: {', '.join(self.scoringModes)}"
             )
         self.scoringMode = smode
 
-    def getRoundMode(self):
+    def getRoundMode(self) -> str:
         return self.roundMode
 
-    def getRoundSequence(self, mode=None):
+    def getRoundSequence(self, mode: str | None = None) -> list[int]:
+        """Return the hand-size sequence for ``mode`` (default: current mode)."""
         if mode is None:
             mode = self.roundMode
         return self.roundModes[mode]
 
-    def setRoundMode(self, rmode):
+    def setRoundMode(self, rmode: str) -> None:
+        """Set the round mode and derive the hand sequence and round count."""
         if rmode not in self.roundModes:
             raise ValueError(
                 f"Invalid Round Mode type {rmode}. Possible values are: {', '.join(self.roundModes.keys())}"
@@ -96,10 +107,11 @@ class SkullKingMatch(PochaMatch):
         self.hands = self.roundModes[self.roundMode]
         self.maxRounds = len(self.hands)
 
-    def getHands(self):
+    def getHands(self) -> list[int]:
         return self.roundModes[self.roundMode]
 
-    def resumeMatch(self, idMatch):
+    def resumeMatch(self, idMatch: int) -> bool:
+        """Reload the base match plus the persisted scoring and round modes."""
         if not super().resumeMatch(idMatch):
             return False
 
@@ -126,7 +138,8 @@ class SkullKingMatch(PochaMatch):
 
         return True
 
-    def flushToDB(self):
+    def flushToDB(self) -> None:
+        """Persist the base match plus the scoring and round modes."""
         super().flushToDB()
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "

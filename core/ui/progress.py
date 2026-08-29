@@ -1,14 +1,21 @@
+"""Animated multi-step progress bar with theme-aware gradient segments."""
+
+from __future__ import annotations
+
+from collections.abc import Sequence
 from typing import cast
 
 from PySide6.QtCore import Property, QEasingCurve, QPropertyAnimation, QRectF, Qt
-from PySide6.QtGui import QColor, QFont, QLinearGradient, QPainter
+from PySide6.QtGui import QColor, QFont, QLinearGradient, QPainter, QPaintEvent
 from PySide6.QtWidgets import QApplication, QWidget
 
 from core.ui.gamelogapplication import GamelogApplication
 
 
 class StepProgressBar(QWidget):
-    def __init__(self, steps, parent=None):
+    """Horizontal bar showing ordered steps as done/active/pending segments."""
+
+    def __init__(self, steps: Sequence[str], parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.steps = steps
         self.current_step = 0
@@ -40,10 +47,11 @@ class StepProgressBar(QWidget):
     # ---------------------------------------------
     # THEME
     # ---------------------------------------------
-    def _theme_changed(self, theme):
+    def _theme_changed(self, theme) -> None:
         self._update_colors(theme)
 
-    def _update_colors(self, theme):
+    def _update_colors(self, theme) -> None:
+        """Set the segment/highlight colour palette for the active theme."""
         if hasattr(theme, "value"):
             theme = theme.value
 
@@ -91,10 +99,10 @@ class StepProgressBar(QWidget):
     # ---------------------------------------------
     # PROPERTIES FOR ANIMATION
     # ---------------------------------------------
-    def getHighlightPos(self):
+    def getHighlightPos(self) -> float:
         return self._highlight_pos
 
-    def setHighlightPos(self, value):
+    def setHighlightPos(self, value: float) -> None:
         self._highlight_pos = value
         self.update()
 
@@ -107,7 +115,8 @@ class StepProgressBar(QWidget):
     # ---------------------------------------------
     # PUBLIC API
     # ---------------------------------------------
-    def setSteps(self, steps, keep_current=False):
+    def setSteps(self, steps: Sequence[str], keep_current: bool = False) -> None:
+        """Replace the step labels, optionally clamping the current step."""
         self.steps = [str(s) for s in steps]
 
         if keep_current:
@@ -120,7 +129,8 @@ class StepProgressBar(QWidget):
 
         self.update()
 
-    def setCurrentStep(self, step):
+    def setCurrentStep(self, step: int) -> None:
+        """Move to ``step`` and animate the highlight sliding to it."""
         step = int(step)
 
         if step == self.current_step or step < 0 or step >= len(self.steps) + 1:
@@ -142,7 +152,8 @@ class StepProgressBar(QWidget):
     # ---------------------------------------------
     # PAINTING
     # ---------------------------------------------
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """Render segments, gloss, sliding highlight and step labels."""
         if not self.steps:
             return super().paintEvent(event)
 

@@ -1,8 +1,13 @@
+"""Quick-statistics tab widgets summarising per-game and per-player results."""
+
+from __future__ import annotations
+
 import datetime
 import logging
+from collections.abc import Sequence
 
 from PySide6 import QtCore
-from PySide6.QtCore import QCoreApplication
+from PySide6.QtCore import QCoreApplication, QSize
 from PySide6.QtWidgets import (
     QFrame,
     QGroupBox,
@@ -25,17 +30,23 @@ logger = logging.getLogger(__name__)
 
 
 class QuickStatsTW(QTabWidget):
-    def __init__(self, game, players, parent):
+    """Tab widget pairing general and per-player quick-statistics views."""
+
+    def __init__(
+        self, game: str, players: Sequence[str], parent: QWidget | None
+    ) -> None:
         super().__init__(parent)
         self.game = game
         self.players = players
         self.initUI()
 
-    def initStatsWidgets(self):
+    def initStatsWidgets(self) -> None:
+        """Create the general and particular statistics tab pages."""
         self.gs = GeneralQuickStats(self.game, self)
         self.ps = ParticularQuickStats(self.game, self)
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Build the tabs, populate players and apply translations."""
         self.initStatsWidgets()
         try:
             self.ps.updatePlayers(self.players)
@@ -45,7 +56,8 @@ class QuickStatsTW(QTabWidget):
         self.addTab(self.ps, "")
         self.retranslateUI()
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
+        """Refresh tab labels for the current language and button-text setting."""
         if appsettings["text_in_buttons"]:
             self.setTabText(self.indexOf(self.gs), self.tr("General"))
             self.setTabText(self.indexOf(self.ps), self.tr("Particular"))
@@ -55,7 +67,10 @@ class QuickStatsTW(QTabWidget):
         self.gs.retranslateUI()
         self.ps.retranslateUI()
 
-    def updateContent(self, game=None, players=None):
+    def updateContent(
+        self, game: str | None = None, players: Sequence[str] | None = None
+    ) -> None:
+        """Refresh both stats pages for the given game and player selection."""
         if game is not None:
             self.game = game
         self.gs.updateContent(game)
@@ -64,6 +79,8 @@ class QuickStatsTW(QTabWidget):
 
 
 class AbstractQuickStatsBox(QGroupBox):
+    """Scrollable box rendering match- and player-level statistics tables."""
+
     QCoreApplication.translate("AbstractQuickStatsBox", "Longest")
     QCoreApplication.translate("AbstractQuickStatsBox", "Shortest")
     QCoreApplication.translate("AbstractQuickStatsBox", "Average")
@@ -78,7 +95,7 @@ class AbstractQuickStatsBox(QGroupBox):
     QCoreApplication.translate("AbstractQuickStatsBox", "Average")
     QCoreApplication.translate("AbstractQuickStatsBox", "Total")
 
-    def __init__(self, game, parent):
+    def __init__(self, game: str, parent: QWidget | None) -> None:
         super().__init__(parent)
         # self.stats = None
         self.game = game
@@ -131,10 +148,12 @@ class AbstractQuickStatsBox(QGroupBox):
         )
         self.setSizePolicy(sp)
 
-    def initEngine(self):
+    def initEngine(self) -> None:
+        """Instantiate the statistics engine for this game."""
         self.stats = registry.create_stats_engine(self.game)
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Build the scroll area, labels and statistics tables."""
         self.superlayout = QVBoxLayout(self)
         self.scrollarea = QScrollArea()
         self.scrollarea.setWidgetResizable(True)
@@ -175,7 +194,8 @@ class AbstractQuickStatsBox(QGroupBox):
         self.widgetLayout.addStretch()
         self.retranslateUI()
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
+        """Apply translated title strings and refresh the displayed content."""
         self.gameStatsText = self.tr("Last winner") + ": {} ({})"
         #         self.setTitle(self.tr('Statistics'))
         self.matchStatsTitleLabel.setText(self.tr("Matches"))
@@ -183,7 +203,8 @@ class AbstractQuickStatsBox(QGroupBox):
         self.updateContent()
         self.update()
 
-    def updateContent(self, _game=None):
+    def updateContent(self, _game: str | None = None) -> None:
+        """Reload statistics from the engine and repopulate every table."""
         # if game is not None: self.game = game
         # self.setTitle(self.tr('Statistics'))
         self.stats.update()
@@ -220,7 +241,15 @@ class AbstractQuickStatsBox(QGroupBox):
             self.playerStatsTable, playerstats, self.playerStatsKeys, "nick", headers
         )
 
-    def updateTable(self, table, contents, keyorder, rowheaderkey, cheaders):
+    def updateTable(
+        self,
+        table: StatsTable,
+        contents: Sequence[dict] | None,
+        keyorder: Sequence[str],
+        rowheaderkey: str,
+        cheaders: Sequence[str],
+    ) -> None:
+        """Fill ``table`` from ``contents`` in ``keyorder`` column order."""
         table.clear()
         if contents and len(contents[0]) > 1:
             table.show()
@@ -267,26 +296,34 @@ class AbstractQuickStatsBox(QGroupBox):
 
 
 class GeneralQuickStats(AbstractQuickStatsBox):
+    """Quick-stats box aggregating results across all players."""
+
     pass
 
 
 class ParticularQuickStats(AbstractQuickStatsBox):
-    def initEngine(self):
+    """Quick-stats box filtered to a specific set of players."""
+
+    def initEngine(self) -> None:
+        """Instantiate the per-player statistics engine for this game."""
         self.stats = registry.create_particular_stats_engine(self.game)
 
-    def updatePlayers(self, players):
+    def updatePlayers(self, players: Sequence[str] | None) -> None:
         if players:
             self.stats.updatePlayers(players)
 
 
 class StatsTable(QTableWidget):
-    def __init__(self, *args, **kwargs):
+    """Read-only table with stretched columns and a fitted size hint."""
+
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
         # self.setSortingEnabled(True)
 
-    def sizeHint(self):
+    def sizeHint(self) -> QSize:
+        """Size the table to its column count and row heights."""
         s = QtCore.QSize()
         s.setWidth(super().sizeHint().width())
         s.setWidth(75 * (self.columnCount() + 1) + 2 * self.columnCount())
@@ -295,15 +332,17 @@ class StatsTable(QTableWidget):
 
 
 class GameStatsWidget(Tab):
-    def __init__(self, parent=None):
+    """Placeholder tab reserved for the full game-statistics view."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self._parent = parent
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
         # Setup Layouts
 
         self.retranslateUI()
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
         pass

@@ -1,7 +1,18 @@
+"""Statistics engines: aggregate match/player figures straight from SQLite.
+
+``StatsEngine`` computes app-wide figures; ``ParticularStatsEngine`` restricts
+them to matches played by an exact set of players. Games may subclass either to
+add their own game-specific statistics.
+"""
+
+from __future__ import annotations
+
 from core.engine.db import GameLogDB, db
 
 
 class StatsEngine:
+    """App-wide game, match and player statistics, queried on demand."""
+
     _lastwinnerquery = """
     SELECT Game_name AS game,
         nick AS lastwinner,
@@ -51,15 +62,15 @@ class StatsEngine:
     ORDER BY game, victoryp DESC, played DESC;
     """
 
-    def __init__(self):
-        self.generalgamestats = None
-        self.generalmatchstats = None
-        self.generalplayerstats = None
+    def __init__(self) -> None:
+        self.generalgamestats: list[dict] | None = None
+        self.generalmatchstats: list[dict] | None = None
+        self.generalplayerstats: list[dict] | None = None
         # Bound parameters for the queries below (populated by subclasses that
         # filter by player).
         self._params: tuple = ()
 
-    def _bound_params(self, query):
+    def _bound_params(self, query: str) -> tuple:
         """Parameters to bind for ``query``.
 
         The player-filter clause (see ``ParticularStatsEngine``) is spliced in
@@ -73,7 +84,8 @@ class StatsEngine:
         repeats = query.count("?") // len(self._params)
         return self._params * repeats
 
-    def update(self, _players=None):
+    def update(self, _players: list[str] | None = None) -> None:
+        """Refresh the cached game, match and player statistics."""
         # Number of matches played
         try:
             self.generalgamestats = db.queryDict(
@@ -90,38 +102,45 @@ class StatsEngine:
         except IndexError:
             pass
 
-    def getGameStats(self, game):
+    def getGameStats(self, game: str) -> dict | None:
+        """Return the last-winner row for ``game``, or ``None``."""
         if self.generalgamestats:
             for row in self.generalgamestats:
                 if row["game"] == game:
                     return row
         return None
 
-    def getMatchGameStats(self, game):
+    def getMatchGameStats(self, game: str) -> list[dict] | None:
+        """Return the per-player-count match statistics for ``game``."""
         if self.generalmatchstats:
             return [row for row in self.generalmatchstats if row["game"] == game]
         return None
 
-    def getPlayerGameStats(self, game):
+    def getPlayerGameStats(self, game: str) -> list[dict] | None:
+        """Return the per-player statistics for ``game``."""
         if self.generalplayerstats:
             return [row for row in self.generalplayerstats if row["game"] == game]
         return None
 
 
 class ParticularStatsEngine(StatsEngine):
-    def __init__(self):
+    """Statistics restricted to matches played by an exact set of players."""
+
+    def __init__(self) -> None:
         super().__init__()
         self._lastwinnerquerybase = self._lastwinnerquery
         self._generalmatchstatsquerybase = self._generalmatchstatsquery
         self._generalplayerstatsquerybase = self._generalplayerstatsquery
-        self.players = None
+        self.players: set[str] | None = None
         self._newclause = ""
 
-    def update(self, players=None):
+    def update(self, players: list[str] | None = None) -> None:
+        """Rebuild the player filter, then refresh all statistics."""
         self.updatePlayers(players)
         super().update()
 
-    def updatePlayers(self, players):
+    def updatePlayers(self, players: list[str] | None) -> None:
+        """Rewrite the queries to keep only matches with exactly ``players``."""
         if players:
             splayers = set(players)
             if self.players != splayers:

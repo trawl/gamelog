@@ -1,32 +1,48 @@
+"""Game engines: the play-time controllers that sit above the match models.
+
+An engine owns the roster and player order, drives a match through its rounds,
+applies the dealer-rotation policy and exposes a small CLI test harness. Games
+subclass ``GameEngine`` / ``RoundGameEngine`` / ``EntryGameEngine``.
+"""
+
+from __future__ import annotations
+
 import datetime
 import logging
 import random
 import sys
 from abc import abstractmethod
 from collections.abc import Callable
-from typing import TypeVar
 
 from core.engine.db import db
-from core.model.base import GenericRoundMatch, Player
+from core.model.base import GenericMatch, GenericRound, GenericRoundMatch, Player
 from core.registry import registry
 
 logger = logging.getLogger(__name__)
 
 
-class GameEngine:
+class GameEngine[MatchT: GenericMatch]:
+    """Base engine: roster management, match lifecycle and dealer policy.
+
+    Parameterised by the concrete match type it drives, so subclasses inherit
+    a correctly-typed ``self.match`` (e.g. a ``GenericRoundMatch``).
+    """
+
+    # Dealer-rotation policies.
     NoDealer = 0
     RRDealer = 1
     WinnerDealer = 2
     StarterDealer = 3
 
-    def __init__(self):
-        self.players = {}
-        self.porder = []
+    def __init__(self) -> None:
+        self.players: dict[str, Player] = {}
+        self.porder: list[str] = []
         if not hasattr(self, "game"):
-            self.game = None
-        self.match = registry.create_match(self.game)
+            self.game: str | None = None
+        self.match: MatchT = registry.create_match(self.game)
 
-    def addPlayer(self, nick, fullName=""):
+    def addPlayer(self, nick: str, fullName: str = "") -> None:
+        """Add a player to the roster, creating the DB record if it is new."""
         if fullName == "":
             fullName = nick
         self.porder.append(nick)
@@ -46,13 +62,15 @@ class GameEngine:
                 (nick, fullName, qd),
             )
 
-    def begin(self):
+    def begin(self) -> None:
+        """Start a new match with the current player order."""
         if not self.match:
             self.match = registry.create_match(self.game)
         self.match.setPlayers(self.porder)
         self.match.startMatch()
 
-    def resume(self, idMatch):
+    def resume(self, idMatch: int) -> bool:
+        """Resume a saved match and rebuild its roster. False if not found."""
         if not self.match:
             self.match = registry.create_match(self.game)
         if self.match.resumeMatch(idMatch):
@@ -61,25 +79,26 @@ class GameEngine:
             return True
         return False
 
-    def getGame(self):
+    def getGame(self) -> str | None:
         return self.game
 
-    def getWinner(self):
+    def getWinner(self) -> str | None:
         if self.match:
             return self.match.getWinner()
         return None
 
-    def getPlayers(self):
+    def getPlayers(self) -> dict[str, Player]:
         return self.players
 
-    def getListPlayers(self):
+    def getListPlayers(self) -> list[str]:
         return self.porder
 
-    def setListPlayers(self, neworder):
+    def setListPlayers(self, neworder: list[str]) -> None:
+        """Adopt a new player order, but only if it is a pure reordering."""
         if sorted(neworder) == sorted(self.porder):
             self.porder = neworder
 
-    def getScoreFromPlayer(self, player):
+    def getScoreFromPlayer(self, player: str) -> int:
         try:
             if self.match:
                 return self.match.getScoreFromPlayer(player)
@@ -87,102 +106,117 @@ class GameEngine:
         except (KeyError, AttributeError):
             return 0
 
-    def getGameMaxPlayers(self):
+    def getGameMaxPlayers(self) -> int:
         cur = db.execute("Select maxPlayers from Game where name=?", (self.game,))
         r = cur.fetchone()
         return int(r["maxPlayers"])
 
-    def pause(self):
+    def pause(self) -> None:
         self.match.pause()
 
-    def unpause(self):
+    def unpause(self) -> None:
         self.match.unpause()
 
-    def save(self):
+    def save(self) -> None:
         self.match.save()
 
-    def isPaused(self):
+    def isPaused(self) -> bool:
         return self.match.isPaused()
 
-    def getStartTime(self):
+    def getStartTime(self) -> datetime.datetime | None:
         return self.match.getStartTime()
 
-    def getFinishTime(self):
+    def getFinishTime(self) -> datetime.datetime | None:
         return self.match.getFinishTime()
 
-    def getGameSeconds(self):
+    def getGameSeconds(self) -> int:
         return self.match.getGameSeconds()
 
     def requiresExplicitFinish(self) -> bool:
+        """Whether the game only ends on an explicit 'finish' action."""
         return False
 
-    def updateTimes(self, start, finish, seconds):
+    def updateTimes(
+        self,
+        start: datetime.datetime | None,
+        finish: datetime.datetime | None,
+        seconds: int,
+    ) -> None:
+        """Overwrite the match's start/finish/elapsed times and persist them."""
         self.match.setStartTime(start)
         self.match.setFinishTime(finish)
         self.match.setGameSeconds(seconds)
         logger.debug("Updated times: %s | %s | %s", start, finish, seconds)
         self.match.flushToDB()
 
-    def cancelMatch(self):
+    def cancelMatch(self) -> None:
         self.match.cancel()
 
-    def getDealingPolicy(self):
+    def getDealingPolicy(self) -> int:
         return self.match.getDealingPolicy()
 
-    def setDealingPolicy(self, policy):
+    def setDealingPolicy(self, policy: int) -> None:
         self.match.setDealingPolicy(policy)
 
-    def getDealer(self):
+    def getDealer(self) -> str | None:
         return self.match.getDealer()
 
-    def setDealer(self, player):
+    def setDealer(self, player: str) -> None:
         self.match.setDealer(player)
 
-    def setPlayerOrder(self, porder):
+    def setPlayerOrder(self, porder: list[str]) -> None:
         self.porder = porder
 
-    def updateDealer(self):
-        pass
+    def updateDealer(self) -> None:
+        """Advance the dealer per the active policy. No-op in the base engine."""
 
 
-class RoundGameEngine(GameEngine):
-    match: "GenericRoundMatch"
+class RoundGameEngine(GameEngine[GenericRoundMatch]):
+    """Engine for round-based games, with dealer rotation between rounds."""
 
-    def __init__(self):
+    round: GenericRound
+
+    def __init__(self) -> None:
         super().__init__()
-        self.starting_dealer = None
+        self.starting_dealer: str | None = None
 
-    def begin(self):
+    def begin(self) -> None:
+        """Start the match and pick a random opening dealer if required."""
         super().begin()
         if self.getDealingPolicy() != self.NoDealer:
             self.starting_dealer = random.choice(self.porder)
             self.match.setDealer(self.starting_dealer)
 
-    def openRound(self, nround):
+    def openRound(self, nround: int) -> None:
+        """Begin recording round number ``nround``."""
         self.round = self.match.createRound(nround)
 
-    def setRoundWinner(self, winner):
+    def setRoundWinner(self, winner: str) -> None:
         self.round.setWinner(winner)
 
-    def addRoundInfo(self, player, score, extras=None):
+    def addRoundInfo(self, player: str, score: int, extras: dict | None = None) -> None:
         self.round.addInfo(player, score, extras)
 
-    def commitRound(self):
+    def commitRound(self) -> None:
+        """Store the open round in the match and rotate the dealer."""
         self.match.addRound(self.round)
         self.updateDealer()
 
-    def deleteRound(self, nrnd):
+    def deleteRound(self, nrnd: int) -> None:
+        """Remove round ``nrnd`` and roll the dealer back one step."""
         self.match.deleteRound(nrnd)
         self.updateDealer(back=True)
         self.printStats()
 
-    def getRounds(self):
+    def getRounds(self) -> list[GenericRound]:
         return self.match.getRounds()
 
-    def getNumRound(self):
+    def getNumRound(self) -> int:
+        """Return the 1-based number of the next round to play."""
         return len(self.match.rounds) + 1
 
-    def updateDealer(self, back=False):
+    def updateDealer(self, back: bool = False) -> None:
+        """Rotate the dealer per the active policy (``back`` undoes a step)."""
         if self.match.getWinner():
             return
         if self.getDealingPolicy() == self.RRDealer:
@@ -190,19 +224,26 @@ class RoundGameEngine(GameEngine):
         elif self.getDealingPolicy() == self.WinnerDealer:
             self.updateWinnerDealer(back)
 
-    def updateRRDealer(self, back=False):
+    def updateRRDealer(self, back: bool = False) -> None:
+        """Round-robin rotation: hand the deal to the next player in order."""
+        dealer = self.getDealer()
+        if dealer is None:
+            return
         increment = -1 if back else 1
-        candidate = (self.porder.index(self.getDealer()) + increment) % len(self.porder)
+        candidate = (self.porder.index(dealer) + increment) % len(self.porder)
         self.match.setDealer(self.porder[candidate])
 
-    def updateWinnerDealer(self, back=False):
+    def updateWinnerDealer(self, back: bool = False) -> None:
+        """Winner-deals rotation: last round's winner becomes the dealer."""
         try:
             newdealer = self.getRounds()[-1].getWinner()
         except IndexError:
             newdealer = self.starting_dealer
-        self.match.setDealer(newdealer)
+        if newdealer is not None:
+            self.match.setDealer(newdealer)
 
-    def printStats(self):
+    def printStats(self) -> None:
+        """Dump the ASCII scoreboard to stdout (only when debug logging is on)."""
         # The board is a verbose console dump; skip it entirely unless debug
         # logging is on. (Kept as prints so the ASCII board stays intact,
         # including subclass printExtra* hooks.)
@@ -262,7 +303,8 @@ class RoundGameEngine(GameEngine):
     # Helper functions for cli test
     #
 
-    def gameStub(self):
+    def gameStub(self) -> None:
+        """Interactive CLI harness to drive a match from the terminal."""
         # CLI test harness: turn on debug logging so printStats() shows the
         # board (it is silent at the default level).
         from core.logging_config import configure_logging
@@ -305,7 +347,8 @@ class RoundGameEngine(GameEngine):
         self.extraStubConfig()
         self.runStubRoundLoop()
 
-    def runStubRoundLoop(self):
+    def runStubRoundLoop(self) -> None:
+        """CLI harness: prompt for each round's result until a winner emerges."""
         self.printStats()
         while not self.getWinner():
             self.openRound(self.getNumRound())
@@ -341,38 +384,43 @@ class RoundGameEngine(GameEngine):
             self.commitRound()
             self.printStats()
 
-    def runRoundPlayer(self, _name, _winner=None):
-        pass
+    def runRoundPlayer(self, _name: str, _winner: str | None = None) -> None:
+        """CLI harness hook: collect one player's input for a round."""
 
     # To be implemented in subclasses
     @abstractmethod
-    def printExtraStats(self):
-        pass
+    def printExtraStats(self) -> None:
+        """Print game-specific header stats on the CLI scoreboard."""
 
     @abstractmethod
-    def printExtraPlayerStats(self, player):
-        pass
+    def printExtraPlayerStats(self, player: str) -> None:
+        """Print game-specific per-player stats on the CLI scoreboard."""
 
     @abstractmethod
-    def runStubRoundPlayer(self, player, winner):
-        pass
+    def runStubRoundPlayer(self, player: str, winner: str) -> None:
+        """CLI harness hook: collect ``player``'s round input."""
 
     @abstractmethod
-    def extraStubConfig(self):
-        pass
+    def extraStubConfig(self) -> None:
+        """CLI harness hook: gather any extra game configuration."""
 
 
 class EntryGameEngine(RoundGameEngine):
-    def addEntry(self, player, score, extras=None):
+    """Engine for games scored as individual entries rather than full rounds."""
+
+    def addEntry(self, player: str, score: int, extras: dict | None = None) -> None:
+        """Record a single scoring entry for ``player`` as its own round."""
         self.openRound(self.getNumRound())
         self.addRoundInfo(player, score, extras)
         self.commitRound()
 
-    def finishGame(self):
+    def finishGame(self) -> None:
+        """End the game, computing the final winner."""
         self.match.updateWinner()
         self.printStats()
 
-    def runStubRoundLoop(self):
+    def runStubRoundLoop(self) -> None:
+        """CLI harness: collect entries until the game is finished."""
         self.printStats()
         while not self.getWinner():
             while True:
@@ -409,16 +457,14 @@ class EntryGameEngine(RoundGameEngine):
             self.printStats()
 
     @abstractmethod
-    def getNumEntry(self):
-        pass
+    def getNumEntry(self) -> int:
+        """Return the 1-based number of the next entry."""
 
 
 #
 # Helper functions for cli test
 #
 #
-
-T = TypeVar("T")
 
 
 def readInput[T](
@@ -427,6 +473,7 @@ def readInput[T](
     validator: Callable[[T], bool] = lambda x: True,
     errormsg: str = "Sorry, invalid answer.",
 ) -> T:
+    """Prompt until ``cast(input)`` parses and satisfies ``validator``."""
     while True:
         try:
             value = cast(input(prompt))

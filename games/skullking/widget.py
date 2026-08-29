@@ -1,3 +1,7 @@
+"""Skull King board widgets: score entry, bonus buttons, tables and plots."""
+
+from __future__ import annotations
+
 import logging
 from typing import cast
 
@@ -9,7 +13,7 @@ from PySide6.QtCore import (
     Qt,
     QTimer,
 )
-from PySide6.QtGui import QColor
+from PySide6.QtGui import QColor, QKeyEvent, QMouseEvent
 from PySide6.QtWidgets import (
     QComboBox,
     QFrame,
@@ -25,6 +29,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from core.model.base import GenericRound
 from core.ui.game import (
     BonusButton,
     GameInputWidget,
@@ -45,6 +50,8 @@ i18n = QCoreApplication.translate
 
 
 class SkullKingWidget(GameWidget):
+    """Top-level Skull King game widget with scoring and round mode combos."""
+
     QCoreApplication.translate("SkullKingWidget", "classic_scoring")
     QCoreApplication.translate("SkullKingWidget", "standard_scoring")
     QCoreApplication.translate("SkullKingWidget", "rascal_scoring")
@@ -55,16 +62,17 @@ class SkullKingWidget(GameWidget):
     QCoreApplication.translate("SkullKingWidget", "barrage")
     QCoreApplication.translate("SkullKingWidget", "whirlpool")
 
-    def createEngine(self):
+    def createEngine(self) -> None:
         if self.game != "Skull King":
             raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = SkullKingEngine()
 
-    def initUI(self):
+    def initUI(self) -> None:
         super().initUI()
         self.retranslateUI()
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
+        """Re-translate the scoring and round mode combo item labels."""
         super().retranslateUI()
         # self.playerGroup.setTitle(i18n("GameWidget", "Scoreboard"))
         # self.scoringModeLabel.setText(self.tr("Scoring"))
@@ -75,15 +83,20 @@ class SkullKingWidget(GameWidget):
         for i, m in enumerate(cast("SkullKingEngine", self.engine).listRoundModes()):
             self.roundModeCombo.setItemText(i, self.tr(m))
 
-    def createGameInputWidget(self, parent=None):  # pyright: ignore[reportIncompatibleMethodOverride]
+    def createGameInputWidget(self, parent: QWidget | None = None):  # pyright: ignore[reportIncompatibleMethodOverride]
         return SkullKingInputWidget(self.engine, parent)
 
-    def createRoundsDetail(self, parent=None):
+    def createRoundsDetail(self, parent: QWidget | None = None):
         return SkullKingRoundsDetail(self.engine, parent)
 
-    def addExtraConfig(self):
+    def addExtraConfig(self) -> None:
+        """Add the progress bar and the scoring and round mode selectors."""
         super().addExtraConfig()
-        self.progressBar = StepProgressBar(self.engine.getRoundSequence(), self)
+        self.progressBar = StepProgressBar(
+            # StepProgressBar accepts int steps (it stringifies them internally).
+            cast("SkullKingEngine", self.engine).getRoundSequence(),  # pyright: ignore[reportArgumentType]
+            self,
+        )
         self.matchGroupLayout.addWidget(self.progressBar)
 
         self.configLayout = QVBoxLayout()
@@ -115,9 +128,10 @@ class SkullKingWidget(GameWidget):
         self.roundModeCombo.currentIndexChanged.connect(self.changeRoundMode)
         self.configLayout.addWidget(self.roundModeCombo)
 
-    def setRoundTitle(self):
+    def setRoundTitle(self) -> None:
+        """Set the round title showing the current hand count."""
         super().setRoundTitle()
-        hands = self.engine.getHands()
+        hands = cast("SkullKingEngine", self.engine).getHands()
         if hands == 1:
             self.roundTitleLabel.setText(
                 "{} - {} {}".format(
@@ -131,20 +145,23 @@ class SkullKingWidget(GameWidget):
                 )
             )
 
-    def enableConfigCombos(self, enable=True):
+    def enableConfigCombos(self, enable: bool = True) -> None:
         for combo in (self.scoringModeCombo, self.roundModeCombo):
             combo.view().setEnabled(enable)
 
-    def checkPlayerScore(self, player, score, extras=None):
+    def checkPlayerScore(
+        self, player: str, score: int, extras: dict | None = None
+    ) -> bool:
         return True
 
-    def updatePanel(self):
+    def updatePanel(self) -> None:
         super().updatePanel()
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         self.enableConfigCombos(self.engine.getNumRound() == 1)
 
-    def commitRoundSanityCheck(self, interactive=False):
-        hands = self.engine.getHands()
+    def commitRoundSanityCheck(self, interactive: bool = False) -> bool:
+        """Validate the won hand counts and bonuses before committing a round."""
+        hands = cast("SkullKingEngine", self.engine).getHands()
         wonhands = cast(SkullKingInputWidget, self.gameInput).getWonHands()
         won = sum(wonhands.values())
         if min(wonhands.values()) < 0:
@@ -154,7 +171,11 @@ class SkullKingWidget(GameWidget):
             else:
                 logger.debug(msg)
             return False
-        if hands == won + 2 and self.engine.getScoringMode() != "classic_scoring":
+        if (
+            hands == won + 2
+            and cast("SkullKingEngine", self.engine).getScoringMode()
+            != "classic_scoring"
+        ):
             if interactive:
                 # Kraken + White whale corner case
                 kraken_msg = QCoreApplication.translate(
@@ -178,7 +199,11 @@ class SkullKingWidget(GameWidget):
                 )
                 if ret == QMessageBox.StandardButton.No:
                     return False
-        elif hands == won + 1 and self.engine.getScoringMode() != "classic_scoring":
+        elif (
+            hands == won + 1
+            and cast("SkullKingEngine", self.engine).getScoringMode()
+            != "classic_scoring"
+        ):
             if interactive:
                 # Kraken case
                 kraken_msg = QCoreApplication.translate(
@@ -212,7 +237,7 @@ class SkullKingWidget(GameWidget):
                 logger.debug(msg)
             return False
         # Validate bonuses
-        if self.engine.getScoringMode() != "classic_scoring":
+        if cast("SkullKingEngine", self.engine).getScoringMode() != "classic_scoring":
             fourteens = 0
             loots = 0
             for piw in self.gameInput.playerInputList.values():
@@ -241,7 +266,8 @@ class SkullKingWidget(GameWidget):
                 return False
         return True
 
-    def changeRoundMode(self, _index):
+    def changeRoundMode(self, _index) -> None:
+        """Apply the selected round mode and refresh dependent widgets."""
         rmode = list(cast("SkullKingEngine", self.engine).listRoundModes())[
             self.roundModeCombo.currentIndex()
         ]
@@ -251,12 +277,16 @@ class SkullKingWidget(GameWidget):
             QMessageBox.critical(self, self.game, str(ve))
             return
         self.setRoundTitle()
-        self.progressBar.setSteps(self.engine.getRoundSequence())
+        self.progressBar.setSteps(
+            # StepProgressBar accepts int steps (it stringifies them internally).
+            cast("SkullKingEngine", self.engine).getRoundSequence()  # pyright: ignore[reportArgumentType]
+        )
         self.progressBar.setCurrentStep(self.engine.getNumRound() - 1)
         self.detailGroup.updatePlot()
         cast(SkullKingInputWidget, self.gameInput).changeRoundMode()
 
-    def changeScoringMode(self, _index):
+    def changeScoringMode(self, _index) -> None:
+        """Apply the selected scoring mode and refresh the input widget."""
         smode = list(cast("SkullKingEngine", self.engine).listScoringModes())[
             self.scoringModeCombo.currentIndex()
         ]
@@ -270,11 +300,14 @@ class SkullKingWidget(GameWidget):
 
 
 class SkullKingInputWidget(GameInputWidget):
-    def __init__(self, engine, parent=None):
-        self.lastChoices = []
+    """Grid of per-player Skull King input widgets with keyboard entry."""
+
+    def __init__(self, engine, parent=None) -> None:
+        self.lastChoices: list[tuple[str, str]] = []
         super().__init__(engine, parent)
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Lay out one input widget per player and wire their signals."""
         self.widgetLayout = QGridLayout(self)
         players = self.engine.getListPlayers()
         players_per_column = 4
@@ -305,10 +338,11 @@ class SkullKingInputWidget(GameInputWidget):
         self.playerInputList[self.engine.getListPlayers()[0]].setFocus()
         self.updateCandidateAction()
 
-    def newChoice(self, mode, player):
+    def newChoice(self, mode: str, player: str) -> None:
         self.lastChoices.append((mode, player))
 
-    def updateCandidateAction(self):
+    def updateCandidateAction(self) -> None:
+        """Highlight the next player to enter and lock/unlock bet and trick rows."""
         if self.engine.getWinner():
             for piw in self.playerInputList.values():
                 piw.lockBets()
@@ -318,7 +352,7 @@ class SkullKingInputWidget(GameInputWidget):
         expected_hands = self.getExpectedHands()
         won_hands = self.getWonHands()
         dealer = self.engine.getDealer()
-        first_player = (players.index(dealer) + 1) % len(players)
+        first_player = (players.index(cast("str", dealer)) + 1) % len(players)
         hand_player_order = players[first_player:] + players[0:first_player]
         found = False
         if any(value < 0 for value in expected_hands.values()):
@@ -351,38 +385,40 @@ class SkullKingInputWidget(GameInputWidget):
                 piw.unlockBets()
                 piw.lockTricks()
 
-    def reset(self):
+    def reset(self) -> None:
         super().reset()
         self.lastChoices = []
         self.playerInputList[self.engine.getListPlayers()[0]].setFocus()
         self.updateCandidateAction()
 
-    def getScores(self):
+    def getScores(self) -> dict[str, int]:
         scores = {}
         for player, piw in self.playerInputList.items():
             scores[player] = piw.getScore()
         return scores
 
-    def getWonHands(self):
+    def getWonHands(self) -> dict[str, int]:
         won = {}
         for player, piw in self.playerInputList.items():
             won[player] = piw.getWonHands()
         return won
 
-    def getExpectedHands(self):
+    def getExpectedHands(self) -> dict[str, int]:
         expected = {}
         for player, piw in self.playerInputList.items():
             expected[player] = piw.getExpectedHands()
         return expected
 
-    def checkExpected(self):
+    def checkExpected(self) -> None:
+        """Disable the won row of any player without an expected bet set."""
         for piw in self.playerInputList.values():
             piw.disableWonRow(piw.getExpectedHands() < 0)
             # print(f"CheckExpected {player}: {piw.getExpectedHands()} {piw.getWonHands()}")
             # piw.disableExtraRow(piw.getExpectedHands() != piw.getWonHands() or piw.getExpectedHands() < 1)
 
-    def keyPressEvent(self, event):
-        numberkeys = [
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        """Handle number keys for entry and backspace/delete to undo choices."""
+        numberkeys: list[int] = [
             QtCore.Qt.Key.Key_0,
             QtCore.Qt.Key.Key_1,
             QtCore.Qt.Key.Key_2,
@@ -422,12 +458,13 @@ class SkullKingInputWidget(GameInputWidget):
 
         return super().keyPressEvent(event)
 
-    def feedNumber(self, number):
+    def feedNumber(self, number: int) -> None:
+        """Assign ``number`` to the next player awaiting an expected or won value."""
         players = self.engine.getListPlayers()
         expected_hands = self.getExpectedHands()
         won_hands = self.getWonHands()
         dealer = self.engine.getDealer()
-        first_player = (players.index(dealer) + 1) % len(players)
+        first_player = (players.index(cast("str", dealer)) + 1) % len(players)
         hand_player_order = players[first_player:] + players[0:first_player]
         if any(value < 0 for value in expected_hands.values()):
             for player in hand_player_order:
@@ -449,7 +486,8 @@ class SkullKingInputWidget(GameInputWidget):
 
         return
 
-    def updatePlayerOrder(self):
+    def updatePlayerOrder(self) -> None:
+        """Rebuild the player grid in the engine's current player order."""
         #         QWidget().setLayout(self.layout())
         trash = QWidget()
         trash_layout = self.layout()
@@ -466,7 +504,8 @@ class SkullKingInputWidget(GameInputWidget):
             self.widgetLayout.addWidget(self.playerInputList[player], i // ppr, i % ppr)
             self.playerInputList[player].setColour(PlayerColours[i])
 
-    def bonusChangedAction(self, sender_type, sender):
+    def bonusChangedAction(self, sender_type, sender) -> None:
+        """Enforce mutual exclusion between related bonus buttons across players."""
         for player in self.engine.getListPlayers():
             for bn, btn in self.playerInputList[player].getBonusButtons().items():
                 trifecta = ("skullking", "pirate", "mermaid")
@@ -484,22 +523,26 @@ class SkullKingInputWidget(GameInputWidget):
                 ):
                     btn.setChecked(False)
 
-    def changeRoundMode(self):
+    def changeRoundMode(self) -> None:
         for piw in self.playerInputList.values():
             piw.refreshButtons()
 
-    def changeScoringMode(self):
+    def changeScoringMode(self) -> None:
         for piw in self.playerInputList.values():
             piw.updateBonusButtons()
 
 
 class SkullKingPlayerInputWidget(QGroupBox):
+    """Per-player bet, trick and bonus input for a single Skull King player."""
+
     winnerSet = QtCore.Signal(str)
     newExpected = QtCore.Signal()
     handsClicked = QtCore.Signal(str, str)
     betTricksChanged = QtCore.Signal()
 
-    def __init__(self, player, engine, colour=None, parent=None):
+    def __init__(
+        self, player, engine, colour: QColor | None = None, parent=None
+    ) -> None:
         super().__init__(parent)
         self.player = player
         self.engine = engine
@@ -537,19 +580,20 @@ class SkullKingPlayerInputWidget(QGroupBox):
         self.extraFeaturesGroup.setSizePolicy(
             QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
         )
-        self.bonusButtons = {}
+        self.bonusButtons: dict[str, SkullKingBonusButton] = {}
         self.setColour(colour)
         self.updateBonusButtons()
         self.reset()
 
-    def isCandidate(self):
+    def isCandidate(self) -> bool:
         return self.candidate
 
-    def setCandidate(self, value=True):
+    def setCandidate(self, value: bool = True) -> None:
         self.btWidget.setCandidate(value)
         self.candidate = value
 
-    def updateBonusButtons(self):
+    def updateBonusButtons(self) -> None:
+        """Rebuild the bonus buttons for the engine's active scoring mode."""
         trash = QWidget()
         trash_layout = self.epLayout
         if trash_layout:
@@ -603,18 +647,19 @@ class SkullKingPlayerInputWidget(QGroupBox):
         )
         self.epLayout.addStretch()
 
-    def reset(self):
+    def reset(self) -> None:
         self.btWidget.reset()
         self.refreshButtons()
         for button in self.bonusButtons.values():
             button.setChecked(False)
         self.disableExtraRow()
 
-    def refreshButtons(self, _forbidden=-1):
+    def refreshButtons(self, _forbidden: int = -1) -> None:
         hands = self.engine.getHands()
         self.btWidget.setMaxBet(hands)
 
-    def disableExtraRow(self, disable=True):
+    def disableExtraRow(self, disable: bool = True) -> None:
+        """Enable or disable each bonus button per current bet/trick state."""
         for btype, b in self.bonusButtons.items():
             if btype == "loot":
                 b.setEnabled(
@@ -626,45 +671,47 @@ class SkullKingPlayerInputWidget(QGroupBox):
             else:
                 b.setDisabled(disable)
 
-    def enableWonGroup(self, _button):
+    def enableWonGroup(self, _button) -> None:
         self.newExpected.emit()
 
-    def isWinner(self):
+    def isWinner(self) -> bool:
         return False
 
-    def getPlayer(self):
+    def getPlayer(self) -> str:
         return self.player
 
-    def getScore(self):
+    def getScore(self) -> int:
+        """Compute this player's round score from bets, tricks and bonuses."""
         expected = self.getExpectedHands()
         won = self.getWonHands()
         bonuses = {bt: int(v.getValue()) for bt, v in self.bonusButtons.items()}
         return self.engine.computePlayerScore(expected, won, bonuses)
 
-    def getWonHands(self):
+    def getWonHands(self) -> int:
         return self.btWidget.getTricks()
 
-    def getExpectedHands(self):
+    def getExpectedHands(self) -> int:
         return self.btWidget.getBet()
 
-    def setExpectedHands(self, number):
+    def setExpectedHands(self, number: int) -> bool:
         self.btWidget.setBet(number)
         return True
 
-    def setWonHands(self, number):
+    def setWonHands(self, number: int) -> bool:
         self.btWidget.setTricks(number)
         return True
 
-    def expectedClickedAction(self, _):
+    def expectedClickedAction(self, _) -> None:
         self.handsClicked.emit("expected", self.player)
 
-    def wonClickedAction(self, _):
+    def wonClickedAction(self, _) -> None:
         self.disableExtraRow(
             self.getExpectedHands() != self.getWonHands() or self.getExpectedHands() < 1
         )
         self.handsClicked.emit("won", self.player)
 
-    def setColour(self, colour):
+    def setColour(self, colour) -> None:
+        """Apply the player colour to the group box style and the bet widget."""
         self.pcolour = colour
         css = """
             QGroupBox {{ font-size: 24px; font-weight: bold; color:rgb({},{},{});}}
@@ -681,32 +728,34 @@ class SkullKingPlayerInputWidget(QGroupBox):
         )
         self.btWidget.setColour(self.pcolour)
 
-    def getBonusButtons(self):
+    def getBonusButtons(self) -> dict[str, SkullKingBonusButton]:
         return self.bonusButtons
 
-    def lockBets(self):
+    def lockBets(self) -> None:
         self.btWidget.lockBets()
 
-    def unlockBets(self):
+    def unlockBets(self) -> None:
         self.btWidget.unlockBets()
 
-    def lockTricks(self):
+    def lockTricks(self) -> None:
         self.btWidget.lockTricks()
 
-    def unlockTricks(self):
+    def unlockTricks(self) -> None:
         self.btWidget.unlockTricks()
 
 
 class ClickableLabel(QLabel):
+    """Circular label that emits clicks and animates a candidate highlight."""
+
     clicked = QtCore.Signal(Qt.MouseButton)
 
     def __init__(
         self,
-        text="",
-        pcolour=None,
-        size=40,
-        parent=None,
-    ):
+        text: str = "",
+        pcolour: QColor | None = None,
+        size: int = 40,
+        parent: QWidget | None = None,
+    ) -> None:
         super().__init__(text, parent)
 
         self.pcolour = pcolour if pcolour is not None else QColor(255, 255, 255)
@@ -755,14 +804,14 @@ class ClickableLabel(QLabel):
     # COLOUR
     # ---------------------------------------------
 
-    def setColour(self, colour):
+    def setColour(self, colour) -> None:
         self.pcolour = colour
 
         self.effect.setColor(self.pcolour)
 
         self._update_colour_style()
 
-    def _update_colour_style(self):
+    def _update_colour_style(self) -> None:
         """
         Apply only the instance-specific colour.
 
@@ -790,10 +839,11 @@ class ClickableLabel(QLabel):
     # CANDIDATE
     # ---------------------------------------------
 
-    def isCandidate(self):
+    def isCandidate(self) -> bool:
         return self.candidate
 
-    def setCandidate(self, value):
+    def setCandidate(self, value) -> None:
+        """Toggle the candidate state, starting or stopping its animation."""
         value = bool(value)
 
         if self.candidate == value:
@@ -812,10 +862,10 @@ class ClickableLabel(QLabel):
         setCandidate,
     )
 
-    def startCandidateAnimation(self):
+    def startCandidateAnimation(self) -> None:
         self.anim.start()
 
-    def stopCandidateAnimation(self):
+    def stopCandidateAnimation(self) -> None:
         self.anim.stop()
         self.effect.setStrength(0.0)
 
@@ -823,10 +873,10 @@ class ClickableLabel(QLabel):
     # LOCK
     # ---------------------------------------------
 
-    def isLocked(self):
+    def isLocked(self) -> bool:
         return self.locked
 
-    def lock(self):
+    def lock(self) -> None:
         if self.locked:
             return
 
@@ -836,7 +886,7 @@ class ClickableLabel(QLabel):
             True,
         )
 
-    def unlock(self):
+    def unlock(self) -> None:
         if not self.locked:
             return
 
@@ -850,7 +900,8 @@ class ClickableLabel(QLabel):
     # PRESS
     # ---------------------------------------------
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        """Flash the pressed state briefly and emit the button clicked."""
         self._set_state_property(
             "pressed",
             True,
@@ -872,7 +923,8 @@ class ClickableLabel(QLabel):
     # QSS STATE
     # ---------------------------------------------
 
-    def _set_state_property(self, name, value):
+    def _set_state_property(self, name, value) -> None:
+        """Set a QSS state property and repolish the widget style."""
         self.setProperty(name, value)
 
         self.style().unpolish(self)
@@ -882,9 +934,13 @@ class ClickableLabel(QLabel):
 
 
 class BetTrickWidget(QWidget):
+    """Paired clickable bet and trick counters that cycle through values."""
+
     changed = QtCore.Signal()
 
-    def __init__(self, pcolour=None, size=40, parent=None):
+    def __init__(
+        self, pcolour: QColor | None = None, size: int = 40, parent=None
+    ) -> None:
         super().__init__(parent)
         self.bet = -1
         self.tricks = -1
@@ -907,10 +963,11 @@ class BetTrickWidget(QWidget):
         self.betLabel.mousePressEvent = self.cycleBet
         self.tricksLabel.mousePressEvent = self.cycleTricks
 
-    def isCandidate(self):
+    def isCandidate(self) -> bool:
         return self.betLabel.isCandidate() or self.tricksLabel.isCandidate()
 
-    def setCandidate(self, value):
+    def setCandidate(self, value) -> None:
+        """Highlight the first unset of the bet or trick labels, or clear both."""
         if not value:
             self.betLabel.setCandidate(False)
             self.tricksLabel.setCandidate(False)
@@ -921,10 +978,11 @@ class BetTrickWidget(QWidget):
             self.betLabel.setCandidate(False)
             self.tricksLabel.setCandidate(True)
 
-    def setMaxBet(self, bet):
+    def setMaxBet(self, bet: int) -> None:
         self.maxBet = bet
 
-    def setBet(self, bet):
+    def setBet(self, bet: int) -> None:
+        """Set the bet, clamped to the maximum, unless the label is locked."""
         if self.betLabel.isLocked():
             return
         bet = min(bet, self.maxBet)
@@ -938,26 +996,27 @@ class BetTrickWidget(QWidget):
         # self.betLabel.highlightChange()
         self.changed.emit()
 
-    def resetBet(self):
+    def resetBet(self) -> None:
         self.betLabel.unlock()
         self.setBet(-1)
 
-    def resetTricks(self):
+    def resetTricks(self) -> None:
         self.tricksLabel.unlock()
         self.setTricks(-1)
         self.tricksLabel.lock()
 
-    def reset(self):
+    def reset(self) -> None:
         self.resetTricks()
         self.resetBet()
 
-    def getBet(self):
+    def getBet(self) -> int:
         return self.bet
 
-    def getTricks(self):
+    def getTricks(self) -> int:
         return self.tricks
 
-    def setTricks(self, tricks):
+    def setTricks(self, tricks: int) -> None:
+        """Set the tricks, clamped to the maximum, unless the label is locked."""
         if self.tricksLabel.isLocked():
             return
         tricks = min(tricks, self.maxBet)
@@ -969,7 +1028,8 @@ class BetTrickWidget(QWidget):
         # self.tricksLabel.highlightChange()
         self.changed.emit()
 
-    def cycleBet(self, event):
+    def cycleBet(self, event: QMouseEvent) -> None:
+        """Cycle the bet forward on left-click or backward on right-click."""
         newbet = self.bet
         if event.button() == Qt.MouseButton.LeftButton:
             newbet = (self.bet + 2) % (self.maxBet + 2) - 1
@@ -977,7 +1037,8 @@ class BetTrickWidget(QWidget):
             newbet = self.bet % (self.maxBet + 2) - 1
         self.setBet(newbet)
 
-    def cycleTricks(self, event):
+    def cycleTricks(self, event: QMouseEvent) -> None:
+        """Cycle the tricks forward on left-click or backward on right-click."""
         newtricks = self.tricks
         if event.button() == Qt.MouseButton.LeftButton:
             newtricks = (self.tricks + 2) % (self.maxBet + 2) - 1
@@ -985,30 +1046,34 @@ class BetTrickWidget(QWidget):
             newtricks = self.tricks % (self.maxBet + 2) - 1
         self.setTricks(newtricks)
 
-    def lockBets(self):
+    def lockBets(self) -> None:
         self.betLabel.lock()
 
-    def unlockBets(self):
+    def unlockBets(self) -> None:
         self.betLabel.unlock()
 
-    def lockTricks(self):
+    def lockTricks(self) -> None:
         self.tricksLabel.lock()
 
-    def unlockTricks(self):
+    def unlockTricks(self) -> None:
         self.tricksLabel.unlock()
 
-    def setColour(self, colour):
+    def setColour(self, colour) -> None:
         self.pcolour = colour
         self.betLabel.setColour(colour)
         self.tricksLabel.setColour(colour)
 
 
 class SkullKingBonusButton(BonusButton):
+    """Bonus button specialised for Skull King (behaves as the base button)."""
+
     pass
 
 
 class SkullKingRoundsDetail(GameRoundsDetail):
-    def __init__(self, engine, parent=None):
+    """Rounds detail view (table, plot and quick stats) for Skull King."""
+
+    def __init__(self, engine, parent=None) -> None:
         self.bgcolors = [0xCCFF99, 0xFFCC99]
         super().__init__(engine, parent)
         self.setCurrentWidget(self.plot)
@@ -1021,15 +1086,22 @@ class SkullKingRoundsDetail(GameRoundsDetail):
 
     def createQSBox(self, parent=None):
         logger.debug("Creating SkullKingQSTW")
-        return SkullKingQSTW(self.engine.getGame(), self.engine.getListPlayers(), self)
+        return SkullKingQSTW(
+            self.engine.getGame(),  # pyright: ignore[reportArgumentType]
+            self.engine.getListPlayers(),
+            self,
+        )
 
 
 class SkullKingRoundTable(GameRoundTable):
-    def __init__(self, engine, bgcolors, parent=None):
+    """Per-round score table colouring cells by positive or negative score."""
+
+    def __init__(self, engine, bgcolors: list[int], parent=None) -> None:
         self.bgcolors = bgcolors
         super().__init__(engine, parent)
 
-    def insertRound(self, rnd):
+    def insertRound(self, rnd: GenericRound) -> None:
+        """Append a table row with each player's score for ``rnd``."""
         winner = rnd.getWinner()
         i = rnd.getNumRound() - 1
         self.insertRow(i)
@@ -1060,7 +1132,10 @@ class SkullKingRoundTable(GameRoundTable):
 
 
 class SkullKingRoundPlot(GameRoundPlot):
-    def updatePlot(self):
+    """Cumulative score-over-rounds plot for Skull King."""
+
+    def updatePlot(self) -> None:
+        """Recompute and redraw each player's cumulative score series."""
         super().updatePlot()
         if not self.isPlotInited():
             return
@@ -1090,13 +1165,17 @@ class SkullKingRoundPlot(GameRoundPlot):
 
 
 class SkullKingQSTW(QuickStatsTW):
-    def initStatsWidgets(self):
+    """Quick-stats tab set pairing general and player-filtered Skull King stats."""
+
+    def initStatsWidgets(self) -> None:
         self.gs = SkullKingQSBox(self.game, self)
         self.ps = SkullKingPQSBox(self.game, self)
 
 
 class SkullKingQSBox(GeneralQuickStats):
-    def __init__(self, gname, parent):
+    """General quick-stats page adding hit-rate and best-round columns."""
+
+    def __init__(self, gname: str, parent) -> None:
         super().__init__(gname, parent)
         self.playerStatsKeys.append("max_hits")
         self.playerStatsHeaders.append(self.tr("Max Hit %"))
@@ -1117,4 +1196,6 @@ class SkullKingQSBox(GeneralQuickStats):
 
 
 class SkullKingPQSBox(SkullKingQSBox, ParticularQuickStats):
+    """Player-filtered variant of the Skull King quick-stats page."""
+
     pass

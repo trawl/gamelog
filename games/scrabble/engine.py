@@ -1,3 +1,7 @@
+"""Scrabble play-time and statistics engines."""
+
+from __future__ import annotations
+
 from typing import cast
 
 from core.engine.base import EntryGameEngine, readInput
@@ -7,18 +11,21 @@ from games.scrabble.model import ScrabbleMatch
 
 
 class ScrabbleEngine(EntryGameEngine):
-    def __init__(self):
+    """Entry-scored engine driving a Scrabble match."""
+
+    def __init__(self) -> None:
         if not hasattr(self, "game"):
             self.game = "Scrabble"
         EntryGameEngine.__init__(self)
 
-    def getBonuses(self):
+    def getBonuses(self) -> dict:
         return cast(ScrabbleMatch, self.match).getBonuses()
 
-    def requiresExplicitFinish(self):
+    def requiresExplicitFinish(self) -> bool:
         return True
 
-    def runStubRoundPlayer(self, player, winner=None):
+    def runStubRoundPlayer(self, player: str, winner: str | None = None) -> None:
+        """CLI harness: read one player's score and bonus, then record the entry."""
         score = readInput(
             f"{player} score: ",
             int,
@@ -31,15 +38,18 @@ class ScrabbleEngine(EntryGameEngine):
 
 
 class ScrabbleStatsEngine(StatsEngine):
-    def __init__(self):
+    """Adds Scrabble extreme-round and max-bonus player statistics."""
+
+    def __init__(self) -> None:
         super().__init__()
         self.game = "Scrabble"
         self.singleKindRecord = None
-        self.queries = {}
+        self.queries: dict[str, str] = {}
         self.define_queries()
 
-    def define_queries(self):
-        self.query_params = {
+    def define_queries(self) -> None:
+        """Build the extreme-round and max-bonus query templates."""
+        self.query_params: dict[str, tuple[str, ...]] = {
             "extreme_rounds": ("max_round_score", "min_round_score"),
             "max_bonuses": ("max_bonuses",),
         }
@@ -69,7 +79,8 @@ class ScrabbleStatsEngine(StatsEngine):
         GROUP BY "player"
         """
 
-    def update(self, players=None):
+    def update(self, players: list[str] | None = None) -> None:
+        """Merge the extreme-round and max-bonus figures into player stats."""
         super().update()
         if not self.generalplayerstats:
             return
@@ -86,7 +97,10 @@ class ScrabbleStatsEngine(StatsEngine):
 
 
 class ScrabbleParticularStatsEngine(ScrabbleStatsEngine, ParticularStatsEngine):
-    def updatePlayers(self, players):
+    """Scrabble statistics restricted to an exact set of players."""
+
+    def updatePlayers(self, players: list[str] | None) -> None:
+        """Splice the player filter into the Scrabble statistics queries."""
         super().updatePlayers(players)
         if players:
             self.define_queries()

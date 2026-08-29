@@ -1,9 +1,11 @@
+"""Application settings dialog for viewing and editing effective settings."""
+
 from __future__ import annotations
 
 from typing import Any, cast
 
 from PySide6 import QtCore
-from PySide6.QtCore import QCoreApplication
+from PySide6.QtCore import QCoreApplication, QEvent
 from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -102,6 +104,7 @@ class SettingsDialog(QDialog):
     # ------------------------------------------------------------------
 
     def initUI(self) -> None:
+        """Build the settings form, one row per default-schema setting."""
         layout = QVBoxLayout(self)
         layout.addStretch()
         database_path_label = QLabel(str(db.getDBPath()), self)
@@ -174,7 +177,8 @@ class SettingsDialog(QDialog):
             """
         )
 
-    def retranslateUI(self):
+    def retranslateUI(self) -> None:
+        """Re-apply translated labels, tooltips and choices to every widget."""
         self.setWindowTitle(
             QCoreApplication.translate("AppSettings", "Application Settings")
         )
@@ -213,7 +217,9 @@ class SettingsDialog(QDialog):
                 source,
             )
 
-    def _set_bool_widget_text(self, value: bool, choices: list[str], widget: Any):
+    def _set_bool_widget_text(
+        self, value: bool, choices: list[str], widget: Any
+    ) -> None:
         if choices:
             widget.setText(
                 QCoreApplication.translate("AppSettings", choices[int(value)])
@@ -342,6 +348,7 @@ class SettingsDialog(QDialog):
         name: str,
         value: Any,
     ) -> None:
+        """Persist an edited setting and refresh its effective value/state."""
         # Type information comes exclusively from defaults.
         default_setting = self._get_default(name)
         type_ = default_setting.get("type", "str")
@@ -383,6 +390,7 @@ class SettingsDialog(QDialog):
         name: str,
         source: str,
     ) -> None:
+        """Highlight non-default widgets and label each with its source."""
         widget = self.widgets[name]
 
         effective_value = self._get_effective_value(name)
@@ -499,7 +507,8 @@ class SettingsDialog(QDialog):
         appsettings.set(name, value, persistent=True)
         self.settingChanged.emit(name, value)
 
-    def changeEvent(self, event):
+    def changeEvent(self, event: QEvent) -> None:
+        """Retranslate the dialog when the application language changes."""
         if event.type() == QtCore.QEvent.Type.LanguageChange:
             self.retranslateUI()
         return super().changeEvent(event)

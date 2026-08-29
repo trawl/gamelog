@@ -1,3 +1,7 @@
+"""Toma6 play-time engine."""
+
+from __future__ import annotations
+
 from typing import cast
 
 from core.engine.base import readInput
@@ -6,18 +10,21 @@ from games.toma6.model import Toma6Match
 
 
 class Toma6Engine(RemigioEngine):
-    def __init__(self):
+    """Engine driving a Toma6 match, reusing Remigio's round handling."""
+
+    def __init__(self) -> None:
         if not hasattr(self, "game"):
             self.game = "Toma6"
         super().__init__()
 
-    def getTop(self):
+    def getTop(self) -> int:
         return cast("Toma6Match", self.match).getTop()
 
-    def printExtraStats(self):
+    def printExtraStats(self) -> None:
         print(f"Match top: {self.getTop()}")
 
-    def runRoundPlayer(self, player, winner=None):
+    def runRoundPlayer(self, player: str, winner: str | None = None) -> None:
+        """CLI harness: read ``player``'s round score and record it."""
         score = 0
         score = readInput(
             f"{player} round score: ",

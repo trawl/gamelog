@@ -1,6 +1,11 @@
+"""Remigio scoreboard widgets: score input, per-player boxes, table and plot."""
+
+from __future__ import annotations
+
 from typing import cast
 
 from PySide6 import QtCore, QtGui
+from PySide6.QtGui import QKeyEvent, QMouseEvent
 from PySide6.QtWidgets import (
     QGraphicsOpacityEffect,
     QGridLayout,
@@ -28,22 +33,25 @@ from games.remigio.engine import RemigioEngine
 
 
 class RemigioWidget(GameWidget):
+    """Scoreboard tab for Remigio, with a configurable top-score limit."""
+
     bgcolors = (0, 0xCCFF99, 0xFFFF99, 0xFFCC99, 0xFFCCFF)
 
-    def createEngine(self):
+    def createEngine(self) -> None:
         if self.game != "Remigio":
             raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = RemigioEngine()
 
-    def initUI(self):
+    def initUI(self) -> None:
         super().initUI()
         self.retranslateUI()
 
-    def addExtraConfig(self):
+    def addExtraConfig(self) -> None:
+        """Add the top-score spin box to the match configuration panel."""
         super().addExtraConfig()
         self.topPointsScoreBox = ScoreSpinBox(self.matchGroup)
         self.topPointsScoreBox.setMaximum(1000)
-        self.topPointsScoreBox.setValue(self.engine.getTop())
+        self.topPointsScoreBox.setValue(cast("RemigioEngine", self.engine).getTop())
         self.topPointsScoreBox.lineEdit().setFocusPolicy(
             QtCore.Qt.FocusPolicy.ClickFocus
         )
@@ -55,7 +63,8 @@ class RemigioWidget(GameWidget):
             self.topPointsScoreBox, alignment=QtCore.Qt.AlignmentFlag.AlignLeft
         )
 
-    def addPlayerWidgets(self):
+    def addPlayerWidgets(self) -> None:
+        """Lay out a score box per player, marking dealer and eliminated ones."""
         np = len(self.players)
         if np <= 6:
             self.playersLayout = QVBoxLayout()
@@ -71,7 +80,7 @@ class RemigioWidget(GameWidget):
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer():
                 pw.setDealer()
-            if self.engine.isPlayerOff(player):
+            if cast("RemigioEngine", self.engine).isPlayerOff(player):
                 pw.koPlayer()
             if np < 8:
                 self.playersLayout.addWidget(pw)
@@ -79,13 +88,16 @@ class RemigioWidget(GameWidget):
                 self.playersLayout.addWidget(pw, i // 2, i % 2)  # pyright: ignore[reportArgumentType]
             self.playerGroupBox[player] = pw
 
-    def createGameInputWidget(self, parent=None):
+    def createGameInputWidget(
+        self, parent: QWidget | None = None
+    ) -> RemigioInputWidget:
         return RemigioInputWidget(self.engine, self.bgcolors, parent)
 
-    def createRoundsDetail(self, parent=None):
+    def createRoundsDetail(self, parent: QWidget | None = None) -> RemigioRoundsDetail:
         return RemigioRoundsDetail(self.engine, self.bgcolors, parent)
 
-    def updateGameStatusLabel(self):
+    def updateGameStatusLabel(self) -> None:
+        """Show the winner/paused banner, or the close-type warning when idle."""
         super().updateGameStatusLabel()
         if self.gameStatusLabel.text() == "":
             self.gameStatusLabel.setStyleSheet("QLabel {font-weight:bold;}")
@@ -95,51 +107,56 @@ class RemigioWidget(GameWidget):
             self.gameStatusLabel.setText(msg)
             self.gameStatusLabel.show()
 
-    def getPlayerExtraInfo(self, player):
-        c_type = cast(RemigioInputWidget, self.gameInput).getCloseType()
+    def getPlayerExtraInfo(self, player: str) -> dict | None:
+        """Return the current input's close type as this player's round extras."""
+        c_type = cast("RemigioInputWidget", self.gameInput).getCloseType()
         if c_type:
             return {"closeType": c_type}
         else:
             return {}
 
-    def updatePanel(self):
+    def updatePanel(self) -> None:
         super().updatePanel()
         self.topPointsScoreBox.setReadOnly(self.engine.getNumRound() > 1)
 
-    def updateScores(self):
+    def updateScores(self) -> None:
+        """Refresh scores and the eliminated state of every player box."""
         super().updateScores()
         for player in self.players:
-            if self.engine.isPlayerOff(player):
+            if cast("RemigioEngine", self.engine).isPlayerOff(player):
                 self.playerGroupBox[player].koPlayer()
-                cast(RemigioInputWidget, self.gameInput).koPlayer(player)
+                cast("RemigioInputWidget", self.gameInput).koPlayer(player)
             else:
                 self.playerGroupBox[player].unKoPlayer()
-                cast(RemigioInputWidget, self.gameInput).unKoPlayer(player)
+                cast("RemigioInputWidget", self.gameInput).unKoPlayer(player)
 
-    def changeTop(self, newtop=None):
+    def changeTop(self, newtop: int | None = None) -> None:
+        """Apply a new top-score limit and refresh the plot's limit line."""
         if newtop is None:
             newtop = self.topPointsScoreBox.value()
         try:
             if newtop is None:
                 return
             newtop = int(newtop)
-            self.engine.setTop(newtop)
+            cast("RemigioEngine", self.engine).setTop(newtop)
             self.detailGroup.updatePlot()
         except (ValueError, TypeError):
             pass
 
 
 class RemigioInputWidget(GameInputWidget):
-    def __init__(self, engine, bgcolors, parent=None):
+    """Score-entry widget: one box per player, tracking winner and close type."""
+
+    def __init__(self, engine, bgcolors, parent=None) -> None:
         self.bgcolors = bgcolors
         super().__init__(engine, parent)
 
-    def initUI(self):
+    def initUI(self) -> None:
         for i, player in enumerate(self.engine.getListPlayers()):
             self.playerInputList[player] = RemigioPlayerInputWidget(
                 player, self.bgcolors, PlayerColours[i], self
             )
-            if self.engine.isPlayerOff(player):
+            if cast("RemigioEngine", self.engine).isPlayerOff(player):
                 self.koPlayer(player)
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
             self.playerInputList[player].changed.connect(self.changed)
@@ -156,29 +173,29 @@ class RemigioInputWidget(GameInputWidget):
                     piw, i // ((nplayers + 1) // 2), i % ((nplayers + 1) // 2)
                 )
 
-    def getCloseType(self):
+    def getCloseType(self) -> int:
         try:
             return self.playerInputList[self.winnerSelected].getCloseType()
         except KeyError:
             return 0
 
-    def getWinner(self):
+    def getWinner(self) -> str:
         return self.winnerSelected
 
-    def getScores(self):
+    def getScores(self) -> dict[str, int]:
         scores = {}
         for player, piw in self.playerInputList.items():
             if not piw.isKo():
                 scores[player] = piw.getScore()
         return scores
 
-    def koPlayer(self, player):
+    def koPlayer(self, player: str) -> None:
         self.playerInputList[player].setKo()
 
-    def unKoPlayer(self, player):
+    def unKoPlayer(self, player: str) -> None:
         self.playerInputList[player].unsetKo()
 
-    def updatePlayerOrder(self):
+    def updatePlayerOrder(self) -> None:
         #         QWidget().setLayout(self.layout())
         trash = QWidget()
         trash_layout = self.layout()
@@ -193,10 +210,12 @@ class RemigioInputWidget(GameInputWidget):
 
 
 class RemigioPlayerInputWidget(QGroupBox):
+    """Per-player input box: score field plus a click-cycled close-type badge."""
+
     winnerSet = QtCore.Signal(str)
     changed = QtCore.Signal()
 
-    def __init__(self, player, bgcolors, colour=None, parent=None):
+    def __init__(self, player, bgcolors, colour=None, parent=None) -> None:
         super().__init__(parent)
         self.player = player
         self.pcolour = colour
@@ -226,23 +245,25 @@ class RemigioPlayerInputWidget(QGroupBox):
 
         self.reset()
 
-    def reset(self):
+    def reset(self) -> None:
         self.closeType = 0
         self.updatePanel()
         self.changed.emit()
 
-    def setColour(self, colour):
+    def setColour(self, colour) -> None:
         self.pcolour = colour
         sh = f"font-size: 24px; font-weight: bold; color:rgba({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()},{self.pcolour.alpha()});"
         self.label.setStyleSheet(sh)
         self.scoreSpinBox.setColour(self.pcolour)
 
-    def increaseCloseType(self):
+    def increaseCloseType(self) -> None:
+        """Cycle the close type through 1..4."""
         self.closeType = (self.closeType) % 4 + 1
         self.changed.emit()
         self.updatePanel()
 
-    def updatePanel(self):
+    def updatePanel(self) -> None:
+        """Redraw the label and lock the score field while a close type is set."""
         text = f"{self.player}"
         css = ""
         if self.closeType > 0:
@@ -260,74 +281,79 @@ class RemigioPlayerInputWidget(QGroupBox):
         self.label.setText(text)
         self.setStyleSheet(f"QGroupBox {{ {css} }}")
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QMouseEvent) -> None:
         if self.isWinner():
             self.increaseCloseType()
         else:
             self.scoreSpinBox.setFocus()
 
-    def mouseDoubleClickEvent(self, event):
+    def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:
         if not self.isWinner():
             self.winnerSet.emit(self.player)
             self.increaseCloseType()
         else:
             super().mouseDoubleClickEvent(event)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == QtCore.Qt.Key.Key_Space:
             event.accept()
             self.setWinner()
         return super().keyPressEvent(event)
 
-    def setWinner(self):
+    def setWinner(self) -> None:
+        """Claim the win for this player, cycling the close type on."""
         if not self.isWinner():
             self.winnerSet.emit(self.player)
         self.increaseCloseType()
 
-    def getScore(self):
+    def getScore(self) -> int | None:
         if self.isWinner():
             return 0
         else:
             return self.scoreSpinBox.value()
 
-    def isWinner(self):
+    def isWinner(self) -> bool:
         return self.closeType > 0
 
-    def getCloseType(self):
+    def getCloseType(self) -> int:
         return self.closeType
 
-    def getPlayer(self):
+    def getPlayer(self) -> str:
         return self.player
 
-    def isKo(self):
+    def isKo(self) -> bool:
         return self.ko
 
-    def setKo(self):
+    def setKo(self) -> None:
         self.ko = True
         self.setDisabled(True)
         self.hide()
 
-    def unsetKo(self):
+    def unsetKo(self) -> None:
         self.ko = False
         self.setDisabled(False)
         self.show()
 
 
 class RemigioPlayerWidget(GamePlayerWidget):
-    def __init__(self, nick, colour, parent):
+    """Scoreboard player box with a skull overlay and dimmed LCD when out."""
+
+    def __init__(self, nick, colour, parent) -> None:
         super().__init__(nick, colour, parent)
         self.lcdOpacity = QGraphicsOpacityEffect(self.scoreLCD)
         self.lcdOpacity.setOpacity(1.0)
         self.scoreLCD.setGraphicsEffect(self.lcdOpacity)
 
-    def koPlayer(self):
+    def koPlayer(self) -> None:
+        """Mark the player as eliminated: skull background and dimmed score."""
         self.background = QtGui.QPixmap(":/icons/skull.png")
         self.setProperty("ko", True)
         self.style().polish(self)
         self.lcdOpacity.setOpacity(0.3)
         self.update()
 
-    def unKoPlayer(self):
+    def unKoPlayer(self) -> None:
+        """Restore the player to active: clear the skull and undim the score."""
         self.background = None
         self.setProperty("ko", False)
         self.lcdOpacity.setOpacity(1.0)
@@ -336,24 +362,29 @@ class RemigioPlayerWidget(GamePlayerWidget):
 
 
 class RemigioRoundsDetail(GameRoundsDetail):
-    def __init__(self, engine, bgcolors, parent=None):
+    """Rounds detail panel for Remigio, defaulting to the plot tab."""
+
+    def __init__(self, engine, bgcolors, parent=None) -> None:
         self.bgcolors = bgcolors
         super().__init__(engine, parent)
         self.setCurrentWidget(self.plot)
 
-    def createRoundTable(self, engine, parent=None):
+    def createRoundTable(self, engine, parent=None) -> RemigioRoundTable:
         return RemigioRoundTable(self.engine, self.bgcolors, parent)
 
-    def createRoundPlot(self, engine, parent=None):
+    def createRoundPlot(self, engine, parent=None) -> RemigioRoundPlot:
         return RemigioRoundPlot(self.engine, self)
 
 
 class RemigioRoundTable(GameRoundTable):
-    def __init__(self, engine, bgcolors, parent=None):
+    """Per-round score table, colouring cells by close type and elimination."""
+
+    def __init__(self, engine, bgcolors, parent=None) -> None:
         self.bgcolors = bgcolors
         super().__init__(engine, parent)
 
-    def insertRound(self, r):
+    def insertRound(self, r) -> None:
+        """Append a table row for round ``r`` with per-player scores/close type."""
         closeType = r.getCloseType()
         winner = r.getWinner()
         background = self.bgcolors[closeType]
@@ -391,7 +422,9 @@ class RemigioRoundTable(GameRoundTable):
 
 
 class RemigioRoundPlot(GameRoundPlot):
-    def updatePlot(self):
+    """Cumulative-score plot with the top-score limit drawn as a line."""
+
+    def updatePlot(self) -> None:
         super().updatePlot()
         if not self.isPlotInited():
             return

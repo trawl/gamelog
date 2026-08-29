@@ -1,3 +1,7 @@
+"""Runtime language switching: translator management and locale pickers."""
+
+from __future__ import annotations
+
 import logging
 from typing import ClassVar
 
@@ -11,7 +15,7 @@ from PySide6.QtCore import (
     QTranslator,
     Signal,
 )
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QResizeEvent
 from PySide6.QtWidgets import (
     QApplication,
     QDialog,
@@ -21,6 +25,7 @@ from PySide6.QtWidgets import (
     QListWidgetItem,
     QToolButton,
     QVBoxLayout,
+    QWidget,
 )
 
 from core.engine.settings import appsettings
@@ -29,9 +34,11 @@ logger = logging.getLogger(__name__)
 
 
 class LanguageManager(QObject):
+    """Loads Qt/app translation catalogues and tracks the current locale."""
+
     languageChanged = Signal(QLocale)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
         # Default to system language, fallback to English if not available
         self.translators: list[QTranslator] = []
@@ -44,7 +51,8 @@ class LanguageManager(QObject):
 
         self.loadTranslator(self.current_locale)
 
-    def loadTranslator(self, lang):
+    def loadTranslator(self, lang: str) -> None:
+        """Install Qt and application catalogues for ``lang`` if available."""
         if lang.lower() == "system":
             lang = QLocale.system().name()
         if lang == "C":
@@ -79,12 +87,14 @@ class LanguageManager(QObject):
         self.current_locale = lang
         self.languageChanged.emit(QLocale(lang))
 
-    def getCurrentLocale(self):
+    def getCurrentLocale(self) -> str:
         return self.current_locale
 
 
 class LanguageButton(QToolButton):
-    def __init__(self, parent=None):
+    """Toolbar button that cycles through the supported languages on click."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         # self.setToolTip(self.tr("Change Language"))
         # self.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
@@ -107,10 +117,12 @@ class LanguageButton(QToolButton):
         """)
         self.changeLanguage()
 
-    def showLanguageChooser(self):
+    def showLanguageChooser(self) -> None:
+        """Open the modal language-selection dialog."""
         self.languageChooser.exec()
 
-    def nextLanguage(self):
+    def nextLanguage(self) -> None:
+        """Switch to the next supported locale, wrapping around."""
         locales = [
             data["locale"] for data in LanguageChooser.supportedLanguages.values()
         ]
@@ -122,7 +134,8 @@ class LanguageButton(QToolButton):
         next_locale = locales[next_index]
         self.changeLanguage(next_locale)
 
-    def refresh(self):
+    def refresh(self) -> None:
+        """Update the button icon to match the current locale."""
         locale = self.lm.getCurrentLocale()
         logger.debug("Refreshing language button for %s", locale)
         icon = next(
@@ -137,7 +150,8 @@ class LanguageButton(QToolButton):
             icon = "english.svg"
         self.setIcon(QIcon(f":/icons/{icon}"))
 
-    def changeLanguage(self, locale=None):
+    def changeLanguage(self, locale: str | None = None) -> None:
+        """Load ``locale`` (or the current one) and refresh the button icon."""
         if not locale:
             locale = self.lm.getCurrentLocale()
         if locale == "C":
@@ -161,13 +175,15 @@ class LanguageButton(QToolButton):
             icon = "english.svg"
         self.setIcon(QIcon(f":/icons/{icon}"))
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
         size = int(min(self.width(), self.height()) * 0.9)
         self.setIconSize(QSize(size, size))
 
 
 class LanguageChooser(QDialog):
+    """Modal dialog listing the supported languages for the user to pick."""
+
     newQM = QtCore.Signal(str)
     supportedLanguages: ClassVar[dict] = {
         "English": {"locale": "en_GB", "icon": "english.svg"},
@@ -175,11 +191,12 @@ class LanguageChooser(QDialog):
         "Català": {"locale": "ca_ES", "icon": "catalan.svg"},
     }
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Build the language list and OK/Cancel button box."""
         self.setWindowTitle(self.tr("Language"))
         self.widgetLayout = QVBoxLayout(self)
         self.langGroupBox = QGroupBox(self)
@@ -205,7 +222,8 @@ class LanguageChooser(QDialog):
         self.adjustSize()
         self.setFixedSize(self.size())
 
-    def changeLanguage(self):
+    def changeLanguage(self) -> None:
+        """Emit the selected locale's catalogue name and close the dialog."""
         ci = self.languageListWidget.currentItem()
         if ci:
             selected = ci.text()

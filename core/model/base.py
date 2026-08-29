@@ -1,6 +1,16 @@
+"""Game-agnostic match/round domain models.
+
+These classes hold the state and persistence logic shared by every game and
+carry no Qt dependency. Concrete games subclass ``GenericMatch`` /
+``GenericRoundMatch`` (and their round types) to add game-specific rules.
+"""
+
+from __future__ import annotations
+
 import datetime
 import logging
 from abc import abstractmethod
+from collections.abc import Sequence
 
 from core.engine.db import db
 
@@ -8,34 +18,50 @@ logger = logging.getLogger(__name__)
 
 
 class Player:
-    def __init__(self):
-        self.nick = ""
-        self.fullName = ""
-        self.dateCreation = None
+    """A registered player. Currently a lightweight record of identity."""
+
+    def __init__(self) -> None:
+        self.nick: str = ""
+        self.fullName: str = ""
+        self.dateCreation: datetime.datetime | None = None
 
 
 class GenericMatch:
+    """Base match: players, timing, winner and SQLite persistence.
+
+    A match moves through the ``state`` values below over its lifetime and is
+    flushed to the database whenever that state changes.
+    """
+
+    # Match states.
     RUNNING = 0
     FINISHED = 1
     CANCELLED = 2
     PAUSED = 3
     SAVED = 4
 
-    def __init__(self, players=()):
+    def __init__(self, players: Sequence[str] = ()) -> None:
         self.game = "Generic"
-        self.players = players
-        self.winner = None
-        self.start = None
-        self.resumed = datetime.datetime.now(tz=datetime.UTC)
-        self.finish = None
+        self.players: Sequence[str] = players
+        self.winner: str | None = None
+        self.start: datetime.datetime | None = None
+        self.resumed: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+        self.finish: datetime.datetime | None = None
         self.elapsed = 0
-        self.totalScores = {}
+        self.totalScores: dict[str, int] = {}
         self.idMatch = -1
         self.state = self.CANCELLED
-        self.dealer = None
+        self.dealer: str | None = None
         self.dealingp = 0
 
-    def resumeMatch(self, idMatch):
+    # --- Lifecycle ---------------------------------------------------------
+
+    def resumeMatch(self, idMatch: int) -> bool:
+        """Reload a previously saved match from the database.
+
+        Returns ``True`` on success, or ``False`` if this match already
+        started, the id is invalid, or no matching saved match exists.
+        """
         if self.start is not None:
             return False
         if not isinstance(idMatch, int):
@@ -77,7 +103,8 @@ class GenericMatch:
         self.idMatch = idMatch
         return True
 
-    def startMatch(self):
+    def startMatch(self) -> None:
+        """Begin a fresh match, zeroing every player's total score."""
         self.start = datetime.datetime.now(tz=datetime.UTC)
         self.resumed = self.start
         self.state = self.RUNNING
@@ -85,59 +112,47 @@ class GenericMatch:
             self.totalScores[p] = 0
             self.playerStart(p)
 
-    def flushState(self, state):
-        self.updateElapsed()
-        self.state = state
-        self.flushToDB()
-
-    def updateElapsed(self):
-        self.finish = datetime.datetime.now(tz=datetime.UTC)
-        timediff = self.finish - self.resumed
-        self.elapsed += timediff.seconds
-
-    def updateWinner(self):
-        self.computeWinner()
-        if self.winner:
-            self.flushState(self.FINISHED)
-
-    def getDealer(self):
-        return self.dealer
-
-    def setDealer(self, player):
-        if player not in self.players:
-            return
-        self.dealer = player
-
-    def getDealingPolicy(self):
-        return self.dealingp
-
-    def setDealingPolicy(self, policy):
-        if policy not in [0, 1, 2, 3]:
-            return
-        self.dealingp = policy
-
-    def cancel(self):
+    def cancel(self) -> None:
+        """Mark an unfinished match as cancelled and persist it."""
         if not self.isCancelled() and not self.winner:
             self.flushState(self.CANCELLED)
             logger.info("%s match cancelled at %s", self.game, self.finish)
 
-    def save(self):
+    def save(self) -> None:
+        """Persist the match in the SAVED state so it can be resumed later."""
         self.flushState(self.SAVED)
         logger.info("%s saved at %s", self.game, self.finish)
 
-    def pause(self):
+    def pause(self) -> None:
+        """Suspend elapsed-time accounting while the match is paused."""
         if not self.isPaused():
             self.updateElapsed()
             self.state = self.PAUSED
             logger.debug("%s paused at %s", self.game, self.finish)
 
-    def unpause(self):
+    def unpause(self) -> None:
+        """Resume elapsed-time accounting after a pause."""
         if self.isPaused():
             self.resumed = datetime.datetime.now(tz=datetime.UTC)
             self.state = self.RUNNING
             logger.debug("%s resumed at %s", self.game, self.resumed)
 
-    def flushToDB(self):
+    def updateWinner(self) -> None:
+        """Recompute the winner and, if there is one, finish the match."""
+        self.computeWinner()
+        if self.winner:
+            self.flushState(self.FINISHED)
+
+    # --- Persistence -------------------------------------------------------
+
+    def flushState(self, state: int) -> None:
+        """Set ``state``, refresh elapsed time and write the match out."""
+        self.updateElapsed()
+        self.state = state
+        self.flushToDB()
+
+    def flushToDB(self) -> None:
+        """Insert or update the Match and MatchPlayer rows for this match."""
         if self.idMatch is not None and self.idMatch < 0:
             cur = db.execute(
                 "INSERT INTO Match (Game_name, state, started,"
@@ -177,79 +192,121 @@ class GenericMatch:
                 (self.idMatch, str(p), self.getScoreFromPlayer(str(p)), winner),
             )
 
-    def getGameTime(self):
+    # --- Timing ------------------------------------------------------------
+
+    def updateElapsed(self) -> None:
+        """Add the time since the last resume to the elapsed-seconds total."""
+        self.finish = datetime.datetime.now(tz=datetime.UTC)
+        timediff = self.finish - self.resumed
+        self.elapsed += timediff.seconds
+
+    def getGameTime(self) -> str:
+        """Return the total play time formatted as ``HH:MM:SS``."""
         hours, remainder = divmod(self.getGameSeconds(), 3600)
         minutes, seconds = divmod(remainder, 60)
         return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-    def getGameSeconds(self):
+    def getGameSeconds(self) -> int:
+        """Return the total play time in seconds, including the live segment."""
         if self.isPaused() or self.winner:
             return self.elapsed
         else:
             timediff = datetime.datetime.now(tz=datetime.UTC) - self.resumed
             return self.elapsed + timediff.seconds
 
-    def getStartTime(self):
+    def getStartTime(self) -> datetime.datetime | None:
         return self.start
 
-    def getFinishTime(self):
+    def getFinishTime(self) -> datetime.datetime | None:
         return self.finish
 
-    def setStartTime(self, start):
+    def setStartTime(self, start: datetime.datetime | None) -> None:
         self.start = start
 
-    def setFinishTime(self, finish):
+    def setFinishTime(self, finish: datetime.datetime | None) -> None:
         self.finish = finish
 
-    def setGameSeconds(self, seconds):
+    def setGameSeconds(self, seconds: int) -> None:
         self.elapsed = seconds
 
-    def getPlayers(self):
+    # --- Dealer ------------------------------------------------------------
+
+    def getDealer(self) -> str | None:
+        return self.dealer
+
+    def setDealer(self, player: str) -> None:
+        if player not in self.players:
+            return
+        self.dealer = player
+
+    def getDealingPolicy(self) -> int:
+        return self.dealingp
+
+    def setDealingPolicy(self, policy: int) -> None:
+        if policy not in [0, 1, 2, 3]:
+            return
+        self.dealingp = policy
+
+    # --- Players & scores --------------------------------------------------
+
+    def getPlayers(self) -> Sequence[str]:
         return self.players
 
-    def setPlayers(self, players):
+    def setPlayers(self, players: Sequence[str]) -> None:
         self.players = players
 
-    def getScoreFromPlayer(self, player):
-        return self.totalScores[player]
-
-    def getWinner(self):
-        return self.winner
-
-    def isPaused(self):
-        return self.state == self.PAUSED
-
-    def isRunning(self):
-        return self.state == self.RUNNING
-
-    def isCancelled(self):
-        return self.state == self.CANCELLED
-
-    def getActivePlayers(self):
+    def getActivePlayers(self) -> Sequence[str]:
+        """Players still in the match; all of them unless a game overrides."""
         return self.getPlayers()
 
-    def isPlayerOff(self, player) -> bool:
+    def isPlayerOff(self, player: str) -> bool:
+        """Whether ``player`` has been eliminated. False unless overridden."""
         return False
 
-    # To be implemented in subclasses
-    @abstractmethod
-    def playerStart(self, player):
-        pass
+    def getScoreFromPlayer(self, player: str) -> int:
+        return self.totalScores[player]
+
+    def getWinner(self) -> str | None:
+        return self.winner
+
+    # --- State queries -----------------------------------------------------
+
+    def isPaused(self) -> bool:
+        return self.state == self.PAUSED
+
+    def isRunning(self) -> bool:
+        return self.state == self.RUNNING
+
+    def isCancelled(self) -> bool:
+        return self.state == self.CANCELLED
+
+    # --- Subclass hooks ----------------------------------------------------
 
     @abstractmethod
-    def computeWinner(self):
-        pass
+    def playerStart(self, player: str) -> None:
+        """Initialise per-player state when a match starts."""
+
+    @abstractmethod
+    def computeWinner(self) -> None:
+        """Set ``self.winner`` according to the game's rules, if decided."""
 
 
 class GenericRoundMatch(GenericMatch):
-    def __init__(self, players=()):
+    """A match played as an ordered list of rounds.
+
+    Adds round persistence, running-total maintenance and per-round extra
+    statistics on top of :class:`GenericMatch`.
+    """
+
+    def __init__(self, players: Sequence[str] = ()) -> None:
         super().__init__(players)
-        self.rounds = []
+        self.rounds: list[GenericRound] = []
         self.dealer = None
         self.dealingp = 2
         self.updatewinnereveryround = True
 
-    def resumeMatch(self, idMatch):
+    def resumeMatch(self, idMatch: int) -> bool:
+        """Reload the base match plus its rounds, dealer and round extras."""
         if not super().resumeMatch(idMatch):
             return False
         cur = db.execute(
@@ -298,7 +355,7 @@ class GenericRoundMatch(GenericMatch):
 
         currentr = 0
         currentp = ""
-        extras = {}
+        extras: dict[str, dict] = {}
         for row in cur:
             if row["idRound"] != currentr:
                 if len(extras):
@@ -322,7 +379,8 @@ class GenericRoundMatch(GenericMatch):
 
         return True
 
-    def flushToDB(self):
+    def flushToDB(self) -> None:
+        """Persist the base match plus every round and its extra statistics."""
         super().flushToDB()
 
         #         db.execute("BEGIN")
@@ -354,7 +412,8 @@ class GenericRoundMatch(GenericMatch):
 
     #         db.execute("COMMIT")
 
-    def addRound(self, rnd):
+    def addRound(self, rnd: GenericRound) -> None:
+        """Append a completed round and fold its scores into the totals."""
         self.rounds.append(rnd)
         for player, score in rnd.getScore().items():
             self.totalScores[player] += score
@@ -362,17 +421,19 @@ class GenericRoundMatch(GenericMatch):
         if self.updatewinnereveryround:
             self.updateWinner()
 
-    def updateRound(self, rnd):
+    def updateRound(self, rnd: GenericRound) -> None:
+        """Replace an existing round in place, adjusting running totals."""
         try:
             oldrnd = self.rounds[rnd.getNumRound() - 1]
         except KeyError:
             return
-        for player, score in oldrnd.getScore():
+        for player, score in oldrnd.getScore().items():
             self.totalScores[player] -= score
             self.totalScores[player] -= rnd.getPlayerScore(player)
         self.rounds[rnd.getNumRound() - 1] = rnd
 
-    def deleteRound(self, nrnd):
+    def deleteRound(self, nrnd: int) -> None:
+        """Remove round ``nrnd`` (1-based) and renumber the rounds after it."""
         try:
             rnd = self.rounds[nrnd - 1]
         except KeyError:
@@ -383,84 +444,92 @@ class GenericRoundMatch(GenericMatch):
         for i, rnd in enumerate(self.rounds, start=1):
             rnd.setNumRound(i)
 
-    def getRounds(self):
+    def getRounds(self) -> list[GenericRound]:
         return self.rounds
 
-    def getDealer(self):
+    def getDealer(self) -> str | None:
+        """The current dealer, or ``None`` once the 'no dealer' policy is set."""
         if self.dealingp == 3 and len(self.rounds) > 0:
             return None
         return self.dealer
 
-    # To be implemented in subclasses
-    @abstractmethod
-    def playerAddRound(self, player, rnd):
-        pass
+    def createRound(self, numround: int) -> GenericRound:
+        """Build the round object for round number ``numround``."""
+        return GenericRound(numround)
 
-    def resumeExtraInfo(self, _player, _key, _value):
+    def resumeExtraInfo(self, _player: str, _key: str, _value: str) -> dict:
+        """Decode a persisted round-statistic row. Empty unless overridden."""
         return {}
 
-    def createRound(self, numround):
-        return GenericRound(numround)
+    @abstractmethod
+    def playerAddRound(self, player: str, rnd: GenericRound) -> None:
+        """Update per-player state after ``player`` records ``rnd``."""
 
 
 class GenericRound:
-    def __init__(self, numround):
-        self.numround = numround
-        self.score = {}
-        self.winner = None
+    """One round of a match: a per-player score map and an optional winner."""
 
-    def getNumRound(self):
+    def __init__(self, numround: int) -> None:
+        self.numround = numround
+        self.score: dict[str, int] = {}
+        self.winner: str | None = None
+
+    def getNumRound(self) -> int:
         return self.numround
 
-    def setNumRound(self, numround):
+    def setNumRound(self, numround: int) -> None:
         self.numround = numround
 
-    def setWinner(self, player):
+    def setWinner(self, player: str) -> None:
         self.winner = player
 
-    def getWinner(self):
+    def getWinner(self) -> str | None:
         return self.winner
 
-    def getPlayerScore(self, player):
+    def getPlayerScore(self, player: str) -> int:
         try:
             return self.score[player]
         except KeyError:
             return -1
 
-    def setPlayerScore(self, player, score):
+    def setPlayerScore(self, player: str, score: int) -> None:
         try:
             self.score[player] = score
         except KeyError:
             pass
 
-    def getScore(self):
+    def getScore(self) -> dict[str, int]:
         return self.score
 
-    def addInfo(self, player, score, extras=None):
+    def addInfo(self, player: str, score: int, extras: dict | None = None) -> None:
+        """Record ``player``'s score and, optionally, their round extras."""
         self.score[player] = score
         if extras:
             self.addExtraInfo(player, extras)
 
-    # To be implemented in subclasses
     @abstractmethod
-    def addExtraInfo(self, player, extras):
-        pass
+    def addExtraInfo(self, player: str, extras: dict) -> None:
+        """Attach game-specific extra statistics for ``player``."""
 
 
 class GenericEntry(GenericRound):
-    def __init__(self, numround):
+    """A single-score 'round' (one entry per player) for non-round games."""
+
+    def __init__(self, numround: int) -> None:
         super().__init__(numround)
         self.getNumEntry = self.getNumRound
         self.setNumEntry = self.setNumRound
 
-    def getPlayerScore(self, player=None):
+    def getPlayerScore(self, player: str | None = None) -> int:
         if len(self.score) == 0:
             return -1
         for score in self.score.values():
             return score
+        return -1
 
-    def getPlayer(self):
-        if len(self.score) == 0:
-            return -1
+    def getPlayer(self) -> str:
+        """Return this entry's single player, or ``""`` if none recorded yet."""
         for player in self.score:
             return player
+        return ""
+        return -1

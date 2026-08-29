@@ -1,5 +1,11 @@
+"""Top-level application window and the About dialog."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QCloseEvent
 from PySide6.QtWidgets import (
     QDialog,
     QHBoxLayout,
@@ -13,22 +19,30 @@ from PySide6.QtWidgets import (
 from core.engine.db import db
 from core.ui.newgame import NewGameWidget
 
+if TYPE_CHECKING:
+    from PySide6.QtCore import QEvent
+
+    from core.ui.game import GameWidget
+
 
 class MainWindow(QMainWindow):
+    """Main window hosting the new-game tab and any running match tabs."""
+
     # Dialog translations
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "&Yes")
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "&No")
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "OK")
     QtCore.QT_TRANSLATE_NOOP("QDialogButtonBox", "Cancel")
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         if not db.isConnected():
             db.connectDB()
-        self.openedGames = []
+        self.openedGames: list[GameWidget] = []
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Build the menus, central widget and new-game tab, then show."""
         # Window settings
 
         self.setGeometry(100, 50, 1024, 600)
@@ -74,7 +88,8 @@ class MainWindow(QMainWindow):
 
         self.show()
 
-    def retranslateUi(self):
+    def retranslateUi(self) -> None:
+        """Re-apply translated text to every widget after a language change."""
         self.setWindowTitle(self.tr("GameLog"))
         self.statusBar().showMessage(self.tr("GameLog"))
         self.fileMenu.setTitle(self.tr("&File"))
@@ -90,13 +105,14 @@ class MainWindow(QMainWindow):
         for game in self.openedGames:
             game.retranslateUI()
 
-    def closeEvent(self, event):
+    def closeEvent(self, event: QCloseEvent) -> None:
         if self.ensureClose():
             event.accept()
         else:
             event.ignore()
 
-    def ensureClose(self):
+    def ensureClose(self) -> bool:
+        """Prompt to save any open matches; return False to abort closing."""
         realopened = [x for x in self.openedGames if not x.isFinished()]
         numgames = len(realopened)
         if numgames > 0:
@@ -159,7 +175,8 @@ class MainWindow(QMainWindow):
             db.disconnectDB()
         return True
 
-    def newTab(self, matchTab, title):
+    def newTab(self, matchTab: GameWidget, title: str) -> None:
+        """Show a running match widget and track it as an open game."""
         self.newGameTab.hide()
         self.verticalLayout.addWidget(matchTab)
         self.setWindowTitle(f"Gamelog - {title}")
@@ -170,7 +187,8 @@ class MainWindow(QMainWindow):
     #        idx = self.tabWidget.addTab(matchTab, title)
     #        self.tabWidget.setCurrentIndex(idx)
 
-    def removeTab(self, tab):
+    def removeTab(self, tab: GameWidget) -> None:
+        """Close a match widget and restore the new-game tab."""
         tab.close()
         self.openedGames.remove(tab)
         self.setWindowTitle("Gamelog")
@@ -178,18 +196,21 @@ class MainWindow(QMainWindow):
 
     #        self.tabWidget.removeTab(self.tabWidget.indexOf(tab))
 
-    def about(self):
+    def about(self) -> None:
+        """Open the modal About dialog."""
         self.abdialog = AboutDialog(self)
         self.abdialog.exec_()
 
-    def changeEvent(self, event):
+    def changeEvent(self, event: QEvent) -> None:
         if event.type() == QtCore.QEvent.Type.LanguageChange:
             self.retranslateUi()
         return super().changeEvent(event)
 
 
 class AboutDialog(QDialog):
-    def __init__(self, parent=None):
+    """Simple 'About Gamelog' dialog showing the app icon and credits."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         # self.setFixedSize(QtCore.QSize(450, 350))
         # self.setWindowTitle(i18n("AboutDialog", "About Gamelog"))

@@ -1,5 +1,11 @@
+"""Ratuki scoreboard widgets: per-player score input, round table and plot."""
+
+from __future__ import annotations
+
+from typing import cast
+
 from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QColor
+from PySide6.QtGui import QColor, QKeyEvent, QMouseEvent
 from PySide6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
@@ -24,20 +30,23 @@ from games.ratuki.engine import RatukiEngine
 
 
 class RatukiWidget(GameWidget):
-    def createEngine(self):
+    """Scoreboard tab for Ratuki, with a configurable target-score limit."""
+
+    def createEngine(self) -> None:
         if self.game != "Ratuki":
             raise GameNotImplementedException(f"No engine for game {self.game}")
         self.engine = RatukiEngine()
 
-    def initUI(self):
+    def initUI(self) -> None:
         super().initUI()
         self.retranslateUI()
 
-    def addExtraConfig(self):
+    def addExtraConfig(self) -> None:
+        """Add the target-score spin box to the match configuration panel."""
         super().addExtraConfig()
         self.topPointsScoreBox = ScoreSpinBox(self.matchGroup)
         self.topPointsScoreBox.setMaximum(1000)
-        self.topPointsScoreBox.setValue(self.engine.getTop())
+        self.topPointsScoreBox.setValue(cast("RatukiEngine", self.engine).getTop())
         self.topPointsScoreBox.lineEdit().setFocusPolicy(
             QtCore.Qt.FocusPolicy.ClickFocus
         )
@@ -49,32 +58,37 @@ class RatukiWidget(GameWidget):
             self.topPointsScoreBox, alignment=QtCore.Qt.AlignmentFlag.AlignLeft
         )
 
-    def createGameInputWidget(self, parent=None):
+    def createGameInputWidget(self, parent: QWidget | None = None) -> RatukiInputWidget:
         return RatukiInputWidget(self.engine, parent)
 
-    def createRoundsDetail(self, parent=None):
+    def createRoundsDetail(self, parent: QWidget | None = None) -> RatukiRoundsDetail:
         return RatukiRoundsDetail(self.engine, parent)
 
-    def checkPlayerScore(self, player, score, extras=None):
+    def checkPlayerScore(
+        self, player: str, score: int, extras: dict | None = None
+    ) -> bool:
         if score is None:
             return False
         return -100 <= score <= 100
 
-    def updatePanel(self):
+    def updatePanel(self) -> None:
         super().updatePanel()
         self.topPointsScoreBox.setReadOnly(self.engine.getNumRound() > 1)
 
-    def changeTop(self, newtop):
+    def changeTop(self, newtop: int) -> None:
+        """Apply a new target-score limit and refresh the plot's limit line."""
         try:
             newtop = int(newtop)
-            self.engine.setTop(newtop)
+            cast("RatukiEngine", self.engine).setTop(newtop)
             self.detailGroup.updatePlot()
         except ValueError:
             pass
 
 
 class RatukiInputWidget(GameInputWidget):
-    def initUI(self):
+    """Score-entry widget: one box per player, the winner picked by hand."""
+
+    def initUI(self) -> None:
         self.widgetLayout = QHBoxLayout(self)
         for i, player in enumerate(self.engine.getListPlayers()):
             self.playerInputList[player] = RatukiPlayerInputWidget(
@@ -84,19 +98,20 @@ class RatukiInputWidget(GameInputWidget):
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
             self.playerInputList[player].changed.connect(self.changed)
 
-    def getWinner(self):
+    # A winner may not be chosen yet, so this widens the base return to None.
+    def getWinner(self) -> str | None:  # pyright: ignore[reportIncompatibleMethodOverride]
         for player, piw in self.playerInputList.items():
             if piw.isWinner():
                 return player
         return None
 
-    def changedWinner(self, winner):
+    def changedWinner(self, winner: str) -> None:
         winner = str(winner)
         if self.winnerSelected != "":
             self.playerInputList[self.winnerSelected].unsetWinner()
         self.winnerSelected = winner
 
-    def updatePlayerOrder(self):
+    def updatePlayerOrder(self) -> None:
         #         QWidget().setLayout(self.layout())
         trash = QWidget()
         trash_layout = self.layout()
@@ -111,10 +126,12 @@ class RatukiInputWidget(GameInputWidget):
 
 
 class RatukiPlayerInputWidget(QGroupBox):
+    """Per-player input box: a score field plus a click-toggled winner badge."""
+
     winnerSet = QtCore.Signal(str)
     changed = QtCore.Signal()
 
-    def __init__(self, player, colour=None, parent=None):
+    def __init__(self, player, colour=None, parent=None) -> None:
         super().__init__(parent)
         self.player = player
         self.pcolour = colour if colour else QColor(0, 0, 0)
@@ -122,7 +139,7 @@ class RatukiPlayerInputWidget(QGroupBox):
         self.initUI()
         self.reset()
 
-    def initUI(self):
+    def initUI(self) -> None:
         self.mainLayout = QVBoxLayout(self)
 
         self.label = QLabel(self)
@@ -142,18 +159,19 @@ class RatukiPlayerInputWidget(QGroupBox):
         self.mainLayout.addLayout(self.lowerLayout)
         self.lowerLayout.addWidget(self.scoreSpinBox)
 
-    def reset(self):
+    def reset(self) -> None:
         self.winner = False
         self.scoreSpinBox.setValue(None)
         self.updatePanel()
 
-    def setColour(self, colour):
+    def setColour(self, colour) -> None:
         self.pcolour = colour
         sh = f"font-size: 24px; font-weight: bold; color:rgba({self.pcolour.red()},{self.pcolour.green()},{self.pcolour.blue()},{self.pcolour.alpha()});"
         self.label.setStyleSheet(sh)
         self.scoreSpinBox.setColour(self.pcolour)
 
-    def updatePanel(self):
+    def updatePanel(self) -> None:
+        """Redraw the label, highlighting the box when it holds the winner."""
         text = f"{self.player}"
         css = ""
         if self.winner:
@@ -162,63 +180,70 @@ class RatukiPlayerInputWidget(QGroupBox):
         self.label.setText(text)
         self.setStyleSheet(f"QGroupBox {{ {css} }}")
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QMouseEvent) -> None:
         self.scoreSpinBox.setFocus()
 
-    def mouseDoubleClickEvent(self, event):
+    def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:
         if not self.isWinner():
             self.setWinner()
             # event.accept()
         return super().mouseDoubleClickEvent(event)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == QtCore.Qt.Key.Key_Space:
             event.accept()
             self.setWinner()
         return super().keyPressEvent(event)
 
-    def setWinner(self):
+    def setWinner(self) -> None:
+        """Mark this player as the round winner and announce it."""
         if not self.isWinner():
             self.winner = True
             self.winnerSet.emit(self.player)
             self.changed.emit()
             self.updatePanel()
 
-    def unsetWinner(self):
+    def unsetWinner(self) -> None:
+        """Clear the winner mark from this player."""
         if self.isWinner():
             self.winner = False
             self.changed.emit()
             self.updatePanel()
 
-    def getScore(self):
+    def getScore(self) -> int | None:
         return self.scoreSpinBox.value()
 
-    def isWinner(self):
+    def isWinner(self) -> bool:
         return self.winner
 
-    def getPlayer(self):
+    def getPlayer(self) -> str:
         return self.player
 
 
 class RatukiRoundsDetail(GameRoundsDetail):
-    def __init__(self, engine, parent=None):
+    """Rounds detail panel for Ratuki, defaulting to the plot tab."""
+
+    def __init__(self, engine, parent=None) -> None:
         self.bgcolors = [0xCCFF99, 0xFFCC99]
         super().__init__(engine, parent)
         self.setCurrentWidget(self.plot)
 
-    def createRoundTable(self, engine, parent=None):
+    def createRoundTable(self, engine, parent=None) -> RatukiRoundTable:
         return RatukiRoundTable(self.engine, self.bgcolors, parent)
 
-    def createRoundPlot(self, engine, parent=None):
+    def createRoundPlot(self, engine, parent=None) -> RatukiRoundPlot:
         return RatukiRoundPlot(self.engine, self)
 
 
 class RatukiRoundTable(GameRoundTable):
-    def __init__(self, engine, bgcolors, parent=None):
+    """Per-round score table, colouring cells by the sign of the score."""
+
+    def __init__(self, engine, bgcolors, parent=None) -> None:
         self.bgcolors = bgcolors
         super().__init__(engine, parent)
 
-    def insertRound(self, r):
+    def insertRound(self, r) -> None:
+        """Append a table row for round ``r`` with each player's score."""
         winner = r.getWinner()
         i = r.getNumRound() - 1
         self.insertRow(i)
@@ -245,7 +270,9 @@ class RatukiRoundTable(GameRoundTable):
 
 
 class RatukiRoundPlot(GameRoundPlot):
-    def updatePlot(self):
+    """Cumulative-score plot with the target score drawn as a limit line."""
+
+    def updatePlot(self) -> None:
         super().updatePlot()
         if not self.isPlotInited():
             return
