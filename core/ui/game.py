@@ -692,6 +692,8 @@ class GameWidget(Tab):
         dpolicy = self.engine.getDealingPolicy()
         if dpolicy not in (self.engine.NoDealer, self.engine.StarterDealer):
             self.dealerPolicyCheckBox.setDisabled(self.engine.getNumRound() > 1)
+        if hasattr(self.detailGroup, "updateRound"):
+            self.detailGroup.updateRound()  # pyright: ignore[reportAttributeAccessIssue]
         if self.engine.getWinner():
             self.setWinner()
             # updateStats is optional on the detail widget; call it only when
@@ -701,8 +703,6 @@ class GameWidget(Tab):
         else:
             self.setRoundTitle()
             self.gameInput.setFocus()
-            if hasattr(self.detailGroup, "updateRound"):
-                self.detailGroup.updateRound()  # pyright: ignore[reportAttributeAccessIssue]
         if self.engine.getWinner() and self.engine.requiresExplicitFinish():
             self.finishButton.setDisabled(True)
         self.guardCommitButton()
