@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ctypes
 import logging
+import os
 import shutil
 import subprocess
 import sys
@@ -1924,7 +1925,7 @@ class SleepBlocker:
     # -------- macOS --------
     def _start_macos(self) -> None:
         self.proc = subprocess.Popen(
-            ["caffeinate", "-dims"],
+            ["caffeinate", "-dims", "-w", str(os.getpid())],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
