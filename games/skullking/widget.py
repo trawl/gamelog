@@ -503,6 +503,7 @@ class SkullKingInputWidget(GameInputWidget):
                 trash_layout.removeWidget(self.playerInputList[player])
             self.widgetLayout.addWidget(self.playerInputList[player], i // ppr, i % ppr)
             self.playerInputList[player].setColour(PlayerColours[i])
+        self.updateCandidateAction()
 
     def bonusChangedAction(self, sender_type, sender) -> None:
         """Enforce mutual exclusion between related bonus buttons across players."""
