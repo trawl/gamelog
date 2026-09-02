@@ -31,6 +31,10 @@ if __name__ == "__main__":
     app.setDesktopFileName("gamelog")
     app.setApplicationName("gamelog")
 
+    if sys.platform == "darwin":
+        from PySide6.QtGui import QIcon
+        app.setWindowIcon(QIcon(":/icons/cards.png"))
+
     app.languageManager = LanguageManager(app)
     app.themeManager = ThemeManager(app)
     mw = MainWindow()
