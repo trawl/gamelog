@@ -827,10 +827,14 @@ class ClickableLabel(QLabel):
         self.setStyleSheet(
             f"""
             ClickableLabel {{
+                font-size: 24px;
+                font-weight: bold;
                 color: {css_colour};
             }}
 
             ClickableLabel[locked="true"] {{
+                font-size: 24px;
+                font-weight: bold;
                 border-color: {css_colour};
             }}
             """

@@ -245,9 +245,6 @@ ClickableLabel {
     border: 1px solid #666666;
     border-radius: 20px;
 
-    font-size: 24px;
-    font-weight: bold;
-
     /* Default only; Python overrides this per instance */
     color: white;
 }
