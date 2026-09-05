@@ -50,7 +50,7 @@
         <file alias="icons/mermaid.svg">games/skullking/icons/mermaid.svg</file>
         <file alias="icons/pirate.svg">games/skullking/icons/pirate.svg</file>
         <file alias="icons/player.png">core/resources/icons/player.png</file>
-        <file alias="icons/qwirkles.png">games/qwirkle/icons/qwirkles.png</file>
+        <file alias="icons/qwirkles.svg">games/qwirkle/icons/qwirkles.svg</file>
         <file alias="icons/roatan.png">games/skullking/icons/roatan.png</file>
         <file alias="icons/roatan.svg">games/skullking/icons/roatan.svg</file>
         <file alias="icons/skull.png">games/remigio/icons/skull.png</file>

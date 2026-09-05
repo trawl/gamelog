@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">Qwirkle score</title>
+  <desc id="desc">A round button featuring six colourful tiles arranged in a circle.</desc>
+  <!-- Six tiles: one for each tile in a Qwirkle. -->
+  <g stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round">
+    <rect x="40" y="17" width="16" height="16" rx="3" fill="#F45B69"/>
+    <rect x="60" y="27" width="16" height="16" rx="3" fill="#FFB946"/>
+    <rect x="60" y="53" width="16" height="16" rx="3" fill="#55C271"/>
+    <rect x="40" y="63" width="16" height="16" rx="3" fill="#4AA8F0"/>
+    <rect x="20" y="53" width="16" height="16" rx="3" fill="#9B6CE3"/>
+    <rect x="20" y="27" width="16" height="16" rx="3" fill="#F06AA9"/>
+  </g>
+</svg>
