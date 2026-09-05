@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import datetime
+from typing import TYPE_CHECKING
+
 from PySide6.QtCore import (
     Property,
     QEasingCurve,
@@ -12,6 +15,9 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import QColor, QFont, QPainter, QPaintEvent, QPen
 from PySide6.QtWidgets import QGraphicsOpacityEffect, QWidget
+
+if TYPE_CHECKING:
+    from core.ui.clock import GameClock
 
 
 class CountdownTimer(QWidget):
@@ -50,12 +56,18 @@ class CountdownTimer(QWidget):
         self._finished = False
         self._flash_pending = False
 
-        self.setMinimumSize(80, 80)
+        # Game-clock reference for shared time origin (set via driveWith)
+        self._clock: GameClock | None = None
+        # Game-clock elapsed seconds at the moment this turn started
+        self._turn_start_elapsed: int = 0
+        # Fallback wall-clock origin used when no game clock is attached
+        self._standalone_start: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
 
-        # 1-second tick
+        # Fallback standalone timer (500 ms, same rate as GameClock)
         self._tick_timer = QTimer(self)
-        self._tick_timer.setInterval(1000)
-        self._tick_timer.timeout.connect(self._tick)
+        self._tick_timer.setInterval(500)
+        self._tick_timer.timeout.connect(self._poll)
+        self._external_timer: QTimer | None = None
 
         # Smooth arc animation between ticks
         self._arc_anim = QPropertyAnimation(self, b"arcFraction", self)
@@ -104,24 +116,36 @@ class CountdownTimer(QWidget):
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
+    def driveWith(self, clock: GameClock) -> None:
+        """Share the game clock's timer and time origin for perfect sync."""
+        self._tick_timer.stop()
+        self._clock = clock
+        self._external_timer = clock.timer
+        clock.timer.timeout.connect(self._poll)
+
     def start(self) -> None:
-        """Begin or restart the countdown from the current remaining time."""
+        """Begin the countdown from the current remaining time."""
         if self._finished:
             return
         self._paused = False
-        self._tick_timer.start()
-        self._animate_arc_to(
-            self._arc_fraction,
-            self._remaining / self._total,
-            950,
-        )
+        # Snapshot the clock's current elapsed seconds as turn-start reference.
+        # The countdown will compute turn_elapsed = game_elapsed - this value,
+        # so both widgets cross second boundaries at the exact same instant.
+        if self._clock is not None:
+            self._turn_start_elapsed = self._game_elapsed()
+        else:
+            self._turn_start_elapsed = 0
+            self._standalone_start = datetime.datetime.now(tz=datetime.UTC)
+            self._tick_timer.start()
+        self._animate_arc_to(self._arc_fraction, self._remaining / self._total, 950)
 
     def pause(self) -> None:
         """Freeze the countdown."""
         if self._paused or self._finished:
             return
         self._paused = True
-        self._tick_timer.stop()
+        if self._external_timer is None:
+            self._tick_timer.stop()
         self._arc_anim.stop()
 
     def resume(self) -> None:
@@ -129,16 +153,18 @@ class CountdownTimer(QWidget):
         if not self._paused or self._finished:
             return
         self._paused = False
-        self._tick_timer.start()
-        self._animate_arc_to(
-            self._arc_fraction,
-            self._remaining / self._total,
-            950,
-        )
+        # Re-anchor: we want to continue from _remaining seconds left, so set
+        # the turn-start reference so that game_elapsed - ref == total - remaining.
+        if self._clock is not None:
+            self._turn_start_elapsed = self._game_elapsed() - (self._total - self._remaining)
+        else:
+            self._tick_timer.start()
+        self._animate_arc_to(self._arc_fraction, self._remaining / self._total, 950)
 
     def reset(self, seconds: int | None = None) -> None:
         """Reset to full countdown, optionally changing the duration."""
-        self._tick_timer.stop()
+        if self._external_timer is None:
+            self._tick_timer.stop()
         self._flash_pending = False
         self._arc_anim.stop()
         self._text_anim.stop()
@@ -146,6 +172,7 @@ class CountdownTimer(QWidget):
         self._opacity_effect.setOpacity(1.0)
         self._finished = False
         self._paused = False
+        self._turn_start_elapsed = 0
         if seconds is not None:
             self._total = seconds
         self._remaining = self._total
@@ -159,6 +186,8 @@ class CountdownTimer(QWidget):
         self.update()
 
     def isRunning(self) -> bool:
+        if self._external_timer is not None:
+            return not self._paused and not self._finished
         return self._tick_timer.isActive()
 
     def isPaused(self) -> bool:
@@ -167,24 +196,45 @@ class CountdownTimer(QWidget):
     # ------------------------------------------------------------------
     # Internal
     # ------------------------------------------------------------------
-    def _tick(self) -> None:
-        self._remaining -= 1
-        # Animate text number to the new value
+    def _game_elapsed(self) -> int:
+        """Total game seconds elapsed — mirrors GameClock.showTime's computation."""
+        assert self._clock is not None
+        now = datetime.datetime.now(tz=datetime.UTC)
+        return (now - self._clock.startTime).seconds + self._clock.accumulated
+
+    def _poll(self) -> None:
+        """Called every 500 ms; acts only when a new second boundary is crossed."""
+        if self._paused or self._finished:
+            return
+
+        if self._clock is not None:
+            turn_elapsed = self._game_elapsed() - self._turn_start_elapsed
+        else:
+            turn_elapsed = int(
+                (datetime.datetime.now(tz=datetime.UTC) - self._standalone_start).total_seconds()
+            )
+
+        remaining = max(0, self._total - turn_elapsed)
+
+        if remaining == self._remaining:
+            return  # still the same second — nothing to update
+
+        self._remaining = remaining
+
         self._text_anim.stop()
         self._text_anim.setStartValue(self._display_seconds)
-        self._text_anim.setEndValue(self._remaining)
+        self._text_anim.setEndValue(remaining)
         self._text_anim.start()
 
-        if self._remaining <= 0:
-            self._remaining = 0
-            self._tick_timer.stop()
+        if remaining <= 0:
+            if self._external_timer is None:
+                self._tick_timer.stop()
             self._animate_arc_to(self._arc_fraction, 0.0, 950)
             self._flash_pending = True
             self._finished = True
             self.finished.emit()
         else:
-            next_frac = self._remaining / self._total
-            self._animate_arc_to(self._arc_fraction, next_frac, 950)
+            self._animate_arc_to(self._arc_fraction, remaining / self._total, 950)
 
     def _start_flash(self) -> None:
         if self._flash_pending:

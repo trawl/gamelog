@@ -47,10 +47,10 @@ class ScrabbleWidget(GameWidget):
         super().initUI()
         self.dealerPolicyCheckBox.hide()
 
-        cast("ScrabbleInputWidget", self.gameInput).placeCommitButton(
-            self.commitRoundButton
-        )
-        cast("ScrabbleInputWidget", self.gameInput).placeUndoButton(self.undoButton)
+        gi = cast("ScrabbleInputWidget", self.gameInput)
+        gi.countdown.driveWith(self.clock)
+        gi.placeCommitButton(self.commitRoundButton)
+        gi.placeUndoButton(self.undoButton)
         for b in (self.commitRoundButton, self.undoButton):
             b.setSizePolicy(
                 QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
