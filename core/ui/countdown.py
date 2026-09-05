@@ -61,7 +61,9 @@ class CountdownTimer(QWidget):
         # Game-clock elapsed seconds at the moment this turn started
         self._turn_start_elapsed: int = 0
         # Fallback wall-clock origin used when no game clock is attached
-        self._standalone_start: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+        self._standalone_start: datetime.datetime = datetime.datetime.now(
+            tz=datetime.UTC
+        )
 
         # Fallback standalone timer (500 ms, same rate as GameClock)
         self._tick_timer = QTimer(self)
@@ -156,7 +158,9 @@ class CountdownTimer(QWidget):
         # Re-anchor: we want to continue from _remaining seconds left, so set
         # the turn-start reference so that game_elapsed - ref == total - remaining.
         if self._clock is not None:
-            self._turn_start_elapsed = self._game_elapsed() - (self._total - self._remaining)
+            self._turn_start_elapsed = self._game_elapsed() - (
+                self._total - self._remaining
+            )
         else:
             self._tick_timer.start()
         self._animate_arc_to(self._arc_fraction, self._remaining / self._total, 950)
@@ -211,7 +215,9 @@ class CountdownTimer(QWidget):
             turn_elapsed = self._game_elapsed() - self._turn_start_elapsed
         else:
             turn_elapsed = int(
-                (datetime.datetime.now(tz=datetime.UTC) - self._standalone_start).total_seconds()
+                (
+                    datetime.datetime.now(tz=datetime.UTC) - self._standalone_start
+                ).total_seconds()
             )
 
         remaining = max(0, self._total - turn_elapsed)
@@ -260,7 +266,9 @@ class CountdownTimer(QWidget):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         color = (
-            self.palette().color(self.palette().ColorGroup.Disabled, self.palette().ColorRole.Text)
+            self.palette().color(
+                self.palette().ColorGroup.Disabled, self.palette().ColorRole.Text
+            )
             if not self.isEnabled()
             else self._color
         )
@@ -293,9 +301,7 @@ class CountdownTimer(QWidget):
 
         # Foreground arc (depletes clockwise)
         if self._arc_fraction > 0.0:
-            pen = QPen(
-                color, pen_width, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap
-            )
+            pen = QPen(color, pen_width, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap)
             painter.setPen(pen)
             span = int(-self._arc_fraction * 360 * 16)
             painter.drawArc(
