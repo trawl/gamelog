@@ -4,7 +4,7 @@
 <context>
     <name>RemigioRoundTable</name>
     <message>
-        <location filename="../widget.py" line="372"/>
+        <location filename="../widget.py" line="403"/>
         <source>Winner ({}x)</source>
         <translation>Ganador ({}x)</translation>
     </message>
@@ -12,7 +12,7 @@
 <context>
     <name>RemigioWidget</name>
     <message>
-        <location filename="../widget.py" line="93"/>
+        <location filename="../widget.py" line="105"/>
         <source>Warning: real points are computed automatically depending on the close type</source>
         <translation>Atención: el programa calcula los puntos reales según el tipo de cierre</translation>
     </message>

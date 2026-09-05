@@ -9,6 +9,7 @@ from PySide6 import QtCore
 from PySide6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
+    QLabel,
     QMessageBox,
     QSizePolicy,
     QTableWidgetItem,
@@ -16,6 +17,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.engine.settings import appsettings
+from core.ui.countdown import CountdownTimer
 from core.ui.game import (
     BonusButton,
     GameInputWidget,
@@ -65,14 +67,12 @@ class ScrabbleWidget(GameWidget):
     ) -> ScrabbleEntriesDetail:
         return ScrabbleEntriesDetail(self.engine, parent)
 
-    # def retranslateUI(self):
-    #     super().retranslateUI()
-    #     # self.commitRoundButton.setText("▼")
-    #     self.commitRoundButton.setText("↵")
-    #     self.undoButton.setText("⎌")
-
-    #     self.gameInput.retranslateUI()
-    #     self.detailGroup.retranslateUI()
+    def retranslateUI(self):
+        super().retranslateUI()
+        if appsettings["text_in_buttons"]:
+            self.turnTimeLabel.setText(self.tr("Turn (s)"))
+        else:
+            self.turnTimeLabel.setText("⏱")
 
     def checkPlayerScore(
         self, player: str, score: int, extras: dict | None = None
@@ -122,6 +122,47 @@ class ScrabbleWidget(GameWidget):
         elif self.hideInputOnFinish:
             self.gameInput.hide()
 
+    def addExtraConfig(self) -> None:
+        """Add the per-turn countdown spin box below the game clock."""
+        super().addExtraConfig()
+        self.turnTimeLayout = QHBoxLayout()
+        self.matchGroupLayout.addLayout(self.turnTimeLayout)
+        self.turnTimeLabel = QLabel("⏱", self.matchGroup)
+        self.turnTimeLabel.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        self.turnTimeLayout.addWidget(self.turnTimeLabel)
+        self.turnSecondsBox = ScoreSpinBox(self.matchGroup)
+        self.turnSecondsBox.setRange(10, 600, 120)
+        self.turnSecondsBox.setValue(120)
+        self.turnSecondsBox.lineEdit().setFocusPolicy(QtCore.Qt.FocusPolicy.ClickFocus)
+        self.turnSecondsBox.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+        )
+        self.turnSecondsBox.valueChanged.connect(self.changeTurnSeconds)
+        self.turnTimeLayout.addWidget(self.turnSecondsBox)
+        # self.matchGroupLayout.addWidget(
+        #     self.turnSecondsBox, alignment=QtCore.Qt.AlignmentFlag.AlignLeft
+        # )
+
+    def changeTurnSeconds(self, value: int | None = None) -> None:
+        """Apply the new turn duration and reset the running countdown."""
+        if value is None:
+            value = self.turnSecondsBox.value()
+        if value is None:
+            return
+        gi = cast("ScrabbleInputWidget", self.gameInput)
+        gi.countdown.reset(int(value))
+        gi.countdown.start()
+
+    def pauseMatch(self) -> None:
+        super().pauseMatch()
+        gi = cast("ScrabbleInputWidget", self.gameInput)
+        if self.engine.isPaused():
+            gi.countdown.pause()
+        else:
+            gi.countdown.resume()
+
     def setDealer(self) -> None:
         super().setDealer()
         self.gameInput.reset()
@@ -132,6 +173,7 @@ class ScrabbleInputWidget(GameInputWidget):
 
     def __init__(self, engine, parent) -> None:
         self.active_player = engine.getDealer()
+        self._turn_seconds = 120
         super().__init__(engine, parent)
 
     def initUI(self) -> None:
@@ -140,6 +182,11 @@ class ScrabbleInputWidget(GameInputWidget):
         self.currentPlayerBox = QGroupBox(self)
         self.widgetLayout.addWidget(self.currentPlayerBox, 2)
         self.currentPlayerBoxLayout = QHBoxLayout(self.currentPlayerBox)
+        self.countdown = CountdownTimer(
+            self._turn_seconds, parent=self.currentPlayerBox
+        )
+        self.countdown.setFixedSize(64, 64)
+        self.currentPlayerBoxLayout.addWidget(self.countdown)
         self.scoreSpinBox = ScoreSpinBox(self.currentPlayerBox)
         self.scoreSpinBox.setRange(-60, 400, 0)
         self.currentPlayerBoxLayout.addWidget(self.scoreSpinBox)
@@ -218,6 +265,7 @@ class ScrabbleInputWidget(GameInputWidget):
         self.currentPlayerBox.setStyleSheet(
             css.format(colour.red(), colour.green(), colour.blue())
         )
+        self.countdown.setColor(colour)
         self.scoreSpinBox.setColour(colour)
         for bb in self.bonusButtons.values():
             bb.setColour(colour)
@@ -225,15 +273,16 @@ class ScrabbleInputWidget(GameInputWidget):
     def reset(self) -> None:
         """Reset the entry to the current dealer with a cleared score field."""
         self.active_player = self.engine.getDealer()
-        self.setColour(
-            PlayerColours[
-                self.engine.getListPlayers().index(cast("str", self.active_player))
-            ]
-        )
+        colour = PlayerColours[
+            self.engine.getListPlayers().index(cast("str", self.active_player))
+        ]
+        self.setColour(colour)
         self.currentPlayerBox.setTitle(f"{self.active_player}")
         self.scoreSpinBox.reset()
         for bb in self.bonusButtons.values():
             bb.setChecked(False)
+        self.countdown.reset()
+        self.countdown.start()
         self.scoreSpinBox.setFocus()
 
     def updatePlayerOrder(self) -> None:
