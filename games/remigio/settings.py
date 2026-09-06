@@ -8,7 +8,9 @@ QCoreApplication.translate("RemigioSettings", "Who deals at the start of each ro
 QCoreApplication.translate("RemigioSettings", "Next player deals")
 QCoreApplication.translate("RemigioSettings", "Winner deals")
 QCoreApplication.translate("RemigioSettings", "Elimination score")
-QCoreApplication.translate("RemigioSettings", "Score at which a player is eliminated from the game")
+QCoreApplication.translate(
+    "RemigioSettings", "Score at which a player is eliminated from the game"
+)
 
 game_settings = {
     "remigio_dealer_policy": {

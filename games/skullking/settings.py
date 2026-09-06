@@ -9,7 +9,9 @@ QCoreApplication.translate("SkullKingSettings", "classic_scoring")
 QCoreApplication.translate("SkullKingSettings", "standard_scoring")
 QCoreApplication.translate("SkullKingSettings", "rascal_scoring")
 QCoreApplication.translate("SkullKingSettings", "Round mode")
-QCoreApplication.translate("SkullKingSettings", "Default card-count sequence for new games")
+QCoreApplication.translate(
+    "SkullKingSettings", "Default card-count sequence for new games"
+)
 QCoreApplication.translate("SkullKingSettings", "standard_rounds")
 QCoreApplication.translate("SkullKingSettings", "even")
 QCoreApplication.translate("SkullKingSettings", "brawl")

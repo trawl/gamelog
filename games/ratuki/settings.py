@@ -8,7 +8,9 @@ QCoreApplication.translate("RatukiSettings", "Who deals at the start of each rou
 QCoreApplication.translate("RatukiSettings", "Next player deals")
 QCoreApplication.translate("RatukiSettings", "Winner deals")
 QCoreApplication.translate("RatukiSettings", "Target score")
-QCoreApplication.translate("RatukiSettings", "Score a player must reach to end the game")
+QCoreApplication.translate(
+    "RatukiSettings", "Score a player must reach to end the game"
+)
 
 game_settings = {
     "ratuki_dealer_policy": {

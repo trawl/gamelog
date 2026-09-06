@@ -8,7 +8,9 @@ QCoreApplication.translate("Toma6Settings", "Who deals at the start of each roun
 QCoreApplication.translate("Toma6Settings", "Next player deals")
 QCoreApplication.translate("Toma6Settings", "Winner deals")
 QCoreApplication.translate("Toma6Settings", "End score")
-QCoreApplication.translate("Toma6Settings", "Score any player must reach to trigger the end of the game")
+QCoreApplication.translate(
+    "Toma6Settings", "Score any player must reach to trigger the end of the game"
+)
 
 game_settings = {
     "toma6_dealer_policy": {

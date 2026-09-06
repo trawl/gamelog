@@ -240,9 +240,7 @@ class SettingsDialog(QDialog):
             context = default_setting.get("context", "AppSettings")
             display_name = default_setting.get("displayname", name)
             description = default_setting.get("description", "")
-            self.labels[name].setText(
-                QCoreApplication.translate(context, display_name)
-            )
+            self.labels[name].setText(QCoreApplication.translate(context, display_name))
             self.labels[name].setToolTip(
                 QCoreApplication.translate(context, description)
             )
@@ -265,9 +263,7 @@ class SettingsDialog(QDialog):
         self, value: bool, choices: list[str], widget: Any, context: str = "AppSettings"
     ) -> None:
         if choices:
-            widget.setText(
-                QCoreApplication.translate(context, choices[int(value)])
-            )
+            widget.setText(QCoreApplication.translate(context, choices[int(value)]))
 
     def _create_widget(
         self,
@@ -295,7 +291,9 @@ class SettingsDialog(QDialog):
                 widget.setSizePolicy(
                     QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
                 )
-                self._set_bool_widget_text(widget.isChecked(), display_choices, widget, context)
+                self._set_bool_widget_text(
+                    widget.isChecked(), display_choices, widget, context
+                )
                 widget.toggled.connect(
                     lambda value, choices=display_choices, widget=widget, ctx=context: (
                         self._set_bool_widget_text(value, choices, widget, ctx)

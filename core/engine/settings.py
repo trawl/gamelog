@@ -136,7 +136,10 @@ class AppSettings:
         from importlib import import_module
 
         for definition in registry.definitions():
-            if definition.settings_factory is None or definition.name in self.game_settings:
+            if (
+                definition.settings_factory is None
+                or definition.name in self.game_settings
+            ):
                 continue
             factory = definition.settings_factory
             if isinstance(factory, str):

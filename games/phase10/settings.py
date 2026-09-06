@@ -8,7 +8,9 @@ QCoreApplication.translate("Phase10Settings", "Who deals at the start of each ro
 QCoreApplication.translate("Phase10Settings", "Next player deals")
 QCoreApplication.translate("Phase10Settings", "Winner deals")
 QCoreApplication.translate("Phase10Settings", "Phase order")
-QCoreApplication.translate("Phase10Settings", "Whether players must complete phases in the fixed sequence")
+QCoreApplication.translate(
+    "Phase10Settings", "Whether players must complete phases in the fixed sequence"
+)
 QCoreApplication.translate("Phase10Settings", "Free phase order")
 QCoreApplication.translate("Phase10Settings", "Phases in order")
 
