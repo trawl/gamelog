@@ -15,9 +15,11 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QListWidget,
+    QListWidgetItem,
     QPushButton,
     QSizePolicy,
-    QTabWidget,
+    QStackedWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -113,7 +115,7 @@ class SettingsDialog(QDialog):
     # ------------------------------------------------------------------
 
     def initUI(self) -> None:
-        """Build the settings dialog with a General tab and one tab per game."""
+        """Build the settings dialog: category list on the left, form on the right."""
         layout = QVBoxLayout(self)
 
         database_path_label = QLabel(str(db.getDBPath()), self)
@@ -121,27 +123,42 @@ class SettingsDialog(QDialog):
         database_path_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(database_path_label)
 
-        self.tab_widget = QTabWidget(self)
-        layout.addWidget(self.tab_widget)
+        # Main area: list + stacked pages
+        body = QHBoxLayout()
+        body.setSpacing(0)
+        layout.addLayout(body)
 
-        # General tab — core settings
-        general_tab = QWidget()
-        general_layout = QVBoxLayout(general_tab)
-        general_layout.addStretch()
-        general_layout.addLayout(self._build_form(self.settings["defaults"]))
-        general_layout.addStretch()
-        self.tab_widget.addTab(general_tab, "")  # title set in retranslateUI
+        self.category_list = QListWidget(self)
+        self.category_list.setFixedWidth(140)
+        self.category_list.setSpacing(2)
+        self.category_list.setSizeAdjustPolicy(
+            QListWidget.SizeAdjustPolicy.AdjustToContents
+        )
+        self.category_list.setVerticalScrollBarPolicy(
+            QtCore.Qt.ScrollBarPolicy.ScrollBarAsNeeded
+        )
+        body.addWidget(self.category_list)
 
-        # One tab per game that has registered settings
-        self._game_tab_indices: dict[str, int] = {}
+        self.stack = QStackedWidget(self)
+        body.addWidget(self.stack, stretch=1)
+
+        # "General" page — core settings
+        self._general_item = QListWidgetItem("")
+        self.category_list.addItem(self._general_item)
+        self.stack.addWidget(self._make_scroll_page(self.settings["defaults"]))
+
+        # One page per game that has registered settings
+        self._game_items: dict[str, QListWidgetItem] = {}
         for game_name, gsettings in self.game_settings.items():
-            tab = QWidget()
-            tab_layout = QVBoxLayout(tab)
-            tab_layout.addStretch()
-            tab_layout.addLayout(self._build_form(gsettings))
-            tab_layout.addStretch()
-            idx = self.tab_widget.addTab(tab, game_name)
-            self._game_tab_indices[game_name] = idx
+            item = QListWidgetItem(game_name)
+            self.category_list.addItem(item)
+            self._game_items[game_name] = item
+            self.stack.addWidget(self._make_scroll_page(gsettings))
+
+        self.category_list.setCurrentRow(0)
+        self.category_list.currentRowChanged.connect(self.stack.setCurrentIndex)
+
+        # self.resize(640, 480)
 
         self.close_button = QPushButton(self)
         self.close_button.clicked.connect(self.accept)
@@ -186,6 +203,15 @@ class SettingsDialog(QDialog):
             """
         )
 
+    def _make_scroll_page(self, settings_dict: dict) -> QWidget:
+        """Build a category page containing its settings form."""
+        page = QWidget()
+        page_layout = QVBoxLayout(page)
+        page_layout.addStretch()
+        page_layout.addLayout(self._build_form(settings_dict))
+        page_layout.addStretch()
+        return page
+
     def _build_form(self, settings_dict: dict) -> QFormLayout:
         """Build a QFormLayout for the given settings schema dict."""
         form = QFormLayout()
@@ -228,9 +254,9 @@ class SettingsDialog(QDialog):
             QCoreApplication.translate("AppSettings", "Application Settings")
         )
         self.close_button.setText(QCoreApplication.translate("AppSettings", "Close"))
-        self.tab_widget.setTabText(
-            0, QCoreApplication.translate("AppSettings", "General")
-        )
+        self._general_item.setText(QCoreApplication.translate("AppSettings", "General"))
+        for game_name, item in self._game_items.items():
+            item.setText(QCoreApplication.translate("AppSettings", game_name))
 
         all_defaults = self._all_defaults()
         for name, default_setting in all_defaults.items():
