@@ -12,5 +12,6 @@ registry.register(
         "games.pocha.widget:PochaQSTW",
         "games.pocha.engine:PochaStatsEngine",
         "games.pocha.engine:PochaParticularStatsEngine",
+        settings_factory="games.pocha.settings:game_settings",
     )
 )

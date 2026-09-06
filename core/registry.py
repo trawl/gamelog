@@ -27,6 +27,7 @@ class GameDefinition:
     quick_stats_factory: GameType | None = None
     stats_engine_factory: GameType | None = None
     particular_stats_engine_factory: GameType | None = None
+    settings_factory: GameType | None = None
 
     def database_row(self) -> tuple[str, int, str, str]:
         """Return the columns stored in the Game table for this game."""

@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from core.engine.settings import appsettings
 from core.model.base import GenericRound
 from core.ui.game import (
     GameInputWidget,
@@ -90,6 +91,8 @@ class PochaWidget(GameWidget):
         # self.matchGroupLayout.insertLayout(3, self.configLayout)
         self.matchGroupLayout.addLayout(self.configLayout)
         self.suitTypeGroup = QButtonGroup(self)
+        saved_suit = appsettings["pocha_suit_type"] or "spanish"
+        cast("PochaEngine", self.engine).setSuitType(saved_suit)
         self.spanishSuitRadio = QRadioButton(self)
         self.spanishSuitRadio.setChecked(
             cast("PochaEngine", self.engine).getSuitType() == "spanish"
@@ -108,9 +111,11 @@ class PochaWidget(GameWidget):
     def changeSuit(self, *_args) -> None:
         """Switch the engine between the Spanish and French card decks."""
         if self.spanishSuitRadio.isChecked():
-            cast("PochaEngine", self.engine).setSuitType("spansih")
+            cast("PochaEngine", self.engine).setSuitType("spanish")
+            appsettings.set("pocha_suit_type", "spanish")
         elif self.frenchSuitRadio.isChecked():
             cast("PochaEngine", self.engine).setSuitType("french")
+            appsettings.set("pocha_suit_type", "french")
         self.retranslateUI()
 
     def setRoundTitle(self) -> None:

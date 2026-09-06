@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import Any
 
 from PySide6 import QtCore
 from PySide6.QtCore import QCoreApplication, QEvent
@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QSizePolicy,
-    QSpinBox,
+    QTabWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -51,12 +51,12 @@ class SettingsDialog(QDialog):
         super().__init__(parent)
 
         self.settings = appsettings.getSettings()
+        self.game_settings = appsettings.getGameSettings()
 
         self.widgets: dict[str, QWidget] = {}
         self.labels: dict[str, QLabel] = {}
         self.source_labels: dict[str, QLabel] = {}
-
-        # self.setMinimumWidth(500)
+        self.reset_buttons: dict[str, QPushButton] = {}
 
         self.initUI()
         self.retranslateUI()
@@ -65,35 +65,44 @@ class SettingsDialog(QDialog):
     # Settings
     # ------------------------------------------------------------------
 
+    def _all_defaults(self) -> dict[str, Any]:
+        merged = dict(self.settings["defaults"])
+        for gsettings in self.game_settings.values():
+            merged.update(gsettings)
+        return merged
+
     def _get_default(self, name: str) -> dict[str, Any]:
-        return self.settings["defaults"][name]
+        all_defaults = self._all_defaults()
+        if name not in all_defaults:
+            raise KeyError(f"Unknown setting: {name}")
+        return all_defaults[name]
 
     def _get_setting(
         self,
         name: str,
-    ) -> tuple[dict[str, Any], str]:
-        """
-        Return the effective setting and its source.
-
-        Precedence:
-
-            environment > database > default
-        """
-
-        defaults = self.settings.get("defaults", {})
-
-        if name not in defaults:
+    ) -> tuple[Any, str]:
+        """Return the effective setting value and its source (env/db/defaults)."""
+        if name not in self._all_defaults():
             raise KeyError(f"Unknown setting: {name}")
+
+        # Game settings are stored in appsettings separately from self.settings.
+        # Delegate to appsettings for any key not in core settings defaults.
+        if name not in self.settings["defaults"]:
+            value = appsettings[name]
+            default = self._get_default(name)["value"]
+            if value is None or value == default:
+                return default, "defaults"
+            return value, "db"
 
         env = self.settings.get("env", {})
         if name in env:
             return env[name], "env"
 
-        db = self.settings.get("db", {})
-        if name in db:
-            return db[name], "db"
+        db_vals = self.settings.get("db", {})
+        if name in db_vals:
+            return db_vals[name], "db"
 
-        return defaults[name], "defaults"
+        return self._get_default(name)["value"], "defaults"
 
     def _get_effective_value(self, name: str) -> Any:
         setting, _ = self._get_setting(name)
@@ -104,45 +113,35 @@ class SettingsDialog(QDialog):
     # ------------------------------------------------------------------
 
     def initUI(self) -> None:
-        """Build the settings form, one row per default-schema setting."""
+        """Build the settings dialog with a General tab and one tab per game."""
         layout = QVBoxLayout(self)
-        layout.addStretch()
+
         database_path_label = QLabel(str(db.getDBPath()), self)
         database_path_label.setObjectName("settingSource")
         database_path_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(database_path_label)
 
-        form = QFormLayout()
-        form.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
+        self.tab_widget = QTabWidget(self)
+        layout.addWidget(self.tab_widget)
 
-        # Defaults are the schema, so every setting displayed in the
-        # dialog comes from here.
-        for name, default_setting in self.settings["defaults"].items():
-            setting, _ = self._get_setting(name)
+        # General tab — core settings
+        general_tab = QWidget()
+        general_layout = QVBoxLayout(general_tab)
+        general_layout.addStretch()
+        general_layout.addLayout(self._build_form(self.settings["defaults"]))
+        general_layout.addStretch()
+        self.tab_widget.addTab(general_tab, "")  # title set in retranslateUI
 
-            widget = self._create_widget(
-                name=name,
-                setting=default_setting,
-                value=setting,
-            )
-
-            self.widgets[name] = widget
-            self.labels[name] = QLabel()
-            source_label = QLabel()
-            source_label.setObjectName("settingSource")
-
-            self.source_labels[name] = source_label
-
-            value_layout = QVBoxLayout()
-            value_layout.setContentsMargins(0, 0, 0, 0)
-            value_layout.setSpacing(2)
-
-            value_layout.addWidget(widget)
-            value_layout.addWidget(source_label)
-
-            form.addRow(self.labels[name], value_layout)
-
-        layout.addLayout(form)
+        # One tab per game that has registered settings
+        self._game_tab_indices: dict[str, int] = {}
+        for game_name, gsettings in self.game_settings.items():
+            tab = QWidget()
+            tab_layout = QVBoxLayout(tab)
+            tab_layout.addStretch()
+            tab_layout.addLayout(self._build_form(gsettings))
+            tab_layout.addStretch()
+            idx = self.tab_widget.addTab(tab, game_name)
+            self._game_tab_indices[game_name] = idx
 
         self.close_button = QPushButton(self)
         self.close_button.clicked.connect(self.accept)
@@ -150,15 +149,13 @@ class SettingsDialog(QDialog):
         button_layout = QHBoxLayout()
         button_layout.addStretch()
         button_layout.addWidget(self.close_button)
-
         layout.addLayout(button_layout)
-        layout.addStretch()
 
         self.setStyleSheet(
             """
             QLineEdit[differentFromDefault="true"],
+            ScoreSpinBox[differentFromDefault="true"],
             QComboBox[differentFromDefault="true"],
-            QSpinBox[differentFromDefault="true"],
             QDoubleSpinBox[differentFromDefault="true"],
             QPushButton[differentFromDefault="true"],
             QCheckBox[differentFromDefault="true"] {
@@ -170,12 +167,60 @@ class SettingsDialog(QDialog):
                 color: #777;
                 font-size: 11px;
             }
-            QPushButton {
+            QPushButton[textStateOnly="true"] {
                 text-align: left;
                 padding-left: 10px;
             }
+            QPushButton[resetButton="true"] {
+                font-size: 14px;
+                padding: 0px;
+                border: none;
+                color: #888;
+            }
+            QPushButton[resetButton="true"]:hover {
+                color: #e0b400;
+            }
+            QPushButton[resetButton="true"]:disabled {
+                color: transparent;
+            }
             """
         )
+
+    def _build_form(self, settings_dict: dict) -> QFormLayout:
+        """Build a QFormLayout for the given settings schema dict."""
+        form = QFormLayout()
+        form.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
+        for name, default_setting in settings_dict.items():
+            setting, _ = self._get_setting(name)
+            widget = self._create_widget(
+                name=name, setting=default_setting, value=setting
+            )
+            self.widgets[name] = widget
+            self.labels[name] = QLabel()
+            source_label = QLabel()
+            source_label.setObjectName("settingSource")
+            self.source_labels[name] = source_label
+            reset_btn = QPushButton("↺")
+            reset_btn.setFixedSize(24, 24)
+            reset_btn.setProperty("resetButton", True)
+            reset_btn.setToolTip(
+                QCoreApplication.translate("AppSettings", "Reset to default")
+            )
+            reset_btn.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+            reset_btn.clicked.connect(lambda _, n=name: self._reset_to_default(n))
+            self.reset_buttons[name] = reset_btn
+            widget_row = QHBoxLayout()
+            widget_row.setContentsMargins(0, 0, 0, 0)
+            widget_row.setSpacing(4)
+            widget_row.addWidget(widget)
+            widget_row.addWidget(reset_btn)
+            value_layout = QVBoxLayout()
+            value_layout.setContentsMargins(0, 0, 0, 0)
+            value_layout.setSpacing(2)
+            value_layout.addLayout(widget_row)
+            value_layout.addWidget(source_label)
+            form.addRow(self.labels[name], value_layout)
+        return form
 
     def retranslateUI(self) -> None:
         """Re-apply translated labels, tooltips and choices to every widget."""
@@ -183,46 +228,45 @@ class SettingsDialog(QDialog):
             QCoreApplication.translate("AppSettings", "Application Settings")
         )
         self.close_button.setText(QCoreApplication.translate("AppSettings", "Close"))
-        for name, default_setting in self.settings["defaults"].items():
-            _, source = self._get_setting(name)
-            display_name = default_setting.get(
-                "displayname",
-                name,
-            )
+        self.tab_widget.setTabText(
+            0, QCoreApplication.translate("AppSettings", "General")
+        )
 
-            description = default_setting.get(
-                "description",
-                "",
-            )
+        all_defaults = self._all_defaults()
+        for name, default_setting in all_defaults.items():
+            if name not in self.widgets:
+                continue
+            _, source = self._get_setting(name)
+            context = default_setting.get("context", "AppSettings")
+            display_name = default_setting.get("displayname", name)
+            description = default_setting.get("description", "")
             self.labels[name].setText(
-                QCoreApplication.translate("AppSettings", display_name)
+                QCoreApplication.translate(context, display_name)
             )
             self.labels[name].setToolTip(
-                QCoreApplication.translate("AppSettings", description)
+                QCoreApplication.translate(context, description)
             )
             self.widgets[name].setToolTip(
-                QCoreApplication.translate("AppSettings", description)
+                QCoreApplication.translate(context, description)
             )
-            if isinstance(self.widgets[name], QComboBox):
-                for index, choice in enumerate(default_setting.get("choices", [])):
-                    cast(QComboBox, self.widgets[name]).setItemText(
+            choices = default_setting.get("choices", [])
+            widget = self.widgets[name]
+            if isinstance(widget, QComboBox):
+                for index, choice in enumerate(choices):
+                    widget.setItemText(
                         index,
-                        QCoreApplication.translate(
-                            "AppSettings",
-                            str(choice),
-                        ),
+                        QCoreApplication.translate(context, str(choice)),
                     )
-            self._update_visual_state(
-                name,
-                source,
-            )
+            elif isinstance(widget, QPushButton) and widget.isCheckable() and choices:
+                self._set_bool_widget_text(widget.isChecked(), choices, widget, context)
+            self._update_visual_state(name, source)
 
     def _set_bool_widget_text(
-        self, value: bool, choices: list[str], widget: Any
+        self, value: bool, choices: list[str], widget: Any, context: str = "AppSettings"
     ) -> None:
         if choices:
             widget.setText(
-                QCoreApplication.translate("AppSettings", choices[int(value)])
+                QCoreApplication.translate(context, choices[int(value)])
             )
 
     def _create_widget(
@@ -240,6 +284,7 @@ class SettingsDialog(QDialog):
 
         type_ = setting.get("type", "str")
         choices = setting.get("choices")
+        context = setting.get("context", "AppSettings")
 
         if type_ == "bool":
             display_choices = setting.get("choices")
@@ -250,10 +295,10 @@ class SettingsDialog(QDialog):
                 widget.setSizePolicy(
                     QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
                 )
-                self._set_bool_widget_text(widget.isChecked(), display_choices, widget)
+                self._set_bool_widget_text(widget.isChecked(), display_choices, widget, context)
                 widget.toggled.connect(
-                    lambda value, choices=display_choices, widget=widget: (
-                        self._set_bool_widget_text(value, choices, widget)
+                    lambda value, choices=display_choices, widget=widget, ctx=context: (
+                        self._set_bool_widget_text(value, choices, widget, ctx)
                     )
                 )
             else:
@@ -267,10 +312,12 @@ class SettingsDialog(QDialog):
             return widget
 
         if type_ == "int":
-            widget = QSpinBox()
+            from core.ui.game import ScoreSpinBox
+
+            widget = ScoreSpinBox()
             widget.setRange(
-                -2_147_483_648,
-                2_147_483_647,
+                setting.get("min", -2_147_483_648),
+                setting.get("max", 2_147_483_647),
             )
 
             if value is not None:
@@ -285,8 +332,8 @@ class SettingsDialog(QDialog):
         if type_ == "float":
             widget = QDoubleSpinBox()
             widget.setRange(
-                -1_000_000_000,
-                1_000_000_000,
+                setting.get("min", -1_000_000_000),
+                setting.get("max", 1_000_000_000),
             )
             widget.setDecimals(6)
 
@@ -306,7 +353,7 @@ class SettingsDialog(QDialog):
             )
             for choice in choices:
                 widget.addItem(
-                    QCoreApplication.translate("AppSettings", str(choice)),
+                    QCoreApplication.translate(context, str(choice)),
                     userData=choice,
                 )
 
@@ -381,6 +428,18 @@ class SettingsDialog(QDialog):
             source,
         )
 
+    def _reset_to_default(self, name: str) -> None:
+        """Reset a setting to its schema default and persist the change."""
+        default_value = self._get_default(name)["value"]
+        type_ = self._get_default(name).get("type", "str")
+        self.save_setting(name, default_value, type_)
+        # Remove from db layer so the default wins again.
+        self.settings.get("db", {}).pop(name, None)
+        appsettings.set(name, default_value, persistent=True)
+        self._set_widget_value(self.widgets[name], default_value)
+        _, source = self._get_setting(name)
+        self._update_visual_state(name, source)
+
     # ------------------------------------------------------------------
     # Visual state
     # ------------------------------------------------------------------
@@ -398,15 +457,26 @@ class SettingsDialog(QDialog):
 
         different_from_default = effective_value != default_value
 
-        widget.setProperty(
-            "differentFromDefault",
-            different_from_default,
-        )
+        from core.ui.game import ScoreSpinBox
 
-        # Force stylesheet refresh after changing the dynamic property.
-        widget.style().unpolish(widget)
-        widget.style().polish(widget)
-        widget.update()
+        if isinstance(widget, ScoreSpinBox):
+            # ScoreSpinBox sets an inline stylesheet on its QLineEdit which
+            # overrides parent property-based selectors, so apply the gold
+            # border directly to the line_edit's own stylesheet.
+            le = widget.lineEdit()
+            base = widget._text_css_colourless
+            if different_from_default:
+                base += "QLineEdit { border: 1px solid #e0b400; font-weight: bold; }"
+            le.setStyleSheet(base)
+        else:
+            widget.setProperty("differentFromDefault", different_from_default)
+            # Force stylesheet refresh after changing the dynamic property.
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            widget.update()
+        if name in self.reset_buttons:
+            self.reset_buttons[name].setEnabled(different_from_default)
+
         source_names = {
             "env": QCoreApplication.translate(
                 "AppSettings",
@@ -434,6 +504,8 @@ class SettingsDialog(QDialog):
         widget: QWidget,
         value: Any,
     ) -> None:
+        from core.ui.game import ScoreSpinBox
+
         if isinstance(widget, QCheckBox):
             widget.blockSignals(True)
             widget.setChecked(bool(value))
@@ -441,15 +513,12 @@ class SettingsDialog(QDialog):
 
         elif isinstance(widget, QComboBox):
             widget.blockSignals(True)
-
             index = widget.findData(value)
-
             if index >= 0:
                 widget.setCurrentIndex(index)
-
             widget.blockSignals(False)
 
-        elif isinstance(widget, QSpinBox):
+        elif isinstance(widget, ScoreSpinBox):
             widget.blockSignals(True)
             widget.setValue(int(value))
             widget.blockSignals(False)

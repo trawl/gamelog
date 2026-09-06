@@ -84,10 +84,77 @@ class AppSettings:
             "env": {},
             "defaults": default_settings,
         }
+        # game_name -> {key: schema_dict}
+        self.game_settings: dict[str, dict] = {}
+        self._game_settings_loaded = False
         if not db.isConnected():
             db.connectDB()
         self.dbseed()
         self.refresh()
+
+    def _all_defaults(self) -> dict:
+        """Return core defaults merged with all registered game setting schemas."""
+        merged = dict(self.settings["defaults"])
+        for gsettings in self.game_settings.values():
+            merged.update(gsettings)
+        return merged
+
+    def register_game_settings(self, game_name: str, settings: dict) -> None:
+        """Register game-specific settings, seed the DB and load persisted values."""
+        self.game_settings[game_name] = settings
+        for k, d in settings.items():
+            cur = db.execute("SELECT key FROM AppSettings WHERE key=?", (k,))
+            if not cur.fetchone():
+                db.execute(
+                    "INSERT OR REPLACE INTO AppSettings(key,value,type) VALUES(?,?,?)",
+                    (k, d["value"], d["type"]),
+                )
+            cur = db.execute("SELECT value,type FROM AppSettings WHERE key=?", (k,))
+            row = cur.fetchone()
+            if row:
+                self.settings["db"][k] = self._coerce(row["value"], d["type"])
+        prefix = "GAMELOG_"
+        for var, value in os.environ.items():
+            if not var.startswith(prefix):
+                continue
+            key = var[len(prefix) :].lower()
+            if key in settings:
+                self.settings["env"][key] = value
+
+    def getGameSettings(self) -> dict[str, dict]:
+        """Return all registered game settings, loading them lazily on first call."""
+        if not self._game_settings_loaded:
+            self._load_game_settings()
+        return self.game_settings
+
+    def _load_game_settings(self) -> None:
+        """Discover and register settings from all registered game definitions."""
+        self._game_settings_loaded = True
+        from core.registry import registry
+
+        registry._ensure_loaded()
+        from importlib import import_module
+
+        for definition in registry.definitions():
+            if definition.settings_factory is None or definition.name in self.game_settings:
+                continue
+            factory = definition.settings_factory
+            if isinstance(factory, str):
+                module_name, _, attr = factory.partition(":")
+                settings: dict = getattr(import_module(module_name), attr)
+            else:
+                settings = factory  # type: ignore[assignment]
+            self.register_game_settings(definition.name, settings)
+
+    @staticmethod
+    def _coerce(value: str, type_: str) -> Any:
+        if type_ == "int":
+            return int(value)
+        if type_ == "float":
+            return float(value)
+        if type_ == "bool":
+            return value.lower() in ("true", "1", "y", "yes")
+        return value
 
     def refresh(self) -> None:
         """Reload the env and DB layers over the defaults."""
@@ -109,34 +176,32 @@ class AppSettings:
     def loadFromDB(self) -> None:
         """Load persisted settings, coercing each to its declared type."""
         cur = db.execute("SELECT key,value,type FROM AppSettings")
+        all_defaults = self._all_defaults()
         for row in cur:
             key = row["key"]
             value = row["value"]
-            try:
-                setting_type = default_settings[row["key"]]["type"]
-                if row["type"] in ("int", "float", "bool"):
-                    if setting_type == "int":
-                        value = int(value)
-                    elif setting_type == "float":
-                        value = float(value)
-                    elif setting_type == "bool":
-                        value = value.lower() in ("true", "1", "y", "yes")
-                self.settings["db"][key] = value
-            except KeyError:
-                raise Warning(f"Could not load unknown setting {key}") from None
+            if key not in all_defaults:
+                # Unknown keys are game settings not yet registered; skip here,
+                # register_game_settings() will load them when games are imported.
+                continue
+            setting_type = all_defaults[key]["type"]
+            if row["type"] in ("int", "float", "bool"):
+                value = self._coerce(value, setting_type)
+            self.settings["db"][key] = value
 
     def __getitem__(self, name: str, /) -> Any:
         return self.get(name)
 
     def get(self, key: str) -> Any:
-        """Return the effective value of ``key`` (env, then DB), or ``None``."""
-        try:
+        """Return the effective value of ``key`` (env > DB > default), or ``None``."""
+        if key in self.settings["env"]:
             return self.settings["env"][key]
-        except KeyError:
-            try:
-                return self.settings["db"][key]
-            except KeyError:
-                return None
+        if key in self.settings["db"]:
+            return self.settings["db"][key]
+        all_defaults = self._all_defaults()
+        if key in all_defaults:
+            return all_defaults[key]["value"]
+        return None
 
     def getSettings(self) -> dict[str, dict]:
         return self.settings

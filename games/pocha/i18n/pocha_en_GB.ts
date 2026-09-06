@@ -4,17 +4,17 @@
 <context>
     <name>GeneralQuickStats</name>
     <message>
-        <location filename="../widget.py" line="644"/>
+        <location filename="../widget.py" line="649"/>
         <source>Max Hits</source>
         <translation>Max Hits</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="645"/>
+        <location filename="../widget.py" line="650"/>
         <source>Min Hits</source>
         <translation>Min Hits</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="646"/>
+        <location filename="../widget.py" line="651"/>
         <source>Best Round</source>
         <translation>Best Round</translation>
     </message>
@@ -22,92 +22,115 @@
 <context>
     <name>PochaRoundTable</name>
     <message>
-        <location filename="../widget.py" line="589"/>
+        <location filename="../widget.py" line="594"/>
         <source> (Winner)</source>
         <translation> (Winner)</translation>
     </message>
 </context>
 <context>
+    <name>PochaSettings</name>
+    <message>
+        <location filename="../settings.py" line="8"/>
+        <source>spanish</source>
+        <translation>Spanish</translation>
+    </message>
+    <message>
+        <location filename="../settings.py" line="9"/>
+        <source>french</source>
+        <translation>French</translation>
+    </message>
+    <message>
+        <location filename="../settings.py" line="6"/>
+        <source>Deck type</source>
+        <translation>Deck type</translation>
+    </message>
+    <message>
+        <location filename="../settings.py" line="7"/>
+        <source>Card suit style for new games</source>
+        <translation>Card suit style for new games</translation>
+    </message>
+</context>
+<context>
     <name>PochaWidget</name>
     <message>
-        <location filename="../widget.py" line="43"/>
+        <location filename="../widget.py" line="44"/>
         <source>going up</source>
         <translation>↑</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="44"/>
+        <location filename="../widget.py" line="45"/>
         <source>going down</source>
         <translation>↓</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="45"/>
-        <location filename="../widget.py" line="128"/>
+        <location filename="../widget.py" line="46"/>
+        <location filename="../widget.py" line="133"/>
         <source>hand</source>
         <translation>hand</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="46"/>
-        <location filename="../widget.py" line="137"/>
+        <location filename="../widget.py" line="47"/>
+        <location filename="../widget.py" line="142"/>
         <source>hands</source>
         <translation>hands</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="47"/>
+        <location filename="../widget.py" line="48"/>
         <source>coins</source>
         <translation>◉</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="48"/>
+        <location filename="../widget.py" line="49"/>
         <source>cups</source>
         <translation>∪</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="49"/>
+        <location filename="../widget.py" line="50"/>
         <source>swords</source>
         <translation>⚔</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="50"/>
+        <location filename="../widget.py" line="51"/>
         <source>clubs</source>
         <translation>❘</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="159"/>
+        <location filename="../widget.py" line="164"/>
         <source>There are players with no selected won hands.</source>
         <translation>There are players with no selected won hands.</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="73"/>
+        <location filename="../widget.py" line="74"/>
         <source>Spanish Deck</source>
         <translation>Spanish Deck</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="74"/>
+        <location filename="../widget.py" line="75"/>
         <source>French Deck</source>
         <translation>French Deck</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="51"/>
+        <location filename="../widget.py" line="52"/>
         <source>diamonds</source>
         <translation>♦</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="52"/>
+        <location filename="../widget.py" line="53"/>
         <source>hearts</source>
         <translation>♥</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="53"/>
+        <location filename="../widget.py" line="54"/>
         <source>spades</source>
         <translation>♠</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="54"/>
+        <location filename="../widget.py" line="55"/>
         <source>clovers</source>
         <translation>♣</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="169"/>
+        <location filename="../widget.py" line="174"/>
         <source>There are {} won hands selected when there should be {}.</source>
         <translation>There are {} won hands selected when there should be {}.</translation>
     </message>

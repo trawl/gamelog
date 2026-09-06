@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from core.engine.settings import appsettings
 from core.ui.game import (
     GameInputWidget,
     GameNotImplementedException,
@@ -32,6 +33,8 @@ from games.ratuki.engine import RatukiEngine
 class RatukiWidget(GameWidget):
     """Scoreboard tab for Ratuki, with a configurable target-score limit."""
 
+    dealer_policy_setting_key = "ratuki_dealer_policy"
+
     def createEngine(self) -> None:
         if self.game != "Ratuki":
             raise GameNotImplementedException(f"No engine for game {self.game}")
@@ -44,6 +47,8 @@ class RatukiWidget(GameWidget):
     def addExtraConfig(self) -> None:
         """Add the target-score spin box to the match configuration panel."""
         super().addExtraConfig()
+        saved_top = int(appsettings["ratuki_top_score"] or 100)
+        cast("RatukiEngine", self.engine).setTop(saved_top)
         self.topPointsScoreBox = ScoreSpinBox(self.matchGroup)
         self.topPointsScoreBox.setMaximum(1000)
         self.topPointsScoreBox.setValue(cast("RatukiEngine", self.engine).getTop())

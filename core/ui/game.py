@@ -97,6 +97,10 @@ class GameWidget(Tab):
 
     QCoreApplication.translate("GameWidget", "Scoreboard")
 
+    # Subclasses set this to an appsettings key (e.g. "qwirkle_dealer_policy")
+    # to have the dealer-policy checkbox initialised from and persisted to that key.
+    dealer_policy_setting_key: str | None = None
+
     def __init__(
         self,
         game: str,
@@ -234,7 +238,17 @@ class GameWidget(Tab):
 
         dpolicy = self.engine.getDealingPolicy()
         if dpolicy not in (self.engine.NoDealer, self.engine.StarterDealer):
-            # self.dealerPolicyCheckBox = QCheckBox(self.matchGroup)
+            if self.dealer_policy_setting_key is not None:
+                from core.engine.settings import appsettings
+
+                saved = appsettings[self.dealer_policy_setting_key]
+                if saved is not None:
+                    want_winner = bool(saved)
+                    self.engine.setDealingPolicy(
+                        self.engine.WinnerDealer
+                        if want_winner
+                        else self.engine.RRDealer
+                    )
             self.dealerPolicyCheckBox = QPushButton(self.matchGroup)
             self.dealerPolicyCheckBox.setCheckable(True)
             if self.engine.getDealingPolicy() == self.engine.WinnerDealer:
@@ -653,9 +667,15 @@ class GameWidget(Tab):
         if self.dealerPolicyCheckBox.isChecked():
             self.dealerPolicyCheckBox.setText(self.tr("Winner deals"))
             self.engine.setDealingPolicy(self.engine.WinnerDealer)
+            winner = True
         else:
             self.dealerPolicyCheckBox.setText(self.tr("Next player deals"))
             self.engine.setDealingPolicy(self.engine.RRDealer)
+            winner = False
+        if self.dealer_policy_setting_key is not None:
+            from core.engine.settings import appsettings
+
+            appsettings.set(self.dealer_policy_setting_key, winner)
 
     def closeMatch(self) -> None:
         self.engine.cancelMatch()
@@ -1287,21 +1307,38 @@ class ScoreSpinBox(QWidget):
                 border: 1px solid rgba({0},{1},{2},150) ;   /* highlight color */
             }}
         """
-        self._text_css_colourless = """
-            QLineEdit {
-                font-weight: bold;
-                padding: 2px;
-            }
-            QLineEdit:focus {
-                border: 2px solid ;   /* highlight color */
-            }
-            QLineEdit:focus:hover {
-                border: 2px solid ;   /* highlight color */
-            }
-            QLineEdit:hover {
-                border: 1px solid ;   /* highlight color */
-            }
-        """
+        self._text_css_colourless = ""
+        # """
+        #     QLineEdit {
+        #         font-weight: bold;
+        #         padding: 2px;
+        #     }
+        #     QLineEdit:focus {
+        #         border: 2px solid ;   /* highlight color */
+        #     }
+        #     QLineEdit:focus:hover {
+        #         border: 2px solid ;   /* highlight color */
+        #     }
+        #     QLineEdit:hover {
+        #         border: 1px solid ;   /* highlight color */
+        #     }
+        #     QLineEdit[differentFromDefault="true"] {
+        #         border: 1px solid #e0b400;
+        #         font-weight: bold;
+        #     }
+        #     QLineEdit[differentFromDefault="true"]:focus {
+        #         border: 1px solid #e0b400;
+        #         border: 2px solid ;   /* highlight color */
+        #     }
+        #     QLineEdit[differentFromDefault="true"]:focus:hover {
+        #         border: 1px solid #e0b400;
+        #         border: 2px solid ;   /* highlight color */
+        #     }
+        #     QLineEdit[differentFromDefault="true"]:hover {
+        #         border: 1px solid #e0b400;
+        #         border: 1px solid ;   /* highlight color */
+        #     }
+        # """
 
         # self._text_css = """
         #     QLineEdit {{

@@ -12,5 +12,6 @@ registry.register(
         "games.skullking.widget:SkullKingQSTW",
         "games.skullking.engine:SkullKingStatsEngine",
         "games.skullking.engine:SkullKingParticularStatsEngine",
+        "games.skullking.settings:game_settings",
     )
 )

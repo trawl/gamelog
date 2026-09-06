@@ -12,5 +12,6 @@ registry.register(
         "games.qwirkle.widget:QwirkleQSTW",
         "games.qwirkle.engine:QwirkleStatsEngine",
         "games.qwirkle.engine:QwirkleParticularStatsEngine",
+        settings_factory="games.qwirkle.settings:game_settings",
     )
 )

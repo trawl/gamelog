@@ -4,14 +4,27 @@
 <context>
     <name>ScrabbleQSBox</name>
     <message>
-        <location filename="../widget.py" line="432"/>
+        <location filename="../widget.py" line="434"/>
         <source>Best Play</source>
         <translation>Best Play</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="434"/>
+        <location filename="../widget.py" line="436"/>
         <source>Max Bonus</source>
         <translation>Max Bonus</translation>
+    </message>
+</context>
+<context>
+    <name>ScrabbleSettings</name>
+    <message>
+        <location filename="../settings.py" line="6"/>
+        <source>Turn time (s)</source>
+        <translation>Turn time (s)</translation>
+    </message>
+    <message>
+        <location filename="../settings.py" line="7"/>
+        <source>Per-turn countdown duration in seconds</source>
+        <translation>Per-turn countdown duration in seconds</translation>
     </message>
 </context>
 <context>

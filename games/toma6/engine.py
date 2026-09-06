@@ -20,6 +20,9 @@ class Toma6Engine(RemigioEngine):
     def getTop(self) -> int:
         return cast("Toma6Match", self.match).getTop()
 
+    def setTop(self, top: int) -> None:
+        cast("Toma6Match", self.match).setTop(top)
+
     def printExtraStats(self) -> None:
         print(f"Match top: {self.getTop()}")
 

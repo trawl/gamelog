@@ -4,85 +4,153 @@
 <context>
     <name>SkullKingQSBox</name>
     <message>
-        <location filename="../widget.py" line="1186"/>
+        <location filename="../widget.py" line="1195"/>
         <source>Max Hit %</source>
         <translation>Max Encert %</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1188"/>
+        <location filename="../widget.py" line="1197"/>
         <source>Avg Hit %</source>
         <translation>Encert %</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1190"/>
+        <location filename="../widget.py" line="1199"/>
         <source>Best Round</source>
         <translation>Millor Ronda</translation>
     </message>
 </context>
 <context>
-    <name>SkullKingWidget</name>
+    <name>SkullKingSettings</name>
     <message>
-        <location filename="../widget.py" line="55"/>
+        <location filename="../settings.py" line="8"/>
         <source>classic_scoring</source>
         <translation>Puntatge clàssic</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="56"/>
+        <location filename="../settings.py" line="9"/>
         <source>standard_scoring</source>
         <translation>Recompte estàndar</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="57"/>
+        <location filename="../settings.py" line="10"/>
         <source>rascal_scoring</source>
         <translation>Recompte del canalla</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="58"/>
+        <location filename="../settings.py" line="13"/>
         <source>standard_rounds</source>
         <translation>Rondes Estàndard</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="59"/>
+        <location filename="../settings.py" line="14"/>
         <source>even</source>
         <translation>Quilla uniforme</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="60"/>
+        <location filename="../settings.py" line="15"/>
         <source>brawl</source>
         <translation>Directes a la baralla</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="61"/>
+        <location filename="../settings.py" line="16"/>
         <source>skirmish</source>
         <translation>Escaramussa al punt</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="62"/>
+        <location filename="../settings.py" line="17"/>
         <source>barrage</source>
         <translation>Bombardeig lateral</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="63"/>
+        <location filename="../settings.py" line="18"/>
         <source>whirlpool</source>
         <translation>Remolí</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="181"/>
+        <location filename="../settings.py" line="6"/>
+        <source>Scoring mode</source>
+        <translation>Mode de puntuació</translation>
+    </message>
+    <message>
+        <location filename="../settings.py" line="7"/>
+        <source>Default scoring rules for new games</source>
+        <translation>Regles de puntuació</translation>
+    </message>
+    <message>
+        <location filename="../settings.py" line="11"/>
+        <source>Round mode</source>
+        <translation>Seqüència de rondes</translation>
+    </message>
+    <message>
+        <location filename="../settings.py" line="12"/>
+        <source>Default card-count sequence for new games</source>
+        <translation>Secuencia de rondas para nuevas partidas</translation>
+    </message>
+</context>
+<context>
+    <name>SkullKingWidget</name>
+    <message>
+        <location filename="../widget.py" line="56"/>
+        <source>classic_scoring</source>
+        <translation>Puntatge clàssic</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="57"/>
+        <source>standard_scoring</source>
+        <translation>Recompte estàndar</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="58"/>
+        <source>rascal_scoring</source>
+        <translation>Recompte del canalla</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="59"/>
+        <source>standard_rounds</source>
+        <translation>Rondes Estàndard</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="60"/>
+        <source>even</source>
+        <translation>Quilla uniforme</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="61"/>
+        <source>brawl</source>
+        <translation>Directes a la baralla</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="62"/>
+        <source>skirmish</source>
+        <translation>Escaramussa al punt</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="63"/>
+        <source>barrage</source>
+        <translation>Bombardeig lateral</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="64"/>
+        <source>whirlpool</source>
+        <translation>Remolí</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="188"/>
         <source>Has the Kraken and White Whale appeared and discarded two tricks?</source>
         <translation>Han aparegut el Kraken i la Balena Blanca, descartant dues mans?</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="209"/>
+        <location filename="../widget.py" line="216"/>
         <source>Has the Kraken appeared and discarded a trick?</source>
         <translation>Ha aparegut el Kraken, descartant una mà?</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="251"/>
+        <location filename="../widget.py" line="258"/>
         <source>There are more than 3 Fourteen bonuses selected.</source>
         <translation>Hi ha més de 3 bonus del 14 sel·leccionats.</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="261"/>
+        <location filename="../widget.py" line="268"/>
         <source>There are more than 4 Loot bonuses selected.</source>
         <translation>Hi han més de 4 bonus de botí sel·leccionats.</translation>
     </message>

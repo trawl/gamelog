@@ -12,5 +12,6 @@ registry.register(
         "games.scrabble.widget:ScrabbleQSTW",
         "games.scrabble.engine:ScrabbleStatsEngine",
         "games.scrabble.engine:ScrabbleParticularStatsEngine",
+        settings_factory="games.scrabble.settings:game_settings",
     )
 )

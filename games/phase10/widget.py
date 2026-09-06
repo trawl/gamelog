@@ -118,6 +118,8 @@ def getPhaseNames(phasecodes: list[str]) -> list[str]:
 class Phase10Widget(GameWidget):
     """Top-level board widget for Phase 10 and Phase 10 Master."""
 
+    dealer_policy_setting_key = "phase10_dealer_policy"
+
     def createEngine(self) -> None:
         if self.game == "Phase10Master":
             self.engine = Phase10MasterEngine()
@@ -141,6 +143,8 @@ class Phase10Widget(GameWidget):
         self.phasesInOrderCheckBox = QPushButton(self.matchGroup)
         self.phasesInOrderCheckBox.setProperty("textStateOnly", True)
         self.phasesInOrderCheckBox.setCheckable(True)
+        saved = bool(appsettings["phase10_phases_in_order"])
+        cast("Phase10Engine", self.engine).setPhasesInOrderFlag(saved)
         self.phasesInOrderCheckBox.setChecked(
             cast("Phase10Engine", self.engine).getPhasesInOrderFlag()
         )
@@ -256,9 +260,11 @@ class Phase10Widget(GameWidget):
         """Sync the phases-in-order flag and button label with the checkbox."""
         if self.phasesInOrderCheckBox.isChecked():
             cast("Phase10Engine", self.engine).setPhasesInOrderFlag(True)
+            appsettings.set("phase10_phases_in_order", True)
             self.phasesInOrderCheckBox.setText(self.tr("Phases in order"))
         else:
             cast("Phase10Engine", self.engine).setPhasesInOrderFlag(False)
+            appsettings.set("phase10_phases_in_order", False)
             self.phasesInOrderCheckBox.setText(self.tr("Free phase order"))
         cast(Phase10InputWidget, self.gameInput).updatePanel()
 

@@ -9,5 +9,6 @@ registry.register(
         "games.toma6.model:Toma6Match",
         "games.toma6.engine:Toma6Engine",
         "games.toma6.widget:Toma6Widget",
+        settings_factory="games.toma6.settings:game_settings",
     )
 )

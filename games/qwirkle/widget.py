@@ -5,11 +5,13 @@ from __future__ import annotations
 from typing import cast
 
 from PySide6 import QtCore
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QWidget
 
+from core.engine.settings import appsettings
 from core.ui.game import (
     BonusButton,
     GameNotImplementedException,
+    ScoreSpinBox,
 )
 from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats
 from games.qwirkle.engine import QwirkleEngine
@@ -26,6 +28,8 @@ from games.scrabble.widget import (
 class QwirkleWidget(ScrabbleWidget):
     """Board widget for Qwirkle (Scrabble-style entry scoring with qwirkles)."""
 
+    dealer_policy_setting_key = "qwirkle_dealer_policy"
+
     def createEngine(self) -> None:
         if self.game != "Qwirkle":
             raise GameNotImplementedException(f"No engine for game {self.game}")
@@ -36,6 +40,38 @@ class QwirkleWidget(ScrabbleWidget):
 
     def createRoundsDetail(self, parent: QWidget | None = None):
         return QwirkleEntriesDetail(self.engine, parent)
+
+    def addExtraConfig(self) -> None:
+        """Add the per-turn countdown spin box, using the Qwirkle-specific setting."""
+        # Build the same layout as ScrabbleWidget.addExtraConfig but with our key.
+        self.turnTimeLayout = QHBoxLayout()
+        self.matchGroupLayout.addLayout(self.turnTimeLayout)
+        self.turnTimeLabel = QLabel("⏱", self.matchGroup)
+        self.turnTimeLabel.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        self.turnTimeLayout.addWidget(self.turnTimeLabel)
+        saved_time = int(appsettings["qwirkle_turn_time"] or 120)
+        self.turnSecondsBox = ScoreSpinBox(self.matchGroup)
+        self.turnSecondsBox.setRange(10, 600, saved_time)
+        self.turnSecondsBox.setValue(saved_time)
+        self.turnSecondsBox.lineEdit().setFocusPolicy(QtCore.Qt.FocusPolicy.ClickFocus)
+        self.turnSecondsBox.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+        )
+        self.turnSecondsBox.valueChanged.connect(self.changeTurnSeconds)
+        self.turnTimeLayout.addWidget(self.turnSecondsBox)
+
+    def changeTurnSeconds(self, value: int | None = None) -> None:
+        """Apply the new turn duration, persist it, and reset the countdown."""
+        if value is None:
+            value = self.turnSecondsBox.value()
+        if value is None:
+            return
+        appsettings.set("qwirkle_turn_time", int(value))
+        gi = cast("ScrabbleInputWidget", self.gameInput)
+        gi.countdown.reset(int(value))
+        gi.countdown.start()
 
     def checkPlayerScore(
         self, player: str, score: int, extras: dict | None = None

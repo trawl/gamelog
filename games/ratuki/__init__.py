@@ -9,5 +9,6 @@ registry.register(
         "games.ratuki.model:RatukiMatch",
         "games.ratuki.engine:RatukiEngine",
         "games.ratuki.widget:RatukiWidget",
+        settings_factory="games.ratuki.settings:game_settings",
     )
 )

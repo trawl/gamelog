@@ -9,5 +9,6 @@ registry.register(
         "games.remigio.model:RemigioMatch",
         "games.remigio.engine:RemigioEngine",
         "games.remigio.widget:RemigioWidget",
+        settings_factory="games.remigio.settings:game_settings",
     )
 )

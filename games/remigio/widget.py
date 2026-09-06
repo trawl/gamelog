@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from core.engine.settings import appsettings
 from core.ui.game import (
     GameInputWidget,
     GameNotImplementedException,
@@ -36,6 +37,7 @@ class RemigioWidget(GameWidget):
     """Scoreboard tab for Remigio, with a configurable top-score limit."""
 
     bgcolors = (0, 0xCCFF99, 0xFFFF99, 0xFFCC99, 0xFFCCFF)
+    dealer_policy_setting_key = "remigio_dealer_policy"
 
     def createEngine(self) -> None:
         if self.game != "Remigio":
@@ -49,6 +51,8 @@ class RemigioWidget(GameWidget):
     def addExtraConfig(self) -> None:
         """Add the top-score spin box to the match configuration panel."""
         super().addExtraConfig()
+        saved_top = int(appsettings["remigio_top_score"] or 100)
+        cast("RemigioEngine", self.engine).setTop(saved_top)
         self.topPointsScoreBox = ScoreSpinBox(self.matchGroup)
         self.topPointsScoreBox.setMaximum(1000)
         self.topPointsScoreBox.setValue(cast("RemigioEngine", self.engine).getTop())

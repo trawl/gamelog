@@ -29,6 +29,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from core.engine.settings import appsettings
 from core.model.base import GenericRound
 from core.ui.game import (
     BonusButton,
@@ -110,18 +111,24 @@ class SkullKingWidget(GameWidget):
                 for m in cast("SkullKingEngine", self.engine).listScoringModes()
             ]
         )
+        saved_scoring = appsettings["skullking_scoring_mode"]
+        scoring_modes = list(cast("SkullKingEngine", self.engine).listScoringModes())
+        if saved_scoring in scoring_modes:
+            cast("SkullKingEngine", self.engine).setScoringMode(saved_scoring)
         self.scoringModeCombo.setCurrentText(
             self.tr(cast("SkullKingEngine", self.engine).getScoringMode())
         )
         self.scoringModeCombo.currentIndexChanged.connect(self.changeScoringMode)
         self.configLayout.addWidget(self.scoringModeCombo)
 
-        # self.roundModeLabel = QLabel(self.tr("Card Counts"), self)
-        # self.configLayout.addWidget(self.roundModeLabel, 1, 0)
         self.roundModeCombo = QComboBox(self)
         self.roundModeCombo.addItems(
             [self.tr(m) for m in cast("SkullKingEngine", self.engine).listRoundModes()]
         )
+        saved_round = appsettings["skullking_round_mode"]
+        round_modes = list(cast("SkullKingEngine", self.engine).listRoundModes())
+        if saved_round in round_modes:
+            cast("SkullKingEngine", self.engine).setRoundMode(saved_round)
         self.roundModeCombo.setCurrentText(
             self.tr(cast("SkullKingEngine", self.engine).getRoundMode())
         )
@@ -276,6 +283,7 @@ class SkullKingWidget(GameWidget):
         except ValueError as ve:
             QMessageBox.critical(self, self.game, str(ve))
             return
+        # appsettings.set("skullking_round_mode", rmode)
         self.setRoundTitle()
         self.progressBar.setSteps(
             # StepProgressBar accepts int steps (it stringifies them internally).
@@ -295,6 +303,7 @@ class SkullKingWidget(GameWidget):
         except ValueError as ve:
             QMessageBox.critical(self, self.game, str(ve))
             return
+        # appsettings.set("skullking_scoring_mode", smode)
         cast(SkullKingInputWidget, self.gameInput).changeScoringMode()
         # self.updatePlayerOrder()
 

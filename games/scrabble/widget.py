@@ -132,9 +132,10 @@ class ScrabbleWidget(GameWidget):
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
         )
         self.turnTimeLayout.addWidget(self.turnTimeLabel)
+        saved_time = int(appsettings["scrabble_turn_time"] or 120)
         self.turnSecondsBox = ScoreSpinBox(self.matchGroup)
-        self.turnSecondsBox.setRange(10, 600, 120)
-        self.turnSecondsBox.setValue(120)
+        self.turnSecondsBox.setRange(10, 600, saved_time)
+        self.turnSecondsBox.setValue(saved_time)
         self.turnSecondsBox.lineEdit().setFocusPolicy(QtCore.Qt.FocusPolicy.ClickFocus)
         self.turnSecondsBox.setSizePolicy(
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
@@ -151,6 +152,7 @@ class ScrabbleWidget(GameWidget):
             value = self.turnSecondsBox.value()
         if value is None:
             return
+        # appsettings.set("scrabble_turn_time", int(value))
         gi = cast("ScrabbleInputWidget", self.gameInput)
         gi.countdown.reset(int(value))
         gi.countdown.start()

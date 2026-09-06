@@ -2,14 +2,23 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 from PySide6 import QtCore, QtGui
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtWidgets import (
     QHBoxLayout,
+    QSizePolicy,
     QTableWidgetItem,
 )
 
-from core.ui.game import GameNotImplementedException, GamePlayerWidget, PlayerColours
+from core.engine.settings import appsettings
+from core.ui.game import (
+    GameNotImplementedException,
+    GamePlayerWidget,
+    PlayerColours,
+    ScoreSpinBox,
+)
 from games.remigio.widget import (
     RemigioInputWidget,
     RemigioPlayerInputWidget,
@@ -24,6 +33,8 @@ from games.toma6.engine import Toma6Engine
 class Toma6Widget(RemigioWidget):
     """Scoreboard tab for Toma6, reusing Remigio's layout and controls."""
 
+    dealer_policy_setting_key = "toma6_dealer_policy"
+
     def createEngine(self) -> None:
         if self.game != "Toma6":
             raise GameNotImplementedException(f"No engine for game {self.game}")
@@ -34,6 +45,38 @@ class Toma6Widget(RemigioWidget):
 
     def createRoundsDetail(self, parent=None) -> Toma6RoundsDetail:
         return Toma6RoundsDetail(self.engine, parent)
+
+    def addExtraConfig(self) -> None:
+        """Add the end-score spin box, using the Toma6-specific setting."""
+        saved_top = int(appsettings["toma6_top_score"] or 66)
+        cast("Toma6Engine", self.engine).setTop(saved_top)
+        self.topPointsScoreBox = ScoreSpinBox(self.matchGroup)
+        self.topPointsScoreBox.setMaximum(1000)
+        self.topPointsScoreBox.setValue(cast("Toma6Engine", self.engine).getTop())
+        self.topPointsScoreBox.lineEdit().setFocusPolicy(
+            QtCore.Qt.FocusPolicy.ClickFocus
+        )
+        self.topPointsScoreBox.valueChanged.connect(self.changeTop)
+        self.topPointsScoreBox.setSizePolicy(
+            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Maximum
+        )
+        self.matchGroupLayout.addWidget(
+            self.topPointsScoreBox, alignment=QtCore.Qt.AlignmentFlag.AlignLeft
+        )
+
+    def changeTop(self, newtop: int | None = None) -> None:
+        """Apply a new end-score threshold and persist it."""
+        if newtop is None:
+            newtop = self.topPointsScoreBox.value()
+        try:
+            if newtop is None:
+                return
+            newtop = int(newtop)
+            cast("Toma6Engine", self.engine).setTop(newtop)
+            # appsettings.set("toma6_top_score", newtop)
+            self.detailGroup.updatePlot()
+        except (ValueError, TypeError):
+            pass
 
 
 class Toma6InputWidget(RemigioInputWidget):

@@ -1,5 +1,7 @@
 from core.registry import GameDefinition, registry
 
+_settings = "games.phase10.settings:game_settings"
+
 registry.register(
     GameDefinition(
         "Phase10",
@@ -12,6 +14,7 @@ registry.register(
         "games.phase10.widget:Phase10QSTW",
         "games.phase10.engine:Phase10StatsEngine",
         "games.phase10.engine:Phase10ParticularStatsEngine",
+        settings_factory=_settings,
     )
 )
 registry.register(
