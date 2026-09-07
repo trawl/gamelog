@@ -35,5 +35,8 @@ jobs:
       - name: Format check (ruff)
         run: uv run ruff format --check .
 
+      - name: Type check (basedpyright)
+        run: uv run basedpyright
+
       - name: Tests (pytest + coverage)
         run: uv run pytest --cov --cov-report=term-missing --cov-fail-under=55

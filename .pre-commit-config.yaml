@@ -20,3 +20,10 @@ repos:
         language: system
         types_or: [python, pyi]
         require_serial: true
+      - id: basedpyright
+        name: basedpyright
+        entry: uv run basedpyright
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+        pass_filenames: false
