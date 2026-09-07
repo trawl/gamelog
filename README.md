@@ -54,6 +54,9 @@ time. Requires Python 3.12+ (uv fetches a suitable interpreter if needed).
 
 - **Language, theme and log level** are set in the in-app settings dialog and
   persisted between runs.
+- **Per-game options** — turn timers, end-score thresholds, dealer policy
+  (round-robin or winner-deals), and other game-specific preferences are also
+  configurable in the settings dialog, under each game's own section.
 - **Environment overrides** (handy for debugging): `GAMELOG_LOG_LEVEL`
   (e.g. `DEBUG`) raises verbosity, and `GAMELOG_DB` points the app at a specific
   database file.

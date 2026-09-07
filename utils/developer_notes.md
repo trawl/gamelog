@@ -65,10 +65,43 @@ Adding a game is dropping in a directory; no other files need editing.
    )
    ```
 
-6. (Optional) drop assets into `games/<name>/{icons,styles,i18n}` and run
+6. (Optional) add a `settings.py` to expose per-game preferences in the
+   settings dialog:
+
+   ```python
+   # games/mygame/settings.py
+   from PySide6.QtCore import QCoreApplication
+
+   # Strings registered for lupdate extraction:
+   QCoreApplication.translate("MyGameSettings", "End score")
+   QCoreApplication.translate("MyGameSettings", "Score a player must reach to end the game")
+
+   game_settings = {
+       "mygame_top_score": {
+           "value": 100,
+           "type": "int",          # "int", "float", "bool", or "str"
+           "min": 1,
+           "max": 1000,
+           "displayname": "End score",
+           "description": "Score a player must reach to end the game",
+           "context": "MyGameSettings",   # Qt translation context
+       },
+   }
+   ```
+
+   Then point `GameDefinition` at it by adding
+   `settings_factory="games.mygame.settings:game_settings"` as a keyword
+   argument. Settings are discovered lazily the first time the dialog opens —
+   no other files need editing.
+
+   For `bool` settings with two named states, use `"choices": ["Label when False", "Label when True"]`
+   (displayed as a toggle button). For `str` settings with a fixed set of
+   values, use `"choices": ["opt1", "opt2", ...]` (displayed as a combo box).
+
+7. (Optional) drop assets into `games/<name>/{icons,styles,i18n}` and run
    `python utils/build_resources.py`; add translations with
    `python utils/build_translations.py`.
-7. Add a test (a save/resume round-trip and a winner-rule check) under `tests/`.
+8. Add a test (a save/resume round-trip and a winner-rule check) under `tests/`.
 
 Existing games make good templates — e.g. `games/ratuki/` for a simple
 score-to-a-target game, `games/skullking/` for one with bidding and custom
