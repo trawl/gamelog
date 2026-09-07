@@ -1,0 +1,1014 @@
+"""Phase 10 board widgets: score entry, phase tracking, tables and plots."""
+
+from __future__ import annotations
+
+import logging
+import re
+from typing import cast
+
+from PySide6 import QtCore, QtGui
+from PySide6.QtCore import QCoreApplication
+from PySide6.QtGui import QColor, QMouseEvent, QPaintEvent
+from PySide6.QtWidgets import (
+    QFrame,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QLCDNumber,
+    QPushButton,
+    QSizePolicy,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
+
+from core.engine.base import RoundGameEngine
+from core.engine.settings import appsettings
+from core.model.base import GenericRound
+from core.ui.game import (
+    CardWidget,
+    GameInputWidget,
+    GameNotImplementedException,
+    GamePlayerWidget,
+    GameRoundPlot,
+    GameRoundsDetail,
+    GameRoundTable,
+    GameWidget,
+    PlayerColours,
+    ScoreSpinBox,
+    ToggleGroupBox,
+)
+from core.ui.gamestats import (
+    GeneralQuickStats,
+    ParticularQuickStats,
+    QuickStatsTW,
+)
+from core.ui.plots import PlotView
+from games.phase10.engine import Phase10Engine, Phase10MasterEngine
+from games.phase10.model import Phase10Round
+
+logger = logging.getLogger(__name__)
+
+
+def getPhaseNames(phasecodes: list[str]) -> list[str]:
+    """Translate phase codes (e.g. ``2s3 1r4``) into human-readable names."""
+    types = {
+        "s": {
+            "2": [
+                QCoreApplication.translate("Phase10Widget", "pair"),
+                QCoreApplication.translate("Phase10Widget", "pairs"),
+            ],
+            "3": [
+                QCoreApplication.translate(
+                    "Phase10Widget", "three of a kind", "singular"
+                ),
+                QCoreApplication.translate(
+                    "Phase10Widget", "three of a kind", "plural"
+                ),
+            ],
+            "4": [
+                QCoreApplication.translate(
+                    "Phase10Widget", "four of a kind", "singular"
+                ),
+                QCoreApplication.translate("Phase10Widget", "four of a kind", "plural"),
+            ],
+            "5": [
+                QCoreApplication.translate(
+                    "Phase10Widget", "five of a kind", "singular"
+                ),
+                QCoreApplication.translate("Phase10Widget", "five of a kind", "plural"),
+            ],
+        },
+        "c": QCoreApplication.translate("Phase10Widget", "cards of the same colour"),
+        "r": [
+            QCoreApplication.translate("Phase10Widget", "run of"),
+            QCoreApplication.translate("Phase10Widget", "runs of"),
+        ],
+        "cr": [
+            QCoreApplication.translate("Phase10Widget", "colour run of"),
+            QCoreApplication.translate("Phase10Widget", "colour runs of"),
+        ],
+    }
+    phases = []
+    for code in phasecodes:
+        first = True
+        phase = ""
+        for part in code.split():
+            m = re.match(r"(\d)([src]|cr)(\d)", part)
+            if m:
+                n, tcode, cards = m.groups()
+                if int(n) > 1:
+                    plural = 1
+                else:
+                    plural = 0
+                if not first:
+                    phase += " + "
+                first = False
+                if tcode == "s":
+                    phase += f"{n} {types[tcode][cards][plural]}"
+                elif tcode == "c":
+                    phase += f"{cards} {types[tcode]}"
+                elif tcode in ["r", "cr"]:
+                    phase += f"{n} {types[tcode][plural]} {cards}"
+        phases.append(phase)
+    return phases
+
+
+class Phase10Widget(GameWidget):
+    """Top-level board widget for Phase 10 and Phase 10 Master."""
+
+    dealer_policy_setting_key = "phase10_dealer_policy"
+
+    def createEngine(self) -> None:
+        if self.game == "Phase10Master":
+            self.engine = Phase10MasterEngine()
+        elif self.game == "Phase10":
+            self.engine = Phase10Engine()
+        else:
+            raise GameNotImplementedException(f"No engine for game {self.game}")
+
+    def initUI(self) -> None:
+        super().initUI()
+        self.hideInputOnFinish = False
+        self.gameInput.setAutoFillBackground(True)
+        self.setDealer()
+        self.retranslateUI()
+
+    def addExtraConfig(self) -> None:
+        """Add the phases-in-order toggle and the side panel listing all phases."""
+        super().addExtraConfig()
+        # self.roundTitleLabel.hide()
+        # self.phasesInOrderCheckBox = QCheckBox(self.matchGroup)
+        self.phasesInOrderCheckBox = QPushButton(self.matchGroup)
+        self.phasesInOrderCheckBox.setProperty("textStateOnly", True)
+        self.phasesInOrderCheckBox.setCheckable(True)
+        saved = bool(appsettings["phase10_phases_in_order"])
+        cast("Phase10Engine", self.engine).setPhasesInOrderFlag(saved)
+        self.phasesInOrderCheckBox.setChecked(
+            cast("Phase10Engine", self.engine).getPhasesInOrderFlag()
+        )
+        # self.phasesInOrderCheckBox.setStyleSheet("QCheckBox { font-weight: bold; }")
+        self.phasesInOrderCheckBox.setDisabled(self.engine.getNumRound() > 1)
+        self.phasesInOrderCheckBox.toggled.connect(self.phasesInOrderChanged)
+        # self.phasesInOrderCheckBox.setStyleSheet(self.dealerPolicyCheckBox.styleSheet())
+        self.matchGroupLayout.addWidget(self.phasesInOrderCheckBox)
+
+        self.phasesInOrderCheckBox.toggled.connect(
+            cast(Phase10InputWidget, self.gameInput).switchPhasesInOrder
+        )
+
+        self.extraGroup = ToggleGroupBox(self)
+        self.extraGroup.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.MinimumExpanding
+        )
+        self.extraGroup.setStyleSheet(
+            "QGroupBox { font-size: 18px; font-weight: bold; }"
+        )
+        # self.widgetLayout.addWidget(self.extraGroup, 1, 1)
+        self.rightLayout.addWidget(self.extraGroup)
+        self.extraGroupText = QWidget(self.extraGroup)
+        self.extraGroupTextLayout = QVBoxLayout(self.extraGroupText)
+        self.extraGroupTextLayout.setContentsMargins(4, 4, 4, 4)
+        self.extraGroupTextLayout.setSpacing(2)
+        self.extraGroupCards = QWidget(self.extraGroup)
+        self.extraGroupCardsLayout = QGridLayout(self.extraGroupCards)
+        self.extraGroupCardsLayout.setContentsMargins(4, 4, 4, 4)
+        self.extraGroupCardsLayout.setSpacing(2)
+
+        self.phaseLabels = []
+        self.phaseCards = []
+        for i, code in enumerate(cast("Phase10Engine", self.engine).getPhases()):
+            label = QLabel(self.extraGroupText)
+            label.setStyleSheet("QLabel {font-weight: bold; }")
+            self.phaseLabels.append(label)
+            self.extraGroupTextLayout.addWidget(label)
+            gp = GraphicalPhase(code, "purple", self.extraGroupCards)
+            self.phaseCards.append(gp)
+            label = QLabel(f"{i + 1: >2} : ", self.extraGroupCards)
+            label.setStyleSheet("QLabel {font-weight: bold; }")
+            self.extraGroupCardsLayout.addWidget(label, i, 0)
+            self.extraGroupCardsLayout.addWidget(gp, i, 1)
+
+        self.extraGroup.addScreen(self.extraGroupText)
+        self.extraGroup.addScreen(self.extraGroupCards)
+
+    def createGameInputWidget(self, parent: QWidget | None = None) -> GameInputWidget:
+        return Phase10InputWidget(self.engine, parent)
+
+    def createRoundsDetail(self, parent: QWidget | None = None) -> GameRoundsDetail:
+        return Phase10RoundsDetail(self.engine, self.gameInput, self)
+
+    def addPlayerWidgets(self) -> None:
+        pass
+
+    def retranslateUI(self) -> None:
+        super().retranslateUI()
+        self.phasesInOrderChanged()
+        self.extraGroup.setTitle(self.tr("Phases"))
+        phaselabels = zip(
+            getPhaseNames(cast("Phase10Engine", self.engine).getPhases()),
+            self.phaseLabels,
+            strict=False,
+        )
+        for number, (phase, label) in enumerate(phaselabels, start=1):
+            label.setText(f"{number: >2} :   {phase}")
+
+    def togglePhaseDescs(self) -> None:
+        for label, card in zip(self.phaseLabels, self.phaseCards, strict=False):
+            label.hide(not label.hidden())
+            card.hide(not card.hidden())
+
+    def checkPlayerScore(
+        self, player: str, score: int, extras: dict | None = None
+    ) -> bool:
+        return super().checkPlayerScore(player, score) and not (
+            score % 5 != 0
+            or (
+                score < 50
+                and not cast(Phase10InputWidget, self.gameInput).hasPlayerCleared(
+                    player
+                )
+            )
+        )
+
+    def getPlayerExtraInfo(self, player: str) -> dict:
+        cleared = cast(Phase10InputWidget, self.gameInput).hasPlayerCleared(player)
+        a_phase = cast(Phase10InputWidget, self.gameInput).getPlayerAimedPhase(player)
+        if a_phase:
+            return {"aimedPhase": a_phase, "isCompleted": cleared}
+        else:
+            return {}
+
+    def updatePanel(self) -> None:
+        super().updatePanel()
+        self.phasesInOrderCheckBox.setDisabled(self.engine.getNumRound() > 1)
+        cast(Phase10InputWidget, self.gameInput).updatePanel()
+
+    def unsetDealer(self) -> None:
+        cast(Phase10InputWidget, self.gameInput).unsetDealer()
+
+    def setDealer(self) -> None:
+        cast(Phase10InputWidget, self.gameInput).setDealer()
+
+    def setWinner(self) -> None:
+        super().setWinner()
+        self.gameInput.setEnabled(True)
+        cast(Phase10InputWidget, self.gameInput).setWinner()
+
+    def phasesInOrderChanged(self, _: bool | None = None) -> None:
+        """Sync the phases-in-order flag and button label with the checkbox."""
+        if self.phasesInOrderCheckBox.isChecked():
+            cast("Phase10Engine", self.engine).setPhasesInOrderFlag(True)
+            appsettings.set("phase10_phases_in_order", True)
+            self.phasesInOrderCheckBox.setText(self.tr("Phases in order"))
+        else:
+            cast("Phase10Engine", self.engine).setPhasesInOrderFlag(False)
+            appsettings.set("phase10_phases_in_order", False)
+            self.phasesInOrderCheckBox.setText(self.tr("Free phase order"))
+        cast(Phase10InputWidget, self.gameInput).updatePanel()
+
+    def updatePlayerOrder(self) -> None:
+        GameWidget.updatePlayerOrder(self)
+        self.detailGroup.updatePlayerOrder()
+
+
+class Phase10InputWidget(GameInputWidget):
+    """Score-entry widget holding one per-player phase box per player."""
+
+    def initUI(self) -> None:
+        players = self.engine.getListPlayers()
+        if len(players) >= 4:
+            players_grid = True
+            self.widgetLayout = QGridLayout(self)
+        else:
+            players_grid = False
+            self.widgetLayout = QVBoxLayout(self)
+
+        for np, player in enumerate(players):
+            self.playerInputList[player] = Phase10PlayerWidget(
+                player, cast("Phase10Engine", self.engine), self
+            )
+            self.playerInputList[player].roundWinnerSet.connect(self.changedWinner)
+            self.playerInputList[player].playerScoreChanged.connect(self.changed)
+            if players_grid:
+                cast("QGridLayout", self.widgetLayout).addWidget(
+                    self.playerInputList[player], np // 2, np % 2
+                )
+            else:
+                cast("QVBoxLayout", self.widgetLayout).addWidget(
+                    self.playerInputList[player]
+                )
+
+    def changedWinner(self, winner: str) -> None:
+        super().changedWinner(winner)
+        for player, piw in self.playerInputList.items():
+            if player != winner and piw.getScore() == 0:
+                piw.setScore(5)
+
+    def retranslateUI(self) -> None:
+        for piw in self.playerInputList.values():
+            piw.retranslateUI()
+
+    def switchPhasesInOrder(self, in_order: bool) -> None:
+        for player in self.engine.getListPlayers():
+            self.playerInputList[player].switchPhasesInOrder(in_order)
+
+    def hasPlayerCleared(self, player: str) -> bool:
+        return self.playerInputList[player].isRoundCleared()
+
+    def getPlayerAimedPhase(self, player: str) -> int:
+        return self.playerInputList[player].getRoundPhase()
+
+    def updatePanel(self) -> None:
+        """Push each player's score and phase progress into their widget."""
+        for player in self.engine.getListPlayers():
+            score = self.engine.getScoreFromPlayer(player)
+            completed = cast("Phase10Engine", self.engine).getCompletedPhasesFromPlayer(
+                player
+            )
+            remaining = cast("Phase10Engine", self.engine).getRemainingPhasesFromPlayer(
+                player
+            )
+            self.playerInputList[player].updatePhase10Display(
+                score, completed, remaining
+            )
+
+    def unsetDealer(self) -> None:
+        self.playerInputList[self.engine.getDealer()].unsetDealer()
+
+    def setDealer(self) -> None:
+        self.playerInputList[self.engine.getDealer()].setDealer()
+
+    def setWinner(self) -> None:
+        winner = self.engine.getWinner()
+        if winner in self.engine.getListPlayers():
+            self.playerInputList[winner].setWinner()
+            for pi in self.playerInputList.values():
+                pi.finish()
+
+    def getWinner(self) -> str | None:  # pyright: ignore[reportIncompatibleMethodOverride]
+        for player, piw in self.playerInputList.items():
+            if piw.isRoundWinner():
+                return player
+        return None
+
+    def updatePlayerOrder(self) -> None:
+        """Rebuild the player layout after a reorder, keeping the widgets."""
+        trash = QWidget()
+        current_layout = self.layout()
+        if current_layout is not None:
+            trash.setLayout(current_layout)
+        players = self.engine.getListPlayers()
+        if len(players) >= 4:
+            players_grid = True
+            self.widgetLayout = QGridLayout(self)
+        else:
+            players_grid = False
+            self.widgetLayout = QVBoxLayout(self)
+
+        trash_layout = trash.layout()
+        for i, player in enumerate(self.engine.getListPlayers()):
+            if trash_layout is not None:
+                trash_layout.removeWidget(self.playerInputList[player])
+            if players_grid:
+                cast("QGridLayout", self.widgetLayout).addWidget(
+                    self.playerInputList[player], i // 2, i % 2
+                )
+            else:
+                cast("QVBoxLayout", self.widgetLayout).addWidget(
+                    self.playerInputList[player]
+                )
+            self.playerInputList[player].setColour(PlayerColours[i])
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        return QWidget.mousePressEvent(self, event)
+
+
+class Phase10PlayerWidget(GamePlayerWidget):
+    """Per-player panel: phase name, cards, score LCD and round input."""
+
+    roundWinnerSet = QtCore.Signal(str)
+    playerScoreChanged = QtCore.Signal()
+
+    def __init__(
+        self, nick: str, engine: Phase10Engine, parent: QWidget | None = None
+    ) -> None:
+        self.engine = engine
+        self.current_phase: int = min(self.engine.getRemainingPhasesFromPlayer(nick))
+        self.phases_in_order: bool = self.engine.getPhasesInOrderFlag()
+        super().__init__(
+            nick, PlayerColours[self.engine.getListPlayers().index(nick)], parent
+        )
+
+    def initUI(self) -> None:
+        """Build the phase display, score LCD, phase-number grid and inputs."""
+        self.setTitle(self.player)
+        super().initUI()
+
+        trashWidget = QWidget()
+        trashWidget.setLayout(self.mainLayout)
+
+        self.mainLayout = QVBoxLayout(self)
+        self.upperLayout = QHBoxLayout()
+        self.graphicalphaseLayout = QHBoxLayout()
+        self.mainLayout.addStretch()
+        self.mainLayout.addLayout(self.upperLayout)
+        self.mainLayout.addLayout(self.graphicalphaseLayout)
+        self.mainLayout.addStretch()
+        self.upperLayout.addStretch()
+        self.graphicalphaseLayout.addStretch()
+        self.phaseNameLabel = QLabel(self)
+        css = "font-weight: bold; font-size: 24px; color:rgb({},{},{});"
+        self.phaseNameLabel.setStyleSheet(
+            css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
+        )
+        self.upperLayout.addWidget(self.phaseNameLabel)
+        self.upperLayout.addStretch()
+        self.phaseCards = GraphicalPhase(
+            self.engine.getPhases()[self.current_phase - 1], self.pcolour, self
+        )
+        self.graphicalphaseLayout.addWidget(self.phaseCards)
+        self.graphicalphaseLayout.addStretch()
+        self.updatePhaseName()
+        self.lowerLayout = QHBoxLayout()
+        self.mainLayout.addLayout(self.lowerLayout)
+        self.mainLayout.addStretch()
+
+        self.phaseLabelsLayout = QGridLayout()
+        self.phaseLabelsLayout.setSpacing(5)
+
+        self.scoreLCD = QLCDNumber(self)
+        self.scoreLCD.setSegmentStyle(QLCDNumber.SegmentStyle.Flat)
+        self.mainLayout.addWidget(self.scoreLCD)
+        self.scoreLCD.setDigitCount(3)
+        self.scoreLCD.setMinimumWidth(100)
+        self.scoreLCD.setFrameStyle(QFrame.Shape.NoFrame)
+        css = "QLCDNumber {{ color:rgb({},{},{});}}"
+        self.scoreLCD.setStyleSheet(
+            css.format(self.pcolour.red(), self.pcolour.green(), self.pcolour.blue())
+        )
+
+        self.lowerLayout.addWidget(self.scoreLCD)
+        self.lowerLayout.addLayout(self.phaseLabelsLayout)
+
+        self.scoreLCD.display(self.engine.getScoreFromPlayer(self.player))
+
+        # Middle part - Phase list
+        self.phaseLabels = []
+        for phase in range(1, 11):
+            label = Phase10Label(phase, self)
+            if phase == self.current_phase:
+                label.setCurrent()
+            elif self.engine.hasPhaseCompleted(self.player, phase):
+                label.setPassed()
+            self.phaseLabels.append(label)
+            self.phaseLabelsLayout.addWidget(
+                label, int((phase - 1) / 5), int((phase - 1) % 5), 1, 1
+            )
+
+        # Middle part - Inputs
+        self.roundScore = ScoreSpinBox(self)
+        self.roundScore.setMaximumWidth(150)
+        self.roundScore.setStep(5)
+        self.roundScore.setHideMinimum(False)
+        self.roundScore.setValue(5)
+        self.roundScore.setColour(self.pcolour)
+        self.roundScore.valueChanged.connect(self.updateRoundPhaseCleared)
+        self.roundScore.valueChanged.connect(self.playerScoreChanged)
+        self.lowerLayout.addWidget(self.roundScore)
+
+        self.roundPhaseClearedCheckbox = Phase10ClearedCheckBox(self)
+        self.roundPhaseClearedCheckbox.setChecked(True)
+        self.roundPhaseClearedCheckbox.setEnabled(False)
+        self.roundPhaseClearedCheckbox.setMinimumSize(60, 60)
+        # self.roundPhaseClearedCheckbox.hide()
+        self.lowerLayout.addWidget(self.roundPhaseClearedCheckbox)
+
+        self.retranslateUI()
+
+    def retranslateUI(self) -> None:
+        # self.roundWinnerRadioButton.setText(self.tr("Winner"))
+        # self.roundPhaseClearedCheckbox.setText(self.tr("Completed"))
+        self.updatePhaseName()
+
+    def updatePhase10Display(
+        self, points: int, completed_phases: list[int], remaining_phases: list[int]
+    ) -> None:
+        """Refresh the score LCD and phase-number colours for a new state."""
+        if points >= 1000:
+            self.scoreLCD.setDigitCount(4)
+        self.scoreLCD.display(points)
+        self.roundPhaseClearedCheckbox.setChecked(True)
+        if len(remaining_phases) == 0 or self.engine.getWinner():
+            self.current_phase = 0
+            self.roundScore.clear()
+        else:
+            self.roundScore.setValue(5)
+            self.current_phase = min(remaining_phases)
+        self.roundPhaseClearedCheckbox.setEnabled(False)
+
+        for phase, label in enumerate(self.phaseLabels, start=1):
+            if phase == self.current_phase and not self.engine.getWinner():
+                if not label.isCurrent():
+                    label.setCurrent()
+            elif phase in completed_phases:
+                if not label.isPassed():
+                    label.setPassed()
+            else:
+                if not label.isRemaining():
+                    label.setRemaining()
+
+        self.updatePhaseName()
+
+    def getScore(self) -> int:
+        if self.isRoundWinner():
+            return 0
+        score = self.roundScore.value()
+        if score is None:
+            return -1
+        return int(score)
+
+    def setScore(self, score: int) -> None:
+        self.roundScore.setValue(score)
+
+    def switchPhasesInOrder(self, in_order: bool) -> None:
+        """Toggle enforced phase ordering, snapping to the first open phase."""
+        self.phases_in_order = in_order
+        if not self.phases_in_order:
+            return
+        self.phaseLabels[self.current_phase - 1].setRemaining()
+        for label in self.phaseLabels:
+            if label.isRemaining():
+                label.setCurrent()
+                self.current_phase = label.getNumber()
+                break
+
+    def updatePhaseSelected(self, phaselabel: Phase10Label) -> None:
+        """Make the clicked remaining phase the current one."""
+        if phaselabel.isRemaining():
+            self.current_phase = phaselabel.getNumber()
+            for label in self.phaseLabels:
+                if label.isCurrent():
+                    label.setRemaining()
+            phaselabel.setCurrent()
+        self.updatePhaseName()
+
+    def updatePhaseName(self) -> None:
+        phasenames = getPhaseNames(self.engine.getPhases())
+        self.phaseNameLabel.setText(phasenames[self.current_phase - 1])
+        self.phaseCards.setPhase(self.engine.getPhases()[self.current_phase - 1])
+
+    def updateRoundPhaseCleared(self, score) -> None:
+        """Update the phase-cleared checkbox from the entered round score."""
+        try:
+            score = int(score)
+        except (ValueError, TypeError) as e:
+            logger.warning("Phase10PlayerWidget.getScore failed: %s", e)
+            self.roundPhaseClearedCheckbox.setChecked(False)
+            return
+
+        if score < 0:
+            self.roundPhaseClearedCheckbox.setChecked(False)
+            return
+
+        if score % 5 != 0:
+            return
+
+        if score >= 50:
+            self.roundPhaseClearedCheckbox.setEnabled(True)
+            self.roundPhaseClearedCheckbox.setChecked(False)
+        elif score == 0:
+            self.roundPhaseClearedCheckbox.setChecked(True)
+            self.roundPhaseClearedCheckbox.setEnabled(False)
+            self.roundWinnerSet.emit(self.player)
+        else:
+            self.roundPhaseClearedCheckbox.setChecked(True)
+            self.roundPhaseClearedCheckbox.setEnabled(False)
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        child = self.childAt(event.pos())
+        if child is None:
+            self.roundScore.setFocus()
+        elif isinstance(child, Phase10Label) and not self.phases_in_order:
+            self.updatePhaseSelected(child)
+        return QGroupBox.mousePressEvent(self, event)
+
+    def isRoundWinner(self) -> bool:
+        return self.roundScore.value() == 0
+
+    def getRoundPhase(self) -> int:
+        return self.current_phase
+
+    def isRoundCleared(self) -> bool:
+        return self.roundPhaseClearedCheckbox.isChecked()
+
+    def roundWinnerSetAction(self, isset: bool) -> None:
+        self.roundPhaseClearedCheckbox.setChecked(True)
+        if isset:
+            self.roundWinnerSet.emit(self.player)
+            self.roundScore.setValue(0)
+        else:
+            self.roundScore.setValue(5)
+
+    def reset(self) -> None:
+        pass
+
+    def finish(self) -> None:
+        self.roundPhaseClearedCheckbox.setDisabled(True)
+        self.roundScore.setDisabled(True)
+
+
+class Phase10ClearedCheckBox(QPushButton):
+    """Toggle button showing a green tick or red cross for phase completion."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.setCheckable(True)
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+
+        self._checked_text = "✓"
+        self._unchecked_text = "✕"
+
+        self._update_text()
+        # Update text automatically when state changes
+        self.toggled.connect(self._update_text)
+
+    def setChecked(self, checked: bool) -> None:
+        super().setChecked(checked)
+        self._update_text()
+
+    def _update_text(self, _: bool | None = None) -> None:
+        if self.isChecked():
+            self.setText(self._checked_text)
+            self.setStyleSheet("""
+            QPushButton {
+                border: 2px solid green;
+                border-radius: 6px;
+                background: green;
+                font-size: 26px;
+                font-weight: bold;
+            }
+            """)
+        else:
+            self.setText(self._unchecked_text)
+            self.setStyleSheet("""
+            QPushButton {
+                border: 2px solid red;
+                border-radius: 6px;
+                background: red;
+                font-size: 26px;
+                font-weight: bold;
+            }
+            """)
+
+
+class Phase10Label(QLabel):
+    """Coloured phase-number tile: remaining (red), current (orange) or passed."""
+
+    def __init__(self, number: int, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        # self.setText(str(number).zfill(2))
+        self.setText(str(number))
+        self.setAutoFillBackground(False)
+        self.setRemaining()
+        self.setFrameShape(QFrame.Shape.StyledPanel)
+        #         self.setFrameShadow(QFrame.Raised)
+        self.setScaledContents(True)
+        self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.setWordWrap(False)
+        self.setMinimumSize(30, 30)
+        self.setSizePolicy(
+            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding
+        )
+        #         self.setFixedSize(QtCore.QSize(40,40))
+        self.number = number
+
+    def isPassed(self) -> bool:
+        return self.state == 1
+
+    def isCurrent(self) -> bool:
+        return self.state == 2
+
+    def isRemaining(self) -> bool:
+        return self.state == 0
+
+    def setPassed(self) -> None:
+        self.state = 1
+        css = "QLabel { background-color: green;font-weight: bold; color:white; border-radius: 6px }"
+        self.setStyleSheet(css)
+
+    def setCurrent(self) -> None:
+        self.state = 2
+        css = "QLabel { background-color: orange; font-weight: bold; color:white; border-radius: 6px  }"
+        self.setStyleSheet(css)
+
+    def setRemaining(self) -> None:
+        self.state = 0
+        css = "QLabel { background-color: red; font-weight: bold; color:white; border-radius: 6px  }"
+        self.setStyleSheet(css)
+
+    def getNumber(self) -> int:
+        return self.number
+
+
+class Phase10RoundsDetail(GameRoundsDetail):
+    """Rounds-detail tab set for Phase 10, prepending the score-input tab."""
+
+    def __init__(
+        self, engine: RoundGameEngine, iw: QWidget, parent: QWidget | None = None
+    ) -> None:
+        self.iw = iw
+        super().__init__(engine, parent)
+
+    def initUI(self) -> None:
+        super().initUI()
+        self.insertTab(0, self.iw, "")
+        self.setCurrentIndex(0)
+
+    def retranslateUI(self) -> None:
+        super().retranslateUI()
+        #         self.setTitle(i18n("GameRoundsDetail",'Details'))
+        if appsettings["text_in_buttons"]:
+            self.setTabText(self.indexOf(self.iw), self.tr("Score"))
+        else:
+            self.setTabText(self.indexOf(self.iw), "★")
+
+    def createRoundTable(self, engine, parent: QWidget | None = None) -> GameRoundTable:
+        return Phase10RoundTable(self.engine, parent)
+
+    def createRoundPlot(self, engine, parent: QWidget | None = None) -> GameRoundPlot:
+        return Phase10RoundPlot(self.engine, self)
+
+    def createQSBox(self, parent: QWidget | None = None) -> QuickStatsTW:
+        return Phase10QSTW(
+            self.engine.getGame(),  # pyright: ignore[reportArgumentType]
+            self.engine.getListPlayers(),
+            self,
+        )
+
+
+class Phase10RoundTable(GameRoundTable):
+    """Per-round score table annotating each cell with the aimed phase."""
+
+    def insertRound(self, r: GenericRound) -> None:
+        """Append a row for round ``r``, colouring cleared phases green."""
+        rnd = cast("Phase10Round", r)
+        winner = r.getWinner()
+        i = r.getNumRound() - 1
+        self.insertRow(i)
+        for j, player in enumerate(self.engine.getListPlayers()):
+            item = QTableWidgetItem()
+            item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
+            item.setTextAlignment(
+                QtCore.Qt.AlignmentFlag.AlignVCenter
+                | QtCore.Qt.AlignmentFlag.AlignCenter
+            )
+            if player == winner:
+                text = self.tr("Winner")
+                font = item.font()
+                font.setBold(True)
+                item.setFont(font)
+            else:
+                text = str(r.getPlayerScore(player))
+            a_phase = rnd.getPlayerAimedPhase(player)
+            c_phase = rnd.getPlayerCompletedPhase(player)
+            text += self.tr(" (Phase {})").format(a_phase)
+            if c_phase != 0:
+                background = 0xCCFF99  # green
+            else:
+                background = 0xFFCC99  # red
+            item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
+            item.setForeground(QtGui.QBrush(QtGui.QColor(0, 0, 0)))
+            item.setText(text)
+            self.setItem(i, j, item)
+        self.scrollToBottom()
+
+
+class Phase10RoundPlot(GameRoundPlot):
+    """Twin line plots of cumulative phases cleared and scores over rounds."""
+
+    def initUI(self) -> None:
+        """Lay out the phases and scores plots plus the player legend."""
+        super().initUI()
+        # self.setStyleSheet("QLabel {font-size: 18px; }")
+        current_layout = self.layout()
+        if current_layout is not None:
+            QWidget().setLayout(current_layout)
+        self.widgetLayout = QVBoxLayout()
+        self.setLayout(self.widgetLayout)
+
+        self.plotsLayout = QGridLayout()
+        self.widgetLayout.addLayout(self.plotsLayout)
+
+        self.phasesLabel = QLabel("", self)
+        self.phasesLabel.setStyleSheet("QLabel {font-weight: bold; }")
+        self.phasesLabel.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        self.phasesLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.plotsLayout.addWidget(self.phasesLabel, 0, 0)
+        self.scoreLabel = QLabel("", self)
+        self.scoreLabel.setStyleSheet("QLabel {font-weight: bold; }")
+        self.scoreLabel.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        self.scoreLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.plotsLayout.addWidget(self.scoreLabel, 0, 1)
+
+        self.canvas = PlotView(PlayerColours, self)
+        self.canvas.setBackground(self.palette().color(self.backgroundRole()))
+        self.canvas.addLinePlot()
+        self.plotsLayout.addWidget(self.canvas, 1, 0)
+        self.scorecanvas = PlotView(PlayerColours, self)
+        self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
+        self.scorecanvas.addLinePlot()
+        self.plotsLayout.addWidget(self.scorecanvas, 1, 1)
+
+        self.playersListLayout = QHBoxLayout()
+        self.widgetLayout.addLayout(self.playersListLayout)
+        self.playersListLayout.addStretch()
+
+        for i, player in enumerate(self.engine.getListPlayers()):
+            colour = PlayerColours[i]
+            label = QLabel(player)
+            css = "QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}"
+            label.setStyleSheet(css.format(colour.red(), colour.green(), colour.blue()))
+            self.playersListLayout.addWidget(label)
+            self.playersListLayout.addStretch()
+
+        self.retranslatePlot()
+        self.updatePlot()
+
+    def retranslatePlot(self) -> None:
+        super().retranslatePlot()
+        self.phasesLabel.setText(self.tr("Phases"))
+        self.scoreLabel.setText(self.tr("Scores"))
+
+    #         self.playersTitleLabel.setText(i18n("Phase10RoundPlot",'Players') )
+
+    def updatePlot(self) -> None:
+        """Recompute cumulative phases and scores per player and redraw."""
+        super().updatePlot()
+        if not self.isPlotInited():
+            return
+        scores = {}
+        phases = {}
+        for player in self.engine.getPlayers():
+            scores[player] = [0]
+            phases[player] = [0]
+
+        for rnd in cast("list[Phase10Round]", self.engine.getRounds()):
+            for player in self.engine.getPlayers():
+                if player not in scores:
+                    scores[player] = [0]
+                rndscore = rnd.getPlayerScore(player)
+                if rndscore >= 0:
+                    accumscore = scores[player][-1] + rndscore
+                    scores[player].append(accumscore)
+                c_phase = rnd.getPlayerCompletedPhase(player)
+                if c_phase > 0:
+                    phases[player].append(phases[player][-1] + 1)
+                else:
+                    phases[player].append(phases[player][-1])
+
+        self.canvas.clearPlotContents()
+        self.scorecanvas.clearPlotContents()
+
+        for player in self.engine.getListPlayers():
+            self.canvas.addSeries(phases[player], player)
+            self.scorecanvas.addSeries(scores[player], player)
+        roundNames = self.getRoundNames()
+        self.canvas.addHHeaders(roundNames)  # pyright: ignore[reportArgumentType]
+        self.scorecanvas.addHHeaders(roundNames)  # pyright: ignore[reportArgumentType]
+        self.updatePlayerOrder()
+
+    def getRoundNames(self) -> list[int]:
+        return list(
+            range(
+                1,
+                10
+                + self.engine.getNumRound()
+                - max(
+                    len(self.engine.getCompletedPhasesFromPlayer(player))
+                    for player in self.engine.getPlayers()
+                ),
+            )
+        )
+
+    def updatePlayerOrder(self) -> None:
+        """Rebuild the player legend row in the current player order."""
+        trash = QWidget()
+        self.widgetLayout.removeItem(self.playersListLayout)
+        trash.setLayout(self.playersListLayout)
+        self.playersListLayout = QHBoxLayout()
+        self.widgetLayout.addLayout(self.playersListLayout)
+
+        self.playersListLayout.addStretch()
+
+        for i, player in enumerate(self.engine.getListPlayers()):
+            colour = PlayerColours[i]
+            label = QLabel(player)
+            css = "QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}"
+            label.setStyleSheet(css.format(colour.red(), colour.green(), colour.blue()))
+            self.playersListLayout.addWidget(label)
+
+            self.playersListLayout.addStretch()
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
+        super().paintEvent(event)
+
+
+class Phase10QSTW(QuickStatsTW):
+    """Quick-stats tab set for Phase 10."""
+
+    def initStatsWidgets(self) -> None:
+        self.gs = Phase10QSBox(self.game, self)
+        self.ps = Phase10PQSBox(self.game, self)
+
+
+class Phase10QSBox(GeneralQuickStats):
+    """General quick-stats page adding lowest-phase and damned-phase columns."""
+
+    def __init__(self, gname: str, parent: QWidget | None = None) -> None:
+        super().__init__(gname, parent)
+        self.playerStatsKeys.append("min_phases")
+        self.playerStatsHeaders.append(self.tr("Lowest Ph"))
+        self.playerStatsKeys.append("damned_phase")
+        self.playerStatsHeaders.append(self.tr("Damned"))
+
+
+class Phase10PQSBox(Phase10QSBox, ParticularQuickStats):
+    """Player-filtered variant of the Phase 10 quick-stats page."""
+
+
+class GraphicalPhase(QWidget):
+    """Row of card widgets rendering a phase's required sets and runs."""
+
+    def __init__(
+        self, phase=None, accent_colour=None, parent: QWidget | None = None
+    ) -> None:
+        super().__init__(parent)
+        self.initUI()
+        self._accent_colour = accent_colour if accent_colour else QColor("purple")
+        self.setPhase(phase)
+
+    def initUI(self) -> None:
+        self.widgetLayout = QHBoxLayout(self)
+        self.cards = []
+        for _ in range(10):
+            card = CardWidget(self)
+            self.cards.append(card)
+            self.widgetLayout.addWidget(card)
+
+    def setAccentColour(self, colour) -> None:
+        self._accent_colour = colour if colour else QColor("purple")
+        self.updateCard()
+
+    def getPhase(self):
+        return self.phase
+
+    def setPhase(self, phase=None) -> None:
+        self.phase = phase
+        self.updateCard()
+
+    def updateCard(self) -> None:
+        """Reset every card, then fill in cards for the current phase's combos."""
+        if not self.phase:
+            for card in self.cards:
+                card.reset()
+        else:
+            cardi = 0
+            combs = []
+            total_combined_cards = 0
+            for combination in self.phase.split():
+                m = re.match(r"(\d)([src]|cr)(\d)", combination)
+                if m:
+                    numcombs, tcode, combcards = m.groups()
+                    comb = {"n": int(numcombs), "t": tcode, "c": int(combcards)}
+                    combs.append(comb)
+                    total_combined_cards += comb["n"] * comb["c"]
+
+            padding = 10 - total_combined_cards
+
+            for combn, comb in enumerate(combs):
+                if comb["t"] in ("s", "r"):
+                    colour = QColor("light grey")
+                else:
+                    colour = self._accent_colour
+                for nc in range(comb["n"]):
+                    for ncc in range(comb["c"]):
+                        number = ""
+                        if "s" in comb["t"]:
+                            number = str(combn + nc + 1)
+                        if "r" in comb["t"]:
+                            number = str(ncc + 1)
+                        self.cards[cardi].reset(colour, number)
+                        cardi += 1
+                try:
+                    for _ in range(padding):
+                        self.cards[cardi].reset()
+                        cardi += 1
+                except IndexError:
+                    pass

@@ -9,3 +9,8 @@ Thumbs.db
 .venv
 uv.lock
 .DS_Store
+.claude
+.coverage
+.coverage.*
+htmlcov
+.pytest_cache

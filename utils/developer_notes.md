@@ -8,31 +8,205 @@ uv run gamelog.pyw
 ```
 This will automatically create a local python venv under .venv with the necessary dependencies.
 
+## Project layout
+The code is split into a game-agnostic framework and one self-contained package
+per game:
+
+```
+core/                     the framework — rarely touched when adding a game
+  registry.py             GameDefinition + registry + object creation
+  model/base.py           base match / round models
+  engine/                 base engine, stats, resume, db, settings
+  ui/                     base widgets (GameWidget, stats, plots, dialogs, ...)
+  logging_config.py       log-level resolution
+  resources/              shared icons / styles / i18n
+games/
+  __init__.py             discovery: imports every game sub-package
+  <name>/                 ONE package per game
+    __init__.py           registers a GameDefinition (import side-effect)
+    model.py              Match / Round subclasses (rules, scoring, persistence)
+    engine.py             engine (+ optional stats engines)
+    widget.py             Qt board widget (+ optional quick-stats widget)
+    icons/ styles/ i18n/  optional, per-game assets
+```
+
+Discovery is automatic: `load_builtin_games()` imports every sub-package under
+`games/`, and each one registers itself. `GameDefinition` refers to its classes
+by `"module:Class"` strings, so widgets (and Qt) aren't imported until a match
+is actually created — registration itself stays Qt-free.
+
+## Adding a new game
+Adding a game is dropping in a directory; no other files need editing.
+
+1. Create `games/<name>/` with `model.py`, `engine.py`, `widget.py`.
+2. **model.py** — subclass `GenericRoundMatch` (or `GenericMatch`) and implement
+   the rules: `computeWinner()`, per-round scoring, and any extra persistence.
+3. **engine.py** — subclass `RoundGameEngine` (or `GameEngine`).
+4. **widget.py** — subclass `GameWidget` and provide its input / detail widgets.
+5. **__init__.py** — register the game:
+
+   ```python
+   from core.registry import GameDefinition, registry
+
+   registry.register(
+       GameDefinition(
+           "My Game",  # name (shown in the UI, stored in the DB)
+           6,  # max players
+           "Short description",
+           "Home rules",
+           "games.mygame.model:MyGameMatch",
+           "games.mygame.engine:MyGameEngine",
+           "games.mygame.widget:MyGameWidget",
+           # Optional, omit if not needed:
+           # "games.mygame.widget:MyGameQSTW",              quick-stats widget
+           # "games.mygame.engine:MyGameStatsEngine",       stats engine
+           # "games.mygame.engine:MyGameParticularStatsEngine",
+       )
+   )
+   ```
+
+6. (Optional) add a `settings.py` to expose per-game preferences in the
+   settings dialog:
+
+   ```python
+   # games/mygame/settings.py
+   from PySide6.QtCore import QCoreApplication
+
+   # Strings registered for lupdate extraction:
+   QCoreApplication.translate("MyGameSettings", "End score")
+   QCoreApplication.translate(
+       "MyGameSettings", "Score a player must reach to end the game"
+   )
+
+   game_settings = {
+       "mygame_top_score": {
+           "value": 100,
+           "type": "int",  # "int", "float", "bool", or "str"
+           "min": 1,
+           "max": 1000,
+           "displayname": "End score",
+           "description": "Score a player must reach to end the game",
+           "context": "MyGameSettings",  # Qt translation context
+       },
+   }
+   ```
+
+   Then point `GameDefinition` at it by adding
+   `settings_factory="games.mygame.settings:game_settings"` as a keyword
+   argument. Settings are discovered lazily the first time the dialog opens —
+   no other files need editing.
+
+   For `bool` settings with two named states, use `"choices": ["Label when False", "Label when True"]`
+   (displayed as a toggle button). For `str` settings with a fixed set of
+   values, use `"choices": ["opt1", "opt2", ...]` (displayed as a combo box).
+
+   Common settings shared across games (dealer policy, turn time) are defined
+   in `core/engine/common_settings.py` and can be imported directly:
+
+   ```python
+   from core.engine.common_settings import DEALER_POLICY_SETTING
+
+   game_settings = {
+       "mygame_dealer_policy": DEALER_POLICY_SETTING,
+       ...
+   }
+   ```
+
+   Shared strings are translated once under the `"GameSettings"` context and
+   live in the core translation catalogue (`core/resources/i18n/core_<locale>.ts`).
+
+7. (Optional) drop assets into `games/<name>/{icons,styles,i18n}` and run
+   `python utils/build_resources.py`; add translations with
+   `python utils/build_translations.py`.
+8. Add a test (a save/resume round-trip and a winner-rule check) under `tests/`.
+
+Existing games make good templates — e.g. `games/ratuki/` for a simple
+score-to-a-target game, `games/skullking/` for one with bidding and custom
+statistics.
+
+## Running the tests
+The test suite lives in `tests/` and runs headlessly (no display, no real
+database — each test gets its own throwaway SQLite file). Run it with:
+
+```
+uv run pytest
+```
+
+The suite covers the game registry, the parameterised SQL / persistence layer
+(save & resume for every game), the statistics engines, log-level resolution,
+and a widget-construction smoke test for every game. It needs the `dev`
+dependency group (installed automatically by `uv run`/`uv sync`).
+
+To see which code is exercised:
+
+```
+uv run pytest --cov --cov-report=term-missing
+```
+
+## Pre-commit hooks
+Optional but recommended: run ruff (lint + format) automatically before each
+commit. Install the git hook once:
+
+```
+uv run pre-commit install
+```
+
+The hooks call the project's own ruff (via `uv run`), so they always match the
+version used in CI. Run them manually against everything with:
+
+```
+uv run pre-commit run --all-files
+```
+
 ## I18N support
-Whenever there has been some change in the code that includes translatable text, you need to follow these steps to incorporate it to the application:
+Translations are **split by unit**: framework strings live in
+`core/resources/i18n/core_<locale>.ts`, and each game owns
+`games/<name>/i18n/<name>_<locale>.ts`. A string is assigned to a unit by the
+source file it appears in, so a game's translations travel with the game.
 
-1. Update the language files from the code:
-```
-pyside6-lupdate gui/* controllers/* -ts i18n/*.ts
-```
+Whenever code with translatable text changes:
 
-2. Use Linguist to provide the necessary translations:
+1. Sync and compile every catalogue (`lupdate` + `lrelease` per unit):
 ```
-pyside6-linguist i18n/*.ts &
-```
-
-3. From Linguist, click save all, then release all.
-
-4. Refresh resources as explained below
-```
-pyside6-rcc resources.qrc -o  resources_rc.py
+python utils/build_translations.py
 ```
 
-## Resources (Style an icons) changex
-Any changes on the resources used by the application need to be recompiled into the resources_rc.py. That includes changing or adding icons, as well as any modifications to the stylesheets(qss).
+   - If **all strings are already translated**, the script automatically runs
+     `build_resources.py` for you — nothing else to do.
+   - If **new unfinished strings are found**, the script prints the exact
+     `pyside6-linguist` command(s) needed (one per translation unit). Run
+     each printed command, translate the flagged strings, then re-run
+     `build_translations.py` to recompile and rebuild resources.
 
-1. If adding a new file, make sure it is present in `resources.qrc`.
-2. Update resources with:
+## Resources (styles, icons, translations)
+Resources are **auto-discovered** and compiled into `resources_rc.py`. You never
+edit `resources.qrc` by hand — it is generated. After adding, changing, or
+removing any icon, stylesheet, or compiled translation (`.qm`), run:
+
 ```
-pyside6-rcc resources.qrc -o  resources_rc.py
+python utils/build_resources.py
 ```
+
+This scans the resource folders, regenerates `resources.qrc`, and compiles it
+with `pyside6-rcc`.
+
+### Where resources live
+* **Shared / framework-wide:** `core/resources/{icons,styles,i18n}`
+* **Per-game:** `games/<name>/{icons,styles,i18n}` — a game folder can carry its
+  own assets, so adding a game needs no changes elsewhere.
+
+Every file is exposed under a flat alias regardless of where it lives:
+`:/icons/<name>`, `:/styles/<name>`, `:/i18n/<name>`. Because the namespace is
+flat, **file names must be unique across all games** (the build script errors on
+a collision).
+
+### Per-game stylesheets
+A game may ship an optional stylesheet that is layered on top of the global
+theme, scoped to that game's widget:
+
+* `games/<name>/styles/<name>.qss` — applied for any theme, or
+* `games/<name>/styles/<name>.light.qss` / `<name>.dark.qss` — theme-specific
+  (preferred over the plain file when present).
+
+`<name>` is the game's package directory name. The stylesheet is applied
+automatically when the game's board is opened and re-applied on theme changes.
