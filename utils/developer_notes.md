@@ -74,17 +74,19 @@ Adding a game is dropping in a directory; no other files need editing.
 
    # Strings registered for lupdate extraction:
    QCoreApplication.translate("MyGameSettings", "End score")
-   QCoreApplication.translate("MyGameSettings", "Score a player must reach to end the game")
+   QCoreApplication.translate(
+       "MyGameSettings", "Score a player must reach to end the game"
+   )
 
    game_settings = {
        "mygame_top_score": {
            "value": 100,
-           "type": "int",          # "int", "float", "bool", or "str"
+           "type": "int",  # "int", "float", "bool", or "str"
            "min": 1,
            "max": 1000,
            "displayname": "End score",
            "description": "Score a player must reach to end the game",
-           "context": "MyGameSettings",   # Qt translation context
+           "context": "MyGameSettings",  # Qt translation context
        },
    }
    ```
