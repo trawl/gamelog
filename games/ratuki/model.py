@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Sequence
 
 from core.engine.db import db
 from core.model.base import GenericRoundMatch
+
+logger = logging.getLogger(__name__)
 
 
 class RatukiMatch(GenericRoundMatch):
@@ -53,6 +56,7 @@ class RatukiMatch(GenericRoundMatch):
         if top <= 0:
             return
         self.top = top
+        logger.debug("Target score set to %d", top)
 
     def flushToDB(self) -> None:
         """Persist the base match plus the target ``top`` score."""

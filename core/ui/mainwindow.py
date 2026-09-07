@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
 from PySide6 import QtCore, QtGui
@@ -18,6 +19,8 @@ from PySide6.QtWidgets import (
 
 from core.engine.db import db
 from core.ui.newgame import NewGameWidget
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from PySide6.QtCore import QEvent
@@ -38,6 +41,7 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         if not db.isConnected():
             db.connectDB()
+        logger.info("MainWindow opened")
         self.openedGames: list[GameWidget] = []
         self.initUI()
 
@@ -107,8 +111,10 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         if self.ensureClose():
+            logger.info("MainWindow closing")
             event.accept()
         else:
+            logger.debug("MainWindow close cancelled by user")
             event.ignore()
 
     def ensureClose(self) -> bool:
@@ -177,6 +183,7 @@ class MainWindow(QMainWindow):
 
     def newTab(self, matchTab: GameWidget, title: str) -> None:
         """Show a running match widget and track it as an open game."""
+        logger.info("Opening game tab: %s", title)
         self.newGameTab.hide()
         self.verticalLayout.addWidget(matchTab)
         self.setWindowTitle(f"Gamelog - {title}")

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from PySide6 import QtCore
@@ -26,6 +27,8 @@ from PySide6.QtWidgets import (
 
 from core.engine.db import db
 from core.engine.settings import appsettings
+
+logger = logging.getLogger(__name__)
 
 
 class SettingsDialog(QDialog):
@@ -458,6 +461,7 @@ class SettingsDialog(QDialog):
         """Reset a setting to its schema default and persist the change."""
         default_value = self._get_default(name)["value"]
         type_ = self._get_default(name).get("type", "str")
+        logger.debug("Setting reset to default: %s = %r", name, default_value)
         self.save_setting(name, default_value, type_)
         # Remove from db layer so the default wins again.
         self.settings.get("db", {}).pop(name, None)
@@ -611,7 +615,7 @@ class SettingsDialog(QDialog):
         """
         Persist a setting to the database.
         """
-
+        logger.debug("Setting changed: %s = %r", name, value)
         appsettings.set(name, value, persistent=True)
         self.settingChanged.emit(name, value)
 

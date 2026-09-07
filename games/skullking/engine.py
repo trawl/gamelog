@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import KeysView
 from typing import cast
 
@@ -11,6 +12,8 @@ from games.pocha.engine import (
     PochaStatsEngine,
 )
 from games.skullking.model import SkullKingMatch
+
+logger = logging.getLogger(__name__)
 
 
 class SkullKingEngine(PochaEngine):
@@ -32,9 +35,11 @@ class SkullKingEngine(PochaEngine):
         return cast("SkullKingMatch", self.match).getRoundSequence(mode)
 
     def setScoringMode(self, scoring_mode: str) -> None:
+        logger.debug("Skull King scoring mode: %s", scoring_mode)
         cast("SkullKingMatch", self.match).setScoringMode(scoring_mode)
 
     def setRoundMode(self, round_mode: str) -> None:
+        logger.debug("Skull King round mode: %s", round_mode)
         cast("SkullKingMatch", self.match).setRoundMode(round_mode)
         self.hands = cast("SkullKingMatch", self.match).getHands()
 

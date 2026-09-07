@@ -53,6 +53,7 @@ class GameEngine[MatchT: GenericMatch]:
         user = cur.fetchone()
         if user:
             self.players[nick].fullName = user["fullName"]
+            logger.debug("Added existing player %s", nick)
         else:
             self.players[nick].fullName = fullName
             self.players[nick].dateCreation = datetime.datetime.now(tz=datetime.UTC)
@@ -61,6 +62,7 @@ class GameEngine[MatchT: GenericMatch]:
                 "INSERT INTO Player (nick, fullName, dateCreation) VALUES (?,?,?);",
                 (nick, fullName, qd),
             )
+            logger.info("Created new player %s (%s)", nick, fullName)
 
     def begin(self) -> None:
         """Start a new match with the current player order."""
@@ -68,6 +70,7 @@ class GameEngine[MatchT: GenericMatch]:
             self.match = registry.create_match(self.game)
         self.match.setPlayers(self.porder)
         self.match.startMatch()
+        logger.info("Started %s match with players: %s", self.game, self.porder)
 
     def resume(self, idMatch: int) -> bool:
         """Resume a saved match and rebuild its roster. False if not found."""
@@ -76,7 +79,11 @@ class GameEngine[MatchT: GenericMatch]:
         if self.match.resumeMatch(idMatch):
             for nick in self.match.getPlayers():
                 self.addPlayer(nick)
+            logger.info(
+                "Resumed %s match #%d with players: %s", self.game, idMatch, self.porder
+            )
             return True
+        logger.warning("Could not resume %s match #%d: not found", self.game, idMatch)
         return False
 
     def getGame(self) -> str | None:
@@ -112,12 +119,15 @@ class GameEngine[MatchT: GenericMatch]:
         return int(r["maxPlayers"])
 
     def pause(self) -> None:
+        logger.debug("Pausing %s match", self.game)
         self.match.pause()
 
     def unpause(self) -> None:
+        logger.debug("Unpausing %s match", self.game)
         self.match.unpause()
 
     def save(self) -> None:
+        logger.info("Saving %s match", self.game)
         self.match.save()
 
     def isPaused(self) -> bool:
@@ -150,12 +160,14 @@ class GameEngine[MatchT: GenericMatch]:
         self.match.flushToDB()
 
     def cancelMatch(self) -> None:
+        logger.info("Cancelling %s match", self.game)
         self.match.cancel()
 
     def getDealingPolicy(self) -> int:
         return self.match.getDealingPolicy()
 
     def setDealingPolicy(self, policy: int) -> None:
+        logger.debug("Dealing policy set to %d for %s", policy, self.game)
         self.match.setDealingPolicy(policy)
 
     def getDealer(self) -> str | None:
@@ -201,11 +213,13 @@ class RoundGameEngine(GameEngine[GenericRoundMatch]):
         """Store the open round in the match and rotate the dealer."""
         self.match.addRound(self.round)
         self.updateDealer()
+        logger.debug("Committed round %d for %s", self.getNumRound() - 1, self.game)
 
     def deleteRound(self, nrnd: int) -> None:
         """Remove round ``nrnd`` and roll the dealer back one step."""
         self.match.deleteRound(nrnd)
         self.updateDealer(back=True)
+        logger.info("Deleted round %d from %s match", nrnd, self.game)
         self.printStats()
 
     def getRounds(self) -> list[GenericRound]:

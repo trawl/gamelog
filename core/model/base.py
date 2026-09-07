@@ -111,6 +111,7 @@ class GenericMatch:
         for p in self.players:
             self.totalScores[p] = 0
             self.playerStart(p)
+        logger.info("%s match started at %s", self.game, self.start)
 
     def cancel(self) -> None:
         """Mark an unfinished match as cancelled and persist it."""
@@ -141,6 +142,7 @@ class GenericMatch:
         """Recompute the winner and, if there is one, finish the match."""
         self.computeWinner()
         if self.winner:
+            logger.info("%s match finished — winner: %s", self.game, self.winner)
             self.flushState(self.FINISHED)
 
     # --- Persistence -------------------------------------------------------
@@ -238,6 +240,7 @@ class GenericMatch:
         if player not in self.players:
             return
         self.dealer = player
+        logger.debug("Dealer set to %s", player)
 
     def getDealingPolicy(self) -> int:
         return self.dealingp
@@ -246,6 +249,7 @@ class GenericMatch:
         if policy not in [0, 1, 2, 3]:
             return
         self.dealingp = policy
+        logger.debug("Dealing policy set to %d", policy)
 
     # --- Players & scores --------------------------------------------------
 
@@ -418,6 +422,12 @@ class GenericRoundMatch(GenericMatch):
         for player, score in rnd.getScore().items():
             self.totalScores[player] += score
             self.playerAddRound(player, rnd)
+        logger.debug(
+            "Round %d committed — winner: %s, scores: %s",
+            rnd.getNumRound(),
+            rnd.getWinner(),
+            dict(rnd.getScore()),
+        )
         if self.updatewinnereveryround:
             self.updateWinner()
 
@@ -443,6 +453,7 @@ class GenericRoundMatch(GenericMatch):
         del self.rounds[nrnd - 1]
         for i, rnd in enumerate(self.rounds, start=1):
             rnd.setNumRound(i)
+        logger.info("Round %d deleted from %s match", nrnd, self.game)
 
     def getRounds(self) -> list[GenericRound]:
         return self.rounds

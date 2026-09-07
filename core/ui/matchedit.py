@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 from typing import TYPE_CHECKING, cast
 
 from PySide6.QtCore import QDateTime, QTime
@@ -14,6 +15,8 @@ from PySide6.QtWidgets import (
     QTimeEdit,
     QVBoxLayout,
 )
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from PySide6.QtWidgets import QWidget
@@ -90,9 +93,16 @@ class MatchTimesEditDialog(QDialog):
         """Persist the edited times to the engine and accept the dialog."""
         start = self.starttime.dateTime().toPython()
         finish = self.finishtime.dateTime().toPython()
+        elapsed = self._elapsedseconds()
+        logger.info(
+            "Match times edited — start: %s, finish: %s, elapsed: %ds",
+            start,
+            finish,
+            elapsed,
+        )
         self.engine.updateTimes(
             cast(datetime.datetime, start).astimezone(datetime.UTC),
             cast(datetime.datetime, finish).astimezone(datetime.UTC),
-            self._elapsedseconds(),
+            elapsed,
         )
         self.accept()

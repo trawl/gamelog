@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Sequence
 from typing import cast
 
 from core.engine.db import db
 from core.model.base import GenericRound, GenericRoundMatch
+
+logger = logging.getLogger(__name__)
 
 
 class RemigioMatch(GenericRoundMatch):
@@ -40,6 +43,9 @@ class RemigioMatch(GenericRoundMatch):
             if self.totalScores[player] < self.top:
                 self.activeplayers.append(player)
                 self.playersoff.remove(player)
+                logger.info(
+                    "Player %s reinstated after round %d deletion", player, nrnd
+                )
 
     def computeWinner(self) -> None:
         """Retire players at or above the top; the last one standing wins."""
@@ -96,6 +102,7 @@ class RemigioMatch(GenericRoundMatch):
         if top <= 0:
             return
         self.top = top
+        logger.debug("Top score set to %d", top)
 
     def flushToDB(self) -> None:
         """Persist the base match plus the top score and per-round close types."""

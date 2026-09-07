@@ -149,6 +149,7 @@ class GameLogDB:
     def disconnectDB(self) -> None:
         """Close the connection if open."""
         if self.con:
+            logger.debug("Closing database %s", self.dbpath)
             self.con.close()
         self.dbpath = None
 
@@ -200,6 +201,7 @@ class GameLogDB:
             "SELECT name FROM sqlite_master WHERE type='table' AND name='Game'"
         )
         if not cur.fetchone():
+            logger.info("Empty database — creating schema")
             self._executeScript(_emptydb)
         # Ensure we have all the games we support
         for definition in registry.definitions():
@@ -244,6 +246,7 @@ class GameLogDB:
             "INSERT INTO Player(nick,fullName,dateCreation) VALUES(?,?,?)",
             (nick, fullname, str(datetime.datetime.now(tz=datetime.UTC))),
         )
+        logger.info("New player created: %s (%s)", nick, fullname)
 
     def isPlayerFavourite(self, nick: str) -> bool:
         cur = db.execute(
@@ -257,6 +260,7 @@ class GameLogDB:
     def setPlayerFavourite(self, nick: str, isfav: bool) -> None:
         flag = 1 if isfav else 0
         db.execute("UPDATE Player SET favourite=? WHERE nick=?", (flag, nick))
+        logger.debug("Player %s favourite set to %s", nick, isfav)
 
 
 db = GameLogDB()

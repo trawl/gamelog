@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import logging
 from typing import cast
 
 from core.engine.base import RoundGameEngine, readInput
 from games.ratuki.model import RatukiMatch
+
+logger = logging.getLogger(__name__)
 
 
 class RatukiEngine(RoundGameEngine):
@@ -20,6 +23,7 @@ class RatukiEngine(RoundGameEngine):
         return cast("RatukiMatch", self.match).getTop()
 
     def setTop(self, top: int) -> None:
+        logger.debug("Target score set to %d", top)
         cast("RatukiMatch", self.match).setTop(top)
 
     def printExtraStats(self) -> None:

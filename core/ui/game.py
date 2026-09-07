@@ -474,6 +474,7 @@ class GameWidget(Tab):
 
     def cancelMatch(self) -> None:
         """Leave the match, offering to save or discard it first."""
+        logger.info("User requested to cancel %s match", self.game)
         if not self.isFinished():
             tit = self.tr("Leave Match")
             msg = self.tr("Do you want to save the current {} match?")
@@ -500,6 +501,7 @@ class GameWidget(Tab):
 
     def restartMatch(self) -> None:
         """Restart the match, offering to save the current one first."""
+        logger.info("User requested to restart %s match", self.game)
         if not self.isFinished():
             tit = self.tr("Restart Match")
             msg = self.tr("Do you want to save the current {} match?")
@@ -523,6 +525,9 @@ class GameWidget(Tab):
 
     def pauseMatch(self) -> None:
         """Toggle the match between paused and running, updating the UI."""
+        logger.debug(
+            "%s match %s", self.game, "unpaused" if self.engine.isPaused() else "paused"
+        )
         if self.engine.isPaused():
             self.clock.unpauseTimer()
             self.commitRoundButton.setEnabled(self.commitRoundSanityCheck())
@@ -645,6 +650,7 @@ class GameWidget(Tab):
 
     def finish(self) -> None:
         """Finish the game explicitly after confirmation."""
+        logger.info("User requested to finish %s game", self.game)
         title = self.tr("Finish game")
         msg = self.tr("Are you sure you want to finish the current game?")
         ret = QMessageBox.question(
@@ -672,15 +678,22 @@ class GameWidget(Tab):
             self.dealerPolicyCheckBox.setText(self.tr("Next player deals"))
             self.engine.setDealingPolicy(self.engine.RRDealer)
             winner = False
+        logger.debug(
+            "%s dealer policy changed to %s",
+            self.game,
+            "winner" if winner else "round-robin",
+        )
         if self.dealer_policy_setting_key is not None:
             from core.engine.settings import appsettings
 
             appsettings.set(self.dealer_policy_setting_key, winner)
 
     def closeMatch(self) -> None:
+        logger.info("Closing (discarding) %s match", self.game)
         self.engine.cancelMatch()
 
     def saveMatch(self) -> None:
+        logger.info("Saving %s match", self.game)
         self.engine.save()
 
     def checkPlayerScore(
@@ -775,6 +788,7 @@ class GameWidget(Tab):
 
     def setWinner(self) -> None:
         """Lock the board and highlight the winner once the match ends."""
+        logger.info("%s match ended — winner: %s", self.game, self.engine.getWinner())
         self.finished = True
         self.pauseMatchButton.setDisabled(True)
         self.clock.stopTimer()
@@ -802,11 +816,12 @@ class GameWidget(Tab):
             newdealer = pod.getNewDealer()
             neworder = pod.getNewOrder()
             if self.players != neworder:
-                # Do something
+                logger.debug("Player order changed to %s", neworder)
                 self.engine.setListPlayers(neworder)
                 self.players = neworder
                 self.updatePlayerOrder()
             if originaldealer != newdealer:
+                logger.debug("Dealer changed from %s to %s", originaldealer, newdealer)
                 self.unsetDealer()
                 # getNewDealer() may return None; setDealer ignores unknown players.
                 self.engine.setDealer(newdealer)  # pyright: ignore[reportArgumentType]

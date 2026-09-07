@@ -7,7 +7,11 @@ add their own game-specific statistics.
 
 from __future__ import annotations
 
+import logging
+
 from core.engine.db import GameLogDB, db
+
+logger = logging.getLogger(__name__)
 
 
 class StatsEngine:
@@ -100,7 +104,9 @@ class StatsEngine:
                 self._bound_params(self._generalplayerstatsquery),
             )
         except IndexError:
-            pass
+            logger.warning(
+                "Stats query returned unexpected empty result", exc_info=True
+            )
 
     def getGameStats(self, game: str) -> dict | None:
         """Return the last-winner row for ``game``, or ``None``."""

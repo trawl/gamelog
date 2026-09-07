@@ -68,6 +68,12 @@ class Phase10Match(GenericRoundMatch):
             return
         for player in self.getPlayers():
             if rnd.completedPhase[player]:
+                logger.debug(
+                    "Reverting phase %d for %s on round %d deletion",
+                    rnd.completedPhase[player],
+                    player,
+                    nrnd,
+                )
                 self.phasesCleared[player].remove(rnd.completedPhase[player])
         super().deleteRound(nrnd)
 

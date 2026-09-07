@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Sequence
 from typing import cast
 
 from core.engine.base import RoundGameEngine, readInput
 from games.remigio.model import RemigioMatch
+
+logger = logging.getLogger(__name__)
 
 
 class RemigioEngine(RoundGameEngine):
@@ -39,6 +42,7 @@ class RemigioEngine(RoundGameEngine):
         return cast("RemigioMatch", self.match).getTop()
 
     def setTop(self, top: int) -> None:
+        logger.debug("Top score set to %d", top)
         cast("RemigioMatch", self.match).setTop(top)
 
     def printExtraPlayerStats(self, player: str) -> None:

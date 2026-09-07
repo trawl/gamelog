@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import sys
 import traceback
 from typing import TYPE_CHECKING
@@ -10,6 +11,8 @@ from PySide6.QtWidgets import QApplication, QMessageBox
 
 from core.ui.languagechooser import LanguageManager
 from core.ui.thememanager import ThemeManager
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from types import TracebackType
@@ -37,8 +40,9 @@ class GamelogApplication(QApplication):
         if issubclass(exc_type, KeyboardInterrupt):
             sys.__excepthook__(exc_type, exc_value, exc_tb)
             return
-        # Always log the full traceback to the real stderr (which may have been
-        # redirected away under pythonw).
+        logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_tb))
+        # Also write to the real stderr in case logging is not configured with a
+        # file handler (e.g. under pythonw where stdout/stderr are redirected).
         traceback.print_exception(exc_type, exc_value, exc_tb, file=sys.__stderr__)
         try:
             QMessageBox.critical(

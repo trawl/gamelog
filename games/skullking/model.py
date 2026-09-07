@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import KeysView, Sequence
 from typing import ClassVar
 
 from core.engine.db import db
 from games.pocha.model import PochaMatch
+
+logger = logging.getLogger(__name__)
 
 
 class SkullKingMatch(PochaMatch):
@@ -87,6 +90,7 @@ class SkullKingMatch(PochaMatch):
                 f"Invalid Scoring Mode type {smode}. Possible values are: {', '.join(self.scoringModes)}"
             )
         self.scoringMode = smode
+        logger.debug("Scoring mode set to %s", smode)
 
     def getRoundMode(self) -> str:
         return self.roundMode
@@ -106,6 +110,7 @@ class SkullKingMatch(PochaMatch):
         self.roundMode = rmode
         self.hands = self.roundModes[self.roundMode]
         self.maxRounds = len(self.hands)
+        logger.debug("Round mode set to %s (%d rounds)", rmode, self.maxRounds)
 
     def getHands(self) -> list[int]:
         return self.roundModes[self.roundMode]

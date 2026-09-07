@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 from typing import Any, cast
 
 from PySide6.QtCore import Signal
@@ -33,6 +34,8 @@ from core.ui.newplayer import NewPlayerDialog
 from core.ui.playerlist import PlayerList, PlayerListModel
 from core.ui.settings import SettingsDialog
 from core.ui.tab import Tab
+
+logger = logging.getLogger(__name__)
 
 
 class NewGameWidget(Tab):
@@ -283,11 +286,21 @@ class NewGameWidget(Tab):
         tit = self.tr("New Match")
         if len(players) < 2:
             msg = self.tr("At least 2 players are needed to play")
+            logger.warning(
+                "New game rejected: fewer than 2 players selected for %s", game
+            )
             QMessageBox.warning(self, tit, msg)
         elif len(players) > maxPlayers:
             msg = self.tr("The maximum number of players is")
+            logger.warning(
+                "New game rejected: %d players selected but max for %s is %d",
+                len(players),
+                game,
+                maxPlayers,
+            )
             QMessageBox.warning(self, tit, f"{msg} {maxPlayers}")
         else:
+            logger.info("Starting new %s match with players: %s", game, players)
             matchTab = registry.create_widget(game, players, None, self._parent)
             if matchTab:
                 matchTab.restartRequested.connect(self.restartGame)
@@ -295,6 +308,7 @@ class NewGameWidget(Tab):
                     matchTab.closeRequested.connect(self._parent.removeTab)
                     self._parent.newTab(matchTab, game)
             else:
+                logger.error("No widget registered for game: %s", game)
                 QMessageBox.warning(self, tit, self.tr("Widget not implemented"))
                 return
 
@@ -451,6 +465,7 @@ class ResumeBox(QGroupBox):
         selected = self.savedlist.selectedIndexes()
         if len(selected) > 0:
             idMatch = self.matches[selected[0].row()]
+            logger.info("Resuming %s match #%d", self.game, idMatch)
             gameengine = self.engine
             if self.engine:
                 gameengine = self.engine.resume(idMatch)
