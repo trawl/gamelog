@@ -314,6 +314,8 @@ class SettingsDialog(QDialog):
                 widget = QPushButton()
                 widget.setCheckable(True)
                 widget.setProperty("textStateOnly", True)
+                widget.setProperty("boolChoices", display_choices)
+                widget.setProperty("boolContext", context)
                 widget.setSizePolicy(
                     QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
                 )
@@ -550,6 +552,19 @@ class SettingsDialog(QDialog):
         elif isinstance(widget, QDoubleSpinBox):
             widget.blockSignals(True)
             widget.setValue(float(value))
+            widget.blockSignals(False)
+
+        elif isinstance(widget, QPushButton) and widget.isCheckable():
+            widget.blockSignals(True)
+            widget.setChecked(bool(value))
+            choices = widget.property("boolChoices")
+            context = widget.property("boolContext") or "AppSettings"
+            if choices:
+                from PySide6.QtCore import QCoreApplication
+
+                widget.setText(
+                    QCoreApplication.translate(context, choices[int(bool(value))])
+                )
             widget.blockSignals(False)
 
         elif isinstance(widget, QLineEdit):
