@@ -171,13 +171,12 @@ Whenever code with translatable text changes:
 python utils/build_translations.py
 ```
 
-2. Translate any new (unfinished) strings with Linguist, then re-run the
-   command above to recompile:
-```
-pyside6-linguist core/resources/i18n/core_*.ts games/*/i18n/*.ts &
-```
-
-3. Refresh the resource bundle as explained below.
+   - If **all strings are already translated**, the script automatically runs
+     `build_resources.py` for you — nothing else to do.
+   - If **new unfinished strings are found**, the script prints the exact
+     `pyside6-linguist` command(s) needed (one per translation unit). Run
+     each printed command, translate the flagged strings, then re-run
+     `build_translations.py` to recompile and rebuild resources.
 
 ## Resources (styles, icons, translations)
 Resources are **auto-discovered** and compiled into `resources_rc.py`. You never
