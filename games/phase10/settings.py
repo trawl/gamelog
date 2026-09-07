@@ -15,7 +15,7 @@ QCoreApplication.translate("Phase10Settings", "Phases in order")
 game_settings = {
     "phase10_dealer_policy": DEALER_POLICY_SETTING,
     "phase10_phases_in_order": {
-        "value": False,
+        "value": True,
         "type": "bool",
         "choices": ["Free phase order", "Phases in order"],
         "displayname": "Phase order",
