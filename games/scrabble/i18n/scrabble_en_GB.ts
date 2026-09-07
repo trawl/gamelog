@@ -15,19 +15,6 @@
     </message>
 </context>
 <context>
-    <name>ScrabbleSettings</name>
-    <message>
-        <location filename="../settings.py" line="6"/>
-        <source>Turn time (s)</source>
-        <translation>Turn time (s)</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="7"/>
-        <source>Per-turn countdown duration in seconds</source>
-        <translation>Per-turn countdown duration in seconds</translation>
-    </message>
-</context>
-<context>
     <name>ScrabbleWidget</name>
     <message>
         <location filename="../widget.py" line="73"/>

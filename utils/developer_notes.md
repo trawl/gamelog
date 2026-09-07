@@ -100,6 +100,21 @@ Adding a game is dropping in a directory; no other files need editing.
    (displayed as a toggle button). For `str` settings with a fixed set of
    values, use `"choices": ["opt1", "opt2", ...]` (displayed as a combo box).
 
+   Common settings shared across games (dealer policy, turn time) are defined
+   in `core/engine/common_settings.py` and can be imported directly:
+
+   ```python
+   from core.engine.common_settings import DEALER_POLICY_SETTING
+
+   game_settings = {
+       "mygame_dealer_policy": DEALER_POLICY_SETTING,
+       ...
+   }
+   ```
+
+   Shared strings are translated once under the `"GameSettings"` context and
+   live in the core translation catalogue (`core/resources/i18n/core_<locale>.ts`).
+
 7. (Optional) drop assets into `games/<name>/{icons,styles,i18n}` and run
    `python utils/build_resources.py`; add translations with
    `python utils/build_translations.py`.

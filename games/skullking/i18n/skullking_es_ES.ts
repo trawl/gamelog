@@ -37,32 +37,32 @@
         <translation>Recuento del bribón</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="13"/>
+        <location filename="../settings.py" line="15"/>
         <source>standard_rounds</source>
         <translation>Rondas Estándar</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="14"/>
+        <location filename="../settings.py" line="16"/>
         <source>even</source>
         <translation>Quilla uniforme</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="15"/>
+        <location filename="../settings.py" line="17"/>
         <source>brawl</source>
         <translation>Directos a la pelea</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="16"/>
+        <location filename="../settings.py" line="18"/>
         <source>skirmish</source>
         <translation>Escaramuza al punto</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="17"/>
+        <location filename="../settings.py" line="19"/>
         <source>barrage</source>
         <translation>Andanada lateral</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="18"/>
+        <location filename="../settings.py" line="20"/>
         <source>whirlpool</source>
         <translation>Remolino</translation>
     </message>

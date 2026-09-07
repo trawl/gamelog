@@ -37,32 +37,32 @@
         <translation>Recompte del canalla</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="13"/>
+        <location filename="../settings.py" line="15"/>
         <source>standard_rounds</source>
         <translation>Rondes Estàndard</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="14"/>
+        <location filename="../settings.py" line="16"/>
         <source>even</source>
         <translation>Quilla uniforme</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="15"/>
+        <location filename="../settings.py" line="17"/>
         <source>brawl</source>
         <translation>Directes a la baralla</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="16"/>
+        <location filename="../settings.py" line="18"/>
         <source>skirmish</source>
         <translation>Escaramussa al punt</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="17"/>
+        <location filename="../settings.py" line="19"/>
         <source>barrage</source>
         <translation>Bombardeig lateral</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="18"/>
+        <location filename="../settings.py" line="20"/>
         <source>whirlpool</source>
         <translation>Remolí</translation>
     </message>

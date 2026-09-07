@@ -62,31 +62,11 @@
     </message>
     <message>
         <location filename="../settings.py" line="8"/>
-        <source>Next player deals</source>
-        <translation>Next player deals</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="9"/>
-        <source>Winner deals</source>
-        <translation>Winner deals</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="6"/>
-        <source>Dealer policy</source>
-        <translation>Dealer</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="7"/>
-        <source>Who deals at the start of each round</source>
-        <translation>Who deals at the start of each round</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="10"/>
         <source>Phase order</source>
         <translation>Phase order</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="11"/>
+        <location filename="../settings.py" line="9"/>
         <source>Whether players must complete phases in the fixed sequence</source>
         <translation>Whether players must complete phases in the fixed sequence</translation>
     </message>

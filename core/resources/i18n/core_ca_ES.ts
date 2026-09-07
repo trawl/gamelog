@@ -170,37 +170,37 @@
         <translation>Nivell de diagnòstic (GAMELOG_LOG_LEVEL té preferència)</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="207"/>
+        <location filename="../../ui/settings.py" line="233"/>
         <source>Reset to default</source>
         <translation>Restaura valor per defecte</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="228"/>
+        <location filename="../../ui/settings.py" line="254"/>
         <source>Application Settings</source>
         <translation>Configuració</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="230"/>
+        <location filename="../../ui/settings.py" line="256"/>
         <source>Close</source>
         <translation>Tancar</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="232"/>
+        <location filename="../../ui/settings.py" line="257"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="481"/>
+        <location filename="../../ui/settings.py" line="505"/>
         <source>Environment</source>
         <translation>Temporal</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="485"/>
+        <location filename="../../ui/settings.py" line="509"/>
         <source>Database</source>
         <translation>Permanent</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="489"/>
+        <location filename="../../ui/settings.py" line="513"/>
         <source>Default</source>
         <translation>Per defecte</translation>
     </message>
@@ -235,6 +235,39 @@
         <location filename="../../ui/game.py" line="1056"/>
         <source>Statistics</source>
         <translation>Estadístiques</translation>
+    </message>
+</context>
+<context>
+    <name>GameSettings</name>
+    <message>
+        <location filename="../../engine/common_settings.py" line="12"/>
+        <source>Dealer policy</source>
+        <translation>Qui reparteix</translation>
+    </message>
+    <message>
+        <location filename="../../engine/common_settings.py" line="13"/>
+        <source>Who deals at the start of each round</source>
+        <translation>Qui reparteix al principi de cada ronda</translation>
+    </message>
+    <message>
+        <location filename="../../engine/common_settings.py" line="14"/>
+        <source>Next player deals</source>
+        <translation>El següent reparteix</translation>
+    </message>
+    <message>
+        <location filename="../../engine/common_settings.py" line="15"/>
+        <source>Winner deals</source>
+        <translation>El guanyador reparteix</translation>
+    </message>
+    <message>
+        <location filename="../../engine/common_settings.py" line="16"/>
+        <source>Turn time (s)</source>
+        <translation>Torn (s)</translation>
+    </message>
+    <message>
+        <location filename="../../engine/common_settings.py" line="17"/>
+        <source>Per-turn countdown duration in seconds</source>
+        <translation>Compte enrere en segons per a la duració d&apos;un torn</translation>
     </message>
 </context>
 <context>

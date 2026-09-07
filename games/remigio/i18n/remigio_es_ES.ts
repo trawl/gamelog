@@ -13,31 +13,11 @@
     <name>RemigioSettings</name>
     <message>
         <location filename="../settings.py" line="8"/>
-        <source>Next player deals</source>
-        <translation>El siguiente jugador reparte</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="9"/>
-        <source>Winner deals</source>
-        <translation>El ganador reparte</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="6"/>
-        <source>Dealer policy</source>
-        <translation>Quien reparte</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="7"/>
-        <source>Who deals at the start of each round</source>
-        <translation>Quien reparte al inicio de cada ronda</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="10"/>
         <source>Elimination score</source>
         <translation>Límite de puntos</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="11"/>
+        <location filename="../settings.py" line="9"/>
         <source>Score at which a player is eliminated from the game</source>
         <translation>Puntuación por la cual un jugador queda eliminado de la partida</translation>
     </message>

@@ -62,31 +62,11 @@
     </message>
     <message>
         <location filename="../settings.py" line="8"/>
-        <source>Next player deals</source>
-        <translation>Siguente jugador reparte</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="9"/>
-        <source>Winner deals</source>
-        <translation>El ganador reparte</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="6"/>
-        <source>Dealer policy</source>
-        <translation>Quién reparte</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="7"/>
-        <source>Who deals at the start of each round</source>
-        <translation>Quien reparte al inicio de cada ronda</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="10"/>
         <source>Phase order</source>
         <translation>Orden de fases</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="11"/>
+        <location filename="../settings.py" line="9"/>
         <source>Whether players must complete phases in the fixed sequence</source>
         <translation>Decide si los jugadores deben completar las fases en una secuencia fija o libre</translation>
     </message>

@@ -169,37 +169,37 @@
         <translation>Nivel de diagnóstico (GAMELOG_LOG_LEVEL tiene preferencia)</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="207"/>
+        <location filename="../../ui/settings.py" line="233"/>
         <source>Reset to default</source>
         <translation>Restablecer valor por defecto</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="228"/>
+        <location filename="../../ui/settings.py" line="254"/>
         <source>Application Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="230"/>
+        <location filename="../../ui/settings.py" line="256"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="232"/>
+        <location filename="../../ui/settings.py" line="257"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="481"/>
+        <location filename="../../ui/settings.py" line="505"/>
         <source>Environment</source>
         <translation>Temporal</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="485"/>
+        <location filename="../../ui/settings.py" line="509"/>
         <source>Database</source>
         <translation>Permanente</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="489"/>
+        <location filename="../../ui/settings.py" line="513"/>
         <source>Default</source>
         <translation>Por defecto</translation>
     </message>
@@ -234,6 +234,39 @@
         <location filename="../../ui/game.py" line="1056"/>
         <source>Statistics</source>
         <translation>Estadísticas</translation>
+    </message>
+</context>
+<context>
+    <name>GameSettings</name>
+    <message>
+        <location filename="../../engine/common_settings.py" line="12"/>
+        <source>Dealer policy</source>
+        <translation>Quien reparte</translation>
+    </message>
+    <message>
+        <location filename="../../engine/common_settings.py" line="13"/>
+        <source>Who deals at the start of each round</source>
+        <translation>Quien reparte al inicio de cada ronda</translation>
+    </message>
+    <message>
+        <location filename="../../engine/common_settings.py" line="14"/>
+        <source>Next player deals</source>
+        <translation>El siguiente reparte</translation>
+    </message>
+    <message>
+        <location filename="../../engine/common_settings.py" line="15"/>
+        <source>Winner deals</source>
+        <translation>El ganador reparte</translation>
+    </message>
+    <message>
+        <location filename="../../engine/common_settings.py" line="16"/>
+        <source>Turn time (s)</source>
+        <translation>Turno (s)</translation>
+    </message>
+    <message>
+        <location filename="../../engine/common_settings.py" line="17"/>
+        <source>Per-turn countdown duration in seconds</source>
+        <translation>Cuenta atras en segundos para la duración del turno</translation>
     </message>
 </context>
 <context>

@@ -37,32 +37,32 @@
         <translation>Rascal Scoring</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="13"/>
+        <location filename="../settings.py" line="15"/>
         <source>standard_rounds</source>
         <translation>Standard Rounds</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="14"/>
+        <location filename="../settings.py" line="16"/>
         <source>even</source>
         <translation>Even Keeled</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="15"/>
+        <location filename="../settings.py" line="17"/>
         <source>brawl</source>
         <translation>Skip to the Brawl</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="16"/>
+        <location filename="../settings.py" line="18"/>
         <source>skirmish</source>
         <translation>Swift-n-Salty Skirmish</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="17"/>
+        <location filename="../settings.py" line="19"/>
         <source>barrage</source>
         <translation>Broadside Barrage</translation>
     </message>
     <message>
-        <location filename="../settings.py" line="18"/>
+        <location filename="../settings.py" line="20"/>
         <source>whirlpool</source>
         <translation>Whirlpool</translation>
     </message>

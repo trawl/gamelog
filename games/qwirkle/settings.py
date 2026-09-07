@@ -1,23 +1,8 @@
 """Default settings for Qwirkle (per-turn countdown and dealer policy)."""
 
-from PySide6.QtCore import QCoreApplication
-
-# Strings registered for lupdate extraction:
-QCoreApplication.translate("QwirkleSettings", "Turn time (s)")
-QCoreApplication.translate("QwirkleSettings", "Per-turn countdown duration in seconds")
-QCoreApplication.translate("QwirkleSettings", "Dealer policy")
-QCoreApplication.translate("QwirkleSettings", "Who deals at the start of each round")
-QCoreApplication.translate("QwirkleSettings", "Next player deals")
-QCoreApplication.translate("QwirkleSettings", "Winner deals")
+from core.engine.common_settings import DEALER_POLICY_SETTING, TURN_TIME_SETTING
 
 game_settings = {
-    "qwirkle_turn_time": {
-        "value": 120,
-        "type": "int",
-        "min": 10,
-        "max": 600,
-        "displayname": "Turn time (s)",
-        "description": "Per-turn countdown duration in seconds",
-        "context": "QwirkleSettings",
-    },
+    "qwirkle_dealer_policy": DEALER_POLICY_SETTING,
+    "qwirkle_turn_time": TURN_TIME_SETTING,
 }

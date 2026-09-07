@@ -2,11 +2,9 @@
 
 from PySide6.QtCore import QCoreApplication
 
+from core.engine.common_settings import DEALER_POLICY_SETTING
+
 # Strings registered for lupdate extraction:
-QCoreApplication.translate("Phase10Settings", "Dealer policy")
-QCoreApplication.translate("Phase10Settings", "Who deals at the start of each round")
-QCoreApplication.translate("Phase10Settings", "Next player deals")
-QCoreApplication.translate("Phase10Settings", "Winner deals")
 QCoreApplication.translate("Phase10Settings", "Phase order")
 QCoreApplication.translate(
     "Phase10Settings", "Whether players must complete phases in the fixed sequence"
@@ -15,14 +13,7 @@ QCoreApplication.translate("Phase10Settings", "Free phase order")
 QCoreApplication.translate("Phase10Settings", "Phases in order")
 
 game_settings = {
-    "phase10_dealer_policy": {
-        "value": True,
-        "type": "bool",
-        "choices": ["Next player deals", "Winner deals"],
-        "displayname": "Dealer policy",
-        "description": "Who deals at the start of each round",
-        "context": "Phase10Settings",
-    },
+    "phase10_dealer_policy": DEALER_POLICY_SETTING,
     "phase10_phases_in_order": {
         "value": False,
         "type": "bool",
