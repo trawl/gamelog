@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from collections import Counter
 from typing import cast
 
 from PySide6 import QtCore
@@ -15,9 +16,11 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QRadioButton,
     QSizePolicy,
+    QTableWidgetItem,
     QWidget,
 )
 
+from core.model.base import GenericRound
 from core.ui.game import (
     GameInputWidget,
     GameNotImplementedException,
@@ -31,6 +34,7 @@ from core.ui.game import (
 )
 from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats
 from games.parchis.engine import ParchisEngine
+from games.parchis.model import ParchisEntry
 
 logger = logging.getLogger(__name__)
 
@@ -395,35 +399,41 @@ class ParchisRoundTable(GameRoundTable):
     def __init__(self, engine, parent: QWidget | None = None) -> None:
         super().__init__(engine, parent)
 
-    # def insertRound(self, entry: GenericRound) -> None:
-    #     """Append a row for ``entry``, highlighting the scoring player's cell."""
-    #     centry = cast("ParchisEntry", entry)
-    #     kind = cast("str", centry.getKind())
-    #     kinds = self.engine.getEntryKinds()
-    #     # background = self.bgcolors[kinds.index(kind)]
-    #     kind = QCoreApplication.translate("ParchisInputWidget", kind)
-    #     i = centry.getNumRound() - 1
-    #     self.insertRow(i)
-    #     for j, player in enumerate(self.engine.getListPlayers()):
-    #         item = QTableWidgetItem()
-    #         item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
-    #         item.setTextAlignment(
-    #             QtCore.Qt.AlignmentFlag.AlignVCenter
-    #             | QtCore.Qt.AlignmentFlag.AlignCenter
-    #         )
-    #         item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
-    #         item.setForeground(QtGui.QBrush(QtGui.QColor(0, 0, 0)))
+    def insertRound(self, entry: GenericRound) -> None:
+        """Append a row for ``entry``, highlighting the scoring player's cell."""
+        entry = cast("ParchisEntry", entry)
+        score = entry.getPlayerScore()
+        kills = entry.getKills()
+        # background = self.bgcolors[kinds.index(kind)]
+        i = entry.getNumRound() - 1
+        self.insertRow(i)
+        for j, player in enumerate(self.engine.getListPlayers()):
+            item = QTableWidgetItem()
+            item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
+            item.setTextAlignment(
+                QtCore.Qt.AlignmentFlag.AlignVCenter
+                | QtCore.Qt.AlignmentFlag.AlignCenter
+            )
 
-    #         if player == centry.getPlayer():
-    #             text = f"{centry.getPlayerScore()} ({kind})"
-    #             font = item.font()
-    #             font.setBold(True)
-    #             item.setFont(font)
-    #         else:
-    #             text = ""
-    #         item.setText(text)
-    #         self.setItem(i, j, item)
-    #     self.scrollToBottom()
+            text = ""
+            text_elems = []
+            if player == entry.getPlayer():
+                if score:
+                    text_elems.append(f"{'◉' * entry.getPlayerScore()}")
+                if kills:
+                    text_elems.append(
+                        ", ".join(
+                            f"{name} {'†' * count}"
+                            for name, count in sorted(Counter(kills).items())
+                        )
+                    )
+                text = ", ".join(text_elems)
+                font = item.font()
+                font.setBold(True)
+                item.setFont(font)
+            item.setText(text)
+            self.setItem(i, j, item)
+        self.scrollToBottom()
 
 
 class ParchisEntriesPlot(GameRoundPlot):
@@ -439,6 +449,8 @@ class ParchisEntriesPlot(GameRoundPlot):
             scores[player] = [0]
 
         for entry in self.engine.getRounds():
+            if not entry.getPlayerScore():
+                continue
             for player in self.engine.getPlayers():
                 if player == entry.getPlayer():
                     entryscore = entry.getPlayerScore()
