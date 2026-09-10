@@ -381,6 +381,22 @@ class GenericRoundMatch(GenericMatch):
             for player, extra in extras.items():
                 self.rounds[currentr - 1].addExtraInfo(player, extra)
 
+        cur = db.execute(
+            "SELECT idRound,nick,eventType,target,value FROM RoundEvents "
+            "WHERE idMatch =? "
+            "ORDER BY idRound,nick,seq;",
+            (idMatch,),
+        )
+        for row in cur:
+            idround = int(row["idRound"])
+            if 0 < idround <= len(self.rounds):
+                self.rounds[idround - 1].addExtraEvent(
+                    str(row["nick"]),
+                    str(row["eventType"]),
+                    row["target"],
+                    row["value"],
+                )
+
         return True
 
     def flushToDB(self) -> None:
@@ -390,6 +406,7 @@ class GenericRoundMatch(GenericMatch):
         #         db.execute("BEGIN")
         db.execute("DELETE FROM Round where idMatch=?;", (self.idMatch,))
         db.execute("DELETE FROM RoundStatistics where idMatch=?;", (self.idMatch,))
+        db.execute("DELETE FROM RoundEvents where idMatch=?;", (self.idMatch,))
 
         db.execute(
             "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
@@ -413,6 +430,23 @@ class GenericRoundMatch(GenericMatch):
                     "VALUES (?,?,?,?,?);",
                     (self.idMatch, str(player), rnd.getNumRound(), winner, score),
                 )
+                for seq, (eventType, target, value) in enumerate(
+                    rnd.getExtraEvents(player)
+                ):
+                    db.execute(
+                        "INSERT INTO RoundEvents "
+                        "(idMatch,nick,idRound,seq,eventType,target,value) "
+                        "VALUES (?,?,?,?,?,?,?);",
+                        (
+                            self.idMatch,
+                            str(player),
+                            rnd.getNumRound(),
+                            seq,
+                            eventType,
+                            target,
+                            value,
+                        ),
+                    )
 
     #         db.execute("COMMIT")
 
@@ -521,6 +555,17 @@ class GenericRound:
     @abstractmethod
     def addExtraInfo(self, player: str, extras: dict) -> None:
         """Attach game-specific extra statistics for ``player``."""
+
+    def getExtraEvents(self, player: str) -> list[tuple[str, str | None, str | None]]:
+        """Ordered ``(eventType, target, value)`` triples for ``player`` to
+        persist as ``RoundEvents``. Empty unless overridden."""
+        return []
+
+    def addExtraEvent(
+        self, player: str, eventType: str, target: str | None, value: str | None
+    ) -> None:
+        """Restore one persisted ``RoundEvents`` row for ``player``. No-op
+        unless overridden."""
 
 
 class GenericEntry(GenericRound):

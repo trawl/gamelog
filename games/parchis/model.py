@@ -5,7 +5,6 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import cast
 
-from core.engine.db import db
 from core.model.base import GenericEntry, GenericRoundMatch
 
 
@@ -33,13 +32,6 @@ class ParchisMatch(GenericRoundMatch):
     def setTop(self, top: int) -> None:
         self.top = top
 
-    def resumeExtraInfo(self, player: str, key: str, value: str) -> dict:
-        """Decode a persisted entry-kind statistic row."""
-        extra = {}
-        if key == "kill":
-            extra[key] = value
-        return extra
-
     def getKillsTally(self) -> dict[str, dict[str, int]]:
         """Generate a matrix of with the kill tally."""
         kill_tally = {killer: dict.fromkeys(self.players, 0) for killer in self.players}
@@ -57,26 +49,6 @@ class ParchisMatch(GenericRoundMatch):
             ) + max(0, len(entry.getKills()) - 1)
         return combo_tally
 
-    def flushToDB(self) -> None:
-        """Persist the base match plus each entry's kills if any"""
-        super().flushToDB()
-
-        from pprint import pprint
-
-        for entry in cast("list[ParchisEntry]", self.rounds):
-            pprint(f"flush Roundstatistics - entry kills: {entry.getKills()}")
-            db.execute(
-                "INSERT OR REPLACE INTO RoundStatistics "
-                "(idMatch,nick,idRound,key,value) "
-                "VALUES (?,?,?,'kills',?);",
-                (
-                    self.idMatch,
-                    entry.getPlayer(),
-                    entry.getNumEntry(),
-                    ",".join(entry.getKills()),
-                ),
-            )
-
 
 class ParchisEntry(GenericEntry):
     """A Parchis entry with extras."""
@@ -92,6 +64,19 @@ class ParchisEntry(GenericEntry):
                 self.kills = extras["kills"]
         except KeyError:
             pass
+
+    def getExtraEvents(self, player: str) -> list[tuple[str, str | None, str | None]]:
+        """One ordered 'kill' event per victim, for persistence as RoundEvents."""
+        if player != self.getPlayer():
+            return []
+        return [("kill", victim, None) for victim in self.kills]
+
+    def addExtraEvent(
+        self, player: str, eventType: str, target: str | None, value: str | None
+    ) -> None:
+        """Restore a persisted kill event for this entry."""
+        if eventType == "kill" and target:
+            self.kills.append(target)
 
     def getKills(self) -> list[str]:
         return self.kills
