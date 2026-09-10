@@ -100,7 +100,9 @@ class CarcassonneStatsEngine(StatsEngine):
 
     def update(self, players: list[str] | None = None) -> None:
         """Refresh base statistics plus the per-kind Carcassonne records."""
-        super().update()
+        # `players` must reach ParticularStatsEngine.update() through MRO, or
+        # the player filter it sets up in updatePlayers() is silently dropped.
+        super().update(players)
         self.singleKindRecord = []
         self.matchKindRecord: list[dict] = []
 
