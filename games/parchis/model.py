@@ -19,17 +19,10 @@ class ParchisMatch(GenericRoundMatch):
         self.dealingp = 0
 
     def computeWinner(self) -> None:
-        """Once any player reaches ``top``, the lowest total score wins."""
-        if max(self.totalScores.values()) >= self.top:
-            winner = None
-            minscore = 100000
-            for player, score in self.totalScores.items():
-                if score < minscore:
-                    winner = player
-                    minscore = score
-
-            if winner is not None:
-                self.winner = winner
+        """Once any player reaches ``top``, the highest total score wins."""
+        self.winner = next(
+            (key for key, value in self.totalScores.items() if value == 4), None
+        )
 
     def createRound(self, numround: int) -> GenericEntry:
         return ParchisEntry(numround)
@@ -67,14 +60,22 @@ class ParchisMatch(GenericRoundMatch):
     def flushToDB(self) -> None:
         """Persist the base match plus each entry's kills if any"""
         super().flushToDB()
+
+        from pprint import pprint
+
         for entry in cast("list[ParchisEntry]", self.rounds):
-            for kill in entry.getKills():
-                db.execute(
-                    "INSERT OR REPLACE INTO RoundStatistics "
-                    "(idMatch,nick,idRound,key,value) "
-                    "VALUES (?,?,?,'kind',?);",
-                    (self.idMatch, entry.getPlayer(), entry.getNumEntry(), kill),
-                )
+            pprint(f"flush Roundstatistics - entry kills: {entry.getKills()}")
+            db.execute(
+                "INSERT OR REPLACE INTO RoundStatistics "
+                "(idMatch,nick,idRound,key,value) "
+                "VALUES (?,?,?,'kills',?);",
+                (
+                    self.idMatch,
+                    entry.getPlayer(),
+                    entry.getNumEntry(),
+                    ",".join(entry.getKills()),
+                ),
+            )
 
 
 class ParchisEntry(GenericEntry):
@@ -87,8 +88,8 @@ class ParchisEntry(GenericEntry):
     def addExtraInfo(self, player: str, extras: dict) -> None:
         """Record the scoring kind for this entry from ``extras``."""
         try:
-            if extras["kill"]:
-                self.kills.append(extras["kill"])
+            if extras["kills"]:
+                self.kills = extras["kills"]
         except KeyError:
             pass
 

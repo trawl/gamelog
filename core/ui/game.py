@@ -1432,12 +1432,12 @@ class ScoreSpinBox(QWidget):
             self.line_edit.setText("")
         else:
             value = max(self._minimum, min(self._maximum, value))
+            if self._hideMinimum and value == self._minimum:
+                self.line_edit.setText("")
+            else:
+                self.line_edit.setText(str(value))
             if value != self._value:
                 self._value = value
-                if self._hideMinimum and value == self._minimum:
-                    self.line_edit.setText("")
-                else:
-                    self.line_edit.setText(str(value))
                 self.valueChanged.emit(value)
         self._update_buttons()
 

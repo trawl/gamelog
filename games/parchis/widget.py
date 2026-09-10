@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import cast
 
 from PySide6 import QtCore
@@ -31,6 +32,8 @@ from core.ui.game import (
 from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats
 from games.parchis.engine import ParchisEngine
 
+logger = logging.getLogger(__name__)
+
 
 class ParchisWidget(GameWidget):
     """Scoreboard tab for Parchis, scored one feature entry at a time."""
@@ -47,10 +50,10 @@ class ParchisWidget(GameWidget):
             self.gameInput = self.createGameInputWidget(self)
 
         self.commitRoundButton.setSizePolicy(
-            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
         )
         self.undoButton.setSizePolicy(
-            QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
         )
         self.gameInput.placeCommitButton(self.commitRoundButton)
         self.gameInput.placeUndoButton(self.undoButton)
@@ -87,13 +90,25 @@ class ParchisWidget(GameWidget):
             msg = self.tr("You must select a player")
             if interactive:
                 QMessageBox.warning(self, self.game, msg)
+            logger.debug(f"[commitRoundSanityCheck] {msg}")
             return False
 
         if not self.checkPlayerScore(player, score):
             msg = self.tr(f"{player} score is not valid")
             if interactive:
                 QMessageBox.warning(self, self.game, msg)
+            logger.debug(f"[commitRoundSanityCheck] {msg} {score}")
             return False
+
+        # Empty entry, no score, no kills
+        if score == 0 and not self.gameInput.getKills():
+            msg = self.tr("Empty entry, add at least a goal or a kill")
+            if interactive:
+                QMessageBox.warning(self, self.game, msg)
+            logger.debug(f"[commitRoundSanityCheck] {msg}")
+            return False
+
+        logger.debug("[commitRoundSanityCheck] Ready to commit")
         return True
 
     def commitRound(self) -> None:
@@ -144,8 +159,14 @@ class ParchisInputWidget(GameInputWidget):
             self.playerButtonGroup.addButton(b, i)
             self.playerButtons.append(b)
 
+        self.playerButtonGroup.idToggled.connect(self.changed)
+
         self.goalsSpinBox = ScoreSpinBox(self)
-        self.goalsSpinBox.setRange(0, 4)
+        self.goalsSpinBox.setRange(0, 4, 0)
+        self.goalsSpinBox.setHideMinimum(False)
+        self.goalsSpinBox.setSizePolicy(
+            QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
+        )
         self.goalsSpinBox.valueChanged.connect(self.changed)
 
         self.goalsGroup = QGroupBox(self)
@@ -160,6 +181,10 @@ class ParchisInputWidget(GameInputWidget):
         self.killBoxes = []
         for i, _ in enumerate(self.engine.getListPlayers()):
             ksb = ScoreSpinBox(self)
+            ksb.setRange(0, 4, 0)
+            ksb.setHideMinimum(False)
+            ksb.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+            ksb.valueChanged.connect(self.changed)
             if len(self.engine.getListPlayers()) > 2:
                 self.killsGroupLayout.addWidget(ksb, (i) % 2, (i) // 2)
             else:
@@ -190,13 +215,14 @@ class ParchisInputWidget(GameInputWidget):
 
     def getKills(self) -> list[str]:
         """Return the sequence of kills"""
-        # TO BE IMPLEMENTED
-        return []
+        kills = []
+        for p, bsk in enumerate(self.killBoxes):
+            for _ in range(0, bsk.value()):
+                kills.append(self.engine.getListPlayers()[p])
+        return kills
 
     def getScore(self) -> int:
-        # TO BE IMPLEMENTED
-        return 0
-        return cast("int", self.scoreSpinBox.value())
+        return cast("int", self.goalsSpinBox.value())
 
     def reset(self) -> None:
         """Clear the player/kind selection and reset the score to zero."""
