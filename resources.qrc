@@ -7,6 +7,9 @@
         <file alias="i18n/core_ca_ES.qm">core/resources/i18n/core_ca_ES.qm</file>
         <file alias="i18n/core_en_GB.qm">core/resources/i18n/core_en_GB.qm</file>
         <file alias="i18n/core_es_ES.qm">core/resources/i18n/core_es_ES.qm</file>
+        <file alias="i18n/parchis_ca_ES.qm">games/parchis/i18n/parchis_ca_ES.qm</file>
+        <file alias="i18n/parchis_en_GB.qm">games/parchis/i18n/parchis_en_GB.qm</file>
+        <file alias="i18n/parchis_es_ES.qm">games/parchis/i18n/parchis_es_ES.qm</file>
         <file alias="i18n/phase10_ca_ES.qm">games/phase10/i18n/phase10_ca_ES.qm</file>
         <file alias="i18n/phase10_en_GB.qm">games/phase10/i18n/phase10_en_GB.qm</file>
         <file alias="i18n/phase10_es_ES.qm">games/phase10/i18n/phase10_es_ES.qm</file>

@@ -41,12 +41,18 @@ class ParchisMatch(GenericRoundMatch):
         return kill_tally
 
     def getComboTally(self) -> dict[str, int]:
-        """Return the number of combos per player."""
+        """Return the number of combos per player.
+
+        A combo is any action past the first in a single entry: goals and
+        kills both count, so an entry with score 2 and 2 kills is 3 combos
+        (4 actions, minus the first).
+        """
         combo_tally = dict.fromkeys(self.players, 0)
         for entry in cast("list[ParchisEntry]", self.rounds):
             combo_tally[entry.getPlayer()] += max(
-                0, entry.getPlayerScore(entry.getPlayer()) - 1
-            ) + max(0, len(entry.getKills()) - 1)
+                0,
+                entry.getPlayerScore(entry.getPlayer()) + len(entry.getKills()) - 1,
+            )
         return combo_tally
 
 

@@ -464,69 +464,20 @@ class ParchisQSTW(QuickStatsTW):
 
 
 class ParchisQSBox(GeneralQuickStats):
-    """General quick-stats page adding Parchis single/match kind records."""
+    """General quick-stats page adding max-kills and max-combo columns."""
 
     def __init__(self, parent=None) -> None:
         self.game = "Parchis"
         super().__init__(self.game, parent)
+        self.matchStatsKeys.append("max_kills")
+        self.matchStatsHeaders.append(self.tr("Max Kills"))
+        self.matchStatsKeys.append("max_combo")
+        self.matchStatsHeaders.append(self.tr("Max Combo"))
 
-    # def initUI(self) -> None:
-    #     """Insert the individual- and match-record tables into the layout."""
-    #     self.singleRecordsLabel = QLabel(self)
-    #     self.singleRecordsTable = StatsTable(self)
-    #     self.matchRecordsLabel = QLabel(self)
-    #     self.matchRecordsTable = StatsTable(self)
-
-    #     super().initUI()
-    #     index = self.widgetLayout.count() - 1
-    #     self.widgetLayout.insertWidget(index, self.singleRecordsLabel)
-    #     self.widgetLayout.insertWidget(index + 1, self.singleRecordsTable)
-    #     self.widgetLayout.insertWidget(index + 2, self.matchRecordsLabel)
-    #     self.widgetLayout.insertWidget(index + 3, self.matchRecordsTable)
-    #     self.singleRecordsLabel.setStyleSheet(self.titlecss)
-    #     self.matchRecordsLabel.setStyleSheet(self.titlecss)
-
-    # def retranslateUI(self) -> None:
-    #     self.singleRecordsLabel.setText(self.tr("Individual Records"))
-    #     self.matchRecordsLabel.setText(self.tr("Match Records"))
-    #     super().retranslateUI()
-
-    # def updateContent(self, game=None) -> None:
-    #     """Reload and localise the per-kind record tables from the stats engine."""
-    #     super().updateContent(self.game)
-    #     singleRecordStats = cast(
-    #         "ParchisStatsEngine", self.stats
-    #     ).getSingleKindRecords()
-    #     matchRecordStats = cast("ParchisStatsEngine", self.stats).getMatchKindRecords()  # pyright: ignore[reportAttributeAccessIssue]
-
-    #     if not singleRecordStats:
-    #         self.singleRecordsLabel.hide()
-    #     else:
-    #         self.singleRecordsLabel.show()
-
-    #     if not matchRecordStats:
-    #         self.matchRecordsLabel.hide()
-    #     else:
-    #         self.matchRecordsLabel.show()
-
-    #     for row in singleRecordStats:
-    #         row["record"] = self.tr(row["record"])
-
-    #     for row in matchRecordStats:
-    #         row["record"] = self.tr(row["record"])
-
-    #     keys = ["points", "player", "date"]
-    #     headers = [
-    #         self.tr("Record"),
-    #         self.tr("Player"),
-    #         self.tr("Date"),
-    #     ]
-    #     self.updateTable(
-    #         self.singleRecordsTable, singleRecordStats, keys, "record", headers
-    #     )
-    #     self.updateTable(
-    #         self.matchRecordsTable, matchRecordStats, keys, "record", headers
-    #     )
+        self.playerStatsKeys.append("max_kills")
+        self.playerStatsHeaders.append(self.tr("Max Kills"))
+        self.playerStatsKeys.append("max_combo")
+        self.playerStatsHeaders.append(self.tr("Max Combo"))
 
 
 class ParchisPQSBox(ParchisQSBox, ParticularQuickStats):
