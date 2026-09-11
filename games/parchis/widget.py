@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMessageBox,
-    QRadioButton,
+    QPushButton,
     QScrollArea,
     QSizePolicy,
     QTableWidgetItem,
@@ -41,8 +41,9 @@ from games.parchis.engine import ParchisEngine
 from games.parchis.model import ParchisEntry
 
 _PARCHIS_COLOURS = [
-    QColor(255, 200, 0),  # Yellow
-    QColor(23, 89, 169),  # Blue
+    # QColor(255, 200, 0),  # Yellow
+    QColor(222, 198, 16),
+    QColor(123, 164, 218),  # Blue
     QColor(220, 30, 30),  # Red
     QColor(0, 160, 50),  # Green
     QColor(255, 165, 79),  # Orange
@@ -71,6 +72,7 @@ class ParchisWidget(GameWidget):
         self.commitRoundButton.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
         )
+        self.commitRoundButton.setMinimumWidth(60)
         self.undoButton.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
         )
@@ -183,21 +185,21 @@ class ParchisInputWidget(GameInputWidget):
         self.playerButtonGroup = QButtonGroup(self)
         self.playerGroupLayout = QGridLayout(self.playerGroup)
 
-        b = QRadioButton("", self.playerGroup)
-        #        self.playerGroupLayout.addWidget(b)
+        b = QPushButton("", self.playerGroup)
+        b.setCheckable(True)
         self.playerButtonGroup.addButton(b, 0)
         self.playerButtons = [b]
         b.hide()
         for i, player in enumerate(self.engine.getListPlayers(), 1):
-            b = QRadioButton(f"{i}. {player}", self.playerGroup)
+            b = QPushButton(f"{i}. {player}", self.playerGroup)
+            b.setCheckable(True)
             if len(self.engine.getListPlayers()) > 2:
                 self.playerGroupLayout.addWidget(b, (i - 1) % 2, (i - 1) // 2)
             else:
                 self.playerGroupLayout.addWidget(b, 0, (i - 1) % 2)
             self.playerButtonGroup.addButton(b, i)
             self.playerButtons.append(b)
-            css = f"QRadioButton {{ font-weight: bold; color: {self.player_colours[i - 1].name()};}}"
-            b.setStyleSheet(css)
+            b.setStyleSheet(self._playerButtonStyle(self.player_colours[i - 1]))
 
         self.playerButtonGroup.idToggled.connect(self.changed)
         self.playerButtonGroup.idToggled.connect(self.updateGoalsColour)
@@ -236,6 +238,31 @@ class ParchisInputWidget(GameInputWidget):
         self.changed.connect(self.ensureInputGuardRails)
         self.reset()
         self.retranslateUI()
+
+    def _playerButtonStyle(self, colour: QColor) -> str:
+        r, g, b = colour.red(), colour.green(), colour.blue()
+        return f"""
+            QPushButton {{
+                font-weight: bold;
+                font-size: 18px;
+                color: rgb({r},{g},{b});
+                border: 1px solid rgba({r},{g},{b},80);
+                border-radius: 6px;
+                padding: 6px 6px;
+                background: transparent;
+                text-align: left;
+            }}
+            QPushButton:checked {{
+                background: rgb({r},{g},{b});
+                color: white;
+                border: 1px solid rgb({r},{g},{b});
+            }}
+            QPushButton:hover:!checked {{
+                background: rgba({r},{g},{b},30);
+                color: rgb({r},{g},{b});
+                border: 1px solid rgba({r},{g},{b},150);
+            }}
+        """
 
     def retranslateUI(self) -> None:
         super().retranslateUI()
@@ -297,8 +324,8 @@ class ParchisInputWidget(GameInputWidget):
         elif number:
             if not self.getPlayer():
                 if number <= len(self.engine.getPlayers()):
-                    self.changed.emit()
                     self.playerButtons[number].setChecked(True)
+                    self.changed.emit()
 
         return super().keyPressEvent(event)
 
@@ -309,27 +336,29 @@ class ParchisInputWidget(GameInputWidget):
 
         self.playerButtonGroup = QButtonGroup(self)
         self.playerGroupLayout = QGridLayout(self.playerGroup)
-        b = QRadioButton("", self.playerGroup)
+        b = QPushButton("", self.playerGroup)
+        b.setCheckable(True)
         self.playerButtonGroup.addButton(b, 0)
         self.playerButtons = [b]
         b.hide()
 
         for i, player in enumerate(self.engine.getListPlayers(), 1):
-            b = QRadioButton(f"{i}. {player}", self.playerGroup)
+            b = QPushButton(f"{i}. {player}", self.playerGroup)
+            b.setCheckable(True)
             if len(self.engine.getListPlayers()) > 2:
                 self.playerGroupLayout.addWidget(b, (i - 1) % 2, (i - 1) // 2)
             else:
                 self.playerGroupLayout.addWidget(b, 0, (i - 1) % 2)
             self.playerButtonGroup.addButton(b, i)
             self.playerButtons.append(b)
-            css = f"QRadioButton {{ font-weight: bold; color: {self.player_colours[i - 1].name()};}}"
-            b.setStyleSheet(css)
+            b.setStyleSheet(self._playerButtonStyle(self.player_colours[i - 1]))
 
         self.reset()
 
     def updateGoalsColour(self, id) -> None:
         colours = [QColor(128, 128, 128)] + self.player_colours
         self.goalsSpinBox.setColour(colours[id])
+        self.goalsSpinBox.setFocus()
 
     def ensureInputGuardRails(self) -> None:
         """Ensure game input only allows to introduce sensible values."""
@@ -369,7 +398,7 @@ class ParchisEntriesDetail(GameRoundsDetail):
         if appsettings["text_in_buttons"]:
             self.setTabText(self.indexOf(self.liveStats), self.tr("Live Statistics"))
         else:
-            self.setTabText(self.indexOf(self.liveStats), "†")
+            self.setTabText(self.indexOf(self.liveStats), "✝")
         self.liveStats.retranslateUI()
 
     def updateRound(self) -> None:
