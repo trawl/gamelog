@@ -11,7 +11,7 @@ and pause/resume for matches that span several sittings.
 
 ## Features
 
-- **Ten games, one app** — a shared scoring framework with game-specific rules
+- **Eleven games, one app** — a shared scoring framework with game-specific rules
   (see the table below).
 - **Live scoreboard & plots** — enter each round and watch running totals and a
   score-over-time chart update instantly.
@@ -29,6 +29,7 @@ and pause/resume for matches that span several sittings.
 | Game | Players | Description |
 |------|:-------:|-------------|
 | Carcassonne | 6 | Tile-laying board game (home scoring) |
+| Parchís | 6 | Classic Spanish board game; tracks goals scored and kills per turn |
 | Phase 10 / Master | 6 | Rummy-style card game, Standard and Master editions |
 | Pocha | 6 | Spanish trick-taking / bidding card game |
 | Qwirkle | 4 | Tile-matching game |
