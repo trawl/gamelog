@@ -219,6 +219,7 @@ class ParchisInputWidget(GameInputWidget):
                 self.killsGroupLayout.addWidget(ksb, 0, (i) % 2)
             self.killBoxes.append(ksb)
 
+        self.changed.connect(self.ensureInputGuardRails)
         self.reset()
         self.retranslateUI()
 
@@ -309,6 +310,26 @@ class ParchisInputWidget(GameInputWidget):
             self.playerButtons.append(b)
 
         self.reset()
+
+    def ensureInputGuardRails(self) -> None:
+        """Ensure game input only allows to introduce sensible values."""
+        pid = self.playerButtonGroup.checkedId()
+        self.goalsSpinBox.setEnabled(bool(pid))
+        for kb in self.killBoxes:
+            kb.setEnabled(bool(pid))
+        if not pid:
+            return
+        for i, kb in enumerate(self.killBoxes):
+            if pid - 1 == i:
+                kb.setEnabled(True)
+                kb.setRange(0, 1, 0)
+            else:
+                if self.killBoxes[pid - 1].value() == 0:
+                    kb.setEnabled(True)
+                else:
+                    kb.setValue(0)
+                    kb.setEnabled(False)
+                kb.setRange(0, 4, 0)
 
 
 class ParchisEntriesDetail(GameRoundsDetail):
