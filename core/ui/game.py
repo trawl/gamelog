@@ -1411,7 +1411,9 @@ class ScoreSpinBox(QWidget):
 
     def _updateStyle(self) -> None:
         """Apply the coloured or colourless line-edit stylesheet."""
-        if self.pcolour:
+        if not self.isEnabled():
+            self.line_edit.setStyleSheet(self._text_css.format(128, 128, 128))
+        elif self.pcolour:
             self.line_edit.setStyleSheet(
                 self._text_css.format(
                     self.pcolour.red(), self.pcolour.green(), self.pcolour.blue()
@@ -1419,6 +1421,11 @@ class ScoreSpinBox(QWidget):
             )
         else:
             self.line_edit.setStyleSheet(self._text_css_colourless)
+
+    def changeEvent(self, event: QtCore.QEvent) -> None:
+        super().changeEvent(event)
+        if event.type() == QtCore.QEvent.Type.EnabledChange:
+            self._updateStyle()
 
     def value(self) -> int | None:
         return self._value
