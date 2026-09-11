@@ -233,6 +233,7 @@ class ParchisInputWidget(GameInputWidget):
             self.killBoxes.append(ksb)
 
         self.changed.connect(self.ensureInputGuardRails)
+        self._setup_tab_order()
         self.reset()
         self.retranslateUI()
 
@@ -308,7 +309,7 @@ class ParchisInputWidget(GameInputWidget):
         self.setFocus()
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        """Route number keys to the player then kind selection, Return commits."""
+        """Route number keys to player selection when no player is chosen yet."""
         numberkeys = [
             QtCore.Qt.Key.Key_1,
             QtCore.Qt.Key.Key_2,
@@ -323,11 +324,26 @@ class ParchisInputWidget(GameInputWidget):
             number = 0
         if event.key() == QtCore.Qt.Key.Key_Return:
             self.enterPressed.emit()
-        elif number:
-            if not self.getPlayer():
-                if number <= len(self.engine.getPlayers()):
-                    self.playerButtons[number].setChecked(True)
-                    self.changed.emit()
+        elif number and not self.getPlayer():
+            if number <= len(self.engine.getPlayers()):
+                self.playerButtons[number].setChecked(True)
+                self.changed.emit()
+                # Focus moves to goals via updateGoalsColour signal handler.
+                return
+        elif number and self.getPlayer():
+            # Digit arrived here because focus hadn't moved to a counter yet
+            # (key was queued before the focus change took effect). Apply it
+            # directly to the first enabled counter and advance focus.
+            enabled = [c for c in self._counter_chain if c.isEnabled()]
+            if enabled:
+                first = enabled[0]
+                if first._minimum <= number <= first._maximum:
+                    first.setValue(number)
+                if len(enabled) > 1:
+                    enabled[1].setFocus()
+                else:
+                    first.setFocus()
+            return
 
         return super().keyPressEvent(event)
 
@@ -355,11 +371,43 @@ class ParchisInputWidget(GameInputWidget):
             self.playerButtons.append(b)
             b.setStyleSheet(self._playerButtonStyle(self.player_colours[i - 1]))
 
+        self._setup_tab_order()
         self.reset()
+
+    def _setup_tab_order(self) -> None:
+        """Connect counter focus signals to cycle within goals + kills."""
+        self._counter_chain = [self.goalsCounter] + list(self.killBoxes)
+        for counter in self._counter_chain:
+            counter.focusAdvance.connect(self._advance_counter_focus)
+            counter.focusBack.connect(self._retreat_counter_focus)
+
+    def _advance_counter_focus(self) -> None:
+        enabled = [c for c in self._counter_chain if c.isEnabled()]
+        if not enabled:
+            return
+        sender = cast("ClickableCounter", self.sender())
+        try:
+            idx = enabled.index(sender)
+        except ValueError:
+            idx = -1
+        enabled[(idx + 1) % len(enabled)].setFocus()
+
+    def _retreat_counter_focus(self) -> None:
+        enabled = [c for c in self._counter_chain if c.isEnabled()]
+        if not enabled:
+            return
+        sender = cast("ClickableCounter", self.sender())
+        try:
+            idx = enabled.index(sender)
+        except ValueError:
+            idx = 0
+        enabled[(idx - 1) % len(enabled)].setFocus()
 
     def updateGoalsColour(self, id) -> None:
         colours = [QColor(128, 128, 128)] + self.player_colours
         self.goalsCounter.setColour(colours[id])
+        if id:
+            self.goalsCounter.setFocus()
 
     def ensureInputGuardRails(self) -> None:
         """Ensure game input only allows to introduce sensible values."""
@@ -371,7 +419,7 @@ class ParchisInputWidget(GameInputWidget):
             return
         for i, kb in enumerate(self.killBoxes):
             if pid - 1 == i:
-                kb.setEnabled(True)
+                kb.setEnabled(self.goalsCounter.value() == 0)
                 kb.setRange(0, 1, 0)
             else:
                 if self.killBoxes[pid - 1].value() == 0:

@@ -39,6 +39,7 @@ from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
+    QGraphicsColorizeEffect,
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
@@ -1561,10 +1562,27 @@ class ScoreSpinBox(QWidget):
 class ClickableCounter(QLabel):
     """Circular click-to-cycle counter with player colour styling.
 
-    Left-click increments, right-click decrements, wrapping within [minimum, maximum].
+    Left-click / right-click cycle the value. Keyboard: digit keys set the
+    value and advance focus; Up/Down step without moving focus; Tab/Backtab
+    move focus. Gains a pulsing candidate animation while focused.
     """
 
     valueChanged = QtCore.Signal(int)
+    focusAdvance = QtCore.Signal()
+    focusBack = QtCore.Signal()
+
+    _NUMBER_KEYS = {
+        QtCore.Qt.Key.Key_0: 0,
+        QtCore.Qt.Key.Key_1: 1,
+        QtCore.Qt.Key.Key_2: 2,
+        QtCore.Qt.Key.Key_3: 3,
+        QtCore.Qt.Key.Key_4: 4,
+        QtCore.Qt.Key.Key_5: 5,
+        QtCore.Qt.Key.Key_6: 6,
+        QtCore.Qt.Key.Key_7: 7,
+        QtCore.Qt.Key.Key_8: 8,
+        QtCore.Qt.Key.Key_9: 9,
+    }
 
     def __init__(
         self,
@@ -1579,13 +1597,28 @@ class ClickableCounter(QLabel):
         self._maximum = maximum
         self._value = minimum
         self._enabled = True
+        self._candidate = False
         self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.setFixedSize(size, size)
+        self.setFocusPolicy(QtCore.Qt.FocusPolicy.StrongFocus)
         self._colour = colour if colour is not None else QColor(180, 180, 180)
+
+        self._effect = QGraphicsColorizeEffect(self)
+        self._effect.setColor(self._colour)
+        self._effect.setStrength(0.0)
+        self.setGraphicsEffect(self._effect)
+
+        self._anim = QPropertyAnimation(self._effect, b"strength")
+        self._anim.setDuration(1400)
+        self._anim.setStartValue(0.0)
+        self._anim.setKeyValueAt(0.6, 0.6)
+        self._anim.setEndValue(0.0)
+        self._anim.setLoopCount(-1)
+
         self._apply_style()
 
     # ------------------------------------------------------------------
-    # Public API
+    # Value API
     # ------------------------------------------------------------------
 
     def value(self) -> int:
@@ -1601,14 +1634,13 @@ class ClickableCounter(QLabel):
     def setRange(self, minimum: int, maximum: int, default: int | None = None) -> None:
         self._minimum = minimum
         self._maximum = maximum
-        # Clamp current value into new range; only use default as fallback when
-        # the current value had to move (matches ScoreSpinBox behaviour).
-        clamped = max(self._minimum, min(self._maximum, self._value))
-        self._value = clamped
+        # Clamp current value; never reset it unless it falls out of range.
+        self._value = max(self._minimum, min(self._maximum, self._value))
         self.setText(str(self._value))
 
     def setColour(self, colour: QColor) -> None:
         self._colour = colour
+        self._effect.setColor(colour)
         self._apply_style()
 
     def setEnabled(self, enabled: bool) -> None:  # type: ignore[override]
@@ -1617,7 +1649,25 @@ class ClickableCounter(QLabel):
         self._apply_style()
 
     # ------------------------------------------------------------------
-    # Internals
+    # Candidate animation
+    # ------------------------------------------------------------------
+
+    def isCandidate(self) -> bool:
+        return self._candidate
+
+    def setCandidate(self, value: bool) -> None:
+        value = bool(value)
+        if self._candidate == value:
+            return
+        self._candidate = value
+        if value:
+            self._anim.start()
+        else:
+            self._anim.stop()
+            self._effect.setStrength(0.0)
+
+    # ------------------------------------------------------------------
+    # Style
     # ------------------------------------------------------------------
 
     def _apply_style(self) -> None:
@@ -1637,24 +1687,67 @@ class ClickableCounter(QLabel):
                 color: rgba({r},{g},{b},60);
                 border: 2px solid rgba({r},{g},{b},40);
             }}
+            ClickableCounter:focus {{
+                border: 3px solid rgba({r},{g},{b},{alpha});
+            }}
             """
         )
+
+    # ------------------------------------------------------------------
+    # Events
+    # ------------------------------------------------------------------
+
+    def focusInEvent(self, event) -> None:
+        self.setCandidate(True)
+        super().focusInEvent(event)
+
+    def focusOutEvent(self, event) -> None:
+        self.setCandidate(False)
+        super().focusOutEvent(event)
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        key = QtCore.Qt.Key(event.key())
+        digit = self._NUMBER_KEYS.get(key)
+        if digit is not None:
+            if self._minimum <= digit <= self._maximum:
+                self.setValue(digit)
+            self.focusAdvance.emit()
+            return
+        if key == QtCore.Qt.Key.Key_Up:
+            new = self._value + 1
+            self.setValue(new if new <= self._maximum else self._minimum)
+            return
+        if key == QtCore.Qt.Key.Key_Down:
+            new = self._value - 1
+            self.setValue(new if new >= self._minimum else self._maximum)
+            return
+        if key == QtCore.Qt.Key.Key_Tab:
+            self.focusAdvance.emit()
+            return
+        if key == QtCore.Qt.Key.Key_Backtab:
+            self.focusBack.emit()
+            return
+        if key == QtCore.Qt.Key.Key_Backspace:
+            self.setValue(self._minimum)
+            self.focusBack.emit()
+            return
+        # Explicitly ignore everything else (including Return) so Qt propagates
+        # the event up the parent widget hierarchy.
+        event.ignore()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if not self._enabled:
             return
+        self.setFocus()
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
             new = self._value + 1
-            if new > self._maximum:
-                new = self._minimum
+            self.setValue(new if new <= self._maximum else self._minimum)
         elif event.button() == QtCore.Qt.MouseButton.RightButton:
             new = self._value - 1
-            if new < self._minimum:
-                new = self._maximum
+            self.setValue(new if new >= self._minimum else self._maximum)
         else:
             super().mousePressEvent(event)
             return
-        self.setValue(new)
         super().mousePressEvent(event)
 
 
