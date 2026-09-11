@@ -7,7 +7,7 @@ from collections import Counter
 from typing import cast
 
 from PySide6 import QtCore
-from PySide6.QtGui import QKeyEvent
+from PySide6.QtGui import QColor, QKeyEvent
 from PySide6.QtWidgets import (
     QButtonGroup,
     QFrame,
@@ -185,8 +185,11 @@ class ParchisInputWidget(GameInputWidget):
                 self.playerGroupLayout.addWidget(b, 0, (i - 1) % 2)
             self.playerButtonGroup.addButton(b, i)
             self.playerButtons.append(b)
+            css = f"QRadioButton {{ font-weight: bold; color: {PlayerColours[i - 1].name()};}}"
+            b.setStyleSheet(css)
 
         self.playerButtonGroup.idToggled.connect(self.changed)
+        self.playerButtonGroup.idToggled.connect(self.updateGoalsColour)
 
         self.goalsSpinBox = ScoreSpinBox(self)
         self.goalsSpinBox.setRange(0, 4, 0)
@@ -308,8 +311,14 @@ class ParchisInputWidget(GameInputWidget):
                 self.playerGroupLayout.addWidget(b, 0, (i - 1) % 2)
             self.playerButtonGroup.addButton(b, i)
             self.playerButtons.append(b)
+            css = f"QRadioButton {{ font-weight: bold; color: {PlayerColours[i - 1].name()};}}"
+            b.setStyleSheet(css)
 
         self.reset()
+
+    def updateGoalsColour(self, id) -> None:
+        colours = [QColor(128, 128, 128)] + PlayerColours
+        self.goalsSpinBox.setColour(colours[id])
 
     def ensureInputGuardRails(self) -> None:
         """Ensure game input only allows to introduce sensible values."""
