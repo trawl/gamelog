@@ -26,7 +26,6 @@ from core.ui.game import (
     GameRoundsDetail,
     GameRoundTable,
     GameWidget,
-    PlayerColours,
     ScoreSpinBox,
 )
 from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
@@ -275,7 +274,7 @@ class ScrabbleInputWidget(GameInputWidget):
     def reset(self) -> None:
         """Reset the entry to the current dealer with a cleared score field."""
         self.active_player = self.engine.getDealer()
-        colour = PlayerColours[
+        colour = self.player_colours[
             self.engine.getListPlayers().index(cast("str", self.active_player))
         ]
         self.setColour(colour)

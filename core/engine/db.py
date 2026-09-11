@@ -203,6 +203,8 @@ class GameLogDB:
         if not cur.fetchone():
             logger.info("Empty database — creating schema")
             self._executeScript(_emptydb)
+        # RoundEvents may postdate an existing database — ensure it exists.
+        self._executeScript(_roundevents_ddl)
         # Ensure we have all the games we support
         for definition in registry.definitions():
             ge = definition.database_row()
@@ -371,6 +373,29 @@ CREATE TABLE `RoundStatistics` (
   `value` VARCHAR(255) NULL ,
   PRIMARY KEY (`idMatch`, `nick`, `idRound`, `key`) ,
   CONSTRAINT `fk_RoundStatistics_Round1`
+    FOREIGN KEY (`idRound` , `idMatch` , `nick` )
+    REFERENCES `Round` (`idRound` , `idMatch` , `nick` )
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE);
+"""
+
+# A generalisation of RoundStatistics for stats that are naturally a repeatable,
+# ordered, optionally-targeted event per round entry (e.g. Parchis kills) rather
+# than a single scalar per key. `seq` preserves event order within the entry;
+# `target` names the other party involved, if any (e.g. a kill's victim).
+# Created idempotently on every connect (see _checkDB) rather than folded into
+# _emptydb, so it reaches databases that predate it without a migration step.
+_roundevents_ddl = """
+CREATE TABLE IF NOT EXISTS `RoundEvents` (
+  `idMatch` INTEGER  NOT NULL ,
+  `nick` VARCHAR(45) NOT NULL ,
+  `idRound` INTEGER  NOT NULL ,
+  `seq` INTEGER NOT NULL ,
+  `eventType` VARCHAR(45) NOT NULL ,
+  `target` VARCHAR(45) NULL ,
+  `value` VARCHAR(255) NULL ,
+  PRIMARY KEY (`idMatch`, `nick`, `idRound`, `seq`) ,
+  CONSTRAINT `fk_RoundEvents_Round1`
     FOREIGN KEY (`idRound` , `idMatch` , `nick` )
     REFERENCES `Round` (`idRound` , `idMatch` , `nick` )
     ON DELETE NO ACTION

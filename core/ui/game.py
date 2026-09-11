@@ -39,6 +39,7 @@ from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
+    QGraphicsColorizeEffect,
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
@@ -100,6 +101,7 @@ class GameWidget(Tab):
     # Subclasses set this to an appsettings key (e.g. "qwirkle_dealer_policy")
     # to have the dealer-policy checkbox initialised from and persisted to that key.
     dealer_policy_setting_key: str | None = None
+    player_colours: list[QColor] = PlayerColours
 
     def __init__(
         self,
@@ -446,7 +448,7 @@ class GameWidget(Tab):
         self.matchGroupLayout.addLayout(self.playersLayout)
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
-            pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
+            pw = GamePlayerWidget(player, self.player_colours[i], self.matchGroup)
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer():
                 pw.setDealer()
@@ -835,7 +837,7 @@ class GameWidget(Tab):
 
             for i, player in enumerate(self.engine.getListPlayers()):
                 self.playersLayout.addWidget(self.playerGroupBox[player])
-                self.playerGroupBox[player].setColour(PlayerColours[i])
+                self.playerGroupBox[player].setColour(self.player_colours[i])
         except AttributeError:
             pass
         if hasattr(self.detailGroup, "updatePlayerOrder"):
@@ -864,6 +866,7 @@ class GameInputWidget(QWidget):
 
     enterPressed = QtCore.Signal()
     changed = QtCore.Signal()
+    player_colours: list[QColor] = PlayerColours
 
     def __init__(self, engine: RoundGameEngine, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -1189,6 +1192,9 @@ class GameRoundTable(QTableWidget):
 class GameRoundPlot(QWidget):
     """Base score-plot widget wrapping a line-plot canvas."""
 
+    player_colours: list[QColor] = PlayerColours
+    plot_min_ymax: float = 10
+
     def __init__(self, engine, parent: QWidget | None) -> None:
         super().__init__(parent)
         self.plotinited = False
@@ -1201,9 +1207,10 @@ class GameRoundPlot(QWidget):
     def initUI(self) -> None:
         """Create the plot canvas and add its line plot."""
         self.widgetLayout = QHBoxLayout(self)
-        self.canvas = PlotView(PlayerColours, self)
+        self.canvas = PlotView(self.player_colours, self)
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
         self.canvas.addLinePlot()
+        self.canvas.setMinYMax(self.plot_min_ymax)
         self.widgetLayout.addWidget(self.canvas)
         self.plotinited = True
 
@@ -1411,7 +1418,9 @@ class ScoreSpinBox(QWidget):
 
     def _updateStyle(self) -> None:
         """Apply the coloured or colourless line-edit stylesheet."""
-        if self.pcolour:
+        if not self.isEnabled():
+            self.line_edit.setStyleSheet(self._text_css.format(128, 128, 128))
+        elif self.pcolour:
             self.line_edit.setStyleSheet(
                 self._text_css.format(
                     self.pcolour.red(), self.pcolour.green(), self.pcolour.blue()
@@ -1419,6 +1428,11 @@ class ScoreSpinBox(QWidget):
             )
         else:
             self.line_edit.setStyleSheet(self._text_css_colourless)
+
+    def changeEvent(self, event: QtCore.QEvent) -> None:
+        super().changeEvent(event)
+        if event.type() == QtCore.QEvent.Type.EnabledChange:
+            self._updateStyle()
 
     def value(self) -> int | None:
         return self._value
@@ -1432,12 +1446,12 @@ class ScoreSpinBox(QWidget):
             self.line_edit.setText("")
         else:
             value = max(self._minimum, min(self._maximum, value))
+            if self._hideMinimum and value == self._minimum:
+                self.line_edit.setText("")
+            else:
+                self.line_edit.setText(str(value))
             if value != self._value:
                 self._value = value
-                if self._hideMinimum and value == self._minimum:
-                    self.line_edit.setText("")
-                else:
-                    self.line_edit.setText(str(value))
                 self.valueChanged.emit(value)
         self._update_buttons()
 
@@ -1543,6 +1557,198 @@ class ScoreSpinBox(QWidget):
         super().setDisabled(o)
         if o:
             self.setValue(self._start)
+
+
+class ClickableCounter(QLabel):
+    """Circular click-to-cycle counter with player colour styling.
+
+    Left-click / right-click cycle the value. Keyboard: digit keys set the
+    value and advance focus; Up/Down step without moving focus; Tab/Backtab
+    move focus. Gains a pulsing candidate animation while focused.
+    """
+
+    valueChanged = QtCore.Signal(int)
+    focusAdvance = QtCore.Signal()
+    focusBack = QtCore.Signal()
+
+    _NUMBER_KEYS = {
+        QtCore.Qt.Key.Key_0: 0,
+        QtCore.Qt.Key.Key_1: 1,
+        QtCore.Qt.Key.Key_2: 2,
+        QtCore.Qt.Key.Key_3: 3,
+        QtCore.Qt.Key.Key_4: 4,
+        QtCore.Qt.Key.Key_5: 5,
+        QtCore.Qt.Key.Key_6: 6,
+        QtCore.Qt.Key.Key_7: 7,
+        QtCore.Qt.Key.Key_8: 8,
+        QtCore.Qt.Key.Key_9: 9,
+    }
+
+    def __init__(
+        self,
+        minimum: int = 0,
+        maximum: int = 4,
+        size: int = 60,
+        colour: QColor | None = None,
+        parent: QWidget | None = None,
+    ) -> None:
+        super().__init__(str(minimum), parent)
+        self._minimum = minimum
+        self._maximum = maximum
+        self._value = minimum
+        self._enabled = True
+        self._candidate = False
+        self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.setFixedSize(size, size)
+        self.setFocusPolicy(QtCore.Qt.FocusPolicy.StrongFocus)
+        self._colour = colour if colour is not None else QColor(180, 180, 180)
+
+        self._effect = QGraphicsColorizeEffect(self)
+        self._effect.setColor(self._colour)
+        self._effect.setStrength(0.0)
+        self.setGraphicsEffect(self._effect)
+
+        self._anim = QPropertyAnimation(self._effect, b"strength")
+        self._anim.setDuration(1400)
+        self._anim.setStartValue(0.0)
+        self._anim.setKeyValueAt(0.6, 0.6)
+        self._anim.setEndValue(0.0)
+        self._anim.setLoopCount(-1)
+
+        self._apply_style()
+
+    # ------------------------------------------------------------------
+    # Value API
+    # ------------------------------------------------------------------
+
+    def value(self) -> int:
+        return self._value
+
+    def setValue(self, v: int) -> None:
+        v = max(self._minimum, min(self._maximum, v))
+        if v != self._value:
+            self._value = v
+            self.setText(str(self._value))
+            self.valueChanged.emit(self._value)
+
+    def setRange(self, minimum: int, maximum: int, default: int | None = None) -> None:
+        self._minimum = minimum
+        self._maximum = maximum
+        # Clamp current value; never reset it unless it falls out of range.
+        self._value = max(self._minimum, min(self._maximum, self._value))
+        self.setText(str(self._value))
+
+    def setColour(self, colour: QColor) -> None:
+        self._colour = colour
+        self._effect.setColor(colour)
+        self._apply_style()
+
+    def setEnabled(self, enabled: bool) -> None:  # type: ignore[override]
+        self._enabled = enabled
+        super().setEnabled(enabled)
+        self._apply_style()
+
+    # ------------------------------------------------------------------
+    # Candidate animation
+    # ------------------------------------------------------------------
+
+    def isCandidate(self) -> bool:
+        return self._candidate
+
+    def setCandidate(self, value: bool) -> None:
+        value = bool(value)
+        if self._candidate == value:
+            return
+        self._candidate = value
+        if value:
+            self._anim.start()
+        else:
+            self._anim.stop()
+            self._effect.setStrength(0.0)
+
+    # ------------------------------------------------------------------
+    # Style
+    # ------------------------------------------------------------------
+
+    def _apply_style(self) -> None:
+        c = self._colour
+        r, g, b = c.red(), c.green(), c.blue()
+        alpha = 255 if self._enabled else 80
+        self.setStyleSheet(
+            f"""
+            ClickableCounter {{
+                font-size: 22px;
+                font-weight: bold;
+                color: rgba({r},{g},{b},{alpha});
+                border: 2px solid rgba({r},{g},{b},{alpha});
+                border-radius: {self.width() // 2}px;
+            }}
+            ClickableCounter:disabled {{
+                color: rgba({r},{g},{b},60);
+                border: 2px solid rgba({r},{g},{b},40);
+            }}
+            ClickableCounter:focus {{
+                border: 3px solid rgba({r},{g},{b},{alpha});
+            }}
+            """
+        )
+
+    # ------------------------------------------------------------------
+    # Events
+    # ------------------------------------------------------------------
+
+    def focusInEvent(self, event) -> None:
+        self.setCandidate(True)
+        super().focusInEvent(event)
+
+    def focusOutEvent(self, event) -> None:
+        self.setCandidate(False)
+        super().focusOutEvent(event)
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        key = QtCore.Qt.Key(event.key())
+        digit = self._NUMBER_KEYS.get(key)
+        if digit is not None:
+            if self._minimum <= digit <= self._maximum:
+                self.setValue(digit)
+            self.focusAdvance.emit()
+            return
+        if key == QtCore.Qt.Key.Key_Up:
+            new = self._value + 1
+            self.setValue(new if new <= self._maximum else self._minimum)
+            return
+        if key == QtCore.Qt.Key.Key_Down:
+            new = self._value - 1
+            self.setValue(new if new >= self._minimum else self._maximum)
+            return
+        if key == QtCore.Qt.Key.Key_Tab:
+            self.focusAdvance.emit()
+            return
+        if key == QtCore.Qt.Key.Key_Backtab:
+            self.focusBack.emit()
+            return
+        if key == QtCore.Qt.Key.Key_Backspace:
+            self.setValue(self._minimum)
+            self.focusBack.emit()
+            return
+        # Explicitly ignore everything else (including Return) so Qt propagates
+        # the event up the parent widget hierarchy.
+        event.ignore()
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        if not self._enabled:
+            return
+        self.setFocus()
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+            new = self._value + 1
+            self.setValue(new if new <= self._maximum else self._minimum)
+        elif event.button() == QtCore.Qt.MouseButton.RightButton:
+            new = self._value - 1
+            self.setValue(new if new >= self._minimum else self._maximum)
+        else:
+            super().mousePressEvent(event)
+            return
+        super().mousePressEvent(event)
 
 
 class IconLabel(QLabel):
