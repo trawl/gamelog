@@ -434,11 +434,11 @@ class ParchisLiveStats(QWidget):
         kills_tally = self.engine.getKillsTally()
         combo_tally = self.engine.getComboTally()
         sum_table_headers = {
-            "combos": self.tr("combos"),
             "kills": self.tr("kills"),
             "deaths": self.tr("deaths"),
             "suicides": self.tr("suicides"),
             "fav_target": self.tr("fav_target"),
+            "combos": self.tr("combos"),
         }
         self.killsTable.setVerticalHeaderLabels(players)
         self.killsTable.setRowCount(len(players))
@@ -463,17 +463,29 @@ class ParchisLiveStats(QWidget):
 
         self.killsTable.setFixedHeight(self.killsTable.sizeHint().height() + 10)
         self.killsTable.setMinimumWidth(self.killsTable.sizeHint().width())
+
+        top_combos = max(combo_tally)
+        top_kills = max(sum(kills_tally[player].values()) for player in kills_tally)
+        top_deaths = max(
+            sum(row[player] for row in kills_tally.values()) for player in kills_tally
+        )
+        top_suicides = max(kills_tally[player][player] for player in kills_tally)
         for i, stat in enumerate(sum_table_headers.keys()):
             for j, player in enumerate(players):
                 val = ""
+                bold = False
                 if stat == "combos":
                     val = combo_tally[player]
+                    bold = val == top_combos and val != 0
                 elif stat == "kills":
                     val = sum(kills_tally[player].values())
+                    bold = val == top_kills and val != 0
                 elif stat == "deaths":
                     val = sum(row[player] for row in kills_tally.values())
+                    bold = val == top_deaths and val != 0
                 elif stat == "suicides":
                     val = kills_tally[player][player]
+                    bold = val == top_suicides and val != 0
                 elif stat == "fav_target":
                     max_kills = max(kills_tally[player].values())
                     val = "-"
@@ -490,6 +502,10 @@ class ParchisLiveStats(QWidget):
                     QtCore.Qt.AlignmentFlag.AlignVCenter
                     | QtCore.Qt.AlignmentFlag.AlignHCenter
                 )
+                if bold:
+                    font = item.font()
+                    font.setBold(True)
+                    item.setFont(font)
                 item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
                 self.comboTable.setItem(i, j, item)
 
