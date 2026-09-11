@@ -178,7 +178,12 @@ class ParchisInputWidget(GameInputWidget):
 
     def initUI(self) -> None:
         """Lay out the player, kind and score selector groups."""
-        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
+        self.setStyleSheet("""
+            QGroupBox { font-size: 18px; font-weight: bold; }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                subcontrol-position: top center;
+            }""")
         self.widgetLayout = QHBoxLayout(self)
         self.playerGroup = QGroupBox(self)
         self.widgetLayout.addWidget(self.playerGroup)
@@ -266,9 +271,14 @@ class ParchisInputWidget(GameInputWidget):
 
     def retranslateUI(self) -> None:
         super().retranslateUI()
-        self.playerGroup.setTitle(self.tr("Select Player"))
-        self.goalsGroup.setTitle(self.tr("Select number of goals"))
-        self.killsGroup.setTitle(self.tr("Select Kills"))
+        if appsettings["text_in_buttons"]:
+            self.playerGroup.setTitle(self.tr("Select Player"))
+            self.goalsGroup.setTitle(self.tr("Select number of goals"))
+            self.killsGroup.setTitle(self.tr("Select Kills"))
+        else:
+            self.playerGroup.setTitle("♟")
+            self.goalsGroup.setTitle("◉")
+            self.killsGroup.setTitle("✝")
 
     def placeCommitButton(self, cb) -> None:
         self.widgetLayout.addWidget(cb, 2)

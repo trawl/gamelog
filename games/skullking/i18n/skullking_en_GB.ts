@@ -4,17 +4,17 @@
 <context>
     <name>SkullKingQSBox</name>
     <message>
-        <location filename="../widget.py" line="1195"/>
+        <location filename="../widget.py" line="1194"/>
         <source>Max Hit %</source>
         <translation>Max Hit %</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1197"/>
+        <location filename="../widget.py" line="1196"/>
         <source>Avg Hit %</source>
         <translation>Avg Hit %</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1199"/>
+        <location filename="../widget.py" line="1198"/>
         <source>Best Round</source>
         <translation>Best Round</translation>
     </message>
@@ -90,67 +90,67 @@
 <context>
     <name>SkullKingWidget</name>
     <message>
-        <location filename="../widget.py" line="56"/>
+        <location filename="../widget.py" line="55"/>
         <source>classic_scoring</source>
         <translation>Classic Scoring</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="57"/>
+        <location filename="../widget.py" line="56"/>
         <source>standard_scoring</source>
         <translation>Standard Scoring</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="58"/>
+        <location filename="../widget.py" line="57"/>
         <source>rascal_scoring</source>
         <translation>Rascal Scoring</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="59"/>
+        <location filename="../widget.py" line="58"/>
         <source>standard_rounds</source>
         <translation>Standard Rounds</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="60"/>
+        <location filename="../widget.py" line="59"/>
         <source>even</source>
         <translation>Even Keeled</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="61"/>
+        <location filename="../widget.py" line="60"/>
         <source>brawl</source>
         <translation>Skip to the Brawl</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="62"/>
+        <location filename="../widget.py" line="61"/>
         <source>skirmish</source>
         <translation>Swift-n-Salty Skirmish</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="63"/>
+        <location filename="../widget.py" line="62"/>
         <source>barrage</source>
         <translation>Broadside Barrage</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="64"/>
+        <location filename="../widget.py" line="63"/>
         <source>whirlpool</source>
         <translation>Whirlpool</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="188"/>
+        <location filename="../widget.py" line="187"/>
         <source>Has the Kraken and White Whale appeared and discarded two tricks?</source>
         <translation>Has the Kraken and White Whale appeared and discarded two tricks?</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="216"/>
+        <location filename="../widget.py" line="215"/>
         <source>Has the Kraken appeared and discarded a trick?</source>
         <translation>Has the Kraken appeared and discarded a trick?</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="258"/>
+        <location filename="../widget.py" line="257"/>
         <source>There are more than 3 Fourteen bonuses selected.</source>
         <translation>There are more than 3 Fourteen bonuses selected.</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="268"/>
+        <location filename="../widget.py" line="267"/>
         <source>There are more than 4 Loot bonuses selected.</source>
         <translation>There are more than 4 Loot bonuses selected.</translation>
     </message>

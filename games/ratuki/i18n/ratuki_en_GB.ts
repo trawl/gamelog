@@ -4,7 +4,7 @@
 <context>
     <name>RatukiRoundTable</name>
     <message>
-        <location filename="../widget.py" line="271"/>
+        <location filename="../widget.py" line="270"/>
         <source> (Winner)</source>
         <translation> (Winner)</translation>
     </message>

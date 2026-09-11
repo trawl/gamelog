@@ -4,7 +4,7 @@
 <context>
     <name>ParchisEntriesDetail</name>
     <message>
-        <location filename="../widget.py" line="330"/>
+        <location filename="../widget.py" line="409"/>
         <source>Live Statistics</source>
         <translatorcomment>Live Statistics</translatorcomment>
         <translation></translation>
@@ -13,55 +13,55 @@
 <context>
     <name>ParchisInputWidget</name>
     <message>
-        <location filename="../widget.py" line="228"/>
+        <location filename="../widget.py" line="275"/>
         <source>Select Player</source>
-        <translation>Select Player</translation>
+        <translation>Player</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="229"/>
+        <location filename="../widget.py" line="276"/>
         <source>Select number of goals</source>
-        <translation>Select number of goals</translation>
+        <translation>Goals</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="230"/>
+        <location filename="../widget.py" line="277"/>
         <source>Select Kills</source>
-        <translation>Select Kills</translation>
+        <translation>Kills</translation>
     </message>
 </context>
 <context>
     <name>ParchisLiveStats</name>
     <message>
-        <location filename="../widget.py" line="486"/>
+        <location filename="../widget.py" line="477"/>
         <source>Killer table</source>
         <translation>Killer table</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="487"/>
+        <location filename="../widget.py" line="478"/>
         <source>Summary</source>
         <translation>Summary</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="496"/>
+        <location filename="../widget.py" line="491"/>
         <source>combos</source>
         <translation>Combos</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="497"/>
+        <location filename="../widget.py" line="487"/>
         <source>kills</source>
         <translation>Kills</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="498"/>
+        <location filename="../widget.py" line="488"/>
         <source>deaths</source>
         <translation>Deaths</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="499"/>
+        <location filename="../widget.py" line="489"/>
         <source>suicides</source>
         <translation>Suicides</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="500"/>
+        <location filename="../widget.py" line="490"/>
         <source>fav_target</source>
         <translation>Fav Target</translation>
     </message>
@@ -69,14 +69,14 @@
 <context>
     <name>ParchisQSBox</name>
     <message>
-        <location filename="../widget.py" line="648"/>
-        <location filename="../widget.py" line="653"/>
+        <location filename="../widget.py" line="657"/>
+        <location filename="../widget.py" line="662"/>
         <source>Max Kills</source>
         <translation>Max Kills</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="650"/>
-        <location filename="../widget.py" line="655"/>
+        <location filename="../widget.py" line="659"/>
+        <location filename="../widget.py" line="664"/>
         <source>Max Combo</source>
         <translation>Best Combo</translation>
     </message>
@@ -84,17 +84,17 @@
 <context>
     <name>ParchisWidget</name>
     <message>
-        <location filename="../widget.py" line="117"/>
+        <location filename="../widget.py" line="129"/>
         <source>You must select a player</source>
         <translation>You must select a player</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="124"/>
+        <location filename="../widget.py" line="136"/>
         <source>{player} score is not valid</source>
         <translation>{player} score is not valid</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="132"/>
+        <location filename="../widget.py" line="144"/>
         <source>Empty entry, add at least a goal or a kill</source>
         <translation>Empty entry, add at least a goal or a kill</translation>
     </message>
