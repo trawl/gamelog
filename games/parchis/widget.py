@@ -610,6 +610,7 @@ class ParchisEntriesPlot(GameRoundPlot):
     """Cumulative score-over-entries plot for Parchis."""
 
     player_colours = _PARCHIS_COLOURS
+    plot_min_ymax = 4
 
     def updatePlot(self) -> None:
         """Redraw the running-total series, one line per player."""

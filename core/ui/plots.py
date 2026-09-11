@@ -61,6 +61,9 @@ class PlotView(QGraphicsView):
         self.plot = LinePlot(self.colours)
         self._scene.addItem(self.plot)
 
+    def setMinYMax(self, value: float) -> None:
+        self.plot.min_ymax = value
+
     def addHHeaders(self, headers: Sequence[str]) -> None:
         self.plot.addHHeaders(headers)
 
@@ -120,6 +123,7 @@ class LinePlot(QGraphicsItem):
         self.seriesData: list[Sequence[float]] = []
         self.hheaders: Sequence[str] = []
         self.limitvalue: float | None = None
+        self.min_ymax: float = 10
         self.changed = False
         self.colours = clrs
         self.dark_mode = False
@@ -213,7 +217,7 @@ class LinePlot(QGraphicsItem):
         gxmargin = self.awidth * marginp * xmax / (self.awidth - self.awidth * marginp)
         self.xvmax = xmax + gxmargin
 
-        ymax = 10
+        ymax = self.min_ymax
         ymin = 0
         for ser in self.seriesData:
             for vy in ser:

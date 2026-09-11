@@ -1192,6 +1192,7 @@ class GameRoundPlot(QWidget):
     """Base score-plot widget wrapping a line-plot canvas."""
 
     player_colours: list[QColor] = PlayerColours
+    plot_min_ymax: float = 10
 
     def __init__(self, engine, parent: QWidget | None) -> None:
         super().__init__(parent)
@@ -1208,6 +1209,7 @@ class GameRoundPlot(QWidget):
         self.canvas = PlotView(self.player_colours, self)
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
         self.canvas.addLinePlot()
+        self.canvas.setMinYMax(self.plot_min_ymax)
         self.widgetLayout.addWidget(self.canvas)
         self.plotinited = True
 
