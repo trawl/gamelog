@@ -27,6 +27,7 @@ from PySide6.QtWidgets import (
 from core.engine.settings import appsettings
 from core.model.base import GenericRound
 from core.ui.game import (
+    ClickableCounter,
     GameInputWidget,
     GameNotImplementedException,
     GameRoundPlot,
@@ -34,7 +35,6 @@ from core.ui.game import (
     GameRoundTable,
     GameWidget,
     QuickStatsTW,
-    ScoreSpinBox,
 )
 from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, StatsTable
 from games.parchis.engine import ParchisEngine
@@ -209,30 +209,22 @@ class ParchisInputWidget(GameInputWidget):
         self.playerButtonGroup.idToggled.connect(self.changed)
         self.playerButtonGroup.idToggled.connect(self.updateGoalsColour)
 
-        self.goalsSpinBox = ScoreSpinBox(self)
-        self.goalsSpinBox.setRange(0, 4, 0)
-        self.goalsSpinBox.setHideMinimum(False)
-        self.goalsSpinBox.setSizePolicy(
-            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred
-        )
-        self.goalsSpinBox.valueChanged.connect(self.changed)
+        self.goalsCounter = ClickableCounter(minimum=0, maximum=4, size=70, parent=self)
+        self.goalsCounter.valueChanged.connect(self.changed)
 
         self.goalsGroup = QGroupBox(self)
         self.widgetLayout.addWidget(self.goalsGroup)
         self.goalsGroupLayout = QHBoxLayout(self.goalsGroup)
+        self.goalsGroupLayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
-        self.goalsGroupLayout.addWidget(self.goalsSpinBox)
+        self.goalsGroupLayout.addWidget(self.goalsCounter)
 
         self.killsGroup = QGroupBox(self)
         self.widgetLayout.addWidget(self.killsGroup)
         self.killsGroupLayout = QGridLayout(self.killsGroup)
         self.killBoxes = []
         for i, _ in enumerate(self.engine.getListPlayers()):
-            ksb = ScoreSpinBox(self)
-            ksb.setRange(0, 4, 0)
-            ksb.setHideMinimum(False)
-            ksb.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
-            ksb.setFixedWidth(130)
+            ksb = ClickableCounter(minimum=0, maximum=4, size=44, parent=self)
             ksb.valueChanged.connect(self.changed)
             if len(self.engine.getListPlayers()) > 2:
                 self.killsGroupLayout.addWidget(ksb, (i) % 2, (i) // 2)
@@ -303,12 +295,12 @@ class ParchisInputWidget(GameInputWidget):
         return kills
 
     def getScore(self) -> int:
-        return cast("int", self.goalsSpinBox.value())
+        return self.goalsCounter.value()
 
     def reset(self) -> None:
         """Clear the player/kind selection and reset the score to zero."""
         self.playerButtons[0].setChecked(True)
-        self.goalsSpinBox.setValue(0)
+        self.goalsCounter.setValue(0)
         for i, ksb in enumerate(self.killBoxes):
             ksb.setColour(self.player_colours[i])
             ksb.setValue(0)
@@ -367,13 +359,12 @@ class ParchisInputWidget(GameInputWidget):
 
     def updateGoalsColour(self, id) -> None:
         colours = [QColor(128, 128, 128)] + self.player_colours
-        self.goalsSpinBox.setColour(colours[id])
-        self.goalsSpinBox.setFocus()
+        self.goalsCounter.setColour(colours[id])
 
     def ensureInputGuardRails(self) -> None:
         """Ensure game input only allows to introduce sensible values."""
         pid = self.playerButtonGroup.checkedId()
-        self.goalsSpinBox.setEnabled(bool(pid))
+        self.goalsCounter.setEnabled(bool(pid))
         for kb in self.killBoxes:
             kb.setEnabled(bool(pid))
         if not pid:

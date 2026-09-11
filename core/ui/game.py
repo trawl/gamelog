@@ -1558,6 +1558,106 @@ class ScoreSpinBox(QWidget):
             self.setValue(self._start)
 
 
+class ClickableCounter(QLabel):
+    """Circular click-to-cycle counter with player colour styling.
+
+    Left-click increments, right-click decrements, wrapping within [minimum, maximum].
+    """
+
+    valueChanged = QtCore.Signal(int)
+
+    def __init__(
+        self,
+        minimum: int = 0,
+        maximum: int = 4,
+        size: int = 60,
+        colour: QColor | None = None,
+        parent: QWidget | None = None,
+    ) -> None:
+        super().__init__(str(minimum), parent)
+        self._minimum = minimum
+        self._maximum = maximum
+        self._value = minimum
+        self._enabled = True
+        self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.setFixedSize(size, size)
+        self._colour = colour if colour is not None else QColor(180, 180, 180)
+        self._apply_style()
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
+
+    def value(self) -> int:
+        return self._value
+
+    def setValue(self, v: int) -> None:
+        v = max(self._minimum, min(self._maximum, v))
+        if v != self._value:
+            self._value = v
+            self.setText(str(self._value))
+            self.valueChanged.emit(self._value)
+
+    def setRange(self, minimum: int, maximum: int, default: int | None = None) -> None:
+        self._minimum = minimum
+        self._maximum = maximum
+        # Clamp current value into new range; only use default as fallback when
+        # the current value had to move (matches ScoreSpinBox behaviour).
+        clamped = max(self._minimum, min(self._maximum, self._value))
+        self._value = clamped
+        self.setText(str(self._value))
+
+    def setColour(self, colour: QColor) -> None:
+        self._colour = colour
+        self._apply_style()
+
+    def setEnabled(self, enabled: bool) -> None:  # type: ignore[override]
+        self._enabled = enabled
+        super().setEnabled(enabled)
+        self._apply_style()
+
+    # ------------------------------------------------------------------
+    # Internals
+    # ------------------------------------------------------------------
+
+    def _apply_style(self) -> None:
+        c = self._colour
+        r, g, b = c.red(), c.green(), c.blue()
+        alpha = 255 if self._enabled else 80
+        self.setStyleSheet(
+            f"""
+            ClickableCounter {{
+                font-size: 22px;
+                font-weight: bold;
+                color: rgba({r},{g},{b},{alpha});
+                border: 2px solid rgba({r},{g},{b},{alpha});
+                border-radius: {self.width() // 2}px;
+            }}
+            ClickableCounter:disabled {{
+                color: rgba({r},{g},{b},60);
+                border: 2px solid rgba({r},{g},{b},40);
+            }}
+            """
+        )
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        if not self._enabled:
+            return
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+            new = self._value + 1
+            if new > self._maximum:
+                new = self._minimum
+        elif event.button() == QtCore.Qt.MouseButton.RightButton:
+            new = self._value - 1
+            if new < self._minimum:
+                new = self._maximum
+        else:
+            super().mousePressEvent(event)
+            return
+        self.setValue(new)
+        super().mousePressEvent(event)
+
+
 class IconLabel(QLabel):
     """A label whose enabled/disabled state is fixed (ignores toggling)."""
 

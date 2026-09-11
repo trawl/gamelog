@@ -33,6 +33,7 @@ from core.engine.settings import appsettings
 from core.model.base import GenericRound
 from core.ui.game import (
     BonusButton,
+    ClickableCounter,
     GameInputWidget,
     GameNotImplementedException,
     GameRoundPlot,
@@ -753,8 +754,8 @@ class SkullKingPlayerInputWidget(QGroupBox):
         self.btWidget.unlockTricks()
 
 
-class ClickableLabel(QLabel):
-    """Circular label that emits clicks and animates a candidate highlight."""
+class ClickableLabel(ClickableCounter):
+    """Circular counter with Skull King extras: candidate animation and lock state."""
 
     clicked = QtCore.Signal(Qt.MouseButton)
 
@@ -765,20 +766,14 @@ class ClickableLabel(QLabel):
         size: int = 40,
         parent: QWidget | None = None,
     ) -> None:
-        super().__init__(text, parent)
+        colour = pcolour if pcolour is not None else QColor(255, 255, 255)
+        super().__init__(minimum=0, maximum=0, size=size, colour=colour, parent=parent)
+        self.pcolour = colour
+        # Show arbitrary text (bet/tricks use "-" as unset sentinel)
+        self.setText(text)
 
-        self.pcolour = pcolour if pcolour is not None else QColor(255, 255, 255)
-
-        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.diameter = size
         self.locked = False
         self.candidate = False
-
-        self.setFixedSize(
-            self.diameter,
-            self.diameter,
-        )
 
         # ---------------------------------------------
         # Custom colour animation
@@ -789,24 +784,16 @@ class ClickableLabel(QLabel):
         self.effect.setStrength(0.0)
         self.setGraphicsEffect(self.effect)
 
-        self.anim = QPropertyAnimation(
-            self.effect,
-            b"strength",
-        )
+        self.anim = QPropertyAnimation(self.effect, b"strength")
         self.anim.setDuration(1800)
         self.anim.setStartValue(0.0)
         self.anim.setKeyValueAt(0.7, 0.7)
         self.anim.setEndValue(0.0)
         self.anim.setLoopCount(-1)
 
-        # ---------------------------------------------
-        # QSS state properties
-        # ---------------------------------------------
-
         self.setProperty("locked", False)
         self.setProperty("pressed", False)
 
-        # Apply the instance-specific colour.
         self._update_colour_style()
 
     # ---------------------------------------------
@@ -815,23 +802,12 @@ class ClickableLabel(QLabel):
 
     def setColour(self, colour) -> None:
         self.pcolour = colour
-
         self.effect.setColor(self.pcolour)
-
         self._update_colour_style()
 
     def _update_colour_style(self) -> None:
-        """
-        Apply only the instance-specific colour.
-
-        The rest of the styling comes from the application's
-        global light/dark QSS.
-        """
-
         colour = self.pcolour
-
         css_colour = f"rgb({colour.red()}, {colour.green()}, {colour.blue()})"
-
         self.setStyleSheet(
             f"""
             ClickableLabel {{
@@ -858,22 +834,15 @@ class ClickableLabel(QLabel):
     def setCandidate(self, value) -> None:
         """Toggle the candidate state, starting or stopping its animation."""
         value = bool(value)
-
         if self.candidate == value:
             return
-
         self.candidate = value
-
         if value:
             self.startCandidateAnimation()
         else:
             self.stopCandidateAnimation()
 
-    candidateProperty = Property(
-        bool,
-        isCandidate,
-        setCandidate,
-    )
+    candidateProperty = Property(bool, isCandidate, setCandidate)
 
     def startCandidateAnimation(self) -> None:
         self.anim.start()
@@ -892,57 +861,39 @@ class ClickableLabel(QLabel):
     def lock(self) -> None:
         if self.locked:
             return
-
         self.locked = True
-        self._set_state_property(
-            "locked",
-            True,
-        )
+        self._set_state_property("locked", True)
 
     def unlock(self) -> None:
         if not self.locked:
             return
-
         self.locked = False
-        self._set_state_property(
-            "locked",
-            False,
-        )
+        self._set_state_property("locked", False)
 
     # ---------------------------------------------
-    # PRESS
+    # PRESS — override ClickableCounter's mouse handler
     # ---------------------------------------------
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        """Flash the pressed state briefly and emit the button clicked."""
-        self._set_state_property(
-            "pressed",
-            True,
-        )
-
+        """Flash the pressed state briefly and emit clicked (no cycling here)."""
+        self._set_state_property("pressed", True)
         self.clicked.emit(event.button())
-
         QTimer.singleShot(
             180,
-            lambda: self._set_state_property(
-                "pressed",
-                False,
-            ),
+            lambda: self._set_state_property("pressed", False),
         )
-
-        super().mousePressEvent(event)
+        # Skip ClickableCounter.mousePressEvent — BetTrickWidget overrides
+        # mousePressEvent directly on the labels for its own cycling logic.
+        QLabel.mousePressEvent(self, event)
 
     # ---------------------------------------------
     # QSS STATE
     # ---------------------------------------------
 
     def _set_state_property(self, name, value) -> None:
-        """Set a QSS state property and repolish the widget style."""
         self.setProperty(name, value)
-
         self.style().unpolish(self)
         self.style().polish(self)
-
         self.update()
 
 
