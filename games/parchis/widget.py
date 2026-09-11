@@ -33,7 +33,6 @@ from core.ui.game import (
     GameRoundsDetail,
     GameRoundTable,
     GameWidget,
-    PlayerColours,
     QuickStatsTW,
     ScoreSpinBox,
 )
@@ -41,11 +40,22 @@ from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, StatsTabl
 from games.parchis.engine import ParchisEngine
 from games.parchis.model import ParchisEntry
 
+_PARCHIS_COLOURS = [
+    QColor(255, 200, 0),  # Yellow
+    QColor(23, 89, 169),  # Blue
+    QColor(220, 30, 30),  # Red
+    QColor(0, 160, 50),  # Green
+    QColor(255, 165, 79),  # Orange
+    QColor(147, 112, 219),  # Purple
+]
+
 logger = logging.getLogger(__name__)
 
 
 class ParchisWidget(GameWidget):
     """Scoreboard tab for Parchis, scored one feature entry at a time."""
+
+    player_colours = _PARCHIS_COLOURS
 
     def createEngine(self) -> None:
         if self.game != "Parchis":
@@ -158,6 +168,7 @@ class ParchisWidget(GameWidget):
 class ParchisInputWidget(GameInputWidget):
     """Player/kind/score selectors for entering a single Parchis score."""
 
+    player_colours = _PARCHIS_COLOURS
     enterPressed = QtCore.Signal()
 
     def __init__(self, engine, parent) -> None:
@@ -185,7 +196,7 @@ class ParchisInputWidget(GameInputWidget):
                 self.playerGroupLayout.addWidget(b, 0, (i - 1) % 2)
             self.playerButtonGroup.addButton(b, i)
             self.playerButtons.append(b)
-            css = f"QRadioButton {{ font-weight: bold; color: {PlayerColours[i - 1].name()};}}"
+            css = f"QRadioButton {{ font-weight: bold; color: {self.player_colours[i - 1].name()};}}"
             b.setStyleSheet(css)
 
         self.playerButtonGroup.idToggled.connect(self.changed)
@@ -262,7 +273,7 @@ class ParchisInputWidget(GameInputWidget):
         self.playerButtons[0].setChecked(True)
         self.goalsSpinBox.setValue(0)
         for i, ksb in enumerate(self.killBoxes):
-            ksb.setColour(PlayerColours[i])
+            ksb.setColour(self.player_colours[i])
             ksb.setValue(0)
         self.changed.emit()
         self.setFocus()
@@ -311,13 +322,13 @@ class ParchisInputWidget(GameInputWidget):
                 self.playerGroupLayout.addWidget(b, 0, (i - 1) % 2)
             self.playerButtonGroup.addButton(b, i)
             self.playerButtons.append(b)
-            css = f"QRadioButton {{ font-weight: bold; color: {PlayerColours[i - 1].name()};}}"
+            css = f"QRadioButton {{ font-weight: bold; color: {self.player_colours[i - 1].name()};}}"
             b.setStyleSheet(css)
 
         self.reset()
 
     def updateGoalsColour(self, id) -> None:
-        colours = [QColor(128, 128, 128)] + PlayerColours
+        colours = [QColor(128, 128, 128)] + self.player_colours
         self.goalsSpinBox.setColour(colours[id])
 
     def ensureInputGuardRails(self) -> None:
@@ -558,6 +569,8 @@ class ParchisRoundTable(GameRoundTable):
 
 class ParchisEntriesPlot(GameRoundPlot):
     """Cumulative score-over-entries plot for Parchis."""
+
+    player_colours = _PARCHIS_COLOURS
 
     def updatePlot(self) -> None:
         """Redraw the running-total series, one line per player."""

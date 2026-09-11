@@ -24,7 +24,6 @@ from core.ui.game import (
     GameRoundsDetail,
     GameRoundTable,
     GameWidget,
-    PlayerColours,
     ScoreSpinBox,
 )
 from games.ratuki.engine import RatukiEngine
@@ -97,7 +96,7 @@ class RatukiInputWidget(GameInputWidget):
         self.widgetLayout = QHBoxLayout(self)
         for i, player in enumerate(self.engine.getListPlayers()):
             self.playerInputList[player] = RatukiPlayerInputWidget(
-                player, PlayerColours[i], self
+                player, self.player_colours[i], self
             )
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
@@ -127,7 +126,7 @@ class RatukiInputWidget(GameInputWidget):
             if trash_layout:
                 trash_layout.removeWidget(self.playerInputList[player])
             self.widgetLayout.addWidget(self.playerInputList[player])
-            self.playerInputList[player].setColour(PlayerColours[i])
+            self.playerInputList[player].setColour(self.player_colours[i])
 
 
 class RatukiPlayerInputWidget(QGroupBox):

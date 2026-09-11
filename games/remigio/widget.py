@@ -27,7 +27,6 @@ from core.ui.game import (
     GameRoundsDetail,
     GameRoundTable,
     GameWidget,
-    PlayerColours,
     ScoreSpinBox,
 )
 from games.remigio.engine import RemigioEngine
@@ -79,7 +78,9 @@ class RemigioWidget(GameWidget):
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
             pw = RemigioPlayerWidget(
-                player, PlayerColours[i % len(PlayerColours)], self.matchGroup
+                player,
+                self.player_colours[i % len(self.player_colours)],
+                self.matchGroup,
             )
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer():
@@ -158,7 +159,7 @@ class RemigioInputWidget(GameInputWidget):
     def initUI(self) -> None:
         for i, player in enumerate(self.engine.getListPlayers()):
             self.playerInputList[player] = RemigioPlayerInputWidget(
-                player, self.bgcolors, PlayerColours[i], self
+                player, self.bgcolors, self.player_colours[i], self
             )
             if cast("RemigioEngine", self.engine).isPlayerOff(player):
                 self.koPlayer(player)
@@ -210,7 +211,7 @@ class RemigioInputWidget(GameInputWidget):
             if trash_layout:
                 trash_layout.removeWidget(self.playerInputList[player])
             self.widgetLayout.addWidget(self.playerInputList[player])
-            self.playerInputList[player].setColour(PlayerColours[i])
+            self.playerInputList[player].setColour(self.player_colours[i])
 
 
 class RemigioPlayerInputWidget(QGroupBox):

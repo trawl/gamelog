@@ -379,7 +379,7 @@ class Phase10InputWidget(GameInputWidget):
                 cast("QVBoxLayout", self.widgetLayout).addWidget(
                     self.playerInputList[player]
                 )
-            self.playerInputList[player].setColour(PlayerColours[i])
+            self.playerInputList[player].setColour(self.player_colours[i])
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         return QWidget.mousePressEvent(self, event)
@@ -816,11 +816,11 @@ class Phase10RoundPlot(GameRoundPlot):
         self.scoreLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.plotsLayout.addWidget(self.scoreLabel, 0, 1)
 
-        self.canvas = PlotView(PlayerColours, self)
+        self.canvas = PlotView(self.player_colours, self)
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
         self.canvas.addLinePlot()
         self.plotsLayout.addWidget(self.canvas, 1, 0)
-        self.scorecanvas = PlotView(PlayerColours, self)
+        self.scorecanvas = PlotView(self.player_colours, self)
         self.scorecanvas.setBackground(self.palette().color(self.backgroundRole()))
         self.scorecanvas.addLinePlot()
         self.plotsLayout.addWidget(self.scorecanvas, 1, 1)
@@ -830,7 +830,7 @@ class Phase10RoundPlot(GameRoundPlot):
         self.playersListLayout.addStretch()
 
         for i, player in enumerate(self.engine.getListPlayers()):
-            colour = PlayerColours[i]
+            colour = self.player_colours[i]
             label = QLabel(player)
             css = "QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}"
             label.setStyleSheet(css.format(colour.red(), colour.green(), colour.blue()))
@@ -907,7 +907,7 @@ class Phase10RoundPlot(GameRoundPlot):
         self.playersListLayout.addStretch()
 
         for i, player in enumerate(self.engine.getListPlayers()):
-            colour = PlayerColours[i]
+            colour = self.player_colours[i]
             label = QLabel(player)
             css = "QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}"
             label.setStyleSheet(css.format(colour.red(), colour.green(), colour.blue()))

@@ -39,7 +39,6 @@ from core.ui.game import (
     GameRoundsDetail,
     GameRoundTable,
     GameWidget,
-    PlayerColours,
 )
 from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from core.ui.progress import StepProgressBar
@@ -325,7 +324,7 @@ class SkullKingInputWidget(GameInputWidget):
 
         for i, player in enumerate(players):
             self.playerInputList[player] = SkullKingPlayerInputWidget(
-                player, self.engine, PlayerColours[i], self
+                player, self.engine, self.player_colours[i], self
             )
             self.widgetLayout.addWidget(
                 self.playerInputList[player],
@@ -511,7 +510,7 @@ class SkullKingInputWidget(GameInputWidget):
             if trash_layout:
                 trash_layout.removeWidget(self.playerInputList[player])
             self.widgetLayout.addWidget(self.playerInputList[player], i // ppr, i % ppr)
-            self.playerInputList[player].setColour(PlayerColours[i])
+            self.playerInputList[player].setColour(self.player_colours[i])
         self.updateCandidateAction()
 
     def bonusChangedAction(self, sender_type, sender) -> None:

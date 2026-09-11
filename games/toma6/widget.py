@@ -16,7 +16,6 @@ from core.engine.settings import appsettings
 from core.ui.game import (
     GameNotImplementedException,
     GamePlayerWidget,
-    PlayerColours,
     ScoreSpinBox,
 )
 from games.remigio.widget import (
@@ -87,7 +86,7 @@ class Toma6InputWidget(RemigioInputWidget):
 
         for i, player in enumerate(self.engine.getListPlayers()):
             self.playerInputList[player] = Toma6PlayerInputWidget(
-                player, self.bgcolors, PlayerColours[i], self
+                player, self.bgcolors, self.player_colours[i], self
             )
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].changed.connect(self.changed)

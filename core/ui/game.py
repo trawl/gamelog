@@ -100,6 +100,7 @@ class GameWidget(Tab):
     # Subclasses set this to an appsettings key (e.g. "qwirkle_dealer_policy")
     # to have the dealer-policy checkbox initialised from and persisted to that key.
     dealer_policy_setting_key: str | None = None
+    player_colours: list[QColor] = PlayerColours
 
     def __init__(
         self,
@@ -446,7 +447,7 @@ class GameWidget(Tab):
         self.matchGroupLayout.addLayout(self.playersLayout)
         self.playerGroupBox = {}
         for i, player in enumerate(self.players):
-            pw = GamePlayerWidget(player, PlayerColours[i], self.matchGroup)
+            pw = GamePlayerWidget(player, self.player_colours[i], self.matchGroup)
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer():
                 pw.setDealer()
@@ -835,7 +836,7 @@ class GameWidget(Tab):
 
             for i, player in enumerate(self.engine.getListPlayers()):
                 self.playersLayout.addWidget(self.playerGroupBox[player])
-                self.playerGroupBox[player].setColour(PlayerColours[i])
+                self.playerGroupBox[player].setColour(self.player_colours[i])
         except AttributeError:
             pass
         if hasattr(self.detailGroup, "updatePlayerOrder"):
@@ -864,6 +865,7 @@ class GameInputWidget(QWidget):
 
     enterPressed = QtCore.Signal()
     changed = QtCore.Signal()
+    player_colours: list[QColor] = PlayerColours
 
     def __init__(self, engine: RoundGameEngine, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -1189,6 +1191,8 @@ class GameRoundTable(QTableWidget):
 class GameRoundPlot(QWidget):
     """Base score-plot widget wrapping a line-plot canvas."""
 
+    player_colours: list[QColor] = PlayerColours
+
     def __init__(self, engine, parent: QWidget | None) -> None:
         super().__init__(parent)
         self.plotinited = False
@@ -1201,7 +1205,7 @@ class GameRoundPlot(QWidget):
     def initUI(self) -> None:
         """Create the plot canvas and add its line plot."""
         self.widgetLayout = QHBoxLayout(self)
-        self.canvas = PlotView(PlayerColours, self)
+        self.canvas = PlotView(self.player_colours, self)
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
         self.canvas.addLinePlot()
         self.widgetLayout.addWidget(self.canvas)
