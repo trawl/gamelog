@@ -10,16 +10,21 @@ from PySide6 import QtCore
 from PySide6.QtGui import QKeyEvent
 from PySide6.QtWidgets import (
     QButtonGroup,
+    QFrame,
     QGridLayout,
     QGroupBox,
     QHBoxLayout,
+    QLabel,
     QMessageBox,
     QRadioButton,
+    QScrollArea,
     QSizePolicy,
     QTableWidgetItem,
+    QVBoxLayout,
     QWidget,
 )
 
+from core.engine.settings import appsettings
 from core.model.base import GenericRound
 from core.ui.game import (
     GameInputWidget,
@@ -32,7 +37,7 @@ from core.ui.game import (
     QuickStatsTW,
     ScoreSpinBox,
 )
-from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats
+from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, StatsTable
 from games.parchis.engine import ParchisEngine
 from games.parchis.model import ParchisEntry
 
@@ -64,6 +69,24 @@ class ParchisWidget(GameWidget):
 
         self.retranslateUI()
         QtCore.QTimer.singleShot(1000, self.gameInput.setFocus)
+
+    def retranslateUI(self) -> None:
+        super().retranslateUI()
+        if appsettings["text_in_buttons"]:
+            css = """
+                QPushButton {
+                    font-weight: normal;
+                }
+                """
+        else:
+            css = """
+                QPushButton {
+                    font-size: 48px;
+                    font-weight: bold;
+                }
+                """
+        self.commitRoundButton.setStyleSheet(css)
+        self.undoButton.setStyleSheet(css)
 
     def createGameInputWidget(
         self, parent: QWidget | None = None
@@ -169,7 +192,7 @@ class ParchisInputWidget(GameInputWidget):
         self.goalsSpinBox.setRange(0, 4, 0)
         self.goalsSpinBox.setHideMinimum(False)
         self.goalsSpinBox.setSizePolicy(
-            QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred
         )
         self.goalsSpinBox.valueChanged.connect(self.changed)
 
@@ -187,7 +210,8 @@ class ParchisInputWidget(GameInputWidget):
             ksb = ScoreSpinBox(self)
             ksb.setRange(0, 4, 0)
             ksb.setHideMinimum(False)
-            ksb.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+            ksb.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
+            ksb.setFixedWidth(130)
             ksb.valueChanged.connect(self.changed)
             if len(self.engine.getListPlayers()) > 2:
                 self.killsGroupLayout.addWidget(ksb, (i) % 2, (i) // 2)
@@ -199,6 +223,7 @@ class ParchisInputWidget(GameInputWidget):
         self.retranslateUI()
 
     def retranslateUI(self) -> None:
+        super().retranslateUI()
         self.playerGroup.setTitle(self.tr("Select Player"))
         self.goalsGroup.setTitle(self.tr("Select number of goals"))
         self.killsGroup.setTitle(self.tr("Select Kills"))
@@ -291,93 +316,25 @@ class ParchisEntriesDetail(GameRoundsDetail):
 
     def __init__(self, engine, parent: QWidget | None = None) -> None:
         super().__init__(engine, parent)
-        # self.setStyleSheet("""
-        #     QTableView::item:hover {
-        #         background: transparent;
-        #     }
-        #     QTableView::item:selected {
-        #         background: transparent;
-        #     }
-        # """)
 
-    # def initUI(self) -> None:
-    #     """Build the base tabs plus the per-kind totals table."""
-    #     super().initUI()
-    #     self.totalsLabel = QLabel("", self)
-    #     self.tableContainerLayout.addWidget(self.totalsLabel)
-    #     self.totals = StatsTable(
-    #         len(cast("ParchisEngine", self.engine).getEntryKinds()),
-    #         len(self.engine.getPlayers()),
-    #     )
-    #     self.tableContainerLayout.addWidget(self.totals)
-    #     self.totals.setHorizontalHeaderLabels(self.engine.getListPlayers())
-    #     self.totals.setMaximumHeight(self.totals.sizeHint().height())
+    def initUI(self) -> None:
+        super().initUI()
+        self.liveStats = ParchisLiveStats(self.engine, self)
+        self.insertTab(0, self.liveStats, "")
+        self.setCurrentIndex(0)
 
-    # def retranslateUI(self) -> None:
-    #     self.totals.setVerticalHeaderLabels(
-    #         [
-    #             QCoreApplication.translate("ParchisInputWidget", kind)
-    #             for kind in cast("ParchisEngine", self.engine).getEntryKinds()
-    #         ]
-    #     )
-    #     self.totalsLabel.setText(self.tr("Totals"))
-    #     super().retranslateUI()
-    #     self.updateRound()
+    def retranslateUI(self) -> None:
+        super().retranslateUI()
+        if appsettings["text_in_buttons"]:
+            self.setTabText(self.indexOf(self.liveStats), self.tr("Live Statistics"))
+        else:
+            self.setTabText(self.indexOf(self.liveStats), "†")
+        self.liveStats.retranslateUI()
 
-    # def resetTotals(self) -> None:
-    #     """Clear the totals table back to zeroes with per-kind row colours."""
-    #     self.totals.setHorizontalHeaderLabels(self.engine.getListPlayers())
-    #     self.totals.clearContents()
-    #     for row in range(len(cast("ParchisEngine", self.engine).getEntryKinds())):
-    #         # background = self.bgcolors[row]
-    #         for col in range(len(self.engine.getListPlayers())):
-    #             item = QTableWidgetItem()
-    #             item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
-    #             item.setTextAlignment(
-    #                 QtCore.Qt.AlignmentFlag.AlignVCenter
-    #                 | QtCore.Qt.AlignmentFlag.AlignCenter
-    #             )
-    #             item.setBackground(QtGui.QBrush(QtGui.QColor(background)))
-    #             item.setForeground(QtGui.QBrush(QtGui.QColor(0, 0, 0)))
-    #             item.setText("0")
-    #             self.totals.setItem(row, col, item)
-
-    # def updateRound(self) -> None:
-    #     """Rebuild the base table and recompute the per-kind totals."""
-    #     super().updateRound()
-    #     self.resetTotals()
-    #     for r in self.engine.getRounds():
-    #         self.updateTotal(r)
-    #     self.recomputeMaxTotals()
-
-    # def updateTotal(self, entry) -> None:
-    #     """Fold one entry's score into its player/kind totals cell."""
-    #     kinds = cast("ParchisEngine", self.engine).getEntryKinds()
-    #     players = self.engine.getListPlayers()
-    #     totalItem = self.totals.item(
-    #         kinds.index(entry.getKind()), players.index(entry.getPlayer())
-    #     )
-    #     if totalItem:
-    #         totalItem.setText(str(int(totalItem.text()) + entry.getPlayerScore()))
-
-    # def recomputeMaxTotals(self) -> None:
-    #     """Bold the leading player's cell in each kind's totals row."""
-    #     kinds = cast("ParchisEngine", self.engine).getEntryKinds()
-    #     players = self.engine.getListPlayers()
-    #     for row in range(len(kinds)):
-    #         maxvalue = 1
-    #         for col in range(len(players)):
-    #             item = self.totals.item(row, col)
-    #             if item:
-    #                 total = int(item.text())
-    #                 maxvalue = max(maxvalue, total)
-
-    #         for col in range(len(players)):
-    #             item = self.totals.item(row, col)
-    #             if item:
-    #                 font = item.font()
-    #                 font.setBold(int(item.text()) == maxvalue)
-    #                 item.setFont(font)
+    def updateRound(self) -> None:
+        """Rebuild live stats."""
+        super().updateRound()
+        self.liveStats.updateContent()
 
     def createRoundTable(self, engine, parent: QWidget | None = None):
         return ParchisRoundTable(self.engine, parent)
@@ -391,6 +348,123 @@ class ParchisEntriesDetail(GameRoundsDetail):
             self.engine.getListPlayers(),
             self,
         )
+
+
+class ParchisLiveStats(QWidget):
+    """Live stats for a Parchis Match"""
+
+    def __init__(self, engine, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.engine = engine
+        self.initUI()
+
+    def initUI(self) -> None:
+        self.superlayout = QVBoxLayout(self)
+        self.scrollarea = QScrollArea()
+        self.scrollarea.setWidgetResizable(True)
+        self.scrollarea.setFrameShape(QFrame.Shape.NoFrame)
+        self.scrollarea.setObjectName("liveStatsScrollArea")
+        self.superlayout.addWidget(self.scrollarea)
+        self.container = QWidget(self)
+        self.container.setObjectName("liveStatsContainer")
+        self.setStyleSheet("""QWidget#liveStatsContainer {
+            background: transparent;
+        }
+        QScrollArea#liveStatsScrollArea {
+            background: transparent;
+        }""")
+        self.widgetLayout = QVBoxLayout(self.container)
+        self.scrollarea.setWidget(self.container)
+        title_css = """QLabel { font-weight: bold; font-size: 18px; margin-top: 10px; margin-bottom: 5px;}"""
+        self.comboTableTitle = QLabel(self)
+        self.comboTableTitle.setStyleSheet(title_css)
+        self.comboTableTitle.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.widgetLayout.addWidget(self.comboTableTitle)
+        self.comboTable = StatsTable(self)
+        self.widgetLayout.addWidget(self.comboTable)
+        self.widgetLayout.addSpacing(20)
+        self.killsTableTitle = QLabel(self)
+        self.killsTableTitle.setStyleSheet(title_css)
+        self.killsTableTitle.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.widgetLayout.addWidget(self.killsTableTitle)
+        self.killsTable = StatsTable(self)
+        self.widgetLayout.addWidget(self.killsTable)
+        self.widgetLayout.addStretch()
+        self.retranslateUI()
+
+    def retranslateUI(self) -> None:
+        """Apply translated title strings and refresh the displayed content."""
+        self.killsTableTitle.setText(self.tr("Killer table"))
+        self.comboTableTitle.setText(self.tr("Summary"))
+        self.updateContent()
+
+    def updateContent(self) -> None:
+        """Reload statistics from the engine and repopulate."""
+        players = self.engine.getListPlayers()
+        kills_tally = self.engine.getKillsTally()
+        combo_tally = self.engine.getComboTally()
+        sum_table_headers = {
+            "combos": self.tr("combos"),
+            "kills": self.tr("kills"),
+            "deaths": self.tr("deaths"),
+            "suicides": self.tr("suicides"),
+            "fav_target": self.tr("fav_target"),
+        }
+        self.killsTable.setVerticalHeaderLabels(players)
+        self.killsTable.setRowCount(len(players))
+        self.killsTable.setColumnCount(len(players))
+        self.killsTable.setHorizontalHeaderLabels(players)
+        self.comboTable.setVerticalHeaderLabels(list(sum_table_headers.values()))
+        self.comboTable.setRowCount(len(sum_table_headers))
+        self.comboTable.setColumnCount(len(players))
+        self.comboTable.setHorizontalHeaderLabels(players)
+        for i, killer in enumerate(players):
+            for j, dead in enumerate(players):
+                item = QTableWidgetItem()
+                item.setData(
+                    QtCore.Qt.ItemDataRole.DisplayRole, str(kills_tally[killer][dead])
+                )
+                item.setTextAlignment(
+                    QtCore.Qt.AlignmentFlag.AlignVCenter
+                    | QtCore.Qt.AlignmentFlag.AlignHCenter
+                )
+                item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
+                self.killsTable.setItem(i, j, item)
+
+        self.killsTable.setFixedHeight(self.killsTable.sizeHint().height() + 10)
+        self.killsTable.setMinimumWidth(self.killsTable.sizeHint().width())
+        for i, stat in enumerate(sum_table_headers.keys()):
+            for j, player in enumerate(players):
+                val = ""
+                if stat == "combos":
+                    val = combo_tally[player]
+                elif stat == "kills":
+                    val = sum(kills_tally[player].values())
+                elif stat == "deaths":
+                    val = sum(row[player] for row in kills_tally.values())
+                elif stat == "suicides":
+                    val = kills_tally[player][player]
+                elif stat == "fav_target":
+                    max_kills = max(kills_tally[player].values())
+                    val = "-"
+                    if max_kills:
+                        targets = [
+                            key
+                            for key, value in kills_tally[player].items()
+                            if value == max_kills
+                        ]
+                        val = f"{', '.join(sorted(targets))} ({max_kills})"
+                item = QTableWidgetItem()
+                item.setData(QtCore.Qt.ItemDataRole.DisplayRole, str(val))
+                item.setTextAlignment(
+                    QtCore.Qt.AlignmentFlag.AlignVCenter
+                    | QtCore.Qt.AlignmentFlag.AlignHCenter
+                )
+                item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
+                self.comboTable.setItem(i, j, item)
+
+        self.comboTable.setFixedHeight(self.comboTable.sizeHint().height() + 10)
+        self.comboTable.setMinimumWidth(self.comboTable.sizeHint().width())
 
 
 class ParchisRoundTable(GameRoundTable):

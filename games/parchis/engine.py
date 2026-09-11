@@ -41,7 +41,7 @@ class ParchisEngine(EntryGameEngine):
         self.addEntry(player, score, {"kills": kills})
 
     def getKillsTally(self) -> dict[str, dict[str, int]]:
-        """Generate a matrix of with the kill tally."""
+        """Generate a matrix with the kill tally."""
         return cast(ParchisMatch, self.match).getKillsTally()
 
     def getComboTally(self) -> dict[str, int]:
