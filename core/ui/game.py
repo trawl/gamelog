@@ -102,6 +102,8 @@ class GameWidget(Tab):
     # to have the dealer-policy checkbox initialised from and persisted to that key.
     dealer_policy_setting_key: str | None = None
     player_colours: list[QColor] = PlayerColours
+    # Set to True in subclasses where colour is tied to position (e.g. Parchis).
+    colour_locked: bool = False
 
     def __init__(
         self,
@@ -124,6 +126,7 @@ class GameWidget(Tab):
         self.engine.printStats()
         self.finished = False
         self.hideInputOnFinish = True
+        self.colour_map: dict[str, int] = {p: i for i, p in enumerate(self.players)}
 
         self.screen_blocker = SleepBlocker()
         self.toggleScreenLock()
@@ -442,13 +445,22 @@ class GameWidget(Tab):
         else:
             self.retranslateUI()
 
+    def playerColour(self, player: str) -> QColor:
+        """Return the colour assigned to ``player`` respecting any custom mapping."""
+        idx = self.colour_map.get(player, self.players.index(player))
+        return self.player_colours[idx % len(self.player_colours)]
+
+    def orderedColours(self) -> list[QColor]:
+        """Return colours in current player order, for plot series assignment."""
+        return [self.playerColour(p) for p in self.engine.getListPlayers()]
+
     def addPlayerWidgets(self) -> None:
         """Create a per-player score box for each player in the match."""
         self.playersLayout = QVBoxLayout()
         self.matchGroupLayout.addLayout(self.playersLayout)
         self.playerGroupBox = {}
-        for i, player in enumerate(self.players):
-            pw = GamePlayerWidget(player, self.player_colours[i], self.matchGroup)
+        for player in self.players:
+            pw = GamePlayerWidget(player, self.playerColour(player), self.matchGroup)
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
             if player == self.engine.getDealer():
                 pw.setDealer()
@@ -810,17 +822,33 @@ class GameWidget(Tab):
                 pass
 
     def changePlayerOrder(self) -> None:
-        """Open the reorder dialog and apply any new order or dealer."""
+        """Open the reorder dialog and apply any new order, dealer or colours."""
         originaldealer = self.engine.getDealer()
-        pod = PlayerOrderDialog(self.engine, self)
-        #         pod.dealerChanged.connect(self.changedDealer)
+        pod = PlayerOrderDialog(
+            self.engine,
+            self,
+            player_colours=self.player_colours,
+            colour_map=self.colour_map,
+            colour_locked=self.colour_locked,
+        )
         if pod.exec_():
             newdealer = pod.getNewDealer()
             neworder = pod.getNewOrder()
-            if self.players != neworder:
+            new_colour_map = pod.getNewColourMap()
+            order_changed = self.players != neworder
+            colours_changed = new_colour_map != self.colour_map
+            if order_changed:
                 logger.debug("Player order changed to %s", neworder)
                 self.engine.setListPlayers(neworder)
                 self.players = neworder
+                if self.colour_locked:
+                    # Colour is positional: rebuild the map from the new order.
+                    self.colour_map = {p: i for i, p in enumerate(neworder)}
+                    colours_changed = True
+            if colours_changed and not self.colour_locked:
+                logger.debug("Player colours changed to %s", new_colour_map)
+                self.colour_map = new_colour_map
+            if order_changed or colours_changed:
                 self.updatePlayerOrder()
             if originaldealer != newdealer:
                 logger.debug("Dealer changed from %s to %s", originaldealer, newdealer)
@@ -835,11 +863,13 @@ class GameWidget(Tab):
             for player in self.engine.getListPlayers():
                 self.playersLayout.removeWidget(self.playerGroupBox[player])
 
-            for i, player in enumerate(self.engine.getListPlayers()):
+            for player in self.engine.getListPlayers():
                 self.playersLayout.addWidget(self.playerGroupBox[player])
-                self.playerGroupBox[player].setColour(self.player_colours[i])
+                self.playerGroupBox[player].setColour(self.playerColour(player))
         except AttributeError:
             pass
+        if hasattr(self.detailGroup, "updateColours"):
+            self.detailGroup.updateColours(self.orderedColours())  # pyright: ignore[reportAttributeAccessIssue]
         if hasattr(self.detailGroup, "updatePlayerOrder"):
             self.detailGroup.updatePlayerOrder()  # pyright: ignore[reportAttributeAccessIssue]
         self.gameInput.updatePlayerOrder()
@@ -867,6 +897,16 @@ class GameInputWidget(QWidget):
     enterPressed = QtCore.Signal()
     changed = QtCore.Signal()
     player_colours: list[QColor] = PlayerColours
+
+    def playerColour(self, player: str) -> QColor:
+        """Walk up the widget tree to find the GameWidget's colour mapping."""
+        widget = self.parent()
+        while widget is not None:
+            if hasattr(widget, "colour_map"):
+                return widget.playerColour(player)  # type: ignore[union-attr]
+            widget = widget.parent()
+        idx = self.engine.getListPlayers().index(player)
+        return self.player_colours[idx % len(self.player_colours)]
 
     def __init__(self, engine: RoundGameEngine, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -922,7 +962,10 @@ class GameInputWidget(QWidget):
         return super().mousePressEvent(event)
 
     def updatePlayerOrder(self) -> None:
-        """Rebuild the input controls in the new player order; overridden."""
+        """Recolour player input widgets; override to also reorder layout."""
+        for player, piw in self.playerInputList.items():
+            if hasattr(piw, "setColour"):
+                piw.setColour(self.playerColour(player))
 
 
 class GamePlayerWidget(QGroupBox):
@@ -1084,6 +1127,11 @@ class GameRoundsDetail(QTabWidget):
     def updatePlot(self) -> None:
         self.plot.updatePlot()
 
+    def updateColours(self, colours: list[QColor]) -> None:
+        """Propagate a new ordered colour list to the plot widget."""
+        if hasattr(self.plot, "updateColours"):
+            self.plot.updateColours(colours)
+
     def updateRound(self) -> None:
         """Rebuild the rounds table from the engine and refresh the plot."""
         self.table.resetClear()
@@ -1213,6 +1261,22 @@ class GameRoundPlot(QWidget):
         self.canvas.setMinYMax(self.plot_min_ymax)
         self.widgetLayout.addWidget(self.canvas)
         self.plotinited = True
+
+    def playerColour(self, player: str) -> QColor:
+        """Return the colour for ``player`` using the ordered colour list when set."""
+        colours = getattr(self, "_ordered_colours", None) or self.player_colours
+        players = self.engine.getListPlayers()
+        try:
+            idx = players.index(player)
+        except ValueError:
+            idx = 0
+        return colours[idx % len(colours)]
+
+    def updateColours(self, colours: list[QColor]) -> None:
+        """Update the plot's colour series to reflect a new player colour mapping."""
+        self._ordered_colours = colours
+        self.canvas.setColours(colours)
+        self.canvas.viewport().update()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         self.canvas.setBackground(self.palette().color(self.backgroundRole()))
@@ -1440,18 +1504,22 @@ class ScoreSpinBox(QWidget):
     def setValue(self, value: int | None) -> None:
         """Clamp and store ``value`` (``None`` clears the field)."""
         if value is None:
-            if value != self._value:
-                self.valueChanged.emit(value)
+            old = self._value
             self._value = None
             self.line_edit.setText("")
+            if old is not None:
+                self.valueChanged.emit(None)
         else:
             value = max(self._minimum, min(self._maximum, value))
+            old = self._value
+            self._value = (
+                value  # set before setText to prevent _commit_text re-entrancy
+            )
             if self._hideMinimum and value == self._minimum:
                 self.line_edit.setText("")
             else:
                 self.line_edit.setText(str(value))
-            if value != self._value:
-                self._value = value
+            if value != old:
                 self.valueChanged.emit(value)
         self._update_buttons()
 

@@ -84,9 +84,9 @@ class Toma6InputWidget(RemigioInputWidget):
     def initUI(self) -> None:
         self.widgetLayout = QHBoxLayout(self)
 
-        for i, player in enumerate(self.engine.getListPlayers()):
+        for player in self.engine.getListPlayers():
             self.playerInputList[player] = Toma6PlayerInputWidget(
-                player, self.bgcolors, self.player_colours[i], self
+                player, self.bgcolors, self.playerColour(player), self
             )
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].changed.connect(self.changed)

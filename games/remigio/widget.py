@@ -79,7 +79,7 @@ class RemigioWidget(GameWidget):
         for i, player in enumerate(self.players):
             pw = RemigioPlayerWidget(
                 player,
-                self.player_colours[i % len(self.player_colours)],
+                self.playerColour(player),
                 self.matchGroup,
             )
             pw.updateDisplay(self.engine.getScoreFromPlayer(player))
@@ -157,9 +157,9 @@ class RemigioInputWidget(GameInputWidget):
         super().__init__(engine, parent)
 
     def initUI(self) -> None:
-        for i, player in enumerate(self.engine.getListPlayers()):
+        for player in self.engine.getListPlayers():
             self.playerInputList[player] = RemigioPlayerInputWidget(
-                player, self.bgcolors, self.player_colours[i], self
+                player, self.bgcolors, self.playerColour(player), self
             )
             if cast("RemigioEngine", self.engine).isPlayerOff(player):
                 self.koPlayer(player)
@@ -207,11 +207,11 @@ class RemigioInputWidget(GameInputWidget):
         if trash_layout:
             trash.setLayout(trash_layout)
         self.widgetLayout = QHBoxLayout(self)
-        for i, player in enumerate(self.engine.getListPlayers()):
+        for player in self.engine.getListPlayers():
             if trash_layout:
                 trash_layout.removeWidget(self.playerInputList[player])
             self.widgetLayout.addWidget(self.playerInputList[player])
-            self.playerInputList[player].setColour(self.player_colours[i])
+            self.playerInputList[player].setColour(self.playerColour(player))
 
 
 class RemigioPlayerInputWidget(QGroupBox):
