@@ -14,12 +14,13 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMessageBox,
-    QRadioButton,
+    QPushButton,
     QSizePolicy,
     QTableWidgetItem,
     QWidget,
 )
 
+from core.engine.settings import appsettings
 from core.model.base import GenericRound
 from core.ui.game import (
     GameInputWidget,
@@ -74,15 +75,23 @@ class CarcassonneWidget(GameWidget):
     ) -> CarcassonneEntriesDetail:
         return CarcassonneEntriesDetail(self.engine, self.bgcolors, parent)
 
-    # def retranslateUI(self):
-    #     super().retranslateUI()
-    #     self.commitRoundButton.setText("↵")
-    #     self.undoButton.setText("⎌")
-    #     font = self.commitRoundButton.font()
-    #     font.setBold(True)
-    #     self.commitRoundButton.setFont(font)
-    #     self.gameInput.retranslateUI()
-    #     self.detailGroup.retranslateUI()
+    def retranslateUI(self) -> None:
+        super().retranslateUI()
+        if appsettings["text_in_buttons"]:
+            css = """
+                QPushButton {
+                    font-weight: normal;
+                }
+                """
+        else:
+            css = """
+                QPushButton {
+                    font-size: 48px;
+                    font-weight: bold;
+                }
+                """
+        self.commitRoundButton.setStyleSheet(css)
+        self.undoButton.setStyleSheet(css)
 
     def getPlayerExtraInfo(self, player: str) -> dict:
         """Return the selected feature kind for the current entry, if any."""
@@ -150,46 +159,112 @@ class CarcassonneInputWidget(GameInputWidget):
     QCoreApplication.translate("CarcassonneInputWidget", "Fair")
 
     def __init__(self, engine, bgcolors, parent) -> None:
-        super().__init__(engine, parent)
         self.bgcolors = bgcolors
+        super().__init__(engine, parent)
+
+    def _playerButtonStyle(self, colour: QtGui.QColor) -> str:
+        r, g, b = colour.red(), colour.green(), colour.blue()
+        return f"""
+            QPushButton {{
+                font-weight: bold;
+                font-size: 18px;
+                color: rgb({r},{g},{b});
+                border: 1px solid rgba({r},{g},{b},80);
+                border-radius: 6px;
+                padding: 6px 6px;
+                background: transparent;
+                text-align: center;
+            }}
+            QPushButton:checked {{
+                background: rgb({r},{g},{b});
+                color: white;
+                border: 1px solid rgb({r},{g},{b});
+            }}
+            QPushButton:hover:!checked {{
+                background: rgba({r},{g},{b},30);
+                color: rgb({r},{g},{b});
+                border: 1px solid rgba({r},{g},{b},150);
+            }}
+        """
+
+    def _kindButtonStyle(self, bgcolor: int) -> str:
+        c = QtGui.QColor(bgcolor)
+        r, g, b = c.red(), c.green(), c.blue()
+        # Darken the pastel for legible text/border in unchecked state.
+        dr, dg, db = int(r * 0.55), int(g * 0.55), int(b * 0.55)
+        return f"""
+            QPushButton {{
+                font-weight: bold;
+                font-size: 18px;
+                color: rgb({dr},{dg},{db});
+                border: 1px solid rgba({r},{g},{b},180);
+                border-radius: 6px;
+                padding: 6px 6px;
+                background: transparent;
+                text-align: center;
+            }}
+            QPushButton:checked {{
+                background: rgb({r},{g},{b});
+                color: rgb(40,40,40);
+                border: 1px solid rgb({dr},{dg},{db});
+            }}
+            QPushButton:hover:!checked {{
+                background: rgba({r},{g},{b},40);
+                color: rgb({dr},{dg},{db});
+                border: 1px solid rgba({r},{g},{b},220);
+            }}
+            QPushButton:disabled {{
+                color: rgb(128,128,128);
+                border: 1px solid rgba(128,128,128,80);
+                background: transparent;
+            }}
+        """
 
     def initUI(self) -> None:
         """Lay out the player, kind and score selector groups."""
-        self.setStyleSheet("QGroupBox { font-size: 18px; font-weight: bold; }")
+        self.setStyleSheet("""
+            QGroupBox { font-size: 18px; font-weight: bold; }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                subcontrol-position: top center;
+            }""")
         self.widgetLayout = QHBoxLayout(self)
         self.playerGroup = QGroupBox(self)
         self.widgetLayout.addWidget(self.playerGroup)
         self.playerButtonGroup = QButtonGroup(self)
         self.playerGroupLayout = QGridLayout(self.playerGroup)
 
-        b = QRadioButton("", self.playerGroup)
-        #        self.playerGroupLayout.addWidget(b)
+        b = QPushButton("", self.playerGroup)
+        b.setCheckable(True)
         self.playerButtonGroup.addButton(b, 0)
         self.playerButtons = [b]
         b.hide()
         for i, player in enumerate(self.engine.getListPlayers(), 1):
-            b = QRadioButton(f"{i}. {player}", self.playerGroup)
+            b = QPushButton(f"{i}. {player}", self.playerGroup)
+            b.setCheckable(True)
             if len(self.engine.getListPlayers()) > 2:
                 self.playerGroupLayout.addWidget(b, (i - 1) % 2, (i - 1) // 2)
             else:
                 self.playerGroupLayout.addWidget(b, 0, (i - 1) % 2)
             self.playerButtonGroup.addButton(b, i)
             self.playerButtons.append(b)
+            b.setStyleSheet(self._playerButtonStyle(self.playerColour(player)))
+
+        self.playerButtonGroup.idToggled.connect(self.changed)
+        self.playerButtonGroup.idToggled.connect(self.updateScoreColour)
 
         self.kindGroup = QGroupBox(self)
         self.widgetLayout.addWidget(self.kindGroup)
         self.kindButtonGroup = QButtonGroup(self)
         self.kindGroupLayout = QGridLayout(self.kindGroup)
 
-        b = QRadioButton("", self.kindGroup)
-        #        self.kindGroupLayout.addWidget(b)
+        b = QPushButton("", self.kindGroup)
+        b.setCheckable(True)
         self.kindButtonGroup.addButton(b, 0)
         self.kindButtons = [b]
         b.hide()
 
         self.scoreSpinBox = ScoreSpinBox(self)
-        # self.scoreSpinBox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        # self.scoreSpinBox.setMaximumWidth(120)
         self.scoreSpinBox.setRange(0, 300)
         self.scoreSpinBox.valueChanged.connect(self.changed)
 
@@ -197,12 +272,15 @@ class CarcassonneInputWidget(GameInputWidget):
             cast("CarcassonneEngine", self.engine).getEntryKinds(), 1
         ):
             lbl = self.tr(kind)
-            b = QRadioButton(f"{i}. {lbl}", self.kindGroup)
+            b = QPushButton(f"{i}. {lbl}", self.kindGroup)
+            b.setCheckable(True)
+            b.setStyleSheet(self._kindButtonStyle(self.bgcolors[i - 1]))
             self.kindGroupLayout.addWidget(b, (i - 1) % 2, (i - 1) // 2)
             self.kindButtonGroup.addButton(b, i)
             b.clicked.connect(lambda x: self.scoreSpinBox.setFocus())
             self.kindButtons.append(b)
 
+        self.kindButtonGroup.idToggled.connect(self.changed)
         self.kindButtons[3].toggled.connect(self.setCloisterPoints)
         self.kindButtons[5].toggled.connect(self.setGoodsPoints)
         self.kindButtons[6].toggled.connect(self.setFairPoints)
@@ -213,13 +291,20 @@ class CarcassonneInputWidget(GameInputWidget):
 
         self.scoreGroupLayout.addWidget(self.scoreSpinBox)
 
+        self.changed.connect(self.ensureInputGuardRails)
         self.reset()
         self.retranslateUI()
 
     def retranslateUI(self) -> None:
-        self.playerGroup.setTitle(self.tr("Select Player"))
-        self.kindGroup.setTitle(self.tr("Select kind of entry"))
-        self.scoreGroup.setTitle(self.tr("Points"))
+        if appsettings["text_in_buttons"]:
+            self.playerGroup.setTitle(self.tr("Select Player"))
+            self.kindGroup.setTitle(self.tr("Select kind of entry"))
+            self.scoreGroup.setTitle(self.tr("Points"))
+        else:
+            self.playerGroup.setTitle("")
+            self.kindGroup.setTitle("")
+            self.scoreGroup.setTitle("")
+
         for i, kind in enumerate(
             cast("CarcassonneEngine", self.engine).getEntryKinds(), 1
         ):
@@ -251,11 +336,27 @@ class CarcassonneInputWidget(GameInputWidget):
     def getScore(self) -> int:
         return cast("int", self.scoreSpinBox.value())
 
+    def ensureInputGuardRails(self) -> None:
+        """Enable kind only when player is chosen; enable score only when both are."""
+        pid = self.playerButtonGroup.checkedId()
+        cid = self.kindButtonGroup.checkedId()
+        self.kindGroup.setEnabled(bool(pid))
+        self.scoreGroup.setEnabled(bool(pid and cid))
+
+    def updateScoreColour(self, pid: int) -> None:
+        """Tint the score spinbox with the selected player's colour, or gray when none."""
+        if pid:
+            player = self.engine.getListPlayers()[pid - 1]
+            self.scoreSpinBox.setColour(self.playerColour(player))
+        else:
+            self.scoreSpinBox.setColour(QtGui.QColor(128, 128, 128))
+
     def reset(self) -> None:
         """Clear the player/kind selection and reset the score to zero."""
         self.playerButtons[0].setChecked(True)
         self.kindButtons[0].setChecked(True)
         self.scoreSpinBox.setValue(0)
+        self.updateScoreColour(0)
         self.changed.emit()
         self.setFocus()
 
@@ -326,26 +427,31 @@ class CarcassonneInputWidget(GameInputWidget):
             self.scoreSpinBox.setValue(0)
 
     def updatePlayerOrder(self) -> None:
-        """Rebuild the player radio buttons in the current player order."""
+        """Rebuild the player buttons in the current player order."""
         trash = QWidget()
         trash.setLayout(self.playerGroupLayout)
 
         self.playerButtonGroup = QButtonGroup(self)
         self.playerGroupLayout = QGridLayout(self.playerGroup)
-        b = QRadioButton("", self.playerGroup)
+        b = QPushButton("", self.playerGroup)
+        b.setCheckable(True)
         self.playerButtonGroup.addButton(b, 0)
         self.playerButtons = [b]
         b.hide()
 
         for i, player in enumerate(self.engine.getListPlayers(), 1):
-            b = QRadioButton(f"{i}. {player}", self.playerGroup)
+            b = QPushButton(f"{i}. {player}", self.playerGroup)
+            b.setCheckable(True)
             if len(self.engine.getListPlayers()) > 2:
                 self.playerGroupLayout.addWidget(b, (i - 1) % 2, (i - 1) // 2)
             else:
                 self.playerGroupLayout.addWidget(b, 0, (i - 1) % 2)
             self.playerButtonGroup.addButton(b, i)
             self.playerButtons.append(b)
+            b.setStyleSheet(self._playerButtonStyle(self.playerColour(player)))
 
+        self.playerButtonGroup.idToggled.connect(self.changed)
+        self.playerButtonGroup.idToggled.connect(self.updateScoreColour)
         self.reset()
 
 

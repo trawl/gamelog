@@ -1504,18 +1504,22 @@ class ScoreSpinBox(QWidget):
     def setValue(self, value: int | None) -> None:
         """Clamp and store ``value`` (``None`` clears the field)."""
         if value is None:
-            if value != self._value:
-                self.valueChanged.emit(value)
+            old = self._value
             self._value = None
             self.line_edit.setText("")
+            if old is not None:
+                self.valueChanged.emit(None)
         else:
             value = max(self._minimum, min(self._maximum, value))
+            old = self._value
+            self._value = (
+                value  # set before setText to prevent _commit_text re-entrancy
+            )
             if self._hideMinimum and value == self._minimum:
                 self.line_edit.setText("")
             else:
                 self.line_edit.setText(str(value))
-            if value != self._value:
-                self._value = value
+            if value != old:
                 self.valueChanged.emit(value)
         self._update_buttons()
 
