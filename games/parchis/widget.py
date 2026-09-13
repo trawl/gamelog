@@ -57,6 +57,7 @@ class ParchisWidget(GameWidget):
     """Scoreboard tab for Parchis, scored one feature entry at a time."""
 
     player_colours = _PARCHIS_COLOURS
+    colour_locked = True
 
     def createEngine(self) -> None:
         if self.game != "Parchis":
@@ -371,6 +372,8 @@ class ParchisInputWidget(GameInputWidget):
             self.playerButtons.append(b)
             b.setStyleSheet(self._playerButtonStyle(self.player_colours[i - 1]))
 
+        self.playerButtonGroup.idToggled.connect(self.changed)
+        self.playerButtonGroup.idToggled.connect(self.updateGoalsColour)
         self._setup_tab_order()
         self.reset()
 

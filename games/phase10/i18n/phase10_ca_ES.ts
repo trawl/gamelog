@@ -4,12 +4,12 @@
 <context>
     <name>Phase10QSBox</name>
     <message>
-        <location filename="../widget.py" line="937"/>
+        <location filename="../widget.py" line="955"/>
         <source>Lowest Ph</source>
         <translation>Fase Min</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="939"/>
+        <location filename="../widget.py" line="957"/>
         <source>Damned</source>
         <translation>Maleida</translation>
     </message>
@@ -17,12 +17,12 @@
 <context>
     <name>Phase10RoundPlot</name>
     <message>
-        <location filename="../widget.py" line="845"/>
+        <location filename="../widget.py" line="857"/>
         <source>Phases</source>
         <translation>Fases</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="846"/>
+        <location filename="../widget.py" line="858"/>
         <source>Scores</source>
         <translation>Puntuació</translation>
     </message>
@@ -30,12 +30,12 @@
 <context>
     <name>Phase10RoundTable</name>
     <message>
-        <location filename="../widget.py" line="768"/>
+        <location filename="../widget.py" line="780"/>
         <source>Winner</source>
         <translation>Guanyador</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="776"/>
+        <location filename="../widget.py" line="788"/>
         <source> (Phase {})</source>
         <translation> (Fase {})</translation>
     </message>
@@ -43,7 +43,7 @@
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="../widget.py" line="733"/>
+        <location filename="../widget.py" line="745"/>
         <source>Score</source>
         <translation>Marcador</translation>
     </message>

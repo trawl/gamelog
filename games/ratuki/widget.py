@@ -94,9 +94,9 @@ class RatukiInputWidget(GameInputWidget):
 
     def initUI(self) -> None:
         self.widgetLayout = QHBoxLayout(self)
-        for i, player in enumerate(self.engine.getListPlayers()):
+        for player in self.engine.getListPlayers():
             self.playerInputList[player] = RatukiPlayerInputWidget(
-                player, self.player_colours[i], self
+                player, self.playerColour(player), self
             )
             self.widgetLayout.addWidget(self.playerInputList[player])
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
@@ -122,11 +122,11 @@ class RatukiInputWidget(GameInputWidget):
         if trash_layout:
             trash.setLayout(trash_layout)
         self.widgetLayout = QHBoxLayout(self)
-        for i, player in enumerate(self.engine.getListPlayers()):
+        for player in self.engine.getListPlayers():
             if trash_layout:
                 trash_layout.removeWidget(self.playerInputList[player])
             self.widgetLayout.addWidget(self.playerInputList[player])
-            self.playerInputList[player].setColour(self.player_colours[i])
+            self.playerInputList[player].setColour(self.playerColour(player))
 
 
 class RatukiPlayerInputWidget(QGroupBox):

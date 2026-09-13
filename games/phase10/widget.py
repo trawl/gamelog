@@ -379,7 +379,7 @@ class Phase10InputWidget(GameInputWidget):
                 cast("QVBoxLayout", self.widgetLayout).addWidget(
                     self.playerInputList[player]
                 )
-            self.playerInputList[player].setColour(self.player_colours[i])
+            self.playerInputList[player].setColour(self.playerColour(player))
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         return QWidget.mousePressEvent(self, event)
@@ -397,9 +397,8 @@ class Phase10PlayerWidget(GamePlayerWidget):
         self.engine = engine
         self.current_phase: int = min(self.engine.getRemainingPhasesFromPlayer(nick))
         self.phases_in_order: bool = self.engine.getPhasesInOrderFlag()
-        super().__init__(
-            nick, PlayerColours[self.engine.getListPlayers().index(nick)], parent
-        )
+        idx = self.engine.getListPlayers().index(nick)
+        super().__init__(nick, PlayerColours[idx], parent)
 
     def initUI(self) -> None:
         """Build the phase display, score LCD, phase-number grid and inputs."""
@@ -491,6 +490,21 @@ class Phase10PlayerWidget(GamePlayerWidget):
         # self.roundWinnerRadioButton.setText(self.tr("Winner"))
         # self.roundPhaseClearedCheckbox.setText(self.tr("Completed"))
         self.updatePhaseName()
+
+    def setColour(self, colour=None) -> None:
+        """Recolour all sub-widgets that use the player colour."""
+        super().setColour(colour)
+        if not hasattr(self, "phaseNameLabel"):
+            return
+        c = self.pcolour
+        css_label = "font-weight: bold; font-size: 24px; color:rgb({},{},{});"
+        self.phaseNameLabel.setStyleSheet(
+            css_label.format(c.red(), c.green(), c.blue())
+        )
+        css_lcd = "QLCDNumber {{ color:rgb({},{},{});}}"
+        self.scoreLCD.setStyleSheet(css_lcd.format(c.red(), c.green(), c.blue()))
+        self.roundScore.setColour(c)
+        self.phaseCards.setAccentColour(c)
 
     def updatePhase10Display(
         self, points: int, completed_phases: list[int], remaining_phases: list[int]
@@ -829,8 +843,8 @@ class Phase10RoundPlot(GameRoundPlot):
         self.widgetLayout.addLayout(self.playersListLayout)
         self.playersListLayout.addStretch()
 
-        for i, player in enumerate(self.engine.getListPlayers()):
-            colour = self.player_colours[i]
+        for player in self.engine.getListPlayers():
+            colour = self.playerColour(player)
             label = QLabel(player)
             css = "QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}"
             label.setStyleSheet(css.format(colour.red(), colour.green(), colour.blue()))
@@ -896,6 +910,12 @@ class Phase10RoundPlot(GameRoundPlot):
             )
         )
 
+    def updateColours(self, colours: list) -> None:
+        super().updateColours(colours)
+        if hasattr(self, "scorecanvas"):
+            self.scorecanvas.setColours(colours)
+            self.scorecanvas.viewport().update()
+
     def updatePlayerOrder(self) -> None:
         """Rebuild the player legend row in the current player order."""
         trash = QWidget()
@@ -906,8 +926,8 @@ class Phase10RoundPlot(GameRoundPlot):
 
         self.playersListLayout.addStretch()
 
-        for i, player in enumerate(self.engine.getListPlayers()):
-            colour = self.player_colours[i]
+        for player in self.engine.getListPlayers():
+            colour = self.playerColour(player)
             label = QLabel(player)
             css = "QLabel {{ font-size: 28px; font-weight: bold; color:rgb({},{},{});}}"
             label.setStyleSheet(css.format(colour.red(), colour.green(), colour.blue()))

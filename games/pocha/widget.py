@@ -198,7 +198,7 @@ class PochaInputWidget(GameInputWidget):
 
         for i, player in enumerate(players):
             self.playerInputList[player] = PochaPlayerInputWidget(
-                player, self.engine, self.player_colours[i], self
+                player, self.engine, self.playerColour(player), self
             )
             self.widgetLayout.addWidget(
                 self.playerInputList[player],
@@ -323,7 +323,7 @@ class PochaInputWidget(GameInputWidget):
             if trash_layout:
                 trash_layout.removeWidget(self.playerInputList[player])
             self.widgetLayout.addWidget(self.playerInputList[player], i // 4, i % 4)
-            self.playerInputList[player].setColour(self.player_colours[i])
+            self.playerInputList[player].setColour(self.playerColour(player))
 
 
 class PochaPlayerInputWidget(QGroupBox):

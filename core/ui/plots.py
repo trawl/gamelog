@@ -61,6 +61,12 @@ class PlotView(QGraphicsView):
         self.plot = LinePlot(self.colours)
         self._scene.addItem(self.plot)
 
+    def setColours(self, colours: Sequence[QtGui.QColor]) -> None:
+        """Replace the colour palette and propagate to the line plot."""
+        self.colours = colours
+        if hasattr(self, "plot"):
+            self.plot.colours = colours
+
     def setMinYMax(self, value: float) -> None:
         self.plot.min_ymax = value
 

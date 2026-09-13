@@ -207,13 +207,13 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="../../ui/game.py" line="1166"/>
-        <location filename="../../ui/game.py" line="1171"/>
+        <location filename="../../ui/game.py" line="1217"/>
+        <location filename="../../ui/game.py" line="1222"/>
         <source>Delete Entry</source>
         <translation>Eliminar Entrada</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="1172"/>
+        <location filename="../../ui/game.py" line="1223"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>¿Estás seguro que quieres eliminar esta entrada?</translation>
     </message>
@@ -221,17 +221,17 @@
 <context>
     <name>GameRoundsDetail</name>
     <message>
-        <location filename="../../ui/game.py" line="1071"/>
+        <location filename="../../ui/game.py" line="1117"/>
         <source>Table</source>
         <translation>Tabla</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="1072"/>
+        <location filename="../../ui/game.py" line="1118"/>
         <source>Plot</source>
         <translation>Gráfico</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="1073"/>
+        <location filename="../../ui/game.py" line="1119"/>
         <source>Statistics</source>
         <translation>Estadísticas</translation>
     </message>
@@ -272,124 +272,124 @@
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="../../ui/game.py" line="98"/>
+        <location filename="../../ui/game.py" line="99"/>
         <source>Scoreboard</source>
         <translation>Marcador</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="386"/>
+        <location filename="../../ui/game.py" line="392"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pausar/Reanudar</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="392"/>
+        <location filename="../../ui/game.py" line="398"/>
         <source>Commit &amp;Round</source>
         <translation>Cerrar &amp;Ronda</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="675"/>
+        <location filename="../../ui/game.py" line="690"/>
         <source>Winner deals</source>
         <translation>El ganador reparte</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="468"/>
+        <location filename="../../ui/game.py" line="483"/>
         <source>{} won this match!</source>
         <translation>¡{} ha ganado la partida!</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="387"/>
+        <location filename="../../ui/game.py" line="393"/>
         <source>&amp;Leave Match</source>
         <translation>&amp;Abandonar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="390"/>
+        <location filename="../../ui/game.py" line="396"/>
         <source>Commit &amp;Entry</source>
         <translation>Confirma &amp;Entrada</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="470"/>
+        <location filename="../../ui/game.py" line="485"/>
         <source>Game is paused</source>
         <translation>El juego está pausado</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="473"/>
+        <location filename="../../ui/game.py" line="488"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="480"/>
+        <location filename="../../ui/game.py" line="495"/>
         <source>Leave Match</source>
         <translation>Abandonar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="566"/>
+        <location filename="../../ui/game.py" line="581"/>
         <source>No winner selected</source>
         <translation>No se ha seleccionado ningún ganador</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="576"/>
+        <location filename="../../ui/game.py" line="591"/>
         <source>{} score is not valid</source>
         <translation>La puntuación de {} no es válida</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="584"/>
+        <location filename="../../ui/game.py" line="599"/>
         <source>No extras</source>
         <translation>No hay extras</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="393"/>
-        <location filename="../../ui/game.py" line="630"/>
+        <location filename="../../ui/game.py" line="399"/>
+        <location filename="../../ui/game.py" line="645"/>
         <source>Rollback</source>
         <translation>Deshacer</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="631"/>
+        <location filename="../../ui/game.py" line="646"/>
         <source>Are you sure you want to undo the last entry?</source>
         <translation>¿Estás seguro que quieres deshacer la última entrada?</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="655"/>
+        <location filename="../../ui/game.py" line="670"/>
         <source>Finish game</source>
         <translation>Finalizar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="656"/>
+        <location filename="../../ui/game.py" line="671"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>¿Estás seguro que quieres finalizar la partida actual?</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="679"/>
+        <location filename="../../ui/game.py" line="694"/>
         <source>Next player deals</source>
         <translation>El siguiente reparte</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="717"/>
+        <location filename="../../ui/game.py" line="732"/>
         <source>{} - Round {}</source>
         <translation>{} - Ronda {}</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="481"/>
-        <location filename="../../ui/game.py" line="508"/>
+        <location filename="../../ui/game.py" line="496"/>
+        <location filename="../../ui/game.py" line="523"/>
         <source>Do you want to save the current {} match?</source>
         <translation>¿Quieres guardar la partida de {} actual?</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="395"/>
+        <location filename="../../ui/game.py" line="401"/>
         <source>&amp;Finish Game</source>
         <translation>&amp;Finalizar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="394"/>
+        <location filename="../../ui/game.py" line="400"/>
         <source>Player &amp;Order</source>
         <translation>&amp;Orden Jugadores</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="388"/>
+        <location filename="../../ui/game.py" line="394"/>
         <source>Restart &amp;Match</source>
         <translation>Nueva &amp;Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game.py" line="507"/>
+        <location filename="../../ui/game.py" line="522"/>
         <source>Restart Match</source>
         <translation>Nueva Partida</translation>
     </message>
@@ -569,7 +569,7 @@
 <context>
     <name>PlayerOrderDialog</name>
     <message>
-        <location filename="../../ui/playerlist.py" line="35"/>
+        <location filename="../../ui/playerlist.py" line="112"/>
         <location filename="../../ui/playerorder.py" line="29"/>
         <source>Player Order</source>
         <translation>Orden de Jugadores</translation>
@@ -632,6 +632,14 @@
         <location filename="../../ui/newgame.py" line="489"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>¿Estás seguro que quieres cancelar la partida guardada?</translation>
+    </message>
+</context>
+<context>
+    <name>_ColourPickerDialog</name>
+    <message>
+        <location filename="../../ui/playerlist.py" line="192"/>
+        <source>Choose colour</source>
+        <translation>Elige color</translation>
     </message>
 </context>
 </TS>

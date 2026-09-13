@@ -274,9 +274,7 @@ class ScrabbleInputWidget(GameInputWidget):
     def reset(self) -> None:
         """Reset the entry to the current dealer with a cleared score field."""
         self.active_player = self.engine.getDealer()
-        colour = self.player_colours[
-            self.engine.getListPlayers().index(cast("str", self.active_player))
-        ]
+        colour = self.playerColour(cast("str", self.active_player))
         self.setColour(colour)
         self.currentPlayerBox.setTitle(f"{self.active_player}")
         self.scoreSpinBox.reset()
