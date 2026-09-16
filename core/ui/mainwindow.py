@@ -1,4 +1,4 @@
-"""Top-level application window and the About dialog."""
+"""Top-level application window."""
 
 from __future__ import annotations
 
@@ -8,9 +8,6 @@ from typing import TYPE_CHECKING
 from PySide6 import QtCore, QtGui
 from PySide6.QtGui import QAction, QCloseEvent
 from PySide6.QtWidgets import (
-    QDialog,
-    QHBoxLayout,
-    QLabel,
     QMainWindow,
     QMessageBox,
     QVBoxLayout,
@@ -18,6 +15,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.engine.db import db
+from core.ui.dialogs import AboutDialog
 from core.ui.newgame import NewGameWidget
 
 logger = logging.getLogger(__name__)
@@ -212,39 +210,3 @@ class MainWindow(QMainWindow):
         if event.type() == QtCore.QEvent.Type.LanguageChange:
             self.retranslateUi()
         return super().changeEvent(event)
-
-
-class AboutDialog(QDialog):
-    """Simple 'About Gamelog' dialog showing the app icon and credits."""
-
-    def __init__(self, parent: QWidget | None = None) -> None:
-        super().__init__(parent)
-        # self.setFixedSize(QtCore.QSize(450, 350))
-        # self.setWindowTitle(i18n("AboutDialog", "About Gamelog"))
-        self.setWindowTitle(self.tr("About Gamelog"))
-        self.widgetlayout = QHBoxLayout(self)
-        self.iconlabel = QLabel(self)
-        self.iconlabel.setMaximumSize(75, 75)
-        self.iconlabel.setScaledContents(True)
-        self.iconlabel.setPixmap(QtGui.QPixmap(":/icons/cards.png"))
-        self.widgetlayout.addWidget(self.iconlabel)
-        self.contentlayout = QVBoxLayout()
-        self.widgetlayout.addLayout(self.contentlayout)
-        self.title = QLabel("Gamelog")
-        self.title.setStyleSheet("QLabel{font-size:18px; font-weight:bold}")
-        self.title.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
-        self.contentlayout.addWidget(self.title)
-        self.content = QLabel(
-            self.tr("Gamelog is a utility to keep track of the score in board games.")
-        )
-        self.content.setWordWrap(True)
-        self.content.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
-        self.contentlayout.addWidget(self.content)
-        self.content = QLabel(f"QT {QtCore.qVersion()}")
-        self.content.setWordWrap(True)
-        self.content.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
-        self.contentlayout.addWidget(self.content)
-        self.content = QLabel("Xavi Abellan 2012")
-        self.content.setWordWrap(True)
-        self.content.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
-        self.contentlayout.addWidget(self.content)

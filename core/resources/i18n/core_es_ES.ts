@@ -4,12 +4,12 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="224"/>
+        <location filename="../../ui/dialogs.py" line="25"/>
         <source>About Gamelog</source>
         <translation>Acerda de Gamelog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="238"/>
+        <location filename="../../ui/dialogs.py" line="39"/>
         <source>Gamelog is a utility to keep track of the score in board games.</source>
         <translation>Gamelog es un programa para llevar la cuenta de puntos en juegos de mesa.</translation>
     </message>
@@ -418,60 +418,60 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="97"/>
-        <location filename="../../ui/mainwindow.py" line="98"/>
+        <location filename="../../ui/mainwindow.py" line="95"/>
+        <location filename="../../ui/mainwindow.py" line="96"/>
         <source>GameLog</source>
         <translation>GameLog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="99"/>
+        <location filename="../../ui/mainwindow.py" line="97"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="101"/>
+        <location filename="../../ui/mainwindow.py" line="99"/>
         <source>&amp;Quit</source>
         <translation>&amp;Salir</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="102"/>
+        <location filename="../../ui/mainwindow.py" line="100"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="103"/>
+        <location filename="../../ui/mainwindow.py" line="101"/>
         <source>Quit GameLog</source>
         <translation>Salir de Gamelog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="125"/>
-        <location filename="../../ui/mainwindow.py" line="141"/>
-        <location filename="../../ui/mainwindow.py" line="166"/>
+        <location filename="../../ui/mainwindow.py" line="123"/>
+        <location filename="../../ui/mainwindow.py" line="139"/>
+        <location filename="../../ui/mainwindow.py" line="164"/>
         <source>Exit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="105"/>
+        <location filename="../../ui/mainwindow.py" line="103"/>
         <source>&amp;Help</source>
         <translation>&amp;Ayuda</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="106"/>
+        <location filename="../../ui/mainwindow.py" line="104"/>
         <source>&amp;About Gamelog...</source>
         <translation>&amp;Acerca de Gamelog...</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="128"/>
+        <location filename="../../ui/mainwindow.py" line="126"/>
         <source>You have an opened {} match. Do you want to save it before exiting?</source>
         <translation>¿Quieres guardar la partida de {} actual antes de salir?</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="143"/>
+        <location filename="../../ui/mainwindow.py" line="141"/>
         <source>You have {} opened matches. Do you want to save them before exiting?</source>
         <translation>Hay {} partidas abiertas. ¿Quieres guardarlas antes de salir?</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="167"/>
+        <location filename="../../ui/mainwindow.py" line="165"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>¿Estás seguro que quieres salir de Gamelog?</translation>
     </message>
@@ -577,22 +577,22 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="35"/>
+        <location filename="../../ui/mainwindow.py" line="33"/>
         <source>&amp;Yes</source>
         <translation>&amp;Sí</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="36"/>
+        <location filename="../../ui/mainwindow.py" line="34"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="37"/>
+        <location filename="../../ui/mainwindow.py" line="35"/>
         <source>OK</source>
         <translation>Aceptar</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="38"/>
+        <location filename="../../ui/mainwindow.py" line="36"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
