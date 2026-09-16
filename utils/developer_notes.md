@@ -115,9 +115,10 @@ Adding a game is dropping in a directory; no other files need editing.
    Shared strings are translated once under the `"GameSettings"` context and
    live in the core translation catalogue (`core/resources/i18n/core_<locale>.ts`).
 
-7. (Optional) drop assets into `games/<name>/{icons,styles,i18n}` and run
-   `python utils/build_resources.py`; add translations with
-   `python utils/build_translations.py`.
+7. (Optional) drop assets into `games/<name>/{icons,styles,i18n}`. For
+   translations run `python utils/build_translations.py` — it compiles the
+   catalogues and rebuilds resources automatically. For non-translation assets
+   (icons, stylesheets) run `python utils/build_resources.py` directly.
 8. Add a test (a save/resume round-trip and a winner-rule check) under `tests/`.
 
 Existing games make good templates — e.g. `games/ratuki/` for a simple
@@ -144,15 +145,20 @@ uv run pytest --cov --cov-report=term-missing
 ```
 
 ## Pre-commit hooks
-Optional but recommended: run ruff (lint + format) automatically before each
-commit. Install the git hook once:
+Optional but recommended: install the hooks once:
 
 ```
 uv run pre-commit install
 ```
 
-The hooks call the project's own ruff (via `uv run`), so they always match the
-version used in CI. Run them manually against everything with:
+The hooks run automatically on every `git commit` and cover:
+
+* **ruff** — lint + format (uses the project's own ruff via `uv run`, matching CI)
+* **basedpyright** — type checking
+* **build-translations** — syncs and compiles all `.ts` catalogues; the commit is
+  **blocked** if any strings are unfinished (see [I18N support](#i18n-support)).
+
+Run them manually against everything with:
 
 ```
 uv run pre-commit run --all-files
@@ -171,12 +177,14 @@ Whenever code with translatable text changes:
 python utils/build_translations.py
 ```
 
-   - If **all strings are already translated**, the script automatically runs
-     `build_resources.py` for you — nothing else to do.
+   - If **all strings are already translated** and any `.qm` file changed,
+     the script automatically runs `build_resources.py` — nothing else to do.
+     If no `.qm` content changed the resource rebuild is skipped.
    - If **new unfinished strings are found**, the script prints the exact
-     `pyside6-linguist` command(s) needed (one per translation unit). Run
-     each printed command, translate the flagged strings, then re-run
-     `build_translations.py` to recompile and rebuild resources.
+     `pyside6-linguist` command(s) needed (one per translation unit) and
+     **exits with an error** — which also blocks a commit if run via the
+     pre-commit hook. Run each printed command, translate the flagged strings,
+     then re-run `build_translations.py` to recompile and rebuild resources.
 
 ## Resources (styles, icons, translations)
 Resources are **auto-discovered** and compiled into `resources_rc.py`. You never
