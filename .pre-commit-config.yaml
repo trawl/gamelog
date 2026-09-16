@@ -27,3 +27,9 @@ repos:
         types_or: [python, pyi]
         require_serial: true
         pass_filenames: false
+      - id: build-translations
+        name: build translations
+        entry: uv run python utils/build_translations.py
+        language: system
+        pass_filenames: false
+        always_run: true
