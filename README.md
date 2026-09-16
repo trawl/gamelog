@@ -42,7 +42,13 @@ and pause/resume for matches that span several sittings.
 ## Running Gamelog
 
 The easiest way is with [uv](https://github.com/astral-sh/uv). Once it's
-installed, clone this repository and run, from the project root:
+installed you can run it directly from the repository:
+
+```bash
+uvx https://github.com/trawl/gamelog.git
+```
+
+Or clone the repository and run from the project root:
 
 ```bash
 uv run gamelog.pyw

@@ -10,7 +10,7 @@ dependencies = [
     "PySide6>=6.5",
 ]
 [project.scripts]
-gamelog = "gamelog.pyw:__main__"
+gamelog = "core.__main__:main"
 
 [dependency-groups]
 dev = [
@@ -20,6 +20,9 @@ dev = [
     "ruff>=0.6",
     "basedpyright>=1"
 ]
+
+[tool.setuptools.packages.find]
+include = ["core*", "games*", "db*", "utils*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -37,7 +40,7 @@ exclude_also = [
 [tool.ruff]
 target-version = "py312"
 # Generated / vendored files are not ours to lint.
-extend-exclude = ["resources_rc.py"]
+extend-exclude = ["resources_rc.py", "core/resources_rc.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "C4"]
@@ -46,3 +49,4 @@ ignore = ["E501"]
 
 [tool.basedpyright]
 typeCheckingMode = "standard"
+exclude = ["build/", ".venv/"]

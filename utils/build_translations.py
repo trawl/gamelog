@@ -48,7 +48,7 @@ def _units() -> list[tuple[str, Path, Path]]:
 
 
 def _sources(root: Path, name: str) -> list[str]:
-    files = sorted(root.rglob("*.py"))
+    files = [f for f in sorted(root.rglob("*.py")) if f.name != "resources_rc.py"]
     if name == "core":
         # core owns only framework code, never the games package.
         files = [f for f in files if "games" not in f.relative_to(PROJECT_ROOT).parts]
