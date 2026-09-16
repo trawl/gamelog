@@ -1,7 +1,9 @@
 name: Sync develop with main
 
 on:
-  push:
+  workflow_run:
+    workflows: [Release Please]
+    types: [completed]
     branches: [main]
 
 permissions:
