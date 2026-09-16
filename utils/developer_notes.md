@@ -15,9 +15,9 @@ per game:
 ```
 core/                     the framework — rarely touched when adding a game
   registry.py             GameDefinition + registry + object creation
-  model/base.py           base match / round models
-  engine/                 base engine, stats, resume, db, settings
-  ui/                     base widgets (GameWidget, stats, plots, dialogs, ...)
+  model/match.py          base match / round / player models
+  engine/                 engine hierarchy, stats, resume, db, settings
+  ui/                     app shell, game sub-package (widgets, plots, stats), player sub-package
   logging_config.py       log-level resolution
   resources/              shared icons / styles / i18n
 games/
