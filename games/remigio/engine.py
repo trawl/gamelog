@@ -6,7 +6,7 @@ import logging
 from collections.abc import Sequence
 from typing import cast
 
-from core.engine.base import RoundGameEngine, readInput
+from core.engine.engine import RoundGameEngine, readInput
 from games.remigio.model import RemigioMatch
 
 logger = logging.getLogger(__name__)

@@ -1,4 +1,4 @@
-"""Reusable error message box."""
+"""Reusable dialog widgets."""
 
 from __future__ import annotations
 

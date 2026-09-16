@@ -4,7 +4,7 @@
 <context>
     <name>ParchisEntriesDetail</name>
     <message>
-        <location filename="../widget.py" line="451"/>
+        <location filename="../widget.py" line="455"/>
         <source>Live Statistics</source>
         <translation>En viu</translation>
     </message>
@@ -12,17 +12,17 @@
 <context>
     <name>ParchisInputWidget</name>
     <message>
-        <location filename="../widget.py" line="269"/>
+        <location filename="../widget.py" line="273"/>
         <source>Select Player</source>
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="270"/>
+        <location filename="../widget.py" line="274"/>
         <source>Select number of goals</source>
         <translation>Metes</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="271"/>
+        <location filename="../widget.py" line="275"/>
         <source>Select Kills</source>
         <translation>Morts</translation>
     </message>
@@ -30,37 +30,37 @@
 <context>
     <name>ParchisLiveStats</name>
     <message>
-        <location filename="../widget.py" line="519"/>
+        <location filename="../widget.py" line="523"/>
         <source>Killer table</source>
         <translation>Taula de matances</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="520"/>
+        <location filename="../widget.py" line="524"/>
         <source>Summary</source>
         <translation>Resum</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="533"/>
+        <location filename="../widget.py" line="537"/>
         <source>combos</source>
         <translation>Combos</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="529"/>
+        <location filename="../widget.py" line="533"/>
         <source>kills</source>
         <translation>Assasinats</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="530"/>
+        <location filename="../widget.py" line="534"/>
         <source>deaths</source>
         <translation>Morts</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="531"/>
+        <location filename="../widget.py" line="535"/>
         <source>suicides</source>
         <translation>Suïcidis</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="532"/>
+        <location filename="../widget.py" line="536"/>
         <source>fav_target</source>
         <translation>Objectiu Fav</translation>
     </message>
@@ -68,14 +68,14 @@
 <context>
     <name>ParchisQSBox</name>
     <message>
-        <location filename="../widget.py" line="700"/>
-        <location filename="../widget.py" line="705"/>
+        <location filename="../widget.py" line="704"/>
+        <location filename="../widget.py" line="709"/>
         <source>Max Kills</source>
         <translation>Max Morts</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="702"/>
-        <location filename="../widget.py" line="707"/>
+        <location filename="../widget.py" line="706"/>
+        <location filename="../widget.py" line="711"/>
         <source>Max Combo</source>
         <translation>Millor Combo</translation>
     </message>
@@ -83,17 +83,17 @@
 <context>
     <name>ParchisWidget</name>
     <message>
-        <location filename="../widget.py" line="130"/>
+        <location filename="../widget.py" line="134"/>
         <source>You must select a player</source>
         <translation>No hi ha cap jugador sel·leccionat</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="137"/>
+        <location filename="../widget.py" line="141"/>
         <source>{player} score is not valid</source>
         <translation>La puntuació de {player} no és vàlida</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="145"/>
+        <location filename="../widget.py" line="149"/>
         <source>Empty entry, add at least a goal or a kill</source>
         <translation>Entrada buida, afegeix al menys una meta o mort</translation>
     </message>

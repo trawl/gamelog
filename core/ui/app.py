@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING
 
 from PySide6.QtWidgets import QApplication, QMessageBox
 
-from core.ui.languagechooser import LanguageManager
-from core.ui.thememanager import ThemeManager
+from core.ui.language import LanguageManager
+from core.ui.theme import ThemeManager
 
 logger = logging.getLogger(__name__)
 

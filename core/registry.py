@@ -83,7 +83,7 @@ class GameDefinition:
     ) -> Any:
         if self.quick_stats_factory:
             return self.resolve(self.quick_stats_factory)(gname, players, parent)
-        from core.ui.gamestats import QuickStatsTW
+        from core.ui.game.stats import QuickStatsTW
 
         return QuickStatsTW(gname, players, parent)
 
@@ -132,7 +132,7 @@ class GameRegistry:
         definition = self.get(name)
         if definition:
             return definition.create_match(players)
-        from core.model.base import GenericMatch
+        from core.model.match import GenericMatch
 
         return GenericMatch(players)
 
@@ -141,7 +141,7 @@ class GameRegistry:
         definition = self.get(name)
         if definition:
             return definition.create_engine()
-        from core.engine.base import GameEngine
+        from core.engine.engine import GameEngine
 
         return GameEngine()
 
@@ -183,7 +183,7 @@ class GameRegistry:
         definition = self.get(name)
         if definition:
             return definition.create_quick_stats(definition.name, players, parent)
-        from core.ui.gamestats import QuickStatsTW
+        from core.ui.game.stats import QuickStatsTW
 
         # Unknown-game fallback: name is only None in degenerate/unused paths.
         return QuickStatsTW(name or "", players, parent)

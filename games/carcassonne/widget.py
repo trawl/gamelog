@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.engine.settings import appsettings
-from core.model.base import GenericRound
+from core.model.match import GenericRound
 from core.ui.game import (
     GameInputWidget,
     GameNotImplementedException,
@@ -29,10 +29,14 @@ from core.ui.game import (
     GameRoundsDetail,
     GameRoundTable,
     GameWidget,
-    QuickStatsTW,
     ScoreSpinBox,
 )
-from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, StatsTable
+from core.ui.gamestats import (
+    GeneralQuickStats,
+    ParticularQuickStats,
+    QuickStatsTW,
+    StatsTable,
+)
 from games.carcassonne.engine import CarcassonneEngine, CarcassonneStatsEngine
 from games.carcassonne.model import CarcassonneEntry
 

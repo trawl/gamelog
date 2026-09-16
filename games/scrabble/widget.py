@@ -17,7 +17,6 @@ from PySide6.QtWidgets import (
 )
 
 from core.engine.settings import appsettings
-from core.ui.countdown import CountdownTimer
 from core.ui.game import (
     BonusButton,
     GameInputWidget,
@@ -29,6 +28,7 @@ from core.ui.game import (
     ScoreSpinBox,
 )
 from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
+from core.ui.timers import CountdownTimer
 from games.scrabble.engine import ScrabbleEngine
 
 logger = logging.getLogger(__name__)

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import cast
 
-from core.engine.base import EntryGameEngine, readInput
 from core.engine.db import db
+from core.engine.engine import EntryGameEngine, readInput
 from core.engine.stats import ParticularStatsEngine, StatsEngine
 from games.scrabble.model import ScrabbleMatch
 

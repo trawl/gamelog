@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from typing import cast
 
 from core.engine.db import db
-from core.model.base import GenericEntry, GenericRound, GenericRoundMatch
+from core.model.match import GenericEntry, GenericRound, GenericRoundMatch
 
 
 class CarcassonneMatch(GenericRoundMatch):

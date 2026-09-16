@@ -5,8 +5,8 @@ from __future__ import annotations
 import sys
 from typing import cast
 
-from core.engine.base import GameEngine, RoundGameEngine, readInput
 from core.engine.db import db
+from core.engine.engine import GameEngine, RoundGameEngine, readInput
 from core.registry import registry
 
 

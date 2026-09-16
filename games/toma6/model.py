@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from core.model.base import GenericRound, GenericRoundMatch
+from core.model.match import GenericRound, GenericRoundMatch
 
 
 class Toma6Match(GenericRoundMatch):

@@ -6,7 +6,7 @@ import logging
 from collections.abc import Sequence
 
 from core.engine.db import db
-from core.model.base import GenericRoundMatch
+from core.model.match import GenericRoundMatch
 
 logger = logging.getLogger(__name__)
 

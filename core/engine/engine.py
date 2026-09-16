@@ -15,7 +15,7 @@ from abc import abstractmethod
 from collections.abc import Callable
 
 from core.engine.db import db
-from core.model.base import GenericMatch, GenericRound, GenericRoundMatch, Player
+from core.model.match import GenericMatch, GenericRound, GenericRoundMatch, Player
 from core.registry import registry
 
 logger = logging.getLogger(__name__)

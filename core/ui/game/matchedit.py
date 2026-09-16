@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
     from PySide6.QtWidgets import QWidget
 
-    from core.engine.base import GameEngine
+    from core.engine.engine import GameEngine
 
 
 class MatchTimesEditDialog(QDialog):

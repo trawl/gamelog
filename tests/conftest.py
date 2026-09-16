@@ -54,9 +54,9 @@ def qapp():
     from PySide6.QtWidgets import QMessageBox
 
     import resources_rc  # noqa: F401
-    from core.ui.gamelogapplication import GamelogApplication
-    from core.ui.languagechooser import LanguageManager
-    from core.ui.thememanager import ThemeManager
+    from core.ui.app import GamelogApplication
+    from core.ui.language import LanguageManager
+    from core.ui.theme import ThemeManager
 
     # Never let an error dialog block a headless run.
     QMessageBox.critical = staticmethod(lambda *a, **k: QMessageBox.StandardButton.Ok)  # pyright: ignore[reportAttributeAccessIssue]

@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import cast
 
-from core.model.base import GenericEntry, GenericRoundMatch
+from core.model.match import GenericEntry, GenericRoundMatch
 
 
 class ParchisMatch(GenericRoundMatch):
