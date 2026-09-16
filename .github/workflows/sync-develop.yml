@@ -19,5 +19,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout develop
-          git merge --ff-only origin/main
+          git merge --no-ff origin/main -m "chore: sync develop with main"
           git push origin develop
