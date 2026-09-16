@@ -96,8 +96,6 @@ class LanguageButton(QToolButton):
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        # self.setToolTip(self.tr("Change Language"))
-        # self.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
         app = QApplication.instance()
         if app:
             self.lm = app.languageManager  # pyright: ignore[reportAttributeAccessIssue]
@@ -105,7 +103,6 @@ class LanguageButton(QToolButton):
             self.lm = LanguageManager()
         self.languageChooser = LanguageChooser(self)
         self.languageChooser.newQM.connect(self.changeLanguage)
-        # self.clicked.connect(self.showLanguageChooser)
         self.clicked.connect(self.nextLanguage)
         self.setMinimumSize(32, 32)
         self.setStyleSheet("""

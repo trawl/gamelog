@@ -7,7 +7,7 @@ from collections.abc import Sequence
 from typing import cast
 
 from core.engine.db import db
-from core.model.base import GenericRound, GenericRoundMatch
+from core.model.match import GenericRound, GenericRoundMatch
 
 logger = logging.getLogger(__name__)
 

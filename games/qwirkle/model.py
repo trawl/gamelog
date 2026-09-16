@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from typing import ClassVar, cast
 
 from core.engine.db import db
-from core.model.base import GenericEntry, GenericRoundMatch
+from core.model.match import GenericEntry, GenericRoundMatch
 
 
 class QwirkleMatch(GenericRoundMatch):

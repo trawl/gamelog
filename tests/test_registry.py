@@ -1,7 +1,7 @@
 """The game registry: discovery, object creation, and fallbacks."""
 
-from core.engine.base import GameEngine
-from core.model.base import GenericMatch
+from core.engine.engine import GameEngine
+from core.model.match import GenericMatch
 from core.registry import registry
 
 EXPECTED_GAMES = {

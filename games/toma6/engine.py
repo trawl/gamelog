@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import cast
 
-from core.engine.base import readInput
+from core.engine.engine import readInput
 from games.remigio.engine import RemigioEngine
 from games.toma6.model import Toma6Match
 

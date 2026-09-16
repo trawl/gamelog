@@ -23,9 +23,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from core.engine.base import RoundGameEngine
+from core.engine.engine import RoundGameEngine
 from core.engine.settings import appsettings
-from core.model.base import GenericRound
+from core.model.match import GenericRound
 from core.ui.game import (
     CardWidget,
     GameInputWidget,
@@ -39,12 +39,12 @@ from core.ui.game import (
     ScoreSpinBox,
     ToggleGroupBox,
 )
+from core.ui.game.plots import PlotView
 from core.ui.gamestats import (
     GeneralQuickStats,
     ParticularQuickStats,
     QuickStatsTW,
 )
-from core.ui.plots import PlotView
 from games.phase10.engine import Phase10Engine, Phase10MasterEngine
 from games.phase10.model import Phase10Round
 

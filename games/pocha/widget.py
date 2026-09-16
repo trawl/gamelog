@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.engine.settings import appsettings
-from core.model.base import GenericRound
+from core.model.match import GenericRound
 from core.ui.game import (
     GameInputWidget,
     GameNotImplementedException,

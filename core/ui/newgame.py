@@ -28,10 +28,9 @@ from core.engine.db import db
 from core.engine.resume import ResumeEngine
 from core.engine.settings import appsettings
 from core.registry import registry
-from core.ui.gamelogapplication import GamelogApplication
-from core.ui.languagechooser import LanguageButton
-from core.ui.newplayer import NewPlayerDialog
-from core.ui.playerlist import PlayerList, PlayerListModel
+from core.ui.app import GamelogApplication
+from core.ui.language import LanguageButton
+from core.ui.player import NewPlayerDialog, PlayerList, PlayerListModel
 from core.ui.settings import SettingsDialog
 from core.ui.tab import Tab
 

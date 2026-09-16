@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.engine.settings import appsettings
-from core.model.base import GenericRound
+from core.model.match import GenericRound
 from core.ui.game import (
     ClickableCounter,
     GameInputWidget,
@@ -34,9 +34,13 @@ from core.ui.game import (
     GameRoundsDetail,
     GameRoundTable,
     GameWidget,
-    QuickStatsTW,
 )
-from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, StatsTable
+from core.ui.gamestats import (
+    GeneralQuickStats,
+    ParticularQuickStats,
+    QuickStatsTW,
+    StatsTable,
+)
 from games.parchis.engine import ParchisEngine
 from games.parchis.model import ParchisEntry
 

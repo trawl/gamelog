@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import cast
 
-from core.engine.base import RoundGameEngine, readInput
+from core.engine.engine import RoundGameEngine, readInput
 from games.ratuki.model import RatukiMatch
 
 logger = logging.getLogger(__name__)

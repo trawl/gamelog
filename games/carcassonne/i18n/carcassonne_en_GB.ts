@@ -4,7 +4,7 @@
 <context>
     <name>CarcassonneEntriesDetail</name>
     <message>
-        <location filename="../widget.py" line="493"/>
+        <location filename="../widget.py" line="497"/>
         <source>Totals</source>
         <translation>Totals</translation>
     </message>
@@ -12,47 +12,47 @@
 <context>
     <name>CarcassonneInputWidget</name>
     <message>
-        <location filename="../widget.py" line="300"/>
+        <location filename="../widget.py" line="304"/>
         <source>Select Player</source>
         <translation>Select Player</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="301"/>
+        <location filename="../widget.py" line="305"/>
         <source>Select kind of entry</source>
         <translation>Kind of entry</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="302"/>
+        <location filename="../widget.py" line="306"/>
         <source>Points</source>
         <translation>Points</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="154"/>
+        <location filename="../widget.py" line="158"/>
         <source>City</source>
         <translation>City</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="155"/>
+        <location filename="../widget.py" line="159"/>
         <source>Road</source>
         <translation>Road</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="156"/>
+        <location filename="../widget.py" line="160"/>
         <source>Cloister</source>
         <translation>Cloister</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="157"/>
+        <location filename="../widget.py" line="161"/>
         <source>Field</source>
         <translation>Field</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="158"/>
+        <location filename="../widget.py" line="162"/>
         <source>Goods</source>
         <translation>Goods</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="159"/>
+        <location filename="../widget.py" line="163"/>
         <source>Fair</source>
         <translation>Fair</translation>
     </message>
@@ -60,27 +60,27 @@
 <context>
     <name>CarcassonneQSBox</name>
     <message>
-        <location filename="../widget.py" line="697"/>
+        <location filename="../widget.py" line="701"/>
         <source>Record</source>
         <translation>Records</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="698"/>
+        <location filename="../widget.py" line="702"/>
         <source>Player</source>
         <translation>Player</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="699"/>
+        <location filename="../widget.py" line="703"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="666"/>
+        <location filename="../widget.py" line="670"/>
         <source>Match Records</source>
         <translation>Match Records</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="665"/>
+        <location filename="../widget.py" line="669"/>
         <source>Individual Records</source>
         <translation>Individual Records</translation>
     </message>
@@ -88,17 +88,17 @@
 <context>
     <name>CarcassonneWidget</name>
     <message>
-        <location filename="../widget.py" line="115"/>
+        <location filename="../widget.py" line="119"/>
         <source>You must select a player</source>
         <translation>You must select a player</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="121"/>
+        <location filename="../widget.py" line="125"/>
         <source>You must select a kind</source>
         <translation>You must select a kind of entry</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="127"/>
+        <location filename="../widget.py" line="131"/>
         <source>{player} score is not valid</source>
         <translation>{player} score is not valid</translation>
     </message>
