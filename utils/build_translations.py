@@ -20,9 +20,11 @@ Usage (from the repository root)::
 
 from __future__ import annotations
 
+import hashlib
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -71,27 +73,52 @@ def _unfinished_ts_files(ts_files: list[Path]) -> list[Path]:
     return needs_work
 
 
-def build_unit(name: str, root: Path, i18n_dir: Path) -> list[Path]:
-    """Build translations for one unit and return any .ts files needing review."""
+def build_unit(name: str, root: Path, i18n_dir: Path) -> tuple[list[Path], bool, str]:
+    """Build translations for one unit.
+
+    Returns (unfinished_ts_files, qm_changed, captured_output) so the caller
+    can print output atomically and avoid interleaving with other parallel units.
+    """
+    buf: list[str] = []
+
+    def _run(cmd: list[str]) -> None:
+        result = subprocess.run(cmd, check=True, text=True, capture_output=True)
+        if result.stdout:
+            buf.append(result.stdout.rstrip())
+        if result.stderr:
+            buf.append(result.stderr.rstrip())
+
     i18n_dir.mkdir(parents=True, exist_ok=True)
     ts_files = [i18n_dir / f"{name}_{locale}.ts" for locale in LOCALES]
     sources = _sources(root, name)
 
-    lupdate = [
-        _tool("pyside6-lupdate"),
-        *sources,
-        "-ts",
-        *[str(t) for t in ts_files],
-        "-no-obsolete",
-    ]
-    subprocess.run(lupdate, check=True)
+    _run(
+        [
+            _tool("pyside6-lupdate"),
+            *sources,
+            "-ts",
+            *[str(t) for t in ts_files],
+            "-no-obsolete",
+        ]
+    )
 
     needs_work = _unfinished_ts_files(ts_files)
 
-    for ts in ts_files:
-        subprocess.run([_tool("pyside6-lrelease"), str(ts)], check=True)
+    def _digest(path: Path) -> bytes:
+        return hashlib.md5(path.read_bytes()).digest() if path.exists() else b""
 
-    return needs_work
+    qm_files = [ts.with_suffix(".qm") for ts in ts_files]
+    pre = {qm: _digest(qm) for qm in qm_files}
+
+    with ThreadPoolExecutor() as pool:
+        futures = [
+            pool.submit(_run, [_tool("pyside6-lrelease"), str(ts)]) for ts in ts_files
+        ]
+        for f in as_completed(futures):
+            f.result()  # re-raise any subprocess error
+
+    qm_changed = any(_digest(qm) != pre[qm] for qm in qm_files)
+    return needs_work, qm_changed, "\n".join(buf)
 
 
 def _brace_compress(paths: list[str]) -> str:
@@ -118,13 +145,29 @@ def _brace_compress(paths: list[str]) -> str:
 
 
 def main() -> None:
+    units = _units()
     all_unfinished: list[Path] = []
-    for name, root, i18n_dir in _units():
-        print(f"== {name} ==")
-        all_unfinished.extend(build_unit(name, root, i18n_dir))
+
+    def _run(args: tuple[str, Path, Path]) -> tuple[str, list[Path], bool, str]:
+        name, root, i18n_dir = args
+        unfinished, qm_changed, output = build_unit(name, root, i18n_dir)
+        return name, unfinished, qm_changed, output
+
+    any_qm_changed = False
+    with ThreadPoolExecutor(max_workers=len(units)) as pool:
+        futures = {pool.submit(_run, u): u[0] for u in units}
+        for f in as_completed(futures):
+            name, unfinished, qm_changed, output = f.result()
+            print(f"== {name} ==")
+            if output:
+                print(output)
+            all_unfinished.extend(unfinished)
+            any_qm_changed = any_qm_changed or qm_changed
 
     if all_unfinished:
-        print("\n⚠️  Unfinished translations found. Review them before release:")
+        print(
+            "\n⚠️  Unfinished translations found. Translate them and re-run before committing:"
+        )
         linguist = _tool("pyside6-linguist")
         # Group by i18n directory — linguist requires all files in one call to
         # belong to the same translation unit (same strings, different locales).
@@ -135,15 +178,17 @@ def main() -> None:
             rel = [str(f.relative_to(PROJECT_ROOT)) for f in ts_group]
             print(f"\n    {linguist} {_brace_compress(rel)} &")
         print()
-    else:
-        print("\nAll translations complete — building resources...")
-        subprocess.run(
-            [
-                sys.executable,
-                str(Path(__file__).resolve().parent / "build_resources.py"),
-            ],
-            check=True,
-        )
+        sys.exit(1)
+
+    if not any_qm_changed:
+        print("\nNo translation changes — skipping resource rebuild.")
+        return
+
+    print("\nAll translations complete — building resources...")
+    subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parent / "build_resources.py")],
+        check=True,
+    )
 
 
 if __name__ == "__main__":

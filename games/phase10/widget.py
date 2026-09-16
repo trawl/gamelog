@@ -40,7 +40,7 @@ from core.ui.game import (
     ToggleGroupBox,
 )
 from core.ui.game.plots import PlotView
-from core.ui.gamestats import (
+from core.ui.game.stats import (
     GeneralQuickStats,
     ParticularQuickStats,
     QuickStatsTW,

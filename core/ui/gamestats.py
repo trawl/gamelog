@@ -4,13 +4,6 @@ from __future__ import annotations
 
 from PySide6.QtWidgets import QWidget
 
-from core.ui.game.stats import (  # noqa: F401 — re-exported for callers using the old path
-    AbstractQuickStatsBox,
-    GeneralQuickStats,
-    ParticularQuickStats,
-    QuickStatsTW,
-    StatsTable,
-)
 from core.ui.tab import Tab
 
 

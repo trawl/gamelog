@@ -35,7 +35,7 @@ from core.ui.game import (
     GameRoundTable,
     GameWidget,
 )
-from core.ui.gamestats import (
+from core.ui.game.stats import (
     GeneralQuickStats,
     ParticularQuickStats,
     QuickStatsTW,
