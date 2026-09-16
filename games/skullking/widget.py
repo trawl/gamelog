@@ -38,7 +38,7 @@ from core.ui.game import (
     GameRoundTable,
     GameWidget,
 )
-from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
+from core.ui.game.stats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from core.ui.progress import StepProgressBar
 from games.skullking.engine import SkullKingEngine
 

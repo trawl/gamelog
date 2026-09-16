@@ -13,7 +13,7 @@ from core.ui.game import (
     GameNotImplementedException,
     ScoreSpinBox,
 )
-from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats
+from core.ui.game.stats import GeneralQuickStats, ParticularQuickStats
 from games.qwirkle.engine import QwirkleEngine
 from games.scrabble.widget import (
     ScrabbleEntriesDetail,

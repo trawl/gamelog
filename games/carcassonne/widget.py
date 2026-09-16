@@ -31,7 +31,7 @@ from core.ui.game import (
     GameWidget,
     ScoreSpinBox,
 )
-from core.ui.gamestats import (
+from core.ui.game.stats import (
     GeneralQuickStats,
     ParticularQuickStats,
     QuickStatsTW,

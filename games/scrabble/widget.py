@@ -27,7 +27,7 @@ from core.ui.game import (
     GameWidget,
     ScoreSpinBox,
 )
-from core.ui.gamestats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
+from core.ui.game.stats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
 from core.ui.timers import CountdownTimer
 from games.scrabble.engine import ScrabbleEngine
 
