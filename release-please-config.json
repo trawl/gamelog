@@ -4,7 +4,10 @@
   "packages": {
     ".": {
       "extra-files": [
-        "core/_version.py"
+        {
+          "type": "generic",
+          "path": "core/_version.py"
+        }
       ]
     }
   }
