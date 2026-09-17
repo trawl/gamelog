@@ -189,8 +189,9 @@ python utils/build_translations.py
 
 ## Resources (styles, icons, translations)
 Resources are **auto-discovered** and compiled into `core/resources_rc.py`. You
-never edit `resources.qrc` by hand — it is generated. After adding, changing, or
-removing any icon, stylesheet, or compiled translation (`.qm`), run:
+never edit `resources.qrc` by hand — it is generated as a temporary intermediate
+and deleted automatically after compilation. After adding, changing, or removing
+any icon, stylesheet, or compiled translation (`.qm`), run:
 
 ```
 python utils/build_resources.py

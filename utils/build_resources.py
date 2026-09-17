@@ -89,7 +89,10 @@ def compile_qrc() -> None:
         "-o",
         str(OUTPUT_PATH),
     ]
-    subprocess.run(cmd, check=True)
+    try:
+        subprocess.run(cmd, check=True)
+    finally:
+        QRC_PATH.unlink(missing_ok=True)
 
 
 def main() -> None:
