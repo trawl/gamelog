@@ -2,6 +2,8 @@ import ctypes
 import os
 import sys
 
+from PySide6.QtGui import QIcon
+
 import core.resources_rc  # noqa: F401
 from core.logging_config import configure_logging
 from games import load_builtin_games
@@ -27,10 +29,7 @@ def main() -> None:
     app.setDesktopFileName("gamelog")
     app.setApplicationName("gamelog")
 
-    if sys.platform == "darwin":
-        from PySide6.QtGui import QIcon
-
-        app.setWindowIcon(QIcon(":/icons/cards.png"))
+    app.setWindowIcon(QIcon(":/icons/cards.png"))
 
     app.languageManager = LanguageManager(app)
     app.themeManager = ThemeManager(app)
