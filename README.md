@@ -72,6 +72,13 @@ pip install https://github.com/trawl/gamelog.git
 gamelog
 ```
 
+On Linux, the app writes a small `gamelog.desktop` entry and its icon under
+`~/.local/share` (or `$XDG_DATA_HOME`) the first time it runs to make it
+available as an application from the launcher. The entry relaunches the app
+the same way you last started it (via `uvx`, the installed `gamelog` command,
+or `gamelog.pyw` from a checkout) and is refreshed on every run. Delete those
+two files if you ever want to remove all traces of the app.
+
 ## Configuration
 
 - **Language, theme and log level** are set in the in-app settings dialog and

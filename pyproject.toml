@@ -12,6 +12,19 @@ dependencies = [
 [project.scripts]
 gamelog = "core.__main__:main"
 
+[tool.uv]
+# By default uv only rebuilds a local source tree (`uvx /path/to/gl`) when
+# pyproject.toml changes, so edits to the code would keep running the stale
+# cached build. Rebuild whenever any packaged source changes.
+cache-keys = [
+    { file = "pyproject.toml" },
+    { file = "core/**/*.py" },
+    { file = "games/**/*.py" },
+    { file = "db/**/*.py" },
+    { file = "utils/**/*.py" },
+    { file = "core/resources/**/*" },
+]
+
 [dependency-groups]
 dev = [
     "pre-commit>=3",

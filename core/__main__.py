@@ -5,6 +5,7 @@ import sys
 from PySide6.QtGui import QIcon
 
 import core.resources_rc  # noqa: F401
+from core.linux_desktop import install_desktop_entry
 from core.logging_config import configure_logging
 from games import load_builtin_games
 
@@ -24,6 +25,9 @@ def main() -> None:
         f = open(os.devnull, "w")  # noqa: SIM115
         sys.stdout = f
         sys.stderr = f
+    # Before any window exists: Linux shells resolve the taskbar icon via a
+    # desktop entry matching setDesktopFileName() below, so give them one.
+    install_desktop_entry()
 
     app = GamelogApplication(sys.argv)
     app.setDesktopFileName("gamelog")
