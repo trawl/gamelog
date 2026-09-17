@@ -4,13 +4,7 @@
   "packages": {
     ".": {
       "extra-files": [
-        {
-          "type": "generic",
-          "path": "core/_version.py",
-          "patterns": [
-            "__version__ = \"([0-9]+\\.[0-9]+\\.[0-9]+)\""
-          ]
-        }
+        "core/_version.py"
       ]
     }
   }
