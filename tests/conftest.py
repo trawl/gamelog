@@ -53,7 +53,7 @@ def qapp():
     """A headless GamelogApplication for widget-level tests."""
     from PySide6.QtWidgets import QMessageBox
 
-    import resources_rc  # noqa: F401
+    import core.resources_rc  # noqa: F401
     from core.ui.app import GamelogApplication
     from core.ui.language import LanguageManager
     from core.ui.theme import ThemeManager

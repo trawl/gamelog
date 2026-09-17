@@ -6,7 +6,8 @@ The easiest strategy is with [uv](https://docs.astral.sh/uv/getting-started/inst
 ```
 uv run gamelog.pyw
 ```
-This will automatically create a local python venv under .venv with the necessary dependencies.
+
+This will automatically create a local python venv under `.venv` with the necessary dependencies.
 
 ## Project layout
 The code is split into a game-agnostic framework and one self-contained package
@@ -187,9 +188,10 @@ python utils/build_translations.py
      then re-run `build_translations.py` to recompile and rebuild resources.
 
 ## Resources (styles, icons, translations)
-Resources are **auto-discovered** and compiled into `resources_rc.py`. You never
-edit `resources.qrc` by hand — it is generated. After adding, changing, or
-removing any icon, stylesheet, or compiled translation (`.qm`), run:
+Resources are **auto-discovered** and compiled into `core/resources_rc.py`. You
+never edit `resources.qrc` by hand — it is generated as a temporary intermediate
+and deleted automatically after compilation. After adding, changing, or removing
+any icon, stylesheet, or compiled translation (`.qm`), run:
 
 ```
 python utils/build_resources.py

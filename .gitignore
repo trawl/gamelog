@@ -14,3 +14,6 @@ uv.lock
 .coverage.*
 htmlcov
 .pytest_cache
+build
+*.egg-info
+resources.qrc

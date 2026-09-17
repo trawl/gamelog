@@ -42,14 +42,42 @@ and pause/resume for matches that span several sittings.
 ## Running Gamelog
 
 The easiest way is with [uv](https://github.com/astral-sh/uv). Once it's
-installed, clone this repository and run, from the project root:
+available, you can run Gamelog it directly from the repository without installation:
+
+```bash
+uvx https://github.com/trawl/gamelog.git
+```
+
+Alternatively, you can install it as a uv tool in your device:
+
+```bash
+uv tool install https://github.com/trawl/gamelog.git
+gamelog
+```
+
+Or clone the repository and run from the project root:
 
 ```bash
 uv run gamelog.pyw
 ```
 
-`uv` will create a local virtual environment and install everything the first
-time. Requires Python 3.12+ (uv fetches a suitable interpreter if needed).
+In all this cases `uv` will create a local virtual environment and install
+everything the first time. Requires Python 3.12+ (uv fetches a suitable 
+interpreter if needed).
+
+You may also install it as a traditional Python package and run it:
+
+```bash
+pip install https://github.com/trawl/gamelog.git
+gamelog
+```
+
+On Linux, the app writes a small `gamelog.desktop` entry and its icon under
+`~/.local/share` (or `$XDG_DATA_HOME`) the first time it runs to make it
+available as an application from the launcher. The entry relaunches the app
+the same way you last started it (via `uvx`, the installed `gamelog` command,
+or `gamelog.pyw` from a checkout) and is refreshed on every run. Delete those
+two files if you ever want to remove all traces of the app.
 
 ## Configuration
 

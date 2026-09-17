@@ -34,7 +34,7 @@ CATEGORIES = {
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 QRC_PATH = PROJECT_ROOT / "resources.qrc"
-OUTPUT_PATH = PROJECT_ROOT / "resources_rc.py"
+OUTPUT_PATH = PROJECT_ROOT / "core" / "resources_rc.py"
 
 
 def _resource_dirs(category: str) -> list[Path]:
@@ -89,7 +89,10 @@ def compile_qrc() -> None:
         "-o",
         str(OUTPUT_PATH),
     ]
-    subprocess.run(cmd, check=True)
+    try:
+        subprocess.run(cmd, check=True)
+    finally:
+        QRC_PATH.unlink(missing_ok=True)
 
 
 def main() -> None:
