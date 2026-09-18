@@ -2,6 +2,9 @@
 name = "gamelog"
 version = "2.1.1"
 description = "A utility to keep track of board games scores"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "trawl" }]
 requires-python = ">=3.12"
 dependencies = [
     # 6.5 is the floor: the theme manager relies on the QStyleHints
@@ -20,8 +23,6 @@ cache-keys = [
     { file = "pyproject.toml" },
     { file = "core/**/*.py" },
     { file = "games/**/*.py" },
-    { file = "db/**/*.py" },
-    { file = "utils/**/*.py" },
     { file = "core/resources/**/*" },
 ]
 
@@ -35,7 +36,7 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["core*", "games*", "db*", "utils*"]
+include = ["core*", "games*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -53,7 +54,7 @@ exclude_also = [
 [tool.ruff]
 target-version = "py312"
 # Generated / vendored files are not ours to lint.
-extend-exclude = ["resources_rc.py", "core/resources_rc.py"]
+extend-exclude = ["core/resources_rc.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "C4"]
