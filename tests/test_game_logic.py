@@ -92,6 +92,123 @@ def test_phase10_tie_broken_by_lowest_score():
     assert match.getWinner() == "Bob"
 
 
+# --- Qwirkle: score wins; ties broken by qwirkle count, then best single play -
+
+
+def _add_entry(match, player, score, extras=None):
+    """Append one scoring entry directly to ``match``, folding it into totals."""
+    entry = match.createRound(len(match.rounds) + 1)
+    entry.addInfo(player, score, extras)
+    match.rounds.append(entry)
+    match.totalScores[player] += score
+    return entry
+
+
+def test_qwirkle_high_score_wins_outright():
+    match = started_match("Qwirkle", ["Ann", "Bob"])
+    _add_entry(match, "Ann", 100, {"qwirkles": 0})
+    _add_entry(match, "Bob", 80, {"qwirkles": 0})
+    match.computeWinner()
+    assert match.getWinner() == "Ann"
+
+
+def test_qwirkle_tie_broken_by_qwirkle_count():
+    match = started_match("Qwirkle", ["Ann", "Bob"])
+    _add_entry(match, "Ann", 50, {"qwirkles": 2})
+    _add_entry(match, "Bob", 50, {"qwirkles": 1})
+    match.computeWinner()
+    assert match.getWinner() == "Ann"
+
+
+def test_qwirkle_tie_broken_by_best_single_play():
+    match = started_match("Qwirkle", ["Ann", "Bob"])
+    _add_entry(match, "Ann", 60, {"qwirkles": 0})
+    _add_entry(match, "Ann", 40, {"qwirkles": 0})
+    _add_entry(match, "Bob", 50, {"qwirkles": 0})
+    _add_entry(match, "Bob", 50, {"qwirkles": 0})
+    match.computeWinner()
+    assert (
+        match.getWinner() == "Ann"
+    )  # same total and qwirkles, but a bigger single play
+
+
+# --- Scrabble: score wins; ties broken by bonus count, then best single play --
+
+ZERO_BONUSES = {"dl": 0, "tl": 0, "dw": 0, "tw": 0, "bingo": 0}
+
+
+def test_scrabble_high_score_wins_outright():
+    match = started_match("Scrabble", ["Ann", "Bob"])
+    _add_entry(match, "Ann", 100, ZERO_BONUSES)
+    _add_entry(match, "Bob", 80, ZERO_BONUSES)
+    match.computeWinner()
+    assert match.getWinner() == "Ann"
+
+
+def test_scrabble_tie_broken_by_bonus_count():
+    match = started_match("Scrabble", ["Ann", "Bob"])
+    _add_entry(match, "Ann", 50, {**ZERO_BONUSES, "dw": 1})
+    _add_entry(match, "Bob", 50, ZERO_BONUSES)
+    match.computeWinner()
+    assert match.getWinner() == "Ann"
+
+
+def test_scrabble_tie_broken_by_best_single_play():
+    match = started_match("Scrabble", ["Ann", "Bob"])
+    _add_entry(match, "Ann", 60, ZERO_BONUSES)
+    _add_entry(match, "Ann", 40, ZERO_BONUSES)
+    _add_entry(match, "Bob", 50, ZERO_BONUSES)
+    _add_entry(match, "Bob", 50, ZERO_BONUSES)
+    match.computeWinner()
+    assert match.getWinner() == "Ann"
+
+
+# --- Pocha: highest total wins, but only once every hand has been played -----
+
+
+def _pad_rounds(match, count):
+    """Add ``count`` placeholder rounds, as if that many hands had been played."""
+    for _ in range(count):
+        match.rounds.append(match.createRound(len(match.rounds) + 1))
+
+
+def test_pocha_no_winner_before_last_hand():
+    match = started_match("Pocha", ["Ann", "Bob"])
+    match.totalScores = {"Ann": 100, "Bob": 20}
+    _pad_rounds(match, match.maxRounds - 1)
+    match.computeWinner()
+    assert not match.getWinner()
+
+
+def test_pocha_highest_score_wins_after_last_hand():
+    match = started_match("Pocha", ["Ann", "Bob"])
+    match.totalScores = {"Ann": 100, "Bob": 20}
+    _pad_rounds(match, match.maxRounds)
+    match.computeWinner()
+    assert match.getWinner() == "Ann"
+
+
+def test_pocha_tie_goes_to_the_last_player_at_the_max_score():
+    """``computeWinner`` scans with ``>=``, so a tie favours iteration order --
+    a fragile behaviour worth pinning down explicitly."""
+    match = started_match("Pocha", ["Ann", "Bob"])
+    match.totalScores = {"Ann": 50, "Bob": 50}
+    _pad_rounds(match, match.maxRounds)
+    match.computeWinner()
+    assert match.getWinner() == "Bob"
+
+
+# --- Skull King: a Pocha variant, so the same rules apply over its own hands --
+
+
+def test_skullking_highest_score_wins_after_last_hand():
+    match = started_match("Skull King", ["Ann", "Bob"])
+    match.totalScores = {"Ann": 100, "Bob": 20}
+    _pad_rounds(match, match.maxRounds)
+    match.computeWinner()
+    assert match.getWinner() == "Ann"
+
+
 # --- End-to-end: driving the engine accumulates scores and declares a winner --
 
 
