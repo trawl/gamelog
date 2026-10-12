@@ -3,19 +3,17 @@
 A Catan round is one committed update of the board: for every player it stores
 how their holdings changed (settlements, cities, longest road, largest army and
 victory-point cards) and the victory points that change is worth. A player's
-current holdings are the sum of their changes over all rounds.
+current holdings are the setup-phase holdings (two settlements) plus the sum
+of their changes over all rounds.
 """
 
 from __future__ import annotations
 
-import logging
 from collections.abc import Sequence
 from typing import ClassVar, cast
 
 from core.engine.db import db
 from core.model.match import GenericRound, GenericRoundMatch
-
-logger = logging.getLogger(__name__)
 
 
 class CatanMatch(GenericRoundMatch):
@@ -41,36 +39,17 @@ class CatanMatch(GenericRoundMatch):
     awards: ClassVar[tuple[str, ...]] = ("longestroad", "largestarmy")
     # Settlements every player places during the setup phase.
     initial_settlements = 2
+    # Victory points that win the game.
+    top = 10
 
     def __init__(self, players: Sequence[str] = ()) -> None:
         super().__init__(players)
         self.game = "Catan"
-        self.top = 10
         self.dealingp = 3
 
-    def resumeMatch(self, idMatch: int) -> bool:
-        """Reload the base match plus the target victory points."""
-        if not super().resumeMatch(idMatch):
-            return False
-
-        cur = db.execute(
-            "SELECT value FROM MatchExtras WHERE idMatch =? and key='Top';",
-            (idMatch,),
-        )
-        row = cur.fetchone()
-        if row:
-            self.top = int(row["value"])
-
-        return True
-
     def flushToDB(self) -> None:
-        """Persist the base match, the target points and every holding change."""
+        """Persist the base match plus every holding change."""
         super().flushToDB()
-        db.execute(
-            "INSERT OR REPLACE INTO MatchExtras (idMatch,key,value) "
-            "VALUES (?,'Top',?);",
-            (self.idMatch, self.top),
-        )
         # Every key is written for every player, so each round always has its
         # full set of RoundStatistics rows when resumed.
         for rnd in cast("list[CatanRound]", self.rounds):
@@ -93,7 +72,8 @@ class CatanMatch(GenericRoundMatch):
         return CatanRound(numround)
 
     def playerStart(self, player: str) -> None:
-        """Nothing to initialise: holdings are derived from the rounds."""
+        """Credit the points of the settlements placed during the setup phase."""
+        self.totalScores[player] = self.victoryPoints(self.getInitialState())
 
     def playerAddRound(self, player: str, rnd: GenericRound) -> None:
         """Nothing to track: holdings are derived from the rounds."""
@@ -115,8 +95,8 @@ class CatanMatch(GenericRoundMatch):
         self.winner = candidates[0]
 
     def getPlayerState(self, player: str) -> dict[str, int]:
-        """Return ``player``'s current holdings, summed over every round."""
-        state = dict.fromkeys(self.components, 0)
+        """Return ``player``'s current holdings: setup plus every round."""
+        state = self.getInitialState()
         for rnd in cast("list[CatanRound]", self.rounds):
             for key, value in rnd.getChanges(player).items():
                 state[key] += value
@@ -135,12 +115,6 @@ class CatanMatch(GenericRoundMatch):
 
     def getTop(self) -> int:
         return self.top
-
-    def setTop(self, top: int) -> None:
-        if top <= 0:
-            return
-        self.top = top
-        logger.debug("Target victory points set to %d", top)
 
 
 class CatanRound(GenericRound):

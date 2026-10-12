@@ -4,91 +4,37 @@
 <context>
     <name>CatanInputWidget</name>
     <message>
-        <location filename="../widget.py" line="48"/>
+        <location filename="../widget.py" line="76"/>
         <source>Settlements</source>
         <translation>Poblados</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="49"/>
+        <location filename="../widget.py" line="77"/>
         <source>Cities</source>
         <translation>Ciudades</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="50"/>
+        <location filename="../widget.py" line="78"/>
         <source>Longest road</source>
         <translation>Gran ruta comercial</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="51"/>
+        <location filename="../widget.py" line="79"/>
         <source>Largest army</source>
         <translation>Gran ejército</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="52"/>
+        <location filename="../widget.py" line="80"/>
         <source>VP cards</source>
         <translation>Cartas de PV</translation>
     </message>
 </context>
 <context>
-    <name>CatanRoundTable</name>
-    <message>
-        <location filename="../widget.py" line="62"/>
-        <source>S</source>
-        <translation>P</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="63"/>
-        <source>C</source>
-        <translation>C</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="64"/>
-        <source>LR</source>
-        <translation>GR</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="65"/>
-        <source>LA</source>
-        <translation>GE</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="66"/>
-        <source>VP</source>
-        <translation>PV</translation>
-    </message>
-</context>
-<context>
     <name>CatanRoundsDetail</name>
     <message>
-        <location filename="../widget.py" line="454"/>
+        <location filename="../widget.py" line="574"/>
         <source>Totals</source>
         <translation>Totales</translation>
-    </message>
-</context>
-<context>
-    <name>CatanSettings</name>
-    <message>
-        <location filename="../settings.py" line="6"/>
-        <source>Victory points</source>
-        <translation>Puntos de victoria</translation>
-    </message>
-    <message>
-        <location filename="../settings.py" line="7"/>
-        <source>Victory points a player must reach to win the game</source>
-        <translation>Puntos de victoria que debe alcanzar un jugador para ganar la partida</translation>
-    </message>
-</context>
-<context>
-    <name>CatanWidget</name>
-    <message>
-        <location filename="../widget.py" line="126"/>
-        <source>Nothing has changed</source>
-        <translation>No ha cambiado nada</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="131"/>
-        <source>Only one player can hold {}</source>
-        <translation>Solo un jugador puede tener {}</translation>
     </message>
 </context>
 </TS>

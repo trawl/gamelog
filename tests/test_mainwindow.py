@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 import pytest
 from PySide6.QtWidgets import QMessageBox
 
-from core.engine.db import DatabaseError, db
+from core.engine.db import db
 from core.ui.mainwindow import MainWindow
 
 
@@ -115,5 +115,6 @@ def test_multiple_matches_cancel_leaves_all_untouched(mainwindow, monkeypatch):
 def test_closing_disconnects_the_database(mainwindow, monkeypatch):
     _answer_with(monkeypatch, QMessageBox.StandardButton.Yes)
     mainwindow.ensureClose()
-    with pytest.raises(DatabaseError):
+    assert not db.isConnected()
+    with pytest.raises(RuntimeError):
         db.execute("SELECT 1")

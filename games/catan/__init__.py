@@ -9,6 +9,5 @@ registry.register(
         "games.catan.model:CatanMatch",
         "games.catan.engine:CatanEngine",
         "games.catan.widget:CatanWidget",
-        settings_factory="games.catan.settings:game_settings",
     )
 )

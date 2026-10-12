@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import logging
 from typing import cast
 
 from core.engine.engine import RoundGameEngine, readInput
 from games.catan.model import CatanMatch
-
-logger = logging.getLogger(__name__)
 
 
 class CatanEngine(RoundGameEngine):
@@ -21,10 +18,6 @@ class CatanEngine(RoundGameEngine):
 
     def getTop(self) -> int:
         return cast("CatanMatch", self.match).getTop()
-
-    def setTop(self, top: int) -> None:
-        logger.debug("Target victory points set to %d", top)
-        cast("CatanMatch", self.match).setTop(top)
 
     def getComponents(self) -> dict[str, int]:
         return cast("CatanMatch", self.match).components
@@ -50,10 +43,6 @@ class CatanEngine(RoundGameEngine):
     def printExtraPlayerStats(self, player: str) -> None:
         state = self.getPlayerState(player)
         print(", ".join(f"{key}: {value}" for key, value in state.items()))
-
-    def extraStubConfig(self) -> None:
-        top = readInput("Victory points to win: ", int, lambda x: x > 0)
-        self.setTop(top)
 
     def runRoundPlayer(self, player: str, winner: str | None = None) -> None:
         """CLI harness: read ``player``'s holding changes and record them."""
