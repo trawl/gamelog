@@ -207,13 +207,13 @@
 <context>
     <name>GameRoundTable</name>
     <message>
-        <location filename="../../ui/game/rounds.py" line="164"/>
-        <location filename="../../ui/game/rounds.py" line="169"/>
+        <location filename="../../ui/game/rounds.py" line="165"/>
+        <location filename="../../ui/game/rounds.py" line="170"/>
         <source>Delete Entry</source>
         <translation>Delete Entry</translation>
     </message>
     <message>
-        <location filename="../../ui/game/rounds.py" line="170"/>
+        <location filename="../../ui/game/rounds.py" line="171"/>
         <source>Are you sure you want to delete this entry?</source>
         <translation>Are you sure you want to delete this entry?</translation>
     </message>
@@ -221,17 +221,17 @@
 <context>
     <name>GameRoundsDetail</name>
     <message>
-        <location filename="../../ui/game/rounds.py" line="67"/>
+        <location filename="../../ui/game/rounds.py" line="68"/>
         <source>Table</source>
         <translation>Table</translation>
     </message>
     <message>
-        <location filename="../../ui/game/rounds.py" line="68"/>
+        <location filename="../../ui/game/rounds.py" line="69"/>
         <source>Plot</source>
         <translation>Plot</translation>
     </message>
     <message>
-        <location filename="../../ui/game/rounds.py" line="69"/>
+        <location filename="../../ui/game/rounds.py" line="70"/>
         <source>Statistics</source>
         <translation>Statistics</translation>
     </message>

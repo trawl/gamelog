@@ -116,7 +116,14 @@ Adding a game is dropping in a directory; no other files need editing.
    Shared strings are translated once under the `"GameSettings"` context and
    live in the core translation catalogue (`core/resources/i18n/core_<locale>.ts`).
 
-7. (Optional) drop assets into `games/<name>/{icons,styles,i18n}`. For
+7. (Optional) drop assets into `games/<name>/{icons,styles,i18n}`.
+   For per-player bonus or piece buttons, `ColourBonusButton` (in
+   `core.ui.game`) draws an SVG icon in the player's colour: a tinted disc
+   while its count is zero, a solid disc with a white icon once it is set,
+   and a corner badge for counts above one. Draw the icon's shape with the
+   placeholder colours `currentColor` (body), `#2B2B2B` (outlines),
+   `#3C3C3C` (solid details) and `#FFFFFF` (accents), with no background;
+   see `games/catan/icons/` and `games/azul/icons/`. For
    translations run `python utils/build_translations.py` — it compiles the
    catalogues and rebuilds resources automatically. For non-translation assets
    (icons, stylesheets) run `python utils/build_resources.py` directly.

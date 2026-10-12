@@ -5,6 +5,7 @@ from core.model.match import GenericMatch
 from core.registry import registry
 
 EXPECTED_GAMES = {
+    "Azul",
     "Carcassonne",
     "Catan",
     "Phase10",

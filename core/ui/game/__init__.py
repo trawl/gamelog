@@ -8,14 +8,18 @@ from core.ui.game.colours import PlayerColours
 from core.ui.game.input import (
     BonusButton,
     ClickableCounter,
+    ColourBonusButton,
     GameInputWidget,
     ScoreSpinBox,
     SpaceFilter,
+    colourIconRenderer,
+    paintColourIcon,
 )
 from core.ui.game.matchedit import MatchTimesEditDialog
 from core.ui.game.player import CardWidget, GamePlayerWidget, IconLabel
 from core.ui.game.plots import PlotView
 from core.ui.game.rounds import (
+    ColourIconHeader,
     GameRoundPlot,
     GameRoundsDetail,
     GameRoundTable,
@@ -42,6 +46,8 @@ __all__ = [
     "BonusButton",
     "CardWidget",
     "ClickableCounter",
+    "ColourBonusButton",
+    "ColourIconHeader",
     "GameInputWidget",
     "GameNotImplementedException",
     "GamePlayerWidget",
@@ -55,4 +61,6 @@ __all__ = [
     "SleepBlocker",
     "SpaceFilter",
     "ToggleGroupBox",
+    "colourIconRenderer",
+    "paintColourIcon",
 ]

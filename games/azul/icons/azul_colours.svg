@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Complete colour</title><desc id="desc">Five wall tiles of one colour, along a diagonal.</desc>
+  <rect x="44" y="44" width="32" height="32" rx="6" fill="currentColor" stroke="#2B2B2B" stroke-width="4"/>
+  <rect x="78" y="78" width="32" height="32" rx="6" fill="currentColor" stroke="#2B2B2B" stroke-width="4"/>
+  <rect x="112" y="112" width="32" height="32" rx="6" fill="currentColor" stroke="#2B2B2B" stroke-width="4"/>
+  <rect x="146" y="146" width="32" height="32" rx="6" fill="currentColor" stroke="#2B2B2B" stroke-width="4"/>
+  <rect x="180" y="180" width="32" height="32" rx="6" fill="currentColor" stroke="#2B2B2B" stroke-width="4"/>
+</svg>

@@ -5,8 +5,8 @@ from __future__ import annotations
 import logging
 
 from PySide6 import QtCore
-from PySide6.QtCore import QEvent, QObject
-from PySide6.QtGui import QAction, QColor, QIcon, QPaintEvent
+from PySide6.QtCore import QEvent, QObject, QRect, QRectF, QSize
+from PySide6.QtGui import QAction, QColor, QIcon, QPainter, QPaintEvent
 from PySide6.QtWidgets import (
     QFrame,
     QGroupBox,
@@ -25,6 +25,7 @@ from core.engine.engine import RoundGameEngine
 from core.engine.settings import appsettings
 from core.model.match import GenericRound
 from core.ui.game.colours import PlayerColours
+from core.ui.game.input import paintColourIcon
 from core.ui.game.plots import PlotView
 from core.ui.game.stats import QuickStatsTW
 
@@ -244,6 +245,41 @@ class GameRoundPlot(QWidget):
         """Refresh plot labels for the current language; overridden."""
 
 
+class ColourIconHeader(QHeaderView):
+    """Vertical header labelling each row with an icon instead of text.
+
+    The icons are drawn as by :func:`paintColourIcon`, held, in a neutral
+    grey. (QHeaderView draws item icons at the style's small icon size
+    whatever the view's icon size, so they are painted here instead.)
+    """
+
+    iconSize_ = 24
+    colour = QColor(128, 128, 128)
+
+    def __init__(self, icons: list[str], parent: QWidget | None = None) -> None:
+        super().__init__(QtCore.Qt.Orientation.Vertical, parent)
+        self.icons = icons
+
+    def sizeHint(self) -> QSize:
+        hint = super().sizeHint()
+        hint.setWidth(self.iconSize_ + 12)
+        return hint
+
+    def paintSection(self, painter: QPainter, rect: QRect, logicalIndex: int) -> None:
+        painter.save()
+        super().paintSection(painter, rect, logicalIndex)
+        painter.restore()
+        if 0 <= logicalIndex < len(self.icons):
+            size = min(self.iconSize_, rect.height() - 4)
+            icon = QRectF(
+                rect.center().x() - size / 2 + 1,
+                rect.center().y() - size / 2 + 1,
+                size,
+                size,
+            )
+            paintColourIcon(painter, icon, self.icons[logicalIndex], self.colour, True)
+
+
 class ToggleGroupBox(QGroupBox):
     """A group box holding stacked screens that cycle on any child click."""
 
@@ -284,6 +320,7 @@ class ToggleGroupBox(QGroupBox):
 
 
 __all__ = [
+    "ColourIconHeader",
     "GameRoundsDetail",
     "GameRoundTable",
     "GameRoundPlot",

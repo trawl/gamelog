@@ -4,27 +4,27 @@
 <context>
     <name>CatanInputWidget</name>
     <message>
-        <location filename="../widget.py" line="76"/>
+        <location filename="../widget.py" line="74"/>
         <source>Settlements</source>
         <translation>Poblats</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="77"/>
+        <location filename="../widget.py" line="75"/>
         <source>Cities</source>
         <translation>Ciutats</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="78"/>
+        <location filename="../widget.py" line="76"/>
         <source>Longest road</source>
         <translation>Gran ruta comercial</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="79"/>
+        <location filename="../widget.py" line="77"/>
         <source>Largest army</source>
         <translation>Gran exèrcit</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="80"/>
+        <location filename="../widget.py" line="78"/>
         <source>VP cards</source>
         <translation>Cartes de PV</translation>
     </message>
@@ -32,7 +32,7 @@
 <context>
     <name>CatanRoundsDetail</name>
     <message>
-        <location filename="../widget.py" line="574"/>
+        <location filename="../widget.py" line="418"/>
         <source>Totals</source>
         <translation>Totals</translation>
     </message>

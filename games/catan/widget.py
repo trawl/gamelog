@@ -5,22 +5,18 @@ from __future__ import annotations
 from typing import cast
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtCore import QByteArray, QCoreApplication, QFile, QPoint, QRectF, QSize
+from PySide6.QtCore import QCoreApplication, QPoint, QRectF
 from PySide6.QtGui import (
     QColor,
     QFont,
-    QMouseEvent,
     QPainter,
-    QPaintEvent,
     QPen,
 )
-from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QApplication,
     QGridLayout,
     QGroupBox,
     QHBoxLayout,
-    QHeaderView,
     QLabel,
     QStyle,
     QStyledItemDelegate,
@@ -30,7 +26,8 @@ from PySide6.QtWidgets import (
 )
 
 from core.ui.game import (
-    BonusButton,
+    ColourBonusButton,
+    ColourIconHeader,
     GameInputWidget,
     GameNotImplementedException,
     GameRoundPlot,
@@ -38,6 +35,7 @@ from core.ui.game import (
     GameRoundTable,
     GameWidget,
     StatsTable,
+    paintColourIcon,
 )
 from games.catan.engine import CatanEngine
 from games.catan.model import CatanRound
@@ -229,86 +227,11 @@ class CatanInputWidget(GameInputWidget):
         self.placePlayerInputs()
 
 
-# Colour placeholders in the piece SVGs.
-_BODY = "currentColor"
-_OUTLINE = "#2B2B2B"
-_DETAIL = "#3C3C3C"
-_ROADLINE = "#FFFFFF"
+class CatanBonusButton(ColourBonusButton):
+    """Colour bonus button showing how many of a piece a player holds.
 
-_svgTemplates: dict[str, str] = {}
-_pieceRenderers: dict[tuple[str, str, bool], QSvgRenderer] = {}
-
-
-def pieceRenderer(icon: str, colour: QColor, held: bool) -> QSvgRenderer | None:
-    """Return ``icon``'s piece in ``colour``, or white for a solid disc if held."""
-    if icon not in _svgTemplates:
-        _svgTemplates[icon] = ""
-        svg = QFile(f":/icons/{icon}.svg")
-        if svg.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
-            _svgTemplates[icon] = bytes(svg.readAll().data()).decode()
-            svg.close()
-    if not _svgTemplates[icon]:
-        return None
-    key = (icon, colour.name(), held)
-    if key not in _pieceRenderers:
-        if held:
-            tokens = {
-                _BODY: "#FFFFFF",
-                _OUTLINE: colour.darker(180).name(),
-                _DETAIL: "#FFFFFF",
-                _ROADLINE: colour.name(),
-            }
-        else:
-            # A milder outline and same-colour details keep the piece
-            # legible on the dark theme as well as the light one.
-            tokens = {
-                _BODY: colour.name(),
-                _OUTLINE: colour.darker(140).name(),
-                _DETAIL: colour.name(),
-                _ROADLINE: "#FFFFFF",
-            }
-        # Swap via unique markers so one replacement never feeds another.
-        svg = _svgTemplates[icon]
-        for i, token in enumerate(tokens):
-            svg = svg.replace(token, f"@{i}@")
-        for i, value in enumerate(tokens.values()):
-            svg = svg.replace(f"@{i}@", value)
-        _pieceRenderers[key] = QSvgRenderer(QByteArray(svg.encode()))
-    return _pieceRenderers[key]
-
-
-def paintPiece(
-    painter: QPainter, rect: QRectF, icon: str, colour: QColor, held: bool
-) -> None:
-    """Paint ``icon`` in ``rect``: a white piece on a solid player-colour disc
-    if held, else a player-colour piece on a faintly tinted disc."""
-    painter.save()
-    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-    if held:
-        painter.setPen(QtCore.Qt.PenStyle.NoPen)
-        painter.setBrush(colour)
-    else:
-        fill = QColor(colour)
-        fill.setAlpha(20)
-        border = QColor(colour)
-        border.setAlpha(100)
-        painter.setPen(QPen(border, 1.5))
-        painter.setBrush(fill)
-    painter.drawEllipse(rect)
-    renderer = pieceRenderer(icon, colour, held)
-    if renderer:
-        renderer.render(painter, rect)
-    painter.restore()
-
-
-class CatanBonusButton(BonusButton):
-    """Bonus button showing how many of a piece a player holds.
-
-    Like the app's checkable player buttons, it is a disc tinted with the
-    player colour while the player holds none, and a solid disc with a white
-    piece once they hold some; the count shows as a corner badge. A left click
-    asks for one more, a right click for one less; the owner decides whether
-    the step is allowed and sets the resulting value.
+    A left click asks for one more and a right click for one less; the owner
+    decides whether the step is allowed and sets the resulting value.
     """
 
     stepped = QtCore.Signal(int)
@@ -326,51 +249,8 @@ class CatanBonusButton(BonusButton):
         self.clicked.disconnect(self.plusone)
         self.clicked.connect(lambda: self.stepped.emit(1))
 
-    def setColour(self, colour: QColor) -> None:
-        super().setColour(colour)
-        self.update()
-
-    def setValue(self, value: int) -> None:
-        """Show ``value`` as the count; any count makes the disc solid."""
-        self.count = value
-        self.setChecked(value > 0)
-        self.update()
-
-    def mousePressEvent(self, e: QMouseEvent) -> None:
-        if e.button() == QtCore.Qt.MouseButton.RightButton:
-            self.stepped.emit(-1)
-            return
-        super().mousePressEvent(e)
-
-    def paintEvent(self, event: QPaintEvent) -> None:
-        """Paint the disc, the piece and, for counters, the count badge."""
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        colour = QColor(self.highlight_colour)
-        if not self.isEnabled():
-            colour = QColor(150, 150, 150)
-        held = self.count > 0
-        disc = QRectF(self.rect()).adjusted(1.5, 1.5, -1.5, -1.5)
-        paintPiece(painter, disc, self.bonus_name, colour, held)
-
-        if self.maximum > 1 and held:
-            diameter = self.width() * 0.5
-            badge = QRectF(
-                self.width() - diameter, self.height() - diameter, diameter, diameter
-            )
-            badgeColour = colour.darker(150)
-            painter.setPen(QPen(QColor("white"), 1.5))
-            painter.setBrush(badgeColour)
-            painter.drawEllipse(badge.adjusted(1, 1, -1, -1))
-            painter.setPen(QColor("white"))
-            font = QFont("Arial")
-            font.setBold(True)
-            font.setPixelSize(round(diameter * 0.75))
-            painter.setFont(font)
-            painter.drawText(
-                badge, QtCore.Qt.AlignmentFlag.AlignCenter, str(self.count)
-            )
-        painter.end()
+    def minusone(self) -> None:
+        self.stepped.emit(-1)
 
 
 class CatanPlayerInputWidget(QGroupBox):
@@ -503,42 +383,6 @@ class CatanPlayerInputWidget(QGroupBox):
         return self.engine.victoryPoints(self.getChanges())
 
 
-class CatanPieceHeader(QHeaderView):
-    """Vertical header labelling each row with a piece icon.
-
-    QHeaderView draws item icons at the style's small icon size whatever the
-    view's icon size, so the pieces are painted here instead.
-    """
-
-    iconSize_ = 24
-    colour = QColor(128, 128, 128)
-
-    def __init__(self, icons: list[str], parent: QWidget | None = None) -> None:
-        super().__init__(QtCore.Qt.Orientation.Vertical, parent)
-        self.icons = icons
-
-    def sizeHint(self) -> QSize:
-        hint = super().sizeHint()
-        hint.setWidth(self.iconSize_ + 12)
-        return hint
-
-    def paintSection(
-        self, painter: QPainter, rect: QtCore.QRect, logicalIndex: int
-    ) -> None:
-        painter.save()
-        super().paintSection(painter, rect, logicalIndex)
-        painter.restore()
-        if 0 <= logicalIndex < len(self.icons):
-            size = min(self.iconSize_, rect.height() - 4)
-            icon = QRectF(
-                rect.center().x() - size / 2 + 1,
-                rect.center().y() - size / 2 + 1,
-                size,
-                size,
-            )
-            paintPiece(painter, icon, self.icons[logicalIndex], self.colour, True)
-
-
 class CatanRoundsDetail(GameRoundsDetail):
     """Rounds detail panel for Catan, adding a per-player holdings table."""
 
@@ -559,7 +403,7 @@ class CatanRoundsDetail(GameRoundsDetail):
         # Rows are labelled by their piece, in a neutral colour.
         components = cast("CatanEngine", self.engine).getComponents()
         self.totals.setVerticalHeader(
-            CatanPieceHeader([ICONS[key] for key in components], self.totals)
+            ColourIconHeader([ICONS[key] for key in components], self.totals)
         )
         for row in range(len(components)):
             self.totals.setVerticalHeaderItem(row, QTableWidgetItem(""))
@@ -663,7 +507,7 @@ class CatanChangesDelegate(QStyledItemDelegate):
                 w = iconSize
                 key, gained = part
                 icon = QRectF(x, rect.center().y() - iconSize / 2, iconSize, iconSize)
-                paintPiece(painter, icon, ICONS[key], colour, gained)
+                paintColourIcon(painter, icon, ICONS[key], colour, gained)
                 if not gained:
                     painter.setPen(QPen(textColour, 2))
                     painter.drawLine(icon.bottomLeft(), icon.topRight())

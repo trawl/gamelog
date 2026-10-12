@@ -11,7 +11,7 @@ and pause/resume for matches that span several sittings.
 
 ## Features
 
-- **Twelve games, one app** — a shared scoring framework with game-specific rules
+- **Thirteen games, one app** — a shared scoring framework with game-specific rules
   (see the table below).
 - **Live scoreboard & plots** — enter each round and watch running totals and a
   score-over-time chart update instantly.
@@ -28,6 +28,7 @@ and pause/resume for matches that span several sittings.
 
 | Game | Players | Description |
 |------|:-------:|-------------|
+| Azul | 4 | Tile-drafting board game; end-of-game row, column and colour bonuses |
 | Carcassonne | 6 | Tile-laying board game (home scoring) |
 | Catan | 6 | Trading and building board game; tracks settlements, cities, longest road, largest army and VP cards |
 | Parchís | 6 | Classic Spanish board game; tracks goals scored and kills per turn |
