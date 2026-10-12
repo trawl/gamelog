@@ -1,4 +1,4 @@
-"""Azul play-time engine."""
+"""Azul and Azul: Summer Pavilion play-time and statistics engines."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from typing import cast
 from core.engine.db import db
 from core.engine.engine import RoundGameEngine, readInput
 from core.engine.stats import ParticularStatsEngine, StatsEngine
-from games.azul.model import AzulMatch
+from games.azul.model import AzulMatch, AzulSummerPavilionMatch
 
 
 class AzulEngine(RoundGameEngine):
@@ -21,6 +21,19 @@ class AzulEngine(RoundGameEngine):
     def getBonuses(self) -> dict[str, int]:
         return cast("AzulMatch", self.match).bonuses
 
+    def getBonusGroups(self) -> tuple[tuple[str, ...], ...]:
+        return cast("AzulMatch", self.match).bonusGroups
+
+    def getEndingBonus(self) -> str | None:
+        return cast("AzulMatch", self.match).endingBonus
+
+    def getInitialScore(self) -> int:
+        return cast("AzulMatch", self.match).initialScore
+
+    def getRoundScoreRange(self) -> tuple[int, int]:
+        match = cast("AzulMatch", self.match)
+        return match.minRoundScore, match.maxRoundScore
+
     def getMaxBonuses(self) -> int:
         return cast("AzulMatch", self.match).maxBonuses
 
@@ -31,7 +44,7 @@ class AzulEngine(RoundGameEngine):
         return cast("AzulMatch", self.match).bonusPoints(bonuses)
 
     def bonusesAllowed(self) -> bool:
-        """Whether a row can be complete by the round being played."""
+        """Whether bonuses can be scored in the round being played."""
         return self.getNumRound() >= cast("AzulMatch", self.match).firstBonusRound
 
     def runRoundPlayer(self, player: str, winner: str | None = None) -> None:
@@ -51,20 +64,32 @@ class AzulEngine(RoundGameEngine):
         self.addRoundInfo(player, score + self.bonusPoints(bonuses), bonuses)
 
 
+class AzulSummerPavilionEngine(AzulEngine):
+    """Engine driving an Azul: Summer Pavilion match."""
+
+    def __init__(self) -> None:
+        if not hasattr(self, "game"):
+            self.game = AzulSummerPavilionMatch.gameName
+        super().__init__()
+
+
 class AzulStatsEngine(StatsEngine):
     """App-wide Azul statistics, adding the best end-of-game bonus per match
     size and per player."""
 
+    matchClass: type[AzulMatch] = AzulMatch
+
     def __init__(self) -> None:
         super().__init__()
-        self.game = "Azul"
+        self.game = self.matchClass.gameName
         self.queries: dict[str, str] = {}
         self.define_queries()
 
     def define_queries(self) -> None:
         """Build the per-match bonus queries for this engine."""
         points = " ".join(
-            f"WHEN '{key}' THEN {value}" for key, value in AzulMatch.bonuses.items()
+            f"WHEN '{key}' THEN {value}"
+            for key, value in self.matchClass.bonuses.items()
         )
         # Bonus points each player scored in each finished match.
         bonusPerPlayer = f"""
@@ -120,6 +145,18 @@ class AzulParticularStatsEngine(AzulStatsEngine, ParticularStatsEngine):
                 self.queries[q] = self.queries[q].replace(
                     "WHERE", "WHERE {} AND".format("Match." + self._newclause)
                 )
+
+
+class AzulSummerPavilionStatsEngine(AzulStatsEngine):
+    """App-wide Azul: Summer Pavilion statistics."""
+
+    matchClass = AzulSummerPavilionMatch
+
+
+class AzulSummerPavilionParticularStatsEngine(AzulParticularStatsEngine):
+    """Azul: Summer Pavilion statistics for an exact set of players."""
+
+    matchClass = AzulSummerPavilionMatch
 
 
 if __name__ == "__main__":

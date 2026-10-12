@@ -249,16 +249,22 @@ class ColourIconHeader(QHeaderView):
     """Vertical header labelling each row with an icon instead of text.
 
     The icons are drawn as by :func:`paintColourIcon`, held, in a neutral
-    grey. (QHeaderView draws item icons at the style's small icon size
+    grey unless ``colours`` gives a row its own colour. (QHeaderView draws item icons at the style's small icon size
     whatever the view's icon size, so they are painted here instead.)
     """
 
     iconSize_ = 24
     colour = QColor(128, 128, 128)
 
-    def __init__(self, icons: list[str], parent: QWidget | None = None) -> None:
+    def __init__(
+        self,
+        icons: list[str],
+        parent: QWidget | None = None,
+        colours: list[QColor | None] | None = None,
+    ) -> None:
         super().__init__(QtCore.Qt.Orientation.Vertical, parent)
         self.icons = icons
+        self.colours = colours or [None] * len(icons)
 
     def sizeHint(self) -> QSize:
         hint = super().sizeHint()
@@ -277,7 +283,8 @@ class ColourIconHeader(QHeaderView):
                 size,
                 size,
             )
-            paintColourIcon(painter, icon, self.icons[logicalIndex], self.colour, True)
+            colour = self.colours[logicalIndex] or self.colour
+            paintColourIcon(painter, icon, self.icons[logicalIndex], colour, True)
 
 
 class ToggleGroupBox(QGroupBox):

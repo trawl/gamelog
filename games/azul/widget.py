@@ -1,4 +1,5 @@
-"""Azul scoreboard widgets: per-player score and bonus input, table and plot."""
+"""Azul and Azul: Summer Pavilion scoreboard widgets: per-player score and
+bonus input, round table and plot."""
 
 from __future__ import annotations
 
@@ -30,21 +31,69 @@ from core.ui.game import (
     StatsTable,
 )
 from core.ui.game.stats import GeneralQuickStats, ParticularQuickStats, QuickStatsTW
-from games.azul.engine import AzulEngine
-from games.azul.model import AzulRound
+from games.azul.engine import AzulEngine, AzulSummerPavilionEngine
+from games.azul.model import AzulRound, AzulSummerPavilionMatch
 
 # Icon of the button for each bonus kind.
-ICONS = {"rows": "azul_rows", "columns": "azul_columns", "colours": "azul_colours"}
+ICONS = {
+    "rows": "azul_rows",
+    "columns": "azul_columns",
+    "colours": "azul_colours",
+    "star_multi": "azul_sp_star_multi",
+    "star_red": "azul_sp_star",
+    "star_blue": "azul_sp_star",
+    "star_yellow": "azul_sp_star",
+    "star_orange": "azul_sp_star",
+    "star_green": "azul_sp_star",
+    "star_purple": "azul_sp_star",
+    "ones": "azul_sp_ones",
+    "twos": "azul_sp_twos",
+    "threes": "azul_sp_threes",
+    "fours": "azul_sp_fours",
+}
+
+# Bonuses drawn in their own colour rather than the player's.
+BONUS_COLOURS = {
+    "star_multi": QColor(128, 128, 128),
+    "star_red": QColor(215, 54, 43),
+    "star_blue": QColor(47, 111, 214),
+    "star_yellow": QColor(214, 166, 20),
+    "star_orange": QColor(238, 125, 34),
+    "star_green": QColor(60, 154, 63),
+    "star_purple": QColor(138, 79, 198),
+}
 
 # Bonus names, translated in the "AzulInputWidget" context.
 LABELS = {
     "rows": "Complete rows (+2 each)",
     "columns": "Complete columns (+7 each)",
     "colours": "Complete colours (+10 each)",
+    "star_multi": "Multicoloured star (+12)",
+    "star_red": "Red star (+14)",
+    "star_blue": "Blue star (+15)",
+    "star_yellow": "Yellow star (+16)",
+    "star_orange": "Orange star (+17)",
+    "star_green": "Green star (+18)",
+    "star_purple": "Purple star (+20)",
+    "ones": "All 1s (+4)",
+    "twos": "All 2s (+8)",
+    "threes": "All 3s (+12)",
+    "fours": "All 4s (+16)",
 }
 QCoreApplication.translate("AzulInputWidget", "Complete rows (+2 each)")
 QCoreApplication.translate("AzulInputWidget", "Complete columns (+7 each)")
 QCoreApplication.translate("AzulInputWidget", "Complete colours (+10 each)")
+QCoreApplication.translate("AzulInputWidget", "Multicoloured star (+12)")
+QCoreApplication.translate("AzulInputWidget", "Red star (+14)")
+QCoreApplication.translate("AzulInputWidget", "Blue star (+15)")
+QCoreApplication.translate("AzulInputWidget", "Yellow star (+16)")
+QCoreApplication.translate("AzulInputWidget", "Orange star (+17)")
+QCoreApplication.translate("AzulInputWidget", "Green star (+18)")
+QCoreApplication.translate("AzulInputWidget", "Purple star (+20)")
+QCoreApplication.translate("AzulInputWidget", "All 1s (+4)")
+QCoreApplication.translate("AzulInputWidget", "All 2s (+8)")
+QCoreApplication.translate("AzulInputWidget", "All 3s (+12)")
+QCoreApplication.translate("AzulInputWidget", "All 4s (+16)")
 
 
 def bonusLabel(key: str) -> str:
@@ -52,12 +101,15 @@ def bonusLabel(key: str) -> str:
 
 
 class AzulWidget(GameWidget):
-    """Scoreboard tab for Azul; a round with a complete row ends the game."""
+    """Scoreboard tab for Azul and Azul: Summer Pavilion."""
 
     def createEngine(self) -> None:
-        if self.game != "Azul":
+        if self.game == "Azul":
+            self.engine = AzulEngine()
+        elif self.game == AzulSummerPavilionMatch.gameName:
+            self.engine = AzulSummerPavilionEngine()
+        else:
             raise GameNotImplementedException(f"No engine for game {self.game}")
-        self.engine = AzulEngine()
 
     def initUI(self) -> None:
         super().initUI()
@@ -80,8 +132,8 @@ class AzulWidget(GameWidget):
         return score is not None
 
     def commitRoundSanityCheck(self, interactive: bool = False) -> bool:
-        """Check every player has a score, and that column or colour bonuses
-        only come with the row that ends the game."""
+        """Check every player has a score, and, in Azul, that column or colour
+        bonuses only come with the row that ends the game."""
         gameInput = cast("AzulInputWidget", self.gameInput)
         for player, score in gameInput.getScores().items():
             if not self.checkPlayerScore(player, score):
@@ -89,10 +141,13 @@ class AzulWidget(GameWidget):
                     msg = self.tr("{} score is not valid").format(player)
                     QMessageBox.warning(self, self.game, msg)
                 return False
+        ending = cast("AzulEngine", self.engine).getEndingBonus()
+        if ending is None:
+            return True
         bonuses = gameInput.getBonuses().values()
-        anyRow = any(b["rows"] for b in bonuses)
-        anyOther = any(b["columns"] or b["colours"] for b in bonuses)
-        if anyOther and not anyRow:
+        anyEnding = any(b[ending] for b in bonuses)
+        anyOther = any(v for b in bonuses for k, v in b.items() if k != ending)
+        if anyOther and not anyEnding:
             if interactive:
                 msg = self.tr(
                     "Column and colour bonuses are only scored at the end of "
@@ -165,32 +220,43 @@ class AzulPlayerInputWidget(QGroupBox):
 
         self.scoreSpinBox = ScoreSpinBox(self)
         self.scoreSpinBox.setHideMinimum(False)
-        # The floor line costs at most 14 points.
-        self.scoreSpinBox.setRange(-14, 50, 0)
+        self.scoreSpinBox.setRange(*self.engine.getRoundScoreRange(), 0)
         self.scoreSpinBox.valueChanged.connect(self.changed)
         self.mainLayout.addWidget(self.scoreSpinBox)
 
-        # The buttons sit centred between the bonus points label on the right
-        # and an equally wide blank on the left.
+        # One centred row of buttons per bonus group; the last row ends with
+        # the bonus points label, balanced by an equally wide blank on the
+        # left so its buttons stay centred too.
+        groups = self.engine.getBonusGroups()
+        size = 48 if max(len(group) for group in groups) <= 3 else 32
         labelWidth = 48
-        self.bonusLayout = QHBoxLayout()
-        self.mainLayout.addLayout(self.bonusLayout)
-        self.bonusLayout.addStretch()
-        self.bonusLayout.addSpacing(labelWidth)
         self.bonusButtons: dict[str, ColourBonusButton] = {}
-        for key in self.engine.getBonuses():
-            button = ColourBonusButton(
-                ICONS[key], self.engine.getMaxBonuses(), self.pcolour, 48, self
-            )
-            button.bonusChanged.connect(self.updateBonusLabel)
-            button.bonusChanged.connect(self.changed)
-            self.bonusButtons[key] = button
-            self.bonusLayout.addWidget(button)
         self.bonusLabel = QLabel(self)
         self.bonusLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.bonusLabel.setFixedWidth(labelWidth)
-        self.bonusLayout.addWidget(self.bonusLabel)
-        self.bonusLayout.addStretch()
+        for i, group in enumerate(groups):
+            last = i == len(groups) - 1
+            row = QHBoxLayout()
+            row.setSpacing(4)
+            self.mainLayout.addLayout(row)
+            row.addStretch()
+            if last:
+                row.addSpacing(labelWidth)
+            for key in group:
+                button = ColourBonusButton(
+                    ICONS[key],
+                    self.engine.getMaxBonuses(),
+                    BONUS_COLOURS.get(key, self.pcolour),
+                    size,
+                    self,
+                )
+                button.bonusChanged.connect(self.updateBonusLabel)
+                button.bonusChanged.connect(self.changed)
+                self.bonusButtons[key] = button
+                row.addWidget(button)
+            if last:
+                row.addWidget(self.bonusLabel)
+            row.addStretch()
 
         self.setColour(self.pcolour)
         self.retranslateUI()
@@ -215,11 +281,11 @@ class AzulPlayerInputWidget(QGroupBox):
             f"font-size: 18px; font-weight: bold; color: rgb({r},{g},{b});"
         )
         self.scoreSpinBox.setColour(colour)
-        for button in self.bonusButtons.values():
-            button.setColour(colour)
+        for key, button in self.bonusButtons.items():
+            button.setColour(BONUS_COLOURS.get(key, colour))
 
     def reset(self) -> None:
-        """Clear the score and bonuses; bonuses only from round 5 on."""
+        """Clear the score and bonuses; bonuses only once they are possible."""
         self.scoreSpinBox.setValue(None)
         allowed = self.engine.bonusesAllowed()
         for button in self.bonusButtons.values():
@@ -264,7 +330,11 @@ class AzulRoundsDetail(GameRoundsDetail):
         self.totals = StatsTable(len(bonuses), len(self.engine.getPlayers()))
         self.totals.setEditTriggers(StatsTable.EditTrigger.NoEditTriggers)
         self.totals.setVerticalHeader(
-            ColourIconHeader([ICONS[key] for key in bonuses], self.totals)
+            ColourIconHeader(
+                [ICONS[key] for key in bonuses],
+                self.totals,
+                [BONUS_COLOURS.get(key) for key in bonuses],
+            )
         )
         for row in range(len(bonuses)):
             self.totals.setVerticalHeaderItem(row, QTableWidgetItem(""))
@@ -295,7 +365,11 @@ class AzulRoundsDetail(GameRoundsDetail):
             bonuses = engine.getPlayerBonuses(player)
             for row, (key, count) in enumerate(bonuses.items()):
                 points = engine.bonusPoints({key: count})
-                text = f"{count} (+{points})" if count else "0"
+                if engine.getMaxBonuses() == 1:
+                    # A bonus earned at most once: just its points.
+                    text = f"+{points}" if count else ""
+                else:
+                    text = f"{count} (+{points})" if count else "0"
                 item = QTableWidgetItem(text)
                 item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
                 self.totals.setItem(row, col, item)
@@ -361,9 +435,10 @@ class AzulRoundPlot(GameRoundPlot):
         super().updatePlot()
         if not self.isPlotInited():
             return
+        initial = self.engine.getInitialScore()
         scores = {}
         for player in self.engine.getPlayers():
-            scores[player] = [0]
+            scores[player] = [initial]
 
         for rnd in self.engine.getRounds():
             for player in self.engine.getPlayers():
@@ -376,7 +451,7 @@ class AzulRoundPlot(GameRoundPlot):
 
 
 class AzulQSTW(QuickStatsTW):
-    """Quick-stats tab set for Azul."""
+    """Quick-stats tab set for Azul and Azul: Summer Pavilion."""
 
     def initStatsWidgets(self) -> None:
         self.gs = AzulQSBox(self.game, self)

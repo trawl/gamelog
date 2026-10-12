@@ -145,10 +145,13 @@ class LinePlot(QGraphicsItem):
         _linestyle: str = "-",
         _marker: str = "o",
     ) -> None:
-        """Queue a data series for drawing on the next update."""
+        """Queue a data series and schedule a repaint to draw it."""
         self.seriesLabels.append(label)
         self.seriesData.append(data)
         self.changed = True
+        # The series is only laid out in paint(), so ask for one: otherwise it
+        # waits for an unrelated repaint (a click, a resize).
+        self.update()
 
     def addLimitLine(self, value: float) -> None:
         self.limitvalue = value
@@ -177,10 +180,12 @@ class LinePlot(QGraphicsItem):
         self.paintSeries()
 
     def clearPlotContents(self) -> None:
-        """Drop all queued series and any limit line."""
+        """Drop all queued series and any limit line, and schedule a repaint."""
         self.seriesLabels = []
         self.seriesData = []
         self.limitvalue = None
+        self.changed = True
+        self.update()
 
     def clearPlot(self) -> None:
         """Remove every child graphics item from the scene."""

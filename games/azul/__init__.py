@@ -14,3 +14,17 @@ registry.register(
         "games.azul.engine:AzulParticularStatsEngine",
     )
 )
+registry.register(
+    GameDefinition(
+        "Azul Summer Pavilion",
+        4,
+        "Summer Pavilion edition",
+        "Standard rules",
+        "games.azul.model:AzulSummerPavilionMatch",
+        "games.azul.engine:AzulSummerPavilionEngine",
+        "games.azul.widget:AzulWidget",
+        "games.azul.widget:AzulQSTW",
+        "games.azul.engine:AzulSummerPavilionStatsEngine",
+        "games.azul.engine:AzulSummerPavilionParticularStatsEngine",
+    )
+)

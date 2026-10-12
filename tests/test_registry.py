@@ -6,6 +6,7 @@ from core.registry import registry
 
 EXPECTED_GAMES = {
     "Azul",
+    "Azul Summer Pavilion",
     "Carcassonne",
     "Catan",
     "Phase10",

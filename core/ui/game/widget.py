@@ -151,6 +151,8 @@ class GameWidget(Tab):
         self.matchGroupLayout = QVBoxLayout(self.matchGroup)
 
         self.roundTitleLabel = QLabel(self)
+        # Long game names wrap rather than being clipped by the narrow panel.
+        self.roundTitleLabel.setWordWrap(True)
         self.roundTitleLabel.setSizePolicy(
             QSizePolicy.Policy.Preferred,
             QSizePolicy.Policy.Maximum,

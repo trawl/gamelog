@@ -249,3 +249,145 @@ def test_bonus_totals_show_once_the_game_is_over(gamedb, qapp):
     assert detail.totals.item(1, 0).text() == "2 (+14)"
     assert detail.totals.item(2, 0).text() == "0"
     assert detail.totals.item(0, 1).text() == "0"
+
+
+# --- Summer Pavilion ------------------------------------------------------------
+
+SP = "Azul Summer Pavilion"
+
+
+def started_sp_match(players=PLAYERS):
+    match = registry.create_match(SP)
+    match.setPlayers(list(players))
+    match.startMatch()
+    return match
+
+
+def test_sp_players_start_on_five():
+    match = started_sp_match()
+    assert match.totalScores == {"Ann": 5, "Bob": 5}
+
+
+def test_sp_bonus_points():
+    match = started_sp_match()
+    stars = {"star_multi": 1, "star_purple": 1}
+    numbers = {"ones": 1, "fours": 1}
+    assert match.bonusPoints({**stars, **numbers}) == 12 + 20 + 4 + 16
+
+
+def test_sp_ends_after_six_rounds(gamedb):
+    match = started_sp_match()
+    for _ in range(5):
+        add_round(match, {"Ann": 10, "Bob": 12})
+    assert match.getWinner() is None
+    add_round(match, {"Ann": 10, "Bob": 3}, {"Ann": {"star_red": 1}})
+    # Ann 5 + 6 x 10 + 14 = 79, Bob 5 + 5 x 12 + 3 = 68
+    assert match.totalScores == {"Ann": 79, "Bob": 68}
+    assert match.getWinner() == "Ann"
+
+
+def test_sp_tie_goes_to_the_first_player(gamedb):
+    match = started_sp_match()
+    for _ in range(6):
+        add_round(match, {"Ann": 10, "Bob": 10})
+    assert match.getWinner() == "Ann"
+
+
+def test_sp_round_roundtrip(gamedb):
+    engine = registry.create_engine(SP)
+    for player in PLAYERS:
+        engine.addPlayer(player)
+    engine.begin()
+    engine.openRound(1)
+    engine.addRoundInfo("Ann", 12, {})
+    engine.addRoundInfo("Bob", 8, {})
+    engine.commitRound()
+    engine.save()
+
+    resumed = registry.create_engine(SP)
+    assert resumed.resume(engine.match.idMatch)
+    assert resumed.getScoreFromPlayer("Ann") == 17
+    assert resumed.getScoreFromPlayer("Bob") == 13
+    assert resumed.getRounds()[0].getBonuses("Ann")["star_red"] == 0
+
+
+def make_sp_widget():
+    return registry.create_widget(SP, PLAYERS, None, None)
+
+
+def test_sp_bonuses_unlock_in_the_last_round_and_end_the_game(gamedb, qapp):
+    widget = make_sp_widget()
+    ann = widget.gameInput.playerInputList["Ann"]
+    for _ in range(5):
+        assert not ann.bonusButtons["star_red"].isEnabled()
+        enter_round(widget, {"Ann": 10, "Bob": 10})
+    assert all(b.isEnabled() for b in ann.bonusButtons.values())
+    ann.bonusButtons["star_green"].plusone()
+    ann.bonusButtons["threes"].plusone()
+    assert ann.bonusLabel.text() == "+30"
+    # Star and number bonuses need no row, unlike Azul's column bonus.
+    ann.scoreSpinBox.setValue(4)
+    widget.gameInput.playerInputList["Bob"].scoreSpinBox.setValue(4)
+    assert widget.commitRoundSanityCheck()
+    widget.commitRound()
+    assert widget.engine.getScoreFromPlayer("Ann") == 5 + 50 + 4 + 30
+    assert widget.engine.getWinner() == "Ann"
+    totals = widget.detailGroup.totals
+    keys = list(widget.engine.getBonuses())
+    assert totals.item(keys.index("star_green"), 0).text() == "+18"
+    assert totals.item(keys.index("threes"), 0).text() == "+12"
+    assert totals.item(keys.index("star_red"), 0).text() == ""
+
+
+def test_sp_star_buttons_keep_their_own_colour(gamedb, qapp):
+    widget = make_sp_widget()
+    ann = widget.gameInput.playerInputList["Ann"]
+    assert ann.bonusButtons["star_purple"].highlight_colour.name() == "#8a4fc6"
+    assert ann.bonusButtons["ones"].highlight_colour == ann.pcolour
+
+
+def test_stats_keep_the_editions_apart(gamedb):
+    play_finished_match(["Ann", "Bob"], {"Ann": {"rows": 1, "columns": 1}})  # 9
+    engine = registry.create_engine(SP)
+    for player in PLAYERS:
+        engine.addPlayer(player)
+    engine.begin()
+    for numround in range(1, 7):
+        engine.openRound(numround)
+        extras = {"star_purple": 1} if numround == 6 else {}
+        engine.addRoundInfo("Ann", 10 + engine.bonusPoints(extras), extras)
+        engine.addRoundInfo("Bob", 10, {})
+        engine.commitRound()
+    assert engine.getWinner() == "Ann"
+
+    azul = registry.create_stats_engine("Azul")
+    azul.update()
+    assert {r["nick"]: r["maxbonus"] for r in azul.getPlayerGameStats("Azul")} == {
+        "Ann": 9,
+        "Bob": 0,
+    }
+    sp = registry.create_stats_engine(SP)
+    sp.update()
+    assert {r["nick"]: r["maxbonus"] for r in sp.getPlayerGameStats(SP)} == {
+        "Ann": 20,
+        "Bob": 0,
+    }
+
+
+def _maxSaturation(widget) -> int:
+    image = widget.grab().toImage()
+    return max(
+        image.pixelColor(x, y).hsvSaturation()
+        for x in range(image.width())
+        for y in range(image.height())
+        if image.pixelColor(x, y).alpha()
+    )
+
+
+def test_sp_disabled_multicoloured_star_is_grey(gamedb, qapp):
+    widget = make_sp_widget()
+    button = widget.gameInput.playerInputList["Ann"].bonusButtons["star_multi"]
+    assert not button.isEnabled()
+    assert _maxSaturation(button) < 30
+    button.setEnabled(True)
+    assert _maxSaturation(button) > 100

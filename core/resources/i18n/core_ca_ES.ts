@@ -278,119 +278,119 @@
         <translation>Marcador</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="270"/>
+        <location filename="../../ui/game/widget.py" line="272"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pausa/Reanuda</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="276"/>
+        <location filename="../../ui/game/widget.py" line="278"/>
         <source>Commit &amp;Round</source>
         <translation>Tancar &amp;Ronda</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="552"/>
+        <location filename="../../ui/game/widget.py" line="554"/>
         <source>Winner deals</source>
         <translation>El guanyador reparteix</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="361"/>
+        <location filename="../../ui/game/widget.py" line="363"/>
         <source>{} won this match!</source>
         <translation>{} ha guanyat la partida!</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="271"/>
+        <location filename="../../ui/game/widget.py" line="273"/>
         <source>&amp;Leave Match</source>
         <translation>&amp;Abandonar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="274"/>
+        <location filename="../../ui/game/widget.py" line="276"/>
         <source>Commit &amp;Entry</source>
         <translation>Confirma &amp;Entrada</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="363"/>
+        <location filename="../../ui/game/widget.py" line="365"/>
         <source>Game is paused</source>
         <translation>El joc està pausat</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="365"/>
+        <location filename="../../ui/game/widget.py" line="367"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="371"/>
+        <location filename="../../ui/game/widget.py" line="373"/>
         <source>Leave Match</source>
         <translation>Abandonar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="457"/>
+        <location filename="../../ui/game/widget.py" line="459"/>
         <source>No winner selected</source>
         <translation>Cal sel·leccionar un guanyador</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="467"/>
+        <location filename="../../ui/game/widget.py" line="469"/>
         <source>{} score is not valid</source>
         <translation>La puntuació de {} no és vàlida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="475"/>
+        <location filename="../../ui/game/widget.py" line="477"/>
         <source>No extras</source>
         <translation>No hi ha extres</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="277"/>
-        <location filename="../../ui/game/widget.py" line="509"/>
+        <location filename="../../ui/game/widget.py" line="279"/>
+        <location filename="../../ui/game/widget.py" line="511"/>
         <source>Rollback</source>
         <translation>Desfer</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="510"/>
+        <location filename="../../ui/game/widget.py" line="512"/>
         <source>Are you sure you want to undo the last entry?</source>
         <translation>Estàs segur de voler desfer l&apos;última entrada?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="534"/>
+        <location filename="../../ui/game/widget.py" line="536"/>
         <source>Finish game</source>
         <translation>Finalitzar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="535"/>
+        <location filename="../../ui/game/widget.py" line="537"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>Estàs segur de voler finalitzar la partida actual?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="556"/>
+        <location filename="../../ui/game/widget.py" line="558"/>
         <source>Next player deals</source>
         <translation>El següent reparteix</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="594"/>
+        <location filename="../../ui/game/widget.py" line="596"/>
         <source>{} - Round {}</source>
         <translation>{} - Ronda {}</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="372"/>
-        <location filename="../../ui/game/widget.py" line="399"/>
+        <location filename="../../ui/game/widget.py" line="374"/>
+        <location filename="../../ui/game/widget.py" line="401"/>
         <source>Do you want to save the current {} match?</source>
         <translation>Vols desar la partida de {} actual?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="279"/>
+        <location filename="../../ui/game/widget.py" line="281"/>
         <source>&amp;Finish Game</source>
         <translation>&amp;Finalitzar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="278"/>
+        <location filename="../../ui/game/widget.py" line="280"/>
         <source>Player &amp;Order</source>
         <translation>&amp;Ordre Jugadors</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="272"/>
+        <location filename="../../ui/game/widget.py" line="274"/>
         <source>Restart &amp;Match</source>
         <translation>Nova &amp;Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="398"/>
+        <location filename="../../ui/game/widget.py" line="400"/>
         <source>Restart Match</source>
         <translation>Nova Partida</translation>
     </message>
