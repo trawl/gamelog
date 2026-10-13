@@ -11,12 +11,15 @@ and pause/resume for matches that span several sittings.
 
 ## Features
 
-- **Eleven games, one app** — a shared scoring framework with game-specific rules
+- **Fourteen games, one app** — a shared scoring framework with game-specific rules
   (see the table below).
 - **Live scoreboard & plots** — enter each round and watch running totals and a
   score-over-time chart update instantly.
 - **Statistics** — general and per-player stats plus game records, kept across
   all your matches.
+- **Rules at hand** — a quick-reference sheet for every game, opened from the 📖
+  button on the new-game and scoreboard screens, with a link to the official rule
+  book where one is available.
 - **Pause & resume** — save a match mid-game and pick it up later.
 - **Dealer tracking** — automatic dealer rotation (round-robin or winner-deals).
 - **Multi-language** — English, Spanish and Catalan.
@@ -28,7 +31,9 @@ and pause/resume for matches that span several sittings.
 
 | Game | Players | Description |
 |------|:-------:|-------------|
+| Azul / Summer Pavilion | 4 | Tile-drafting board game, original and Summer Pavilion editions, with their end-of-game bonuses |
 | Carcassonne | 6 | Tile-laying board game (home scoring) |
+| Catan | 6 | Trading and building board game; tracks settlements, cities, longest road, largest army and VP cards |
 | Parchís | 6 | Classic Spanish board game; tracks goals scored and kills per turn |
 | Phase 10 / Master | 6 | Rummy-style card game, Standard and Master editions |
 | Pocha | 6 | Spanish trick-taking / bidding card game |

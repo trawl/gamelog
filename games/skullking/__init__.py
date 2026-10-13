@@ -13,5 +13,7 @@ registry.register(
         "games.skullking.engine:SkullKingStatsEngine",
         "games.skullking.engine:SkullKingParticularStatsEngine",
         "games.skullking.settings:game_settings",
+        rules_doc="skullking",
+        rules_url="https://cdnm.heyzine.com/files/uploaded/46b5bd7166a9f579404e175e4990c9d415b4aac7.pdf",
     )
 )

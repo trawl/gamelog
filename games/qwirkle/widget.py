@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import cast
 
 from PySide6 import QtCore
+from PySide6.QtCore import QCoreApplication
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QWidget
 
 from core.engine.settings import appsettings
@@ -146,22 +147,21 @@ class QwirkleQSTW(ScrabbleQSTW):
 class QwirkleQSBox(GeneralQuickStats):
     """General quick-stats page adding best-play and max-qwirkles columns."""
 
+    # Headers are kept untranslated and translated on every refresh, so they
+    # follow language changes.
+    QCoreApplication.translate("QwirkleQSBox", "Best Play")
+    QCoreApplication.translate("QwirkleQSBox", "Max Qs")
+
     def __init__(self, gname: str, parent: QWidget | None = None) -> None:
         super().__init__(gname, parent)
         self.playerStatsKeys.append("max_round_score")
-        self.playerStatsHeaders.append(self.tr("Best Play"))
+        self.playerStatsHeaders.append("Best Play")
         self.playerStatsKeys.append("max_qwirkles")
-        self.playerStatsHeaders.append(self.tr("Max Qs"))
-        for i in ("minscore", "sumscore"):
-            try:
-                self.playerStatsKeys.remove(i)
-            except KeyError:
-                pass
-        for i in ("Lowest", "Total"):
-            try:
-                self.playerStatsHeaders.remove(i)
-            except KeyError:
-                pass
+        self.playerStatsHeaders.append("Max Qs")
+        for key in ("minscore", "sumscore"):
+            i = self.playerStatsKeys.index(key)
+            del self.playerStatsKeys[i]
+            del self.playerStatsHeaders[i]
 
 
 class QwirklePQSBox(QwirkleQSBox, ParticularQuickStats):

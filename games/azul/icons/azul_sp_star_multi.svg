@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Multicoloured star</title><desc id="desc">The centre star, one diamond tile of each colour.</desc>
+  <polygon points="128.0,128.0 98.0,76.0 128.0,24.0 158.0,76.0" fill="#D7362B" stroke="#2B2B2B" stroke-width="6" stroke-linejoin="round"/>
+  <polygon points="128.0,128.0 158.0,76.0 218.1,76.0 188.0,128.0" fill="#2F6FD6" stroke="#2B2B2B" stroke-width="6" stroke-linejoin="round"/>
+  <polygon points="128.0,128.0 188.0,128.0 218.1,180.0 158.0,180.0" fill="#E8B620" stroke="#2B2B2B" stroke-width="6" stroke-linejoin="round"/>
+  <polygon points="128.0,128.0 158.0,180.0 128.0,232.0 98.0,180.0" fill="#EE7D22" stroke="#2B2B2B" stroke-width="6" stroke-linejoin="round"/>
+  <polygon points="128.0,128.0 98.0,180.0 37.9,180.0 68.0,128.0" fill="#3C9A3F" stroke="#2B2B2B" stroke-width="6" stroke-linejoin="round"/>
+  <polygon points="128.0,128.0 68.0,128.0 37.9,76.0 98.0,76.0" fill="#8A4FC6" stroke="#2B2B2B" stroke-width="6" stroke-linejoin="round"/>
+</svg>

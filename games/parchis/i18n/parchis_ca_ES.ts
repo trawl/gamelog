@@ -47,7 +47,7 @@
     <message>
         <location filename="../widget.py" line="533"/>
         <source>kills</source>
-        <translation>Assasinats</translation>
+        <translation>Assassinats</translation>
     </message>
     <message>
         <location filename="../widget.py" line="534"/>

@@ -10,5 +10,7 @@ registry.register(
         "games.remigio.engine:RemigioEngine",
         "games.remigio.widget:RemigioWidget",
         settings_factory="games.remigio.settings:game_settings",
+        rules_doc="remigio",
+        rules_url="https://www.nhfournier.es/en/como-jugar/remigio/",
     )
 )

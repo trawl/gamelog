@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
 
 from core.engine.engine import EntryGameEngine, RoundGameEngine
 from core.engine.settings import appsettings
+from core.registry import registry
 from core.ui.game.colours import PlayerColours
 from core.ui.game.input import GameInputWidget
 from core.ui.game.matchedit import MatchTimesEditDialog
@@ -29,6 +30,7 @@ from core.ui.game.player import GamePlayerWidget
 from core.ui.game.rounds import GameRoundsDetail
 from core.ui.game.utils import SleepBlocker
 from core.ui.language import LanguageButton
+from core.ui.rules import RulesDialog
 from core.ui.settings import SettingsDialog
 from core.ui.tab import Tab
 from core.ui.timers import GameClock
@@ -124,6 +126,16 @@ class GameWidget(Tab):
         self.buttonGroupLayout.addWidget(self.settingsButton)
         self.settingsButton.clicked.connect(self.onSettings)
 
+        self.rulesDialog: RulesDialog | None = None
+        definition = registry.get(self.game)
+        self.rulesButton = QPushButton(self)
+        self.rulesButton.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+        )
+        self.rulesButton.setVisible(bool(definition and definition.rules_doc))
+        self.buttonGroupLayout.addWidget(self.rulesButton)
+        self.rulesButton.clicked.connect(self.showRules)
+
         self.separator2 = QWidget(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.separator2)
 
@@ -151,6 +163,8 @@ class GameWidget(Tab):
         self.matchGroupLayout = QVBoxLayout(self.matchGroup)
 
         self.roundTitleLabel = QLabel(self)
+        # Long game names wrap rather than being clipped by the narrow panel.
+        self.roundTitleLabel.setWordWrap(True)
         self.roundTitleLabel.setSizePolicy(
             QSizePolicy.Policy.Preferred,
             QSizePolicy.Policy.Maximum,
@@ -286,6 +300,10 @@ class GameWidget(Tab):
             self.playerOrderButton.setText("♟↕")
             self.finishButton.setText("⏹")
         self.settingsButton.setText("⚙")
+        self.rulesButton.setText("📖")
+        self.rulesButton.setToolTip(self.tr("Rules"))
+        if self.rulesDialog is not None:
+            self.rulesDialog.retranslateUI()
         self.gameInput.retranslateUI()
         if self.engine.getDealingPolicy() not in (
             self.engine.NoDealer,
@@ -302,6 +320,18 @@ class GameWidget(Tab):
     def createRoundsDetail(self, parent: QWidget | None = None) -> GameRoundsDetail:
         """Build the rounds/plot/stats detail panel; games may override."""
         return GameRoundsDetail(self.engine, parent)
+
+    def showRules(self) -> None:
+        """Show the game's quick-reference rules without blocking the board."""
+        definition = registry.get(self.game)
+        if definition is None:
+            return
+        if self.rulesDialog is None:
+            self.rulesDialog = RulesDialog(definition, self)
+            self.rulesDialog.setModal(False)
+        self.rulesDialog.show()
+        self.rulesDialog.raise_()
+        self.rulesDialog.activateWindow()
 
     def onSettings(self) -> None:
         """Open the settings dialog and react to changed settings."""
@@ -356,9 +386,15 @@ class GameWidget(Tab):
         self.gameStatusLabel.setStyleSheet(
             "QLabel { font-size: 16px; font-weight:bold; color: red;}"
         )
-        winner = self.engine.getWinner()
-        if winner:
-            self.gameStatusLabel.setText(self.tr("{} won this match!").format(winner))
+        winners = self.engine.getWinners()
+        if len(winners) > 1:
+            self.gameStatusLabel.setText(
+                self.tr("{} share the victory!").format(", ".join(winners))
+            )
+        elif winners:
+            self.gameStatusLabel.setText(
+                self.tr("{} won this match!").format(winners[0])
+            )
         elif self.engine.isPaused():
             self.gameStatusLabel.setText(self.tr("Game is paused"))
         else:
@@ -661,7 +697,11 @@ class GameWidget(Tab):
 
     def setWinner(self) -> None:
         """Lock the board and highlight the winner once the match ends."""
-        logger.info("%s match ended — winner: %s", self.game, self.engine.getWinner())
+        logger.info(
+            "%s match ended — winners: %s",
+            self.game,
+            ", ".join(self.engine.getWinners()),
+        )
         self.finished = True
         self.pauseMatchButton.setDisabled(True)
         self.clock.stopTimer()
@@ -672,13 +712,12 @@ class GameWidget(Tab):
         if self.hideInputOnFinish:
             self.gameInput.hide()
         self.toggleScreenLock(True)
-        winner = self.engine.getWinner()
         if hasattr(self, "playerGroupBox"):
-            try:
-                if winner in self.players:
+            for winner in self.engine.getWinners():
+                try:
                     self.playerGroupBox[winner].setWinner()
-            except KeyError:
-                pass
+                except KeyError:
+                    pass
 
     def changePlayerOrder(self) -> None:
         """Open the reorder dialog and apply any new order, dealer or colours."""

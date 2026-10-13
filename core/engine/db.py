@@ -151,6 +151,7 @@ class GameLogDB:
         if self.con:
             logger.debug("Closing database %s", self.dbpath)
             self.con.close()
+        self.con = None
         self.dbpath = None
 
     def getDBPath(self) -> Path | None:

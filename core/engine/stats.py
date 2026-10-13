@@ -17,15 +17,20 @@ logger = logging.getLogger(__name__)
 class StatsEngine:
     """App-wide game, match and player statistics, queried on demand."""
 
+    # The winners of each game's most recently finished match, joined when
+    # they shared the victory.
     _lastwinnerquery = """
     SELECT Game_name AS game,
-        nick AS lastwinner,
+        GROUP_CONCAT(nick, ', ') AS lastwinner,
         DATETIME(finished) AS lastwinnerdate
     FROM Match JOIN MatchPlayer USING(idMatch)
-    WHERE winner=1
-    GROUP BY game
-    HAVING MAX(strftime('%s', finished))
-    ORDER BY game,finished;
+    WHERE winner=1 AND finished = (
+        SELECT MAX(finished)
+        FROM Match AS LastMatch JOIN MatchPlayer USING(idMatch)
+        WHERE winner=1 AND LastMatch.Game_name = Match.Game_name
+    )
+    GROUP BY game, idMatch
+    ORDER BY game;
     """
 
     _generalmatchstatsquery = """

@@ -42,6 +42,9 @@ Adding a game is dropping in a directory; no other files need editing.
 1. Create `games/<name>/` with `model.py`, `engine.py`, `widget.py`.
 2. **model.py** — subclass `GenericRoundMatch` (or `GenericMatch`) and implement
    the rules: `computeWinner()`, per-round scoring, and any extra persistence.
+   In `computeWinner()`, set `self.winner` to a single player, or call
+   `self.setWinners(players)` when players are still tied after every
+   tie-breaker, so they share the victory.
 3. **engine.py** — subclass `RoundGameEngine` (or `GameEngine`).
 4. **widget.py** — subclass `GameWidget` and provide its input / detail widgets.
 5. **__init__.py** — register the game:
@@ -116,7 +119,14 @@ Adding a game is dropping in a directory; no other files need editing.
    Shared strings are translated once under the `"GameSettings"` context and
    live in the core translation catalogue (`core/resources/i18n/core_<locale>.ts`).
 
-7. (Optional) drop assets into `games/<name>/{icons,styles,i18n}`. For
+7. (Optional) drop assets into `games/<name>/{icons,styles,i18n}`.
+   For per-player bonus or piece buttons, `ColourBonusButton` (in
+   `core.ui.game`) draws an SVG icon in the player's colour: a tinted disc
+   while its count is zero, a solid disc with a white icon once it is set,
+   and a corner badge for counts above one. Draw the icon's shape with the
+   placeholder colours `currentColor` (body), `#2B2B2B` (outlines),
+   `#3C3C3C` (solid details) and `#FFFFFF` (accents), with no background;
+   see `games/catan/icons/` and `games/azul/icons/`. For
    translations run `python utils/build_translations.py` — it compiles the
    catalogues and rebuilds resources automatically. For non-translation assets
    (icons, stylesheets) run `python utils/build_resources.py` directly.
@@ -209,6 +219,18 @@ Every file is exposed under a flat alias regardless of where it lives:
 `:/icons/<name>`, `:/styles/<name>`, `:/i18n/<name>`. Because the namespace is
 flat, **file names must be unique across all games** (the build script errors on
 a collision).
+
+### Rules sheets
+A game may ship a quick-reference rules sheet, shown by the 📖 button on its
+board:
+
+* `games/<name>/rules/<doc>_<locale>.md` — Markdown, one file per language
+  (e.g. `catan_en_GB.md`). A missing translation falls back to the language
+  root and then to `en_GB`, so languages can be added one at a time.
+* Point the game at it with `rules_doc="<doc>"` (and optionally `rules_url=` for
+  the publisher's rule book, opened in the system browser) on its
+  `GameDefinition`. Games without `rules_doc` show no button.
+* Write sheets in your own words — do not copy or bundle publisher text/PDFs.
 
 ### Per-game stylesheets
 A game may ship an optional stylesheet that is layered on top of the global

@@ -10,5 +10,6 @@ registry.register(
         "games.ratuki.engine:RatukiEngine",
         "games.ratuki.widget:RatukiWidget",
         settings_factory="games.ratuki.settings:game_settings",
+        rules_doc="ratuki",
     )
 )

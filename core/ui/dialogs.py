@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import subprocess
 import sys
 
 from PySide6 import QtCore, QtGui
@@ -15,6 +16,17 @@ from PySide6.QtWidgets import (
 )
 
 from core._version import __version__
+
+
+def _git_short_hash() -> str | None:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        ).strip()
+    except Exception:
+        return None
 
 
 class AboutDialog(QDialog):
@@ -31,7 +43,9 @@ class AboutDialog(QDialog):
         self.widgetlayout.addWidget(self.iconlabel)
         self.contentlayout = QVBoxLayout()
         self.widgetlayout.addLayout(self.contentlayout)
-        self.title = QLabel(f"Gamelog {__version__}")
+        commit = _git_short_hash()
+        version_str = f"Gamelog {__version__}" + (f" ({commit})" if commit else "")
+        self.title = QLabel(version_str)
         self.title.setStyleSheet("QLabel{font-size:18px; font-weight:bold}")
         self.title.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.contentlayout.addWidget(self.title)

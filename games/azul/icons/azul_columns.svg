@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Complete column</title><desc id="desc">Five wall tiles in a column.</desc>
+  <rect x="109" y="25" width="38" height="38" rx="6" fill="currentColor" stroke="#2B2B2B" stroke-width="4"/>
+  <rect x="109" y="67" width="38" height="38" rx="6" fill="currentColor" stroke="#2B2B2B" stroke-width="4"/>
+  <rect x="109" y="109" width="38" height="38" rx="6" fill="currentColor" stroke="#2B2B2B" stroke-width="4"/>
+  <rect x="109" y="151" width="38" height="38" rx="6" fill="currentColor" stroke="#2B2B2B" stroke-width="4"/>
+  <rect x="109" y="193" width="38" height="38" rx="6" fill="currentColor" stroke="#2B2B2B" stroke-width="4"/>
+</svg>

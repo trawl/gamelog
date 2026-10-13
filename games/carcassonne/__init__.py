@@ -12,5 +12,7 @@ registry.register(
         "games.carcassonne.widget:CarcassonneQSTW",
         "games.carcassonne.engine:CarcassonneStatsEngine",
         "games.carcassonne.engine:CarcassonneParticularStatsEngine",
+        rules_doc="carcassonne",
+        rules_url="https://cdn.svc.asmodee.net/production-zman/uploads/2024/09/carcassonne_v3_rulesheet_en-1.pdf",
     )
 )

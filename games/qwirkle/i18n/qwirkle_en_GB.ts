@@ -9,7 +9,7 @@
         <translation>Best Play</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="154"/>
+        <location filename="../widget.py" line="153"/>
         <source>Max Qs</source>
         <translation>Max Qs</translation>
     </message>

@@ -31,6 +31,7 @@ from core.registry import registry
 from core.ui.app import GamelogApplication
 from core.ui.language import LanguageButton
 from core.ui.player import NewPlayerDialog, PlayerList, PlayerListModel
+from core.ui.rules import RulesDialog
 from core.ui.settings import SettingsDialog
 from core.ui.tab import Tab
 
@@ -76,6 +77,10 @@ class NewGameWidget(Tab):
         # self.playersGroupBox.setTitle(self.tr("Players"))
         self.startGameButton.setText("▶")
         self.settingsButton.setText("⚙")
+        self.rulesButton.setText("📖")
+        self.rulesButton.setToolTip(self.tr("Rules"))
+        for dialog in self.rulesDialogs.values():
+            dialog.retranslateUI()
         if appsettings["text_in_buttons"]:
             self.availablePlayersGroup.setTitle(self.tr("Available Players"))
             self.newPlayerButton.setText(self.tr("New Player"))
@@ -114,8 +119,18 @@ class NewGameWidget(Tab):
         )
         self.gameNameLayout.addWidget(self.settingsGroup)
 
-        self.settingsLayout = QVBoxLayout(self.settingsGroup)
-        self.settingsLayout.addStretch()
+        # Language, rules and settings sit side by side so they don't make the
+        # game selector and play button tall.
+        self.settingsLayout = QHBoxLayout(self.settingsGroup)
+
+        self.rulesDialogs: dict[str, RulesDialog] = {}
+        self.rulesButton = QPushButton(self)
+        self.rulesButton.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+        )
+        self.rulesButton.clicked.connect(self.showRules)
+        self.settingsLayout.addWidget(self.rulesButton)
+
         self.languageChooser = LanguageButton(self)
         self.languageChooser.setSizePolicy(
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
@@ -124,11 +139,12 @@ class NewGameWidget(Tab):
 
         self.settingsButton = QPushButton(self)
         self.settingsButton.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
         )
         self.settingsButton.clicked.connect(self.onSettings)
         self.settingsLayout.addWidget(self.settingsButton)
-        self.settingsLayout.addStretch()
+        for button in (self.rulesButton, self.settingsButton):
+            button.setFixedSize(36, 36)
         self.startGameButton = QPushButton(self)
         self.startGameButton.setSizePolicy(
             QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
@@ -173,6 +189,8 @@ class NewGameWidget(Tab):
         """Refresh the player limit, stats box and resume list for the game."""
         game = str(self.gameComboBox.currentText())
         max_players = self.games[game]["maxPlayers"]
+        definition = registry.get(game)
+        self.rulesButton.setEnabled(bool(definition and definition.rules_doc))
         self.playersInGameList.setMaxPlayers(max_players)
         if appsettings["text_in_buttons"]:
             self.inGameGroup.setTitle(
@@ -192,6 +210,20 @@ class NewGameWidget(Tab):
         self.gameGroupBoxLayout.setStretchFactor(self.gameStatsBox, 10)
         self.updateStats()
         self.resumeGroup.changeGame(game)
+
+    def showRules(self) -> None:
+        """Show the selected game's quick-reference rules without blocking."""
+        game = str(self.gameComboBox.currentText())
+        definition = registry.get(game)
+        if definition is None:
+            return
+        dialog = self.rulesDialogs.get(game)
+        if dialog is None:
+            dialog = self.rulesDialogs[game] = RulesDialog(definition, self)
+            dialog.setModal(False)
+        dialog.show()
+        dialog.raise_()
+        dialog.activateWindow()
 
     def updateStats(self) -> None:
         """Push the currently selected players into the quick-stats box."""

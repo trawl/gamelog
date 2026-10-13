@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import logging
+import re
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import (
+    QByteArray,
     QEasingCurve,
     QFile,
     QObject,
@@ -22,6 +24,7 @@ from PySide6.QtGui import (
     QPainter,
     QPainterPath,
     QPaintEvent,
+    QPen,
     QWheelEvent,
 )
 from PySide6.QtSvg import QSvgRenderer
@@ -706,6 +709,168 @@ class BonusButton(QPushButton):
         painter.end()
 
 
+# Colour placeholders in SVG icons recoloured by ``colourIconRenderer``.
+ICON_BODY = "currentColor"
+ICON_OUTLINE = "#2B2B2B"
+ICON_DETAIL = "#3C3C3C"
+ICON_ACCENT = "#FFFFFF"
+
+_iconTemplates: dict[str, str] = {}
+_iconRenderers: dict[tuple[str, str, bool, bool], QSvgRenderer] = {}
+_HEX_COLOUR = re.compile(r"#[0-9A-Fa-f]{6}\b")
+
+
+def _greyHex(match: re.Match[str]) -> str:
+    """Return the grey of the same lightness as a ``#RRGGBB`` colour."""
+    grey = QColor(match.group(0)).lightness()
+    return QColor(grey, grey, grey).name()
+
+
+def colourIconRenderer(
+    icon: str, colour: QColor, held: bool, grey: bool = False
+) -> QSvgRenderer | None:
+    """Return ``:/icons/<icon>.svg`` recoloured for ``colour``.
+
+    The SVG draws its shape with placeholder colours: ``currentColor`` for
+    the body, ``#2B2B2B`` for outlines, ``#3C3C3C`` for solid details and
+    ``#FFFFFF`` for accents. Unheld, the shape is drawn in ``colour``; held,
+    it is drawn white to sit on a solid ``colour`` disc. With ``grey``, every
+    colour in the icon, including any fixed ones, is turned to grey, as for
+    a disabled button.
+    Returns ``None`` if the icon does not exist.
+    """
+    if icon not in _iconTemplates:
+        _iconTemplates[icon] = ""
+        svg = QFile(f":/icons/{icon}.svg")
+        if svg.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+            _iconTemplates[icon] = bytes(svg.readAll().data()).decode()
+            svg.close()
+    if not _iconTemplates[icon]:
+        return None
+    key = (icon, colour.name(), held, grey)
+    if key not in _iconRenderers:
+        if held:
+            tokens = {
+                ICON_BODY: "#FFFFFF",
+                ICON_OUTLINE: colour.darker(180).name(),
+                ICON_DETAIL: "#FFFFFF",
+                ICON_ACCENT: colour.name(),
+            }
+        else:
+            # A milder outline and same-colour details keep the shape
+            # legible on the dark theme as well as the light one.
+            tokens = {
+                ICON_BODY: colour.name(),
+                ICON_OUTLINE: colour.darker(140).name(),
+                ICON_DETAIL: colour.name(),
+                ICON_ACCENT: "#FFFFFF",
+            }
+        # Swap via unique markers so one replacement never feeds another.
+        svg = _iconTemplates[icon]
+        for i, token in enumerate(tokens):
+            svg = svg.replace(token, f"@{i}@")
+        for i, value in enumerate(tokens.values()):
+            svg = svg.replace(f"@{i}@", value)
+        if grey:
+            svg = _HEX_COLOUR.sub(_greyHex, svg)
+        _iconRenderers[key] = QSvgRenderer(QByteArray(svg.encode()))
+    return _iconRenderers[key]
+
+
+def paintColourIcon(
+    painter: QPainter,
+    rect: QRectF,
+    icon: str,
+    colour: QColor,
+    held: bool,
+    grey: bool = False,
+) -> None:
+    """Paint ``icon`` in ``rect``: white on a solid ``colour`` disc if held,
+    else in ``colour`` on a faintly tinted disc; all in grey if ``grey``."""
+    painter.save()
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+    if held:
+        painter.setPen(QtCore.Qt.PenStyle.NoPen)
+        painter.setBrush(colour)
+    else:
+        fill = QColor(colour)
+        fill.setAlpha(20)
+        border = QColor(colour)
+        border.setAlpha(100)
+        painter.setPen(QPen(border, 1.5))
+        painter.setBrush(fill)
+    painter.drawEllipse(rect)
+    renderer = colourIconRenderer(icon, colour, held, grey)
+    if renderer:
+        renderer.render(painter, rect)
+    painter.restore()
+
+
+class ColourBonusButton(BonusButton):
+    """Bonus button drawn in the player colour, like the app's player buttons.
+
+    With a zero count it is a faintly tinted disc with the icon in the player
+    colour; with any count it is a solid disc with the icon in white, and
+    counts above one show in a corner badge so the icon stays visible. The
+    icon is ``:/icons/<bonus_name>.svg`` using the placeholder colours
+    described in :func:`colourIconRenderer`. A left click adds one (wrapping
+    past the maximum, as the base button does); a right click takes one away.
+    """
+
+    def setColour(self, colour: QColor) -> None:
+        super().setColour(colour)
+        self.update()
+
+    def setValue(self, value: int) -> None:
+        """Show ``value`` as the count; any count makes the disc solid."""
+        self.count = value
+        self.setChecked(value > 0)
+        self.update()
+
+    def minusone(self) -> None:
+        """Take one from the count, stopping at zero."""
+        if self.count > 0:
+            self.setValue(self.count - 1)
+            self.bonusChanged.emit(self.bonus_name, self)
+
+    def mousePressEvent(self, e: QMouseEvent) -> None:
+        if e.button() == QtCore.Qt.MouseButton.RightButton:
+            if self.isEnabled():
+                self.minusone()
+            return
+        super().mousePressEvent(e)
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """Paint the disc, the icon and, for counts above one, the badge."""
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        colour = QColor(self.highlight_colour)
+        disabled = not self.isEnabled()
+        if disabled:
+            colour = QColor(150, 150, 150)
+        held = self.count > 0
+        disc = QRectF(self.rect()).adjusted(1.5, 1.5, -1.5, -1.5)
+        paintColourIcon(painter, disc, self.bonus_name, colour, held, disabled)
+
+        if self.maximum > 1 and held:
+            diameter = self.width() * 0.5
+            badge = QRectF(
+                self.width() - diameter, self.height() - diameter, diameter, diameter
+            )
+            painter.setPen(QPen(QColor("white"), 1.5))
+            painter.setBrush(colour.darker(150))
+            painter.drawEllipse(badge.adjusted(1, 1, -1, -1))
+            painter.setPen(QColor("white"))
+            font = QFont("Arial")
+            font.setBold(True)
+            font.setPixelSize(round(diameter * 0.75))
+            painter.setFont(font)
+            painter.drawText(
+                badge, QtCore.Qt.AlignmentFlag.AlignCenter, str(self.count)
+            )
+        painter.end()
+
+
 class GameInputWidget(QWidget):
     """Base score-input widget; games subclass it for their own controls."""
 
@@ -788,5 +953,8 @@ __all__ = [
     "ScoreSpinBox",
     "ClickableCounter",
     "BonusButton",
+    "ColourBonusButton",
+    "colourIconRenderer",
+    "paintColourIcon",
     "GameInputWidget",
 ]

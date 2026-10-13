@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Longest road</title><desc id="desc">A winding road.</desc>
+  <path d="M76 222 C76 160 184 168 184 120 C184 74 84 86 92 34" fill="none" stroke="#2B2B2B" stroke-width="46"/>
+  <path d="M76 222 C76 160 184 168 184 120 C184 74 84 86 92 34" fill="none" stroke="currentColor" stroke-width="32"/>
+  <path d="M76 222 C76 160 184 168 184 120 C184 74 84 86 92 34" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="12 10"/>
+</svg>
