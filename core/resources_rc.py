@@ -5175,19 +5175,19 @@ tanInputWidget\x01\x03\
 \x08\x00\x00\x00\x00\x06\x00\x00\x00\x06Totals\
 \x07\x00\x00\x00\x11CatanRounds\
 Detail\x01\x88\x00\x00\x00\x02\x01\x01\
-\x00\x00\x05\x99\
+\x00\x00\x05\x9b\
 <\
 \xb8d\x18\xca\xef\x9c\x95\xcd!\x1c\xbf`\xa1\xbd\xdd\xa7\
 \x00\x00\x00\x05ca_ESB\x00\x00\x00\x80\x00F\
 \x08\xc3\x00\x00\x00\xc3\x00r\x033\x00\x00\x02F\x01Z\
-K\xe5\x00\x00\x01\x0a\x02n:d\x00\x00\x04g\x03\xed\
+K\xe5\x00\x00\x01\x0a\x02n:d\x00\x00\x04i\x03\xed\
 \xea\x93\x00\x00\x00D\x06\xa69c\x00\x00\x01\x93\x06\xab\
 \x8a\xf3\x00\x00\x01\xca\x06\xaeE\x04\x00\x00\x01\xff\x07\x7f\
-V#\x00\x00\x00\x00\x0aJ\x10\x0f\x00\x00\x02\xc1\x0aQ\
-\xb2\xb3\x00\x00\x03\x03\x0a\xc48\xc9\x00\x00\x01]\x0b\xf9\
-\xfdc\x00\x00\x02\x84\x0c\xb05\xf2\x00\x00\x00\x81\x0d\xb0\
-1,\x00\x00\x03?\x0f\x88\xe6\xf2\x00\x00\x03\xe9i\x00\
-\x00\x04\xee\x03\x00\x00\x00\x0c\x00E\x00n\x00 \x00v\
+V#\x00\x00\x00\x00\x0aJ\x10\x0f\x00\x00\x02\xc3\x0aQ\
+\xb2\xb3\x00\x00\x03\x05\x0a\xc48\xc9\x00\x00\x01]\x0b\xf9\
+\xfdc\x00\x00\x02\x86\x0c\xb05\xf2\x00\x00\x00\x81\x0d\xb0\
+1,\x00\x00\x03A\x0f\x88\xe6\xf2\x00\x00\x03\xebi\x00\
+\x00\x04\xf0\x03\x00\x00\x00\x0c\x00E\x00n\x00 \x00v\
 \x00i\x00u\x08\x00\x00\x00\x00\x06\x00\x00\x00\x0fLi\
 ve Statistics\x07\x00\x00\
 \x00\x14ParchisEntries\
@@ -5223,50 +5223,50 @@ s\x01\x03\x00\x00\x00\x18\x00O\x00b\x00j\x00e\x00\
 c\x00t\x00i\x00u\x00 \x00F\x00a\x00v\x08\
 \x00\x00\x00\x00\x06\x00\x00\x00\x0afav_tar\
 get\x07\x00\x00\x00\x10ParchisL\
-iveStats\x01\x03\x00\x00\x00\x14\x00A\
-\x00s\x00s\x00a\x00s\x00i\x00n\x00a\x00t\
-\x00s\x08\x00\x00\x00\x00\x06\x00\x00\x00\x05kill\
-s\x07\x00\x00\x00\x10ParchisLiv\
-eStats\x01\x03\x00\x00\x00\x10\x00S\x00u\
-\x00\xef\x00c\x00i\x00d\x00i\x00s\x08\x00\x00\x00\
-\x00\x06\x00\x00\x00\x08suicides\x07\x00\
-\x00\x00\x10ParchisLiveSt\
-ats\x01\x03\x00\x00\x00\x18\x00M\x00i\x00l\x00\
-l\x00o\x00r\x00 \x00C\x00o\x00m\x00b\x00\
-o\x08\x00\x00\x00\x00\x06\x00\x00\x00\x09Max C\
-ombo\x07\x00\x00\x00\x0cParchis\
-QSBox\x01\x03\x00\x00\x00\x12\x00M\x00a\x00\
-x\x00 \x00M\x00o\x00r\x00t\x00s\x08\x00\x00\
-\x00\x00\x06\x00\x00\x00\x09Max Kills\
-\x07\x00\x00\x00\x0cParchisQSBo\
-x\x01\x03\x00\x00\x00^\x00E\x00n\x00t\x00r\x00\
-a\x00d\x00a\x00 \x00b\x00u\x00i\x00d\x00\
-a\x00,\x00 \x00a\x00f\x00e\x00g\x00e\x00\
-i\x00x\x00 \x00a\x00l\x00 \x00m\x00e\x00\
-n\x00y\x00s\x00 \x00u\x00n\x00a\x00 \x00\
-m\x00e\x00t\x00a\x00 \x00o\x00 \x00m\x00\
-o\x00r\x00t\x08\x00\x00\x00\x00\x06\x00\x00\x00*E\
-mpty entry, add \
-at least a goal \
-or a kill\x07\x00\x00\x00\x0dPa\
+iveStats\x01\x03\x00\x00\x00\x16\x00A\
+\x00s\x00s\x00a\x00s\x00s\x00i\x00n\x00a\
+\x00t\x00s\x08\x00\x00\x00\x00\x06\x00\x00\x00\x05ki\
+lls\x07\x00\x00\x00\x10ParchisL\
+iveStats\x01\x03\x00\x00\x00\x10\x00S\
+\x00u\x00\xef\x00c\x00i\x00d\x00i\x00s\x08\x00\
+\x00\x00\x00\x06\x00\x00\x00\x08suicides\
+\x07\x00\x00\x00\x10ParchisLive\
+Stats\x01\x03\x00\x00\x00\x18\x00M\x00i\x00\
+l\x00l\x00o\x00r\x00 \x00C\x00o\x00m\x00\
+b\x00o\x08\x00\x00\x00\x00\x06\x00\x00\x00\x09Max\
+ Combo\x07\x00\x00\x00\x0cParch\
+isQSBox\x01\x03\x00\x00\x00\x12\x00M\x00\
+a\x00x\x00 \x00M\x00o\x00r\x00t\x00s\x08\
+\x00\x00\x00\x00\x06\x00\x00\x00\x09Max Kil\
+ls\x07\x00\x00\x00\x0cParchisQS\
+Box\x01\x03\x00\x00\x00^\x00E\x00n\x00t\x00\
+r\x00a\x00d\x00a\x00 \x00b\x00u\x00i\x00\
+d\x00a\x00,\x00 \x00a\x00f\x00e\x00g\x00\
+e\x00i\x00x\x00 \x00a\x00l\x00 \x00m\x00\
+e\x00n\x00y\x00s\x00 \x00u\x00n\x00a\x00\
+ \x00m\x00e\x00t\x00a\x00 \x00o\x00 \x00\
+m\x00o\x00r\x00t\x08\x00\x00\x00\x00\x06\x00\x00\x00\
+*Empty entry, ad\
+d at least a goa\
+l or a kill\x07\x00\x00\x00\x0d\
+ParchisWidget\x01\x03\x00\
+\x00\x00D\x00N\x00o\x00 \x00h\x00i\x00 \x00\
+h\x00a\x00 \x00c\x00a\x00p\x00 \x00j\x00\
+u\x00g\x00a\x00d\x00o\x00r\x00 \x00s\x00\
+e\x00l\x00\xb7\x00l\x00e\x00c\x00c\x00i\x00\
+o\x00n\x00a\x00t\x08\x00\x00\x00\x00\x06\x00\x00\x00\
+\x18You must select\
+ a player\x07\x00\x00\x00\x0dPa\
 rchisWidget\x01\x03\x00\x00\x00\
-D\x00N\x00o\x00 \x00h\x00i\x00 \x00h\x00\
-a\x00 \x00c\x00a\x00p\x00 \x00j\x00u\x00\
-g\x00a\x00d\x00o\x00r\x00 \x00s\x00e\x00\
-l\x00\xb7\x00l\x00e\x00c\x00c\x00i\x00o\x00\
-n\x00a\x00t\x08\x00\x00\x00\x00\x06\x00\x00\x00\x18Y\
-ou must select a\
- player\x07\x00\x00\x00\x0dParc\
-hisWidget\x01\x03\x00\x00\x00J\x00\
-L\x00a\x00 \x00p\x00u\x00n\x00t\x00u\x00\
-a\x00c\x00i\x00\xf3\x00 \x00d\x00e\x00 \x00\
-{\x00p\x00l\x00a\x00y\x00e\x00r\x00}\x00\
- \x00n\x00o\x00 \x00\xe9\x00s\x00 \x00v\x00\
-\xe0\x00l\x00i\x00d\x00a\x08\x00\x00\x00\x00\x06\x00\
-\x00\x00\x1b{player} scor\
-e is not valid\x07\x00\
-\x00\x00\x0dParchisWidget\
-\x01\x88\x00\x00\x00\x02\x01\x01\
+J\x00L\x00a\x00 \x00p\x00u\x00n\x00t\x00\
+u\x00a\x00c\x00i\x00\xf3\x00 \x00d\x00e\x00\
+ \x00{\x00p\x00l\x00a\x00y\x00e\x00r\x00\
+}\x00 \x00n\x00o\x00 \x00\xe9\x00s\x00 \x00\
+v\x00\xe0\x00l\x00i\x00d\x00a\x08\x00\x00\x00\x00\
+\x06\x00\x00\x00\x1b{player} sc\
+ore is not valid\
+\x07\x00\x00\x00\x0dParchisWidg\
+et\x01\x88\x00\x00\x00\x02\x01\x01\
 \x00\x00\x06%\
 <\
 \xb8d\x18\xca\xef\x9c\x95\xcd!\x1c\xbf`\xa1\xbd\xdd\xa7\
@@ -10966,6 +10966,2036 @@ bbleWidget\x01\x03\x00\x00\x00>\
  is not valid\x07\x00\x00\
 \x00\x0eScrabbleWidget\
 \x01\x88\x00\x00\x00\x02\x01\x01\
+\x00\x00\x11\x81\
+#\
+ Scrabble \xe2\x80\x94 re\
+fer\xc3\xa8ncia r\xc3\xa0pid\
+a\x0a\x0a*Un resum per\
+ resoldre disput\
+es a la taula, n\
+o un substitut d\
+el reglament ofi\
+cial. Versi\xc3\xb3 an\
+glesa est\xc3\xa0ndard\
+ del joc, 2\xe2\x80\x934 \
+jugadors, basada\
+ en el full de r\
+egles de Mattel.\
+ El tractament d\
+e les impugnacio\
+ns varia entre e\
+ditorials i torn\
+ejos.*\x0a\x0a## Objec\
+tiu\x0a\x0aTenir la pu\
+ntuaci\xc3\xb3 m\xc3\xa9s al\
+ta al final form\
+ant paraules ent\
+recreuades, a l'\
+estil d'un cruci\
+grama. Hi ha 100\
+ fitxes: 98 llet\
+res i **2 comodi\
+ns** que valen 0\
+ punts.\x0a\x0a## Prep\
+araci\xc3\xb3\x0a\x0a1. Cada\
+ jugador treu **\
+7** fitxes per a\
+l seu faristol. \
+El joc avan\xc3\xa7a e\
+n sentit horari.\
+\x0a2. Acordeu de b\
+ell antuvi quin \
+**diccionari** r\
+esol les dispute\
+s.\x0a\x0a## Primera p\
+araula\x0a\x0a- Almeny\
+s **2 lletres**,\
+ horitzontals o \
+verticals (mai e\
+n diagonal), amb\
+ una fitxa sobre\
+ la **casella ce\
+ntral amb estrel\
+la**.\x0a- La casel\
+la central \xc3\xa9s u\
+na casella de **\
+paraula doble**,\
+ de manera que l\
+a primera paraul\
+a es duplica.\x0a\x0a#\
+# Un torn\x0a\x0aFes *\
+*una** d'aqueste\
+s accions:\x0a\x0a1. *\
+*Juga** fitxes i\
+ despr\xc3\xa9s treu f\
+ins a tenir 7.\x0a2\
+. **Canvia** alg\
+unes o totes les\
+ teves fitxes: d\
+eixa les que des\
+cartes cara aval\
+l, treu el matei\
+x nombre de fitx\
+es i barreja les\
+ descartades amb\
+ la bossa. No pu\
+ntues res.\x0a3. **\
+Passa** i no pun\
+tues res.\x0a\x0a## Co\
+l\xc2\xb7locar fitxes\x0a\
+\x0a- Totes les fit\
+xes que col\xc2\xb7loq\
+uis han d'estar \
+en **una fila o \
+en una columna**\
+.\x0a- La teva juga\
+da ha de connect\
+ar amb fitxes qu\
+e ja hi ha al ta\
+uler i formar pa\
+raules de 2 o m\xc3\
+\xa9s lletres.\x0a- Qu\
+alsevol fitxa qu\
+e quedi tocant a\
+ltres tamb\xc3\xa9 for\
+ma paraules, i *\
+*cada una d'aque\
+stes paraules ha\
+ de ser v\xc3\xa0lida*\
+*.\x0a- Pots: afegi\
+r lletres a un e\
+xtrem o als dos \
+d'una paraula; j\
+ugar una paraula\
+ que creu\xc3\xaf una \
+d'existent en an\
+gle recte usant \
+una de les seves\
+ lletres; jugar \
+una paraula al c\
+ostat de paraule\
+s existents (tot\
+es les lletres q\
+ue es toquen han\
+ de formar parau\
+les v\xc3\xa0lides); o\
+ unir lletres en\
+tre dues paraule\
+s.\x0a- Les fitxes \
+no es poden mour\
+e un cop jugades\
+, excepte despr\xc3\
+\xa9s d'una impugna\
+ci\xc3\xb3 reeixida.\x0a-\
+ Paraules permes\
+es: qualsevol de\
+l diccionari aco\
+rdat, excepte le\
+s que necessiten\
+ maj\xc3\xbascula inic\
+ial, abreviature\
+s, prefixos i su\
+fixos per si sol\
+s, i les paraule\
+s amb ap\xc3\xb2strofs\
+ o guionets.\x0a\x0a##\
+ Puntuaci\xc3\xb3\x0a\x0aSum\
+a els valors de \
+les lletres de *\
+*cada paraula qu\
+e hagis format o\
+ ampliat** en el\
+ torn.\x0a\x0a| Casell\
+a | Efecte |\x0a|--\
+-|---|\x0a| Lletra \
+doble (blau clar\
+) | La lletra qu\
+e hi ha compta x\
+2 |\x0a| Lletra tri\
+ple (blau fosc) \
+| La lletra que \
+hi ha compta x3 \
+|\x0a| Paraula dobl\
+e (vermell clar,\
+ i la casella ce\
+ntral) | Paraula\
+ sencera x2 |\x0a| \
+Paraula triple (\
+vermell fosc) | \
+Paraula sencera \
+x3 |\x0a\x0a- Les case\
+lles de bonifica\
+ci\xc3\xb3 compten **n\
+om\xc3\xa9s en el torn\
+ en qu\xc3\xa8 s'hi co\
+l\xc2\xb7loca una fitx\
+a**. Les paraule\
+s posteriors que\
+ hi passin puntu\
+en el valor faci\
+al.\x0a- Si una par\
+aula cobreix due\
+s caselles de pa\
+raula, multiplic\
+a entre elles: *\
+*x4** (doble i d\
+oble) o **x9** (\
+triple i triple)\
+.\x0a- Una fitxa qu\
+e est\xc3\xa0 en dues \
+paraules noves c\
+ompta en cadascu\
+na, amb la seva \
+bonificaci\xc3\xb3 en \
+totes dues.\x0a- Un\
+ **comod\xc3\xad** pun\
+tua 0 com a llet\
+ra, per\xc3\xb2 un com\
+od\xc3\xad en una case\
+lla de paraula e\
+ncara duplica o \
+triplica la para\
+ula. Has de dir \
+quina lletra \xc3\xa9s\
+, i es queda com\
+ aquella lletra.\
+\x0a- **Bingo:** fe\
+r servir les 7 f\
+itxes en un torn\
+ afegeix **50 pu\
+nts**, despr\xc3\xa9s \
+de qualsevol mul\
+tiplicador de pa\
+raula.\x0a\x0a## Impug\
+nacions\x0a\x0aDespr\xc3\xa9\
+s que es jugui u\
+na paraula i **a\
+bans** de compta\
+r la puntuaci\xc3\xb3,\
+ qualsevol jugad\
+or pot impugnar-\
+la i consultar e\
+l diccionari. Si\
+ la paraula no \xc3\
+\xa9s acceptable, e\
+l jugador recupe\
+ra les seves fit\
+xes i **perd el \
+torn** (aquesta \
+\xc3\xa9s la regla de \
+Mattel; altres r\
+eglaments en dif\
+ereixen).\x0a\x0a## Fi\
+nal de la partid\
+a\x0a\x0aLa partida ac\
+aba quan:\x0a\x0a- s'h\
+an tret totes le\
+s fitxes i un ju\
+gador usa l'\xc3\xbalt\
+ima, o\x0a- ja no \xc3\
+\xa9s possible cap \
+jugada, o\x0a- tots\
+ els jugadors pa\
+ssen dues vegade\
+s seguides.\x0a\x0aLla\
+vors, cada jugad\
+or **resta** el \
+valor de les fit\
+xes que li quede\
+n al faristol. S\
+i un jugador ha \
+usat totes les s\
+eves fitxes, **s\
+uma** el valor t\
+otal de les fitx\
+es sobrants dels\
+ altres.\x0a\x0a## Con\
+sells per a Game\
+log\x0a\x0a- Introduei\
+x la puntuaci\xc3\xb3 \
+de cada torn. El\
+s botons de boni\
+ficaci\xc3\xb3 (lletra\
+ doble, lletra t\
+riple, paraula d\
+oble, paraula tr\
+iple, bingo) reg\
+istren quines bo\
+nificacions ha u\
+sat el torn perq\
+u\xc3\xa8 apareguin a \
+les estad\xc3\xadstiqu\
+es. Els punts co\
+ntinuen sortint \
+de la puntuaci\xc3\xb3\
+ que escrius.\x0a- \
+**Desempat de l'\
+app** (no forma \
+part del full de\
+ regles): si els\
+ jugadors empate\
+n en puntuaci\xc3\xb3,\
+ guanya el que h\
+agi usat m\xc3\xa9s bo\
+nificacions; des\
+pr\xc3\xa9s, el millor\
+ torn individual\
+. Si segueixen e\
+mpatats, compart\
+eixen la vict\xc3\xb2r\
+ia.\x0a- No hi ha c\
+ap control separ\
+at per als ajust\
+os de fitxes sob\
+rants al final.\x0a\
+\
+\x00\x00*O\
+#\
+ Carcassonne \xe2\x80\x94\
+ refer\xc3\xa8ncia r\xc3\xa0\
+pida\x0a\x0a*Un resum \
+per resoldre dis\
+putes a la taula\
+, no un substitu\
+t del reglament\x0a\
+oficial. Joc bas\
+e, 2\xe2\x80\x935 jugador\
+s (l'app en perm\
+et fins a 6), am\
+b pagesos. Tres\x0a\
+expansions es tr\
+acten m\xc3\xa9s avall\
+: **Fondes i Cat\
+edrals**, **Merc\
+aders i\x0aConstruc\
+tors** i **La ca\
+tapulta**. Les n\
+ormes de les exp\
+ansions segueixe\
+n les\x0aedicions a\
+ctuals (revisade\
+s).*\x0a\x0a## Objecti\
+u\x0a\x0aTenir m\xc3\xa9s pu\
+nts quan s'ha co\
+l\xc2\xb7locat l'\xc3\xbalti\
+ma rajola i s'ha\
+ fet la puntuaci\
+\xc3\xb3 final.\x0aEls el\
+ements **complet\
+ats** es puntuen\
+ durant la parti\
+da, i els elemen\
+ts\x0a**incomplets*\
+* (i els camps) \
+al final.\x0a\x0a| Ele\
+ment | Completat\
+ durant la parti\
+da | Incomplet a\
+l final de la pa\
+rtida |\x0a|---|:--\
+-:|:---:|\x0a| Cam\xc3\
+\xad | 1 per rajola\
+ | 1 per rajola \
+|\x0a| Ciutat | 2 p\
+er rajola + 2 pe\
+r escut | 1 per \
+rajola + 1 per e\
+scut |\x0a| Monesti\
+r (claustre) | 9\
+ (ell mateix + 8\
+ ve\xc3\xafns) | 1 + 1\
+ per rajola que \
+l'envolta |\x0a| Ca\
+mp (pagesos) | m\
+ai no es puntua \
+durant la partid\
+a | 3 per **cada\
+ ciutat completa\
+da** que el toqu\
+i |\x0a\x0aUna rajola \
+compta una vegad\
+a per element, e\
+ncara que el cam\
+\xc3\xad o la ciutat h\
+i passin\x0adiverse\
+s vegades. Un mo\
+nestir completat\
+ sempre val 9; n\
+ecessita les 8 r\
+ajoles que\x0al'env\
+olten.\x0a\x0a## Prepa\
+raci\xc3\xb3\x0a\x0a1. Col\xc2\xb7\
+loca la rajola i\
+nicial (dors fos\
+c) al centre. Ba\
+rreja les altres\
+ rajoles en\x0a   p\
+iles boca avall \
+a l'abast de tot\
+hom.\x0a2. Cada jug\
+ador agafa **7 m\
+eeples** d'un co\
+lor; el 8\xc3\xa8 va a\
+l marcador de pu\
+ntuaci\xc3\xb3.\x0a3. Com\
+en\xc3\xa7a el jugador\
+ m\xc3\xa9s jove i es \
+juga en el senti\
+t de les agulles\
+ del rellotge.\x0a\x0a\
+## Un torn\x0a\x0a1. *\
+*Col\xc2\xb7loca una r\
+ajola.** Roba'n \
+exactament una i\
+ col\xc2\xb7loca-la ca\
+ra amunt al cost\
+at\x0a   de les raj\
+oles que ja hi h\
+a a la taula. Ca\
+da vora que toqu\
+i ha de coincidi\
+r\x0a   (cam\xc3\xad amb \
+cam\xc3\xad, ciutat am\
+b ciutat, camp a\
+mb camp). Els mo\
+nestirs sempre s\
+\xc3\xb3n al\x0a   centre\
+ d'una rajola.\x0a2\
+. **Col\xc2\xb7loca un\
+ meeple (opciona\
+l).** Un, de la \
+teva reserva, no\
+m\xc3\xa9s a la rajola\
+ que\x0a   acabes d\
+e col\xc2\xb7locar, i \
+nom\xc3\xa9s en un ele\
+ment que **no ti\
+ngui cap meeple*\
+*, ni tan\x0a   sol\
+s m\xc3\xa9s enll\xc3\xa0 al\
+ cam\xc3\xad o a la ci\
+utat.\x0a3. **Puntu\
+a.** Puntua cada\
+ element que la \
+teva rajola hagi\
+ completat.\x0a\x0aSi \
+la rajola que ha\
+s robat no es po\
+t col\xc2\xb7locar leg\
+alment enlloc, t\
+orna-la a la cai\
+xa\x0ai roba'n una \
+altra.\x0a\x0a## Tipus\
+ de meeple\x0a\x0a| Ro\
+l | Es col\xc2\xb7loca\
+ a | Puntuaci\xc3\xb3 \
+|\x0a|---|---|---|\x0a\
+| Viatger | Cam\xc3\
+\xad | en completar\
+-se, o al final \
+|\x0a| Cavaller | C\
+iutat | en compl\
+etar-se, o al fi\
+nal |\x0a| Monjo | \
+Monestir | en co\
+mpletar-se, o al\
+ final |\x0a| Pag\xc3\xa8\
+s | Camp (estira\
+t) | **nom\xc3\xa9s** \
+al final; es que\
+da all\xc3\xa0 tota la\
+ partida |\x0a\x0aEls \
+meeples puntuats\
+ tornen de segui\
+da a la teva res\
+erva, excepte el\
+s pagesos, que\x0am\
+ai no tornen. Le\
+s expansions afe\
+geixen el **segu\
+idor gran** (Fon\
+des i Catedrals)\
+, i\x0ael **constru\
+ctor** i el **po\
+rc** (Mercaders \
+i Constructors);\
+ vegeu-ne les se\
+ccions.\x0a\x0a## Elem\
+ents completats\x0a\
+\x0a- **Cam\xc3\xad:** el\
+s dos extrems ta\
+nquen en un pobl\
+e, una ciutat, u\
+n monestir o un \
+altre\x0a  extrem, \
+o torna sobre si\
+ mateix.\x0a- **Ciu\
+tat:** completam\
+ent envoltada de\
+ muralles, sense\
+ buits a l'inter\
+ior.\x0a- **Monesti\
+r:** les 8 rajol\
+es que l'envolte\
+n estan col\xc2\xb7loc\
+ades.\x0a\x0a## Elemen\
+ts compartits i \
+empats\x0a\x0aDos meep\
+les de jugadors \
+diferents poden \
+acabar al mateix\
+ element, perqu\xc3\
+\xa8 pots\x0acol\xc2\xb7loca\
+r una rajola que\
+ uneixi dues pec\
+es ocupades per \
+separat.\x0a\x0a- El j\
+ugador amb **m\xc3\xa9\
+s meeples** a l'\
+element el puntu\
+a sencer.\x0a- Si d\
+iversos jugadors\
+ estan **empatat\
+s** amb m\xc3\xa9s mee\
+ples, **cadascun\
+** puntua els\x0a  \
+punts sencers.\x0a-\
+ Els jugadors am\
+b menys meeples \
+no puntuen res d\
+'aquell element.\
+\x0a\x0aAix\xc3\xb2 val tamb\
+\xc3\xa9 per als camps\
+: el jugador amb\
+ m\xc3\xa9s pagesos en\
+ un camp puntua \
+el camp\x0asencer.\x0a\
+\x0a## Camps (pages\
+os)\x0a\x0aEls camps e\
+stan separats pe\
+r camins, ciutat\
+s i altres divis\
+ors, de manera q\
+ue una\x0arajola po\
+t tocar diversos\
+ camps. Al final\
+, cada camp punt\
+ua **3 punts per\
+ cada\x0aciutat com\
+pletada** que el\
+ toqui. Una ciut\
+at encara incomp\
+leta no suma res\
+ a cap\x0acamp.\x0a\x0a##\
+ Expansi\xc3\xb3: Fond\
+es i Catedrals\x0a\x0a\
+Afegeix 18 rajol\
+es, un seguidor \
+gran per a cada \
+jugador i les ra\
+joles de 50 / 10\
+0\x0apunts (gira la\
+ rajola quan la \
+teva puntuaci\xc3\xb3 \
+superi 50 o 100,\
+ com de costum).\
+\x0a\x0a- **Seguidor g\
+ran:** col\xc2\xb7loca\
+'l **en lloc de*\
+* un seguidor no\
+rmal, en un cam\xc3\
+\xad, una\x0a  ciutat,\
+ un monestir o u\
+n camp, seguint \
+les regles habit\
+uals de col\xc2\xb7loc\
+aci\xc3\xb3. Compta\x0a  \
+com a **un** a e\
+fectes de seguid\
+ors, per\xc3\xb2 com a\
+ **dos** quan es\
+ decideix qui t\xc3\
+\xa9 la\x0a  majoria. \
+No puntua doble:\
+ un seguidor gra\
+n en un monestir\
+ puntua exactame\
+nt el\x0a  mateix q\
+ue un de normal.\
+ Torna despr\xc3\xa9s \
+de puntuar, com \
+qualsevol seguid\
+or, excepte\x0a  co\
+m a pag\xc3\xa8s, on e\
+s queda fins al \
+final.\x0a- **Fonde\
+s:** un cam\xc3\xad am\
+b almenys una fo\
+nda al costat pu\
+ntua **2 punts p\
+er rajola**\x0a  en\
+ completar-se, p\
+er\xc3\xb2 **0 al fina\
+l de la partida*\
+* si encara \xc3\xa9s \
+incomplet. Una\x0a \
+ fonda nom\xc3\xa9s af\
+ecta el tram de \
+cam\xc3\xad al costat \
+seu, no tots els\
+ camins de la se\
+va\x0a  rajola.\x0a- *\
+*Catedrals:** un\
+a ciutat amb alm\
+enys una catedra\
+l puntua **3 pun\
+ts per rajola i \
+3\x0a  per escut** \
+en completar-se,\
+ per\xc3\xb2 **0 al fi\
+nal de la partid\
+a** si \xc3\xa9s incom\
+pleta.\x0a  Pots co\
+l\xc2\xb7locar una cat\
+edral a la ciuta\
+t d'un altre jug\
+ador, i pots fer\
+ el mateix\x0a  amb\
+ una fonda en un\
+ cam\xc3\xad.\x0a\x0a## Expa\
+nsi\xc3\xb3: Mercaders\
+ i Constructors\x0a\
+\x0aAfegeix 24 rajo\
+les, un construc\
+tor i un porc pe\
+r a cada jugador\
+, i 20 fitxes de\
+\x0acomer\xc3\xa7 (9 de v\
+i, 6 de gra, 5 d\
+e drap). Els con\
+structors i els \
+porcs **no** s\xc3\xb3\
+n\x0aseguidors: mai\
+ no compten per \
+a la majoria i n\
+o es poden col\xc2\xb7\
+locar sense un s\
+eguidor.\x0a\x0a**Cons\
+tructor**\x0a\x0a- Col\
+\xc2\xb7loca'l **en ll\
+oc de** un segui\
+dor, sobre la ra\
+jola que acabes \
+de col\xc2\xb7locar, e\
+n\x0a  un cam\xc3\xad o u\
+na ciutat on **j\
+a tinguis un seg\
+uidor**. Hi pode\
+n haver tamb\xc3\xa9 s\
+eguidors\x0a  d'alt\
+res jugadors. Ma\
+i no pot anar a \
+un camp.\x0a- A par\
+tir de llavors, \
+cada vegada que \
+col\xc2\xb7loquis una \
+rajola que **est\
+engui** aquell\x0a \
+ cam\xc3\xad o aquella\
+ ciutat, tens un\
+ **torn doble**:\
+ acaba el teu to\
+rn normal (col\xc2\xb7\
+loca\x0a  un seguid\
+or, puntua) i de\
+spr\xc3\xa9s roba una \
+segona rajola i \
+juga-la completa\
+.\x0a- No hi ha rea\
+cci\xc3\xb3 en cadena:\
+ mai no es roba \
+una tercera rajo\
+la en un mateix \
+torn.\x0a- El const\
+ructor es queda \
+fins que el seu \
+cam\xc3\xad o ciutat e\
+s completi i es \
+puntu\xc3\xaf, i\x0a  des\
+pr\xc3\xa9s torna a tu\
+ juntament amb e\
+l teu seguidor. \
+Si el teu \xc3\xbaltim\
+ seguidor abando\
+na\x0a  aquell elem\
+ent, el construc\
+tor tamb\xc3\xa9 torna\
+.\x0a- Una rajola q\
+ue nom\xc3\xa9s **comp\
+leta** un elemen\
+t sense estendre\
+'l (com una abad\
+ia) no\x0a  dona to\
+rn doble.\x0a\x0a**Por\
+c**\x0a\x0a- Col\xc2\xb7loca\
+'l **en lloc de*\
+* un seguidor, s\
+obre la rajola q\
+ue acabes de col\
+\xc2\xb7locar, en\x0a  un\
+ camp on **ja ti\
+nguis un pag\xc3\xa8s*\
+*.\x0a- Al final de\
+ la partida, si \
+ets propietari d\
+el camp (tens la\
+ majoria de page\
+sos o\x0a  n'est\xc3\xa0s\
+ empatat), cada \
+ciutat completad\
+a en ell val **4\
+ punts en lloc d\
+e 3**. Si no\x0a  p\
+untues el camp, \
+el porc no suma \
+res.\x0a- El porc e\
+s queda fins al \
+final, tret que \
+el teu \xc3\xbaltim pa\
+g\xc3\xa8s en aquell c\
+amp sigui\x0a  reti\
+rat: llavors tor\
+na a tu.\x0a\x0a**Merc\
+aderies**\x0a\x0a- Les\
+ ciutats amb s\xc3\xad\
+mbol de vi, gra \
+o drap puntuen c\
+om de costum en \
+completar-se. El\
+\x0a  jugador que *\
+*completa** la c\
+iutat agafa **un\
+a fitxa de comer\
+\xc3\xa7 per s\xc3\xadmbol**\
+, encara\x0a  que n\
+o tingui cap cav\
+aller en ella.\x0a-\
+ Al final de la \
+partida, el juga\
+dor amb **m\xc3\xa9s f\
+itxes de cada ti\
+pus** puntua **1\
+0\x0a  punts** per \
+aquell tipus (vi\
+, gra i drap com\
+pten per separat\
+). Els jugadors \
+empatats\x0a  en m\xc3\
+\xa9s fitxes puntue\
+n 10 **cadascun*\
+*.\x0a\x0a## Expansi\xc3\xb3\
+: La catapulta\x0a\x0a\
+Afegeix 12 rajol\
+es amb una **fir\
+a**, una catapul\
+ta de fusta i un\
+ tauler de mesur\
+a, i\x0a4 fitxes de\
+ catapulta per j\
+ugador (Tomba, S\
+educci\xc3\xb3, Llan\xc3\xa7\
+ament a la diana\
+ i Captura).\x0aUna\
+ fira acaba un c\
+am\xc3\xad, perqu\xc3\xa8 \xc3\xa9\
+s un element pro\
+pi.\x0a\x0a**Cada vega\
+da que alg\xc3\xba rob\
+a una rajola de \
+fira:**\x0a\x0a1. La c\
+ol\xc2\xb7loca i acaba\
+ el seu torn com\
+ de costum.\x0a2. C\
+omen\xc3\xa7a una **ro\
+nda de catapulta\
+**. El jugador q\
+ue ha robat la r\
+ajola tria una d\
+e\x0a   les seves q\
+uatre fitxes i l\
+a llan\xc3\xa7a amb la\
+ catapulta. Els \
+altres jugadors,\
+ en el\x0a   sentit\
+ de les agulles \
+del rellotge, ll\
+ancen cadascun e\
+l **mateix tipus\
+** de fitxa.\x0a   \
+Tothom t\xc3\xa9 **un \
+intent**.\x0a3. Tot\
+hom recupera les\
+ seves fitxes i \
+la partida conti\
+nua en el sentit\
+ de les agulles\x0a\
+   del rellotge.\
+\x0a\x0a| Fitxa | Qu\xc3\xa8\
+ passa |\x0a|---|--\
+-|\x0a| **Tomba** |\
+ Cada seguidor q\
+ue la fitxa toqu\
+i torna al seu p\
+ropietari, **inc\
+l\xc3\xb2s el teu**, i\
+ un seguidor emp\
+\xc3\xa8s contra un al\
+tre tamb\xc3\xa9 retir\
+a aquest. Les re\
+accions en caden\
+a compten. |\x0a| *\
+*Seducci\xc3\xb3** | L\
+a fitxa ha de qu\
+edar en rep\xc3\xb2s *\
+*sobre el mapa**\
+; si llisca fora\
+, no passa res. \
+El seguidor de l\
+'oponent m\xc3\xa9s pr\
+oper (fes servir\
+ el tauler de me\
+sura) es canvia \
+per un **teu**, \
+de la teva reser\
+va o ja al mapa.\
+ El seguidor can\
+viat torna al se\
+u propietari. |\x0a\
+| **Llan\xc3\xa7ament \
+a la diana** | Q\
+ui caigui m\xc3\xa9s a\
+ prop de la rajo\
+la de fira que v\
+a iniciar la ron\
+da puntua **5**.\
+ Els empats punt\
+uen 5 cadascun. \
+|\x0a| **Captura** \
+| El llan\xc3\xa7ador \
+i el receptor (e\
+l jugador a l'es\
+querra del llan\xc3\
+\xa7ador) es van al\
+ternant fins que\
+ tots hagin esta\
+t ambd\xc3\xb3s. El ll\
+an\xc3\xa7ador col\xc2\xb7lo\
+ca el tauler de \
+mesura a mig cam\
+\xc3\xad del receptor \
+i intenta llan\xc3\xa7\
+ar-hi m\xc3\xa9s enll\xc3\
+\xa0, i el receptor\
+ intenta atrapar\
+ la fitxa. **5 p\
+unts** per al re\
+ceptor si l'atra\
+pa, o si cau aba\
+ns del tauler. *\
+*5 punts** per a\
+l llan\xc3\xa7ador si \
+passa el tauler \
+i no \xc3\xa9s atrapad\
+a, o si el recep\
+tor la toca sens\
+e atrapar-la. |\x0a\
+\x0aEls seguidors a\
+ la pista de pun\
+tuaci\xc3\xb3 mai no s\
+\xc3\xb3n alcanzats.\x0a\x0a\
+## Final de la p\
+artida\x0a\x0aLa parti\
+da acaba quan to\
+tes les rajoles \
+estan col\xc2\xb7locad\
+es. Llavors:\x0a\x0a1.\
+ Puntua tots els\
+ camins, ciutats\
+ i monestirs inc\
+omplets segons l\
+a taula. (Les\x0a  \
+ fondes i les ca\
+tedrals ho canvi\
+en; vegeu Fondes\
+ i Catedrals.)\x0a2\
+. Puntua tots el\
+s camps.\x0a3. Amb \
+Mercaders i Cons\
+tructors, puntua\
+ les fitxes de c\
+omer\xc3\xa7.\x0a4. Guany\
+a el total m\xc3\xa9s \
+alt. Un empat pe\
+l total m\xc3\xa9s alt\
+ \xc3\xa9s una **vict\xc3\
+\xb2ria\x0a   comparti\
+da**; les normes\
+ oficials no ten\
+en cap altre cri\
+teri de desempat\
+.\x0a\x0a## Consells p\
+er a Gamelog\x0a\x0a- \
+Normes de casa: \
+l'app **no** por\
+ta un tauler. In\
+trodueixes els p\
+unts com a entra\
+des\x0a  separades,\
+ una per cada es\
+deveniment de pu\
+ntuaci\xc3\xb3, i trie\
+s el jugador i e\
+l **tipus**:\x0a  C\
+iutat, Cam\xc3\xad, Mo\
+nestir, Camp, B\xc3\
+\xa9ns o Fira.\x0a- Tr\
+iar Monestir fix\
+a la puntuaci\xc3\xb3 \
+a 9 i la limita \
+a 9.\x0a- **B\xc3\xa9ns**\
+ est\xc3\xa0 fixat a *\
+*10 punts**, que\
+ correspon a cad\
+a majoria de fit\
+xes de comer\xc3\xa7\x0a \
+ a Mercaders i C\
+onstructors (una\
+ entrada per cad\
+a tipus de fitxa\
+ guanyat). **Fir\
+a**\x0a  est\xc3\xa0 fixa\
+da a **5 punts**\
+, que correspon \
+a cada puntuaci\xc3\
+\xb3 de Llan\xc3\xa7ament\
+ a la diana o\x0a  \
+Captura a La cat\
+apulta (una entr\
+ada per cada jug\
+ador que puntua)\
+.\x0a- Fondes i Cat\
+edrals i el porc\
+ no tenen tipus \
+propi: introduei\
+x aquests punts \
+com a\x0a  entrades\
+ de Cam\xc3\xad, Ciuta\
+t o Camp.\x0a- Acab\
+a la partida exp\
+l\xc3\xadcitament quan\
+ hagis introdu\xc3\xaf\
+t la puntuaci\xc3\xb3 \
+final; no acaba\x0a\
+  sola.\x0a- **Dese\
+mpat (norma de c\
+asa, diferent de\
+ les normes ofic\
+ials):** si els \
+jugadors\x0a  empat\
+en en el total, \
+l'app compara el\
+s seus totals pe\
+r tipus en l'ord\
+re Ciutat,\x0a  Cam\
+\xc3\xad, Monestir, Ca\
+mp, B\xc3\xa9ns, Fira.\
+ Guanya el jugad\
+or que vagi per \
+davant en el pri\
+mer\x0a  tipus en q\
+u\xc3\xa8 difereixin. \
+Nom\xc3\xa9s si seguei\
+xen igualats en \
+tots els tipus c\
+omparteixen\x0a  la\
+ vict\xc3\xb2ria. Ofic\
+ialment, un empa\
+t es comparteix \
+sense m\xc3\xa9s.\x0a- In\
+trodueix els pun\
+ts de cada copro\
+pietari empatat \
+per separat, ja \
+que cadascun\x0a  p\
+untua sencer.\x0a\
+\x00\x00\x12#\
+#\
+ Catan \xe2\x80\x94 refer\
+encia r\xc3\xa1pida\x0a\x0a*\
+Un resumen para \
+resolver disputa\
+s en la mesa, no\
+ un sustituto de\
+l reglamento\x0aofi\
+cial. Juego base\
+, 3\xe2\x80\x934 jugadore\
+s (5\xe2\x80\x936 con la \
+ampliaci\xc3\xb3n).*\x0a\x0a\
+## Objetivo\x0a\x0aS\xc3\xa9\
+ el primer jugad\
+or en alcanzar *\
+*10 puntos de vi\
+ctoria (PV)** en\
+ tu propio turno\
+.\x0a\x0a| Fuente | PV\
+ |\x0a|---|:---:|\x0a|\
+ Poblado | 1 |\x0a|\
+ Ciudad | 2 |\x0a| \
+Gran ruta comerc\
+ial (5+ carreter\
+as) | 2 |\x0a| Gran\
+ ej\xc3\xa9rcito (3+ c\
+aballeros jugado\
+s) | 2 |\x0a| Carta\
+ de punto de vic\
+toria | 1 cada u\
+na |\x0a\x0a## Prepara\
+ci\xc3\xb3n\x0a\x0a1. Cada j\
+ugador coloca **\
+2 poblados y 2 c\
+arreteras**. Los\
+ poblados van en\
+ cruces,\x0a   las \
+carreteras en la\
+s aristas contig\
+uas.\x0a2. La coloc\
+aci\xc3\xb3n sigue el \
+orden de turno y\
+ luego **en orde\
+n inverso**. El \
+\xc3\xbaltimo\x0a   jugad\
+or coloca, por t\
+anto, dos veces \
+seguidas.\x0a3. Cad\
+a poblado debe c\
+umplir la **regl\
+a de distancia**\
+: ning\xc3\xban poblad\
+o a menos de una\
+\x0a   arista de ot\
+ro, sea de quien\
+ sea.\x0a4. Tu **se\
+gundo** poblado \
+recoge un recurs\
+o de cada hex\xc3\xa1g\
+ono adyacente.\x0a\x0a\
+## Un turno\x0a\x0a1. \
+**Tira** dos dad\
+os. Cada poblado\
+ en un hex\xc3\xa1gono\
+ con ese n\xc3\xbamero\
+ recoge 1 recurs\
+o\x0a   (las ciudad\
+es recogen 2). C\
+on un **7**, v\xc3\xa9\
+ase *El ladr\xc3\xb3n*\
+.\x0a2. **Comercia*\
+* y **construye*\
+* en el orden qu\
+e quieras, tanta\
+s veces como des\
+ees.\x0a3. Opcional\
+mente, juega **u\
+na** carta de de\
+sarrollo (puede \
+jugarse antes de\
+ tirar).\x0a4. Pasa\
+ los dados.\x0a\x0aSi \
+el banco se qued\
+a sin un recurso\
+ y varios jugado\
+res lo recoger\xc3\xad\
+an: si solo uno\x0a\
+tiene derecho, r\
+ecibe lo que que\
+de. Si m\xc3\xa1s de u\
+no tiene derecho\
+, nadie recibe e\
+se\x0arecurso en es\
+a tirada.\x0a\x0a## Co\
+stes de construc\
+ci\xc3\xb3n\x0a\x0a| Element\
+o | Coste | Nota\
+s |\x0a|---|---|---\
+|\x0a| Carretera | \
+1 arcilla + 1 bo\
+sque | Debe cone\
+ctar con tu carr\
+etera, poblado o\
+ ciudad |\x0a| Pobl\
+ado | 1 arcilla \
++ 1 bosque + 1 l\
+ana + 1 trigo | \
+Debe conectar co\
+n tu carretera; \
+se aplica la reg\
+la de distancia \
+|\x0a| Ciudad | 3 m\
+ineral + 2 trigo\
+ | Sustituye a u\
+no de tus poblad\
+os |\x0a| Carta de \
+desarrollo | 1 m\
+ineral + 1 lana \
++ 1 trigo | Se r\
+oba a ciegas del\
+ mazo |\x0a\x0aL\xc3\xadmite\
+s de piezas: **1\
+5 carreteras, 5 \
+poblados, 4 ciud\
+ades.** Una ciud\
+ad devuelve su\x0ap\
+oblado a tu rese\
+rva, as\xc3\xad que pu\
+edes construir o\
+tro.\x0a\x0a## Comerci\
+o\x0a\x0a- **Con jugad\
+ores:** solo en \
+tu turno, cualqu\
+ier trato que am\
+bos acord\xc3\xa9is. L\
+os\x0a  jugadores c\
+uyo turno no es \
+no pueden comerc\
+iar entre s\xc3\xad.\x0a-\
+ **Con el banco:\
+** 4 de un recur\
+so por 1 de cual\
+quier otro.\x0a- **\
+Puertos:** un po\
+blado o ciudad e\
+n un puerto mejo\
+ra la tasa del b\
+anco. Un puerto\x0a\
+  gen\xc3\xa9rico (3:1\
+) cambia 3 recur\
+sos iguales por \
+1. Un puerto esp\
+ec\xc3\xadfico (2:1) c\
+ambia 2\x0a  de ese\
+ recurso por 1 d\
+e cualquier otro\
+.\x0a\x0a## El ladr\xc3\xb3n\
+\x0a\x0aCuando sale un\
+ **7**, nadie re\
+coge recursos, y\
+ luego, en orden\
+:\x0a\x0a1. Cada jugad\
+or con **m\xc3\xa1s de\
+ 7 cartas** desc\
+arta **la mitad*\
+*, redondeando h\
+acia abajo.\x0a2. E\
+l jugador que ti\
+r\xc3\xb3 **mueve el l\
+adr\xc3\xb3n** a cualq\
+uier otro hex\xc3\xa1g\
+ono.\x0a3. Roba **1\
+ carta al azar**\
+ de un jugador c\
+on un poblado o \
+ciudad en ese he\
+x\xc3\xa1gono.\x0a\x0aEl lad\
+r\xc3\xb3n bloquea el \
+hex\xc3\xa1gono en el \
+que est\xc3\xa1: no pr\
+oduce nada hasta\
+ que se mueva.\x0aJ\
+ugar un Caballer\
+o mueve el ladr\xc3\
+\xb3n de la misma m\
+anera, con los p\
+asos 2 y 3.\x0a\x0a## \
+Cartas de desarr\
+ollo\x0a\x0aPuedes jug\
+ar **una por tur\
+no**. No puedes \
+jugar una carta \
+en el turno en q\
+ue la\x0acompraste,\
+ salvo una carta\
+ de Punto de vic\
+toria, que puede\
+ revelarse en cu\
+anto te\x0alleve a \
+10 PV.\x0a\x0a| Carta \
+| Efecto |\x0a|---|\
+---|\x0a| **Caballe\
+ro** | Mueve el \
+ladr\xc3\xb3n y roba 1\
+ carta. Cuenta p\
+ara el Gran ej\xc3\xa9\
+rcito. |\x0a| **Con\
+strucci\xc3\xb3n de ca\
+rreteras** | Col\
+oca 2 carreteras\
+ gratis. |\x0a| **A\
+\xc3\xb1o de la abunda\
+ncia** | Toma cu\
+alquier 2 recurs\
+os del banco. |\x0a\
+| **Monopolio** \
+| Nombra un recu\
+rso: cada otro j\
+ugador te da tod\
+os los suyos. |\x0a\
+| **Punto de vic\
+toria** | 1 PV, \
+oculto hasta que\
+ ganes. |\x0a\x0a## Gr\
+an ruta comercia\
+l y Gran ej\xc3\xa9rci\
+to\x0a\x0a- **Gran rut\
+a comercial:** u\
+na \xc3\xbanica carret\
+era continua de \
+**al menos 5** t\
+ramos. Una\x0a  bif\
+urcaci\xc3\xb3n cuenta\
+ solo a lo largo\
+ de su ramal m\xc3\xa1\
+s largo. Un pobl\
+ado o ciudad de \
+un\x0a  rival en un\
+ cruce **rompe**\
+ la carretera al\
+l\xc3\xad. Otro jugado\
+r toma la carta\x0a\
+  construyendo u\
+na carretera **e\
+strictamente m\xc3\xa1\
+s larga**.\x0a- **G\
+ran ej\xc3\xa9rcito:**\
+ **al menos 3** \
+cartas de Caball\
+ero jugadas. Otr\
+o jugador toma l\
+a\x0a  carta jugand\
+o **m\xc3\xa1s** cabal\
+leros que quien \
+la tiene.\x0a\x0a**Emp\
+ates:** quien la\
+ tiene conserva \
+la carta mientra\
+s est\xc3\xa9 empatado\
+ en cabeza. Si u\
+na\x0acarretera rot\
+a deja atr\xc3\xa1s al\
+ poseedor y vari\
+os otros jugador\
+es est\xc3\xa1n empata\
+dos en la\x0am\xc3\xa1s l\
+arga, nadie tien\
+e la Gran ruta c\
+omercial hasta q\
+ue uno de ellos \
+quede\x0aestrictame\
+nte por delante.\
+\x0a\x0a## Consejos pa\
+ra Gamelog\x0a\x0a- Ll\
+eva el registro \
+de poblados, ciu\
+dades, Gran ruta\
+ comercial, Gran\
+ ej\xc3\xa9rcito y\x0a  c\
+artas de PV en e\
+l marcador para \
+ver los PV de to\
+dos de un vistaz\
+o.\x0a- Las cartas \
+de PV ocultas so\
+lo cuentan cuand\
+o se revelan, as\
+\xc3\xad que recuerda\x0a\
+  introducirlas \
+cuando un jugado\
+r llegue a 10 PV\
+.\x0a\
+\x00\x00\x11\xb3\
+#\
+ Pocha \xe2\x80\x94 refer\
+encia r\xc3\xa1pida\x0a\x0a*\
+La pocha (tambi\xc3\
+\xa9n llamada \xc2\xabla \
+podrida\xc2\xbb) es un\
+ juego de cartas\
+ tradicional esp\
+a\xc3\xb1ol sin libro \
+de reglas oficia\
+l de ninguna edi\
+torial, y las re\
+glas var\xc3\xadan seg\
+\xc3\xban la regi\xc3\xb3n y\
+ la familia. Est\
+a hoja se ajusta\
+ a lo que coinci\
+den varias descr\
+ipciones de regl\
+as y a lo que pu\
+nt\xc3\xbaa la app. Ac\
+ordar las varian\
+tes siguientes a\
+ntes de empezar.\
+ 3\xe2\x80\x936 jugadores\
+.*\x0a\x0a## Objetivo\x0a\
+\x0aAntes de cada m\
+ano, cada jugado\
+r predice exacta\
+mente cu\xc3\xa1ntas b\
+azas ganar\xc3\xa1. Se\
+ punt\xc3\xbaa acertan\
+do **exactamente\
+**, no ganando m\
+\xc3\xa1s bazas. **Gan\
+a el total m\xc3\xa1s \
+alto tras la \xc3\xbal\
+tima mano.**\x0a\x0a##\
+ Baraja y triunf\
+o\x0a\x0a- **Baraja es\
+pa\xc3\xb1ola de 40 o \
+48 cartas.** Ord\
+en de las cartas\
+, de mayor a men\
+or: as, 3, rey, \
+caballo, sota, 9\
+, 8, 7, 6, 5, 4,\
+ 2. Las cartas n\
+o tienen puntos.\
+\x0a- Se reparte un\
+a carta cada vez\
+. La siguiente c\
+arta se da la vu\
+elta boca arriba\
+ y su palo es el\
+ **triunfo** (*t\
+rump*). Cualquie\
+r triunfo gana a\
+ cualquier carta\
+ de otro palo.\x0a-\
+ Con 3 jugadores\
+ se suelen quita\
+r los doses. En \
+las manos de 8 c\
+artas pueden par\
+ticipar como m\xc3\xa1\
+ximo 5 jugadores\
+ (8 x 5 = 40, to\
+da la baraja de \
+40 cartas), y ha\
+sta 6 si se usa \
+la baraja de 48 \
+cartas.\x0a\x0a## Mano\
+s\x0a\x0aEl n\xc3\xbamero de\
+ cartas repartid\
+as cambia en cad\
+a mano. La app u\
+sa 18 manos:\x0a\x0a| \
+Manos | Cartas p\
+or jugador |\x0a|--\
+-|---|\x0a| De la 1\
+ a la 7 | 1, 2, \
+3, 4, 5, 6, 7 (s\
+ubiendo) |\x0a| De \
+la 8 a la 11 | 8\
+ cartas, cuatro \
+manos seguidas |\
+\x0a| De la 12 a la\
+ 18 | 7, 6, 5, 4\
+, 3, 2, 1 (bajan\
+do) |\x0a\x0a\x0a## Apues\
+tas\x0a\x0a- Empezando\
+ por el jugador \
+que sale (a la d\
+erecha del repar\
+tidor) y termina\
+ndo con el repar\
+tidor, cada juga\
+dor dice cu\xc3\xa1nta\
+s bazas espera g\
+anar.\x0a- **Restri\
+cci\xc3\xb3n del \xc3\xbalti\
+mo apostador:** \
+el \xc3\xbaltimo jugad\
+or en apostar **\
+no** puede elegi\
+r un n\xc3\xbamero que\
+ haga que la sum\
+a de todas las a\
+puestas sea igua\
+l al n\xc3\xbamero de \
+bazas de la mano\
+. Por tanto, al \
+menos un jugador\
+ debe fallar.\x0a\x0a#\
+# Juego\x0a\x0a- El ju\
+gador a la derec\
+ha del repartido\
+r sale con cualq\
+uier carta.\x0a- De\
+bes **servir el \
+palo** si puedes\
+. Si no puedes, \
+debes jugar un *\
+*triunfo** si ti\
+enes alguno. Si \
+no tienes ningun\
+o de los dos, ju\
+ega cualquier ca\
+rta.\x0a- Las fuent\
+es no coinciden \
+en si tambi\xc3\xa9n d\
+ebes **superar**\
+ la carta ganado\
+ra cuando puedas\
+ (una carta m\xc3\xa1s\
+ alta del palo d\
+e salida, o un t\
+riunfo m\xc3\xa1s alto\
+). Acordar esto \
+primero.\x0a- Si se\
+ saca un triunfo\
+, todos los que \
+tengan triunfo d\
+eben jugar uno.\x0a\
+- Gana la baza e\
+l triunfo m\xc3\xa1s a\
+lto o, si no lo \
+hay, la carta m\xc3\
+\xa1s alta del palo\
+ de salida. El g\
+anador saca la s\
+iguiente baza.\x0a\x0a\
+## Puntuaci\xc3\xb3n\x0a\x0a\
+La puntuaci\xc3\xb3n h\
+abitual publicad\
+a es **10 puntos\
+ m\xc3\xa1s 5 por baza\
+ ganada** por un\
+a apuesta exacta\
+, y **-5 por baz\
+a de diferencia*\
+* (por exceso o \
+por defecto) por\
+ un fallo.\x0a\x0a**La\
+ app punt\xc3\xbaa 3 p\
+untos por baza e\
+n su lugar:**\x0a\x0a|\
+ Resultado | Pun\
+tos |\x0a|---|---|\x0a\
+| Apuesta exacta\
+ | 10 + 3 por ba\
+za ganada |\x0a| Ap\
+uesta fallida | \
+-3 por baza de d\
+iferencia (por e\
+xceso o por defe\
+cto) |\x0a\x0aEjemplo \
+en la app: apues\
+ta 3 y gana 3 = \
+19 puntos. Apues\
+ta 3 y gana 1 = \
+-6.\x0a\x0aUna apuesta\
+ de cero que se \
+cumple punt\xc3\xbaa 1\
+0 fijos. Consult\
+a la regla de tu\
+ mesa si juegas \
+con otro valor.\x0a\
+\x0a## Empates y ot\
+ras variantes\x0a\x0a-\
+ Si los totales \
+finales empatan,\
+ las reglas habi\
+tuales dicen que\
+ se reparten man\
+os extra de una \
+carta hasta romp\
+er el empate, o \
+que se prefiera \
+al jugador con m\
+enos apuestas fa\
+llidas. La app s\
+implemente **com\
+parte la victori\
+a** entre los ju\
+gadores empatado\
+s.\x0a- Variantes q\
+ue puedes encont\
+rar y que la app\
+ no punt\xc3\xbaa: una\
+ jugada \xc2\xabPocha\xc2\
+\xbb que vale 100 p\
+untos con 5 o m\xc3\
+\xa1s jugadores, ma\
+nos con el triun\
+fo elegido por s\
+ubasta, manos si\
+n triunfo, manos\
+ en las que solo\
+ ves las cartas \
+de los dem\xc3\xa1s, y\
+ multiplicadores\
+ de puntuaci\xc3\xb3n \
+para ciertos pal\
+os de triunfo.\x0a-\
+ Las penalizacio\
+nes por jugar un\
+a carta incorrec\
+ta (*renuncio*) \
+suelen acordarse\
+ de antemano.\x0a\x0a#\
+# Consejos para \
+Gamelog\x0a\x0a- El ta\
+blero cuenta las\
+ manos y muestra\
+ cu\xc3\xa1ntas cartas\
+ repartir. Las c\
+uatro manos de 8\
+ cartas llevan c\
+ada una el nombr\
+e de un palo, us\
+ando los nombres\
+ de palo de la b\
+araja elegida (e\
+n espa\xc3\xb1ol: oros\
+, copas, espadas\
+, bastos). Las d\
+em\xc3\xa1s manos se i\
+ndican como \xc2\xabsu\
+biendo\xc2\xbb o \xc2\xabbaj\
+ando\xc2\xbb.\x0a- Para c\
+ada jugador, int\
+roduce la apuest\
+a y las bazas ga\
+nadas. Las bazas\
+ ganadas deben s\
+umar el n\xc3\xbamero \
+de cartas repart\
+idas en esa mano\
+.\x0a- Al introduci\
+r las apuestas, \
+la app **bloquea\
+ la \xc3\xbaltima apue\
+sta que har\xc3\xada q\
+ue el total sea \
+igual a las cart\
+as repartidas**,\
+ para el jugador\
+ que sea el \xc3\xbalt\
+imo sin apuesta;\
+ por eso introdu\
+ce las apuestas \
+en orden de jueg\
+o, con el repart\
+idor al final.\x0a-\
+ La puntuaci\xc3\xb3n \
+usa los 10 + 3 p\
+or baza y -3 por\
+ baza de diferen\
+cia de la app, n\
+o los 5 puntos d\
+e la mayor\xc3\xada de\
+ reglas escritas\
+.\x0a\
+\x00\x00\x0c\x04\
+#\
+ Toma6 (6 nimmt!\
+) \xe2\x80\x94 referencia\
+ r\xc3\xa1pida\x0a\x0a*Un re\
+sumen para resol\
+ver disputas en \
+la mesa, no un s\
+ustituto del reg\
+lamento oficial.\
+ Juego b\xc3\xa1sico, \
+de 2 a 10 jugado\
+res. Las variant\
+es Pro y Anivers\
+ario no est\xc3\xa1n c\
+ubiertas.*\x0a\x0a## O\
+bjetivo\x0a\x0aRe\xc3\xbane \
+la menor cantida\
+d posible de **t\
+oros** [bullhead\
+s] (puntos negat\
+ivos). Juegas va\
+rias rondas; cua\
+ndo una ronda de\
+ja a alguien con\
+ la puntuaci\xc3\xb3n \
+objetivo o m\xc3\xa1s,\
+ la partida term\
+ina y gana el to\
+tal **m\xc3\xa1s bajo*\
+*. El objetivo o\
+ficial es **66**\
+.\x0a\x0a## Cartas y t\
+oros\x0a\x0a104 cartas\
+ numeradas del 1\
+ al 104. Cada ca\
+rta lleva toros,\
+ que son tus pun\
+tos de penalizac\
+i\xc3\xb3n:\x0a\x0a| Carta |\
+ Toros |\x0a|---|:-\
+--:|\x0a| La mayor\xc3\
+\xada de cartas | 1\
+ |\x0a| Termina en \
+5 (5, 15, 25 ...\
+) | 2 |\x0a| M\xc3\xbalti\
+plo de 10 (10, 2\
+0, 30 ...) | 3 |\
+\x0a| Dobles (11, 2\
+2, 33 ...) | 5 |\
+\x0a| 55 (un doble \
+que termina en 5\
+) | 7 |\x0a\x0a## Prep\
+araci\xc3\xb3n de una \
+ronda\x0a\x0a1. Repart\
+e 10 cartas a ca\
+da jugador.\x0a2. P\
+on boca arriba 4\
+ cartas m\xc3\xa1s, en\
+ columna. Cada u\
+na inicia una **\
+fila**.\x0a3. Una f\
+ila nunca tiene \
+m\xc3\xa1s de 5 cartas\
+. El resto del m\
+azo se aparta.\x0a\x0a\
+## Jugar un turn\
+o\x0a\x0aTodos eligen \
+en secreto una c\
+arta y la ponen \
+boca abajo. Cuan\
+do todos han ele\
+gido, las revela\
+n. Despu\xc3\xa9s, col\
+\xc3\xb3calas una a un\
+a, **del n\xc3\xbamero\
+ m\xc3\xa1s bajo al m\xc3\
+\xa1s alto**:\x0a\x0a1. *\
+*Orden ascendent\
+e:** una carta s\
+olo puede ir en \
+una fila cuya \xc3\xba\
+ltima carta sea \
+menor.\x0a2. **Meno\
+r diferencia:** \
+de esas filas, d\
+ebes usar la que\
+ tenga la \xc3\xbaltim\
+a carta **m\xc3\xa1s c\
+ercana** a la tu\
+ya. No tienes op\
+ci\xc3\xb3n.\x0a\x0aUna rond\
+a son 10 turnos,\
+ uno por cada ca\
+rta en mano.\x0a\x0a##\
+ Llevarse una fi\
+la\x0a\x0aRecoges cart\
+as, las pones bo\
+ca abajo en tu p\
+ropio mont\xc3\xb3n y \
+tu carta jugada \
+pasa a ser la pr\
+imera carta de e\
+sa fila en dos c\
+asos:\x0a\x0a- **Fila \
+llena:** tu cart\
+a ser\xc3\xada la 6.\xc2\xaa\
+ de su fila. Te \
+llevas las 5 car\
+tas que ya estab\
+an all\xc3\xad.\x0a- **Ca\
+rta baja:** tu c\
+arta es menor qu\
+e la \xc3\xbaltima car\
+ta de todas las \
+filas. Eliges **\
+cualquier fila**\
+ para llev\xc3\xa1rtel\
+a (normalmente, \
+la de menos toro\
+s).\x0a\x0aLas cartas \
+que te has lleva\
+do nunca vuelven\
+ a tu mano.\x0a\x0a## \
+Fin de una ronda\
+\x0a\x0aTras el turno \
+10, cuenta los t\
+oros de tu mont\xc3\
+\xb3n. An\xc3\xb3talos y \
+s\xc3\xbamalos a tu to\
+tal acumulado. B\
+araja todo y rep\
+arte la siguient\
+e ronda.\x0a\x0a## Fin\
+ de la partida\x0a\x0a\
+Sigue jugando ro\
+ndas hasta que a\
+l menos un jugad\
+or haya alcanzad\
+o el objetivo (6\
+6 por defecto) o\
+ m\xc3\xa1s. El jugado\
+r con **menos** \
+puntos gana. Si \
+varios jugadores\
+ comparten el to\
+tal m\xc3\xa1s bajo, *\
+*comparten la vi\
+ctoria**. Alcanz\
+ar el objetivo n\
+o te convierte e\
+n perdedor, solo\
+ a quien termina\
+ la partida: gan\
+a igualmente el \
+total m\xc3\xa1s bajo.\
+\x0a\x0aEl reglamento \
+tambi\xc3\xa9n permite\
+ jugar hasta otr\
+a puntuaci\xc3\xb3n o \
+un n\xc3\xbamero fijo \
+de rondas si tod\
+os est\xc3\xa1n de acu\
+erdo.\x0a\x0a## Consej\
+os para Gamelog\x0a\
+\x0a- Introduce el \
+recuento de toro\
+s de cada jugado\
+r al final de ca\
+da ronda.\x0a- La p\
+untuaci\xc3\xb3n objet\
+ivo se configura\
+ en las opciones\
+ de la partida (\
+66 por defecto) \
+y en la configur\
+aci\xc3\xb3n (L\xc3\xadmite \
+de puntos). Cuan\
+do alg\xc3\xban jugado\
+r la alcanza, la\
+ app termina la \
+partida y da la \
+victoria al tota\
+l m\xc3\xa1s bajo. Los\
+ jugadores empat\
+ados en el total\
+ m\xc3\xa1s bajo compa\
+rten la victoria\
+, como dice el r\
+eglamento.\x0a- La \
+app no registra \
+las cartas en s\xc3\
+\xad, solo los tota\
+les de cada rond\
+a.\x0a\
+\x00\x00\x127\
+#\
+ Catan \xe2\x80\x94 refer\
+\xc3\xa8ncia r\xc3\xa0pida\x0a\x0a\
+*Un resum per re\
+soldre disputes \
+a la taula, no u\
+n substitut del \
+reglament\x0aoficia\
+l. Joc base, 3\xe2\x80\
+\x934 jugadors (5\xe2\x80\
+\x936 amb l'ampliac\
+i\xc3\xb3).*\x0a\x0a## Objec\
+tiu\x0a\x0aSigues el p\
+rimer jugador a \
+arribar a **10 p\
+unts de vict\xc3\xb2ri\
+a (PV)** en el t\
+eu propi\x0atorn.\x0a\x0a\
+| Font | PV |\x0a|-\
+--|:---:|\x0a| Pobl\
+at | 1 |\x0a| Ciuta\
+t | 2 |\x0a| Gran r\
+uta comercial (5\
++ carreteres) | \
+2 |\x0a| Gran ex\xc3\xa8r\
+cit (3+ cavaller\
+s jugats) | 2 |\x0a\
+| Carta de punt \
+de vict\xc3\xb2ria | 1\
+ cadascuna |\x0a\x0a##\
+ Preparaci\xc3\xb3\x0a\x0a1.\
+ Cada jugador co\
+l\xc2\xb7loca **2 pobl\
+ats i 2 carreter\
+es**. Els poblat\
+s van en encreua\
+ments,\x0a   les ca\
+rreteres a les v\
+ores contig\xc3\xbces.\
+\x0a2. La col\xc2\xb7loca\
+ci\xc3\xb3 segueix l'o\
+rdre de torn i d\
+espr\xc3\xa9s **en ord\
+re invers**. L'\xc3\
+\xbaltim\x0a   jugador\
+ col\xc2\xb7loca, per \
+tant, dues vegad\
+es seguides.\x0a3. \
+Cada poblat ha d\
+e complir la **r\
+egla de dist\xc3\xa0nc\
+ia**: cap poblat\
+ a menys d'una v\
+ora\x0a   d'un altr\
+e, sigui de qui \
+sigui.\x0a4. El teu\
+ **segon** pobla\
+t recull un recu\
+rs de cada hex\xc3\xa0\
+gon adjacent.\x0a\x0a#\
+# Un torn\x0a\x0a1. **\
+Tira** dos daus.\
+ Cada poblat en \
+un hex\xc3\xa0gon amb \
+aquell n\xc3\xbamero r\
+ecull 1 recurs\x0a \
+  (les ciutats e\
+n recullen 2). A\
+mb un **7**, veg\
+eu *El lladre*.\x0a\
+2. **Comercia** \
+i **construeix**\
+ en l'ordre que \
+vulguis, tantes \
+vegades com vulg\
+uis.\x0a3. Opcional\
+ment, juga **una\
+** carta de dese\
+nvolupament (es \
+pot jugar abans \
+de tirar).\x0a4. Pa\
+ssa els daus.\x0a\x0aS\
+i el banc es que\
+da sense un recu\
+rs i diversos ju\
+gadors en tindri\
+en dret: si nom\xc3\
+\xa9s\x0aun hi t\xc3\xa9 dre\
+t, rep el que qu\
+edi. Si m\xc3\xa9s d'u\
+n hi t\xc3\xa9 dret, n\
+ing\xc3\xba no rep aqu\
+ell recurs\x0aen aq\
+uella tirada.\x0a\x0a#\
+# Costos de cons\
+trucci\xc3\xb3\x0a\x0a| Elem\
+ent | Cost | Not\
+es |\x0a|---|---|--\
+-|\x0a| Carretera |\
+ 1 argila + 1 bo\
+sc | Ha de conne\
+ctar amb la teva\
+ carretera, pobl\
+at o ciutat |\x0a| \
+Poblat | 1 argil\
+a + 1 bosc + 1 l\
+lana + 1 blat | \
+Ha de connectar \
+amb la teva carr\
+etera; s'aplica \
+la regla de dist\
+\xc3\xa0ncia |\x0a| Ciuta\
+t | 3 mineral + \
+2 blat | Substit\
+ueix un dels teu\
+s poblats |\x0a| Ca\
+rta de desenvolu\
+pament | 1 miner\
+al + 1 llana + 1\
+ blat | Es roba \
+a cegues del mun\
+t |\x0a\x0aL\xc3\xadmits de \
+peces: **15 carr\
+eteres, 5 poblat\
+s, 4 ciutats.** \
+Una ciutat torna\
+ el seu\x0apoblat a\
+ la teva reserva\
+, aix\xc3\xad que pots\
+ construir-ne un\
+ altre.\x0a\x0a## Come\
+r\xc3\xa7\x0a\x0a- **Amb jug\
+adors:** nom\xc3\xa9s \
+en el teu torn, \
+qualsevol tracte\
+ que tots dos ac\
+ordeu.\x0a  Els jug\
+adors el torn de\
+ls quals no \xc3\xa9s \
+no poden comerci\
+ar entre ells.\x0a-\
+ **Amb el banc:*\
+* 4 d'un recurs \
+per 1 de qualsev\
+ol altre.\x0a- **Po\
+rts:** un poblat\
+ o una ciutat en\
+ un port millora\
+ la taxa del ban\
+c. Un port\x0a  gen\
+\xc3\xa8ric (3:1) canv\
+ia 3 recursos ig\
+uals per 1. Un p\
+ort espec\xc3\xadfic (\
+2:1) canvia 2\x0a  \
+d'aquell recurs \
+per 1 de qualsev\
+ol altre.\x0a\x0a## El\
+ lladre\x0a\x0aQuan su\
+rt un **7**, nin\
+g\xc3\xba no recull re\
+cursos, i despr\xc3\
+\xa9s, en ordre:\x0a\x0a1\
+. Cada jugador a\
+mb **m\xc3\xa9s de 7 c\
+artes** descarta\
+ **la meitat**, \
+arrodonint cap a\
+vall.\x0a2. El juga\
+dor que ha tirat\
+ **mou el lladre\
+** a qualsevol a\
+ltre hex\xc3\xa0gon.\x0a3\
+. Roba **1 carta\
+ a l'atzar** d'u\
+n jugador amb un\
+ poblat o una ci\
+utat en aquell\x0a \
+  hex\xc3\xa0gon.\x0a\x0aEl \
+lladre bloqueja \
+l'hex\xc3\xa0gon on \xc3\xa9\
+s: no produeix r\
+es fins que es m\
+ou. Jugar un\x0aCav\
+aller mou el lla\
+dre de la mateix\
+a manera, amb el\
+s passos 2 i 3.\x0a\
+\x0a## Cartes de de\
+senvolupament\x0a\x0aP\
+ots jugar **una \
+per torn**. No p\
+ots jugar una ca\
+rta en el torn e\
+n qu\xc3\xa8 la vas\x0aco\
+mprar, excepte u\
+na carta de Punt\
+ de vict\xc3\xb2ria, q\
+ue es pot revela\
+r tan bon punt\x0at\
+'enduu a 10 PV.\x0a\
+\x0a| Carta | Efect\
+e |\x0a|---|---|\x0a| \
+**Cavaller** | M\
+ou el lladre i r\
+oba 1 carta. Com\
+pta per al Gran \
+ex\xc3\xa8rcit. |\x0a| **\
+Construcci\xc3\xb3 de \
+carreteres** | C\
+ol\xc2\xb7loca 2 carre\
+teres gratis. |\x0a\
+| **Any d'abund\xc3\
+\xa0ncia** | Agafa \
+qualsevol 2 recu\
+rsos del banc. |\
+\x0a| **Monopoli** \
+| Anomena un rec\
+urs: cada altre \
+jugador et dona \
+tots els seus. |\
+\x0a| **Punt de vic\
+t\xc3\xb2ria** | 1 PV,\
+ amagat fins que\
+ guanyis. |\x0a\x0a## \
+Gran ruta comerc\
+ial i Gran ex\xc3\xa8r\
+cit\x0a\x0a- **Gran ru\
+ta comercial:** \
+una \xc3\xbanica carre\
+tera cont\xc3\xadnua d\
+e **almenys 5** \
+trams. Una\x0a  bif\
+urcaci\xc3\xb3 compta \
+nom\xc3\xa9s al llarg \
+del seu ramal m\xc3\
+\xa9s llarg. Un pob\
+lat o una ciutat\
+\x0a  d'un rival en\
+ un encreuament \
+**trenca** la ca\
+rretera all\xc3\xa0. U\
+n altre jugador \
+agafa la\x0a  carta\
+ construint una \
+carretera **estr\
+ictament m\xc3\xa9s ll\
+arga**.\x0a- **Gran\
+ ex\xc3\xa8rcit:** **a\
+lmenys 3** carte\
+s de Cavaller ju\
+gades. Un altre \
+jugador agafa\x0a  \
+la carta jugant \
+**m\xc3\xa9s** cavalle\
+rs que qui la t\xc3\
+\xa9.\x0a\x0a**Empats:** \
+qui la t\xc3\xa9 conse\
+rva la carta men\
+tre estigui empa\
+tat al capdavant\
+. Si una\x0acarrete\
+ra trencada deix\
+a enrere el poss\
+e\xc3\xafdor i diverso\
+s altres jugador\
+s estan\x0aempatats\
+ a la m\xc3\xa9s llarg\
+a, ning\xc3\xba no t\xc3\xa9\
+ la Gran ruta co\
+mercial fins que\
+ un d'ells\x0aquedi\
+ estrictament pe\
+r davant.\x0a\x0a## Co\
+nsells per a Gam\
+elog\x0a\x0a- Porta el\
+ registre de pob\
+lats, ciutats, G\
+ran ruta comerci\
+al, Gran ex\xc3\xa8rci\
+t i cartes\x0a  de \
+PV al marcador p\
+er veure els PV \
+de tothom d'una \
+ullada.\x0a- Les ca\
+rtes de PV amaga\
+des nom\xc3\xa9s compt\
+en quan es revel\
+en, aix\xc3\xad que re\
+corda\x0a  introdui\
+r-les quan un ju\
+gador arribi a 1\
+0 PV.\x0a\
 \x00\x00\x0c:\
 #\
  Ratuki \xe2\x80\x94 quic\
@@ -11164,6 +13194,1210 @@ A speedy game is\
  winner without \
 relying on\x0a  the\
  target.\x0a\
+\x00\x00\x15\xca\
+#\
+ Phase 10 Master\
+ \xe2\x80\x94 refer\xc3\xa8ncia\
+ r\xc3\xa0pida\x0a\x0a*Resum\
+ per resoldre di\
+sputes a la taul\
+a, no un substit\
+ut del llibre de\
+ normes de la te\
+va caixa. Edici\xc3\
+\xb3 Phase 10 Maste\
+r, 2\xe2\x80\x936 jugador\
+s. El desenvolup\
+ament del joc \xc3\xa9\
+s el mateix que \
+en el Phase 10 e\
+st\xc3\xa0ndard; les f\
+ases s\xc3\xb3n m\xc3\xa9s d\
+if\xc3\xadcils.*\x0a\x0a## Q\
+uin \xc2\xabMaster\xc2\xbb \xc3\
+\xa9s aquest?\x0a\x0aL'ed\
+ici\xc3\xb3 Master de \
+l'app usa la lli\
+sta de fases del\
+ **Phase 10 Mast\
+er de Ravensburg\
+er** (2008). No \
+\xc3\xa9s la mateixa q\
+ue la caixa angl\
+esa \xc2\xabPhase 10 M\
+asters Edition\xc2\xbb\
+, les normes de \
+la qual (triar l\
+a teva fase en c\
+ada m\xc3\xa0 i aparta\
+r una carta \xc2\xabgu\
+ardada\xc2\xbb) s\xc3\xb3n d\
+iferents.\x0a\x0a## Ob\
+jectiu\x0a\x0aSer el p\
+rimer jugador a \
+**completar les \
+10 fases**. El t\
+otal de punts m\xc3\
+\xa9s baix desf\xc3\xa0 e\
+ls empats.\x0a\x0a## L\
+es deu fases\x0a\x0a| \
+Fase | Requisit \
+|\x0a|:---:|---|\x0a| \
+1 | 4 grups de 2\
+ |\x0a| 2 | 6 carte\
+s d'un mateix co\
+lor |\x0a| 3 | 1 gr\
+up de 4 + 1 esca\
+la de 4 |\x0a| 4 | \
+1 escala de 8 |\x0a\
+| 5 | 7 cartes d\
+'un mateix color\
+ |\x0a| 6 | 1 escal\
+a de 9 |\x0a| 7 | 2\
+ grups de 4 |\x0a| \
+8 | 1 escala de \
+color de 4 + 1 g\
+rup de 3 |\x0a| 9 |\
+ 1 grup de 5 + 1\
+ grup de 3 |\x0a| 1\
+0 | 1 grup de 5 \
++ 1 escala de co\
+lor de 3 |\x0a\x0a- Un\
+ **grup** s\xc3\xb3n c\
+artes amb el mat\
+eix n\xc3\xbamero, de \
+qualsevol color.\
+\x0a- Una **escala*\
+* s\xc3\xb3n cartes am\
+b n\xc3\xbameros conse\
+cutius, de quals\
+evol color.\x0a- Un\
+a **escala de co\
+lor** \xc3\xa9s una es\
+cala en qu\xc3\xa8 tot\
+es les cartes s\xc3\
+\xb3n del mateix co\
+lor.\x0a- Una **fas\
+e d'un sol color\
+** vol dir carte\
+s de n\xc3\xbameros qu\
+alssevol, totes \
+del mateix color\
+.\x0a\x0a## Com funcio\
+na una m\xc3\xa0\x0a\x0a- En\
+ cada m\xc3\xa0 intent\
+es una fase. Si \
+baixes tota la t\
+eva fase, passes\
+ a la seg\xc3\xbcent; \
+si no, la repete\
+ixes a la m\xc3\xa0 se\
+g\xc3\xbcent. El cr\xc3\xa8d\
+it s'obt\xc3\xa9 en ba\
+ixar la fase, en\
+cara que un altr\
+e jugador es que\
+di sense cartes \
+abans.\x0a- La m\xc3\xa0 \
+acaba en el mome\
+nt que un jugado\
+r ha baixat la s\
+eva fase i no li\
+ queden cartes.\x0a\
+- Els jugadors q\
+ue no s'han qued\
+at sense cartes \
+puntuen com a pu\
+nts de penalitza\
+ci\xc3\xb3 les cartes \
+que els queden a\
+ la m\xc3\xa0; qui es \
+queda sense cart\
+es no puntua res\
+. Les cartes ja \
+baixades no comp\
+ten.\x0a\x0a## Punts d\
+e penalitzaci\xc3\xb3\x0a\
+\x0a| Carta | Punts\
+ |\x0a|---|:---:|\x0a|\
+ De l'1 al 9 | 5\
+ |\x0a| Del 10 al 1\
+2 | 10 |\x0a| Carte\
+s d'acci\xc3\xb3 | 15 \
+|\x0a| Comod\xc3\xad | 20\
+ |\x0a\x0a## Altres co\
+ses a tenir en c\
+ompte\x0a\x0a- Les fas\
+es es poden juga\
+r en **qualsevol\
+ ordre**. Els ju\
+gadors han d'anu\
+nciar la fase qu\
+e juguen abans d\
+e comen\xc3\xa7ar la r\
+onda.\x0a- La caixa\
+ Master afegeix \
+**cartes d'acci\xc3\
+\xb3**; vegeu la se\
+cci\xc3\xb3 seg\xc3\xbcent. \
+L'app no les reg\
+istra.\x0a- **Valor\
+s de les cartes:\
+** 5 (1\xe2\x80\x939), 10\
+ (10\xe2\x80\x9312), 15 (\
+Salt) i 25 (Como\
+d\xc3\xad). Consulta l\
+'ajuda de jugado\
+r de la teva cai\
+xa. L'app nom\xc3\xa9s\
+ demana el total\
+ de cada jugador\
+.\x0a\x0a## Cartes d'a\
+cci\xc3\xb3\x0a\x0aLa caixa \
+t\xc3\xa9 18 cartes d'\
+acci\xc3\xb3 de quatre\
+ tipus, a m\xc3\xa9s d\
+e 3 cartes en bl\
+anc per inventar\
+-ne les teves. C\
+ada una mostra u\
+n s\xc3\xadmbol en llo\
+c d'un n\xc3\xbamero:\x0a\
+\x0a| S\xc3\xadmbol | Nom\
+ | Cartes |\x0a|---\
+|---|:---:|\x0a| Po\
+lze | **Tot meu*\
+* [All mine] | 4\
+ |\x0a| Polze i \xc3\xadn\
+dex (dos dits) |\
+ **Pren dues** [\
+Take two] | 4 |\x0a\
+| M\xc3\xa0 oberta (ci\
+nc dits) | **Don\
+a'm cinc** [Give\
+ me five] | 4 |\x0a\
+| Signe d'exclam\
+aci\xc3\xb3 | **Salt**\
+ | 6 |\x0a\x0a**Quan e\
+s juguen.** Les \
+preguntes freq\xc3\xbc\
+ents (FAQ) de Ra\
+vensburger diuen\
+ que les cartes \
+d'acci\xc3\xb3 es jugu\
+en **al final de\
+l teu torn**, i \
+es col\xc2\xb7loquen a\
+ la pila de desc\
+art **en lloc de\
+ descartar una c\
+arta normal**. J\
+ugar-ne una semp\
+re acaba el teu \
+torn. Per tant, \
+no pots baixar l\
+a teva fase en e\
+l mateix torn de\
+spr\xc3\xa9s de jugar-\
+ne una, per exem\
+ple despr\xc3\xa9s d'a\
+gafar una carta \
+amb Dona'm cinc.\
+\x0a\x0a**Polze: Tot m\
+eu.** Si la jugu\
+es i la m\xc3\xa0 acab\
+a abans que acab\
+is, pots **queda\
+r-te amb totes o\
+ algunes de les \
+cartes de la tev\
+a m\xc3\xa0 per a la m\
+\xc3\xa0 seg\xc3\xbcent**. D\
+ecideixes al fin\
+al de la m\xc3\xa0. Aq\
+uestes cartes et\
+ continuen costa\
+nt punts de pena\
+litzaci\xc3\xb3.\x0a\x0a**Do\
+s dits: Pren due\
+s.** En el teu s\
+eg\xc3\xbcent torn pot\
+s agafar **dues \
+cartes de la pil\
+a de robar en ll\
+oc d'una**, qued\
+ar-te'n una i de\
+scartar l'altra.\
+ Igualment acabe\
+s el torn amb un\
+ descart. Les fo\
+nts difereixen s\
+obre la seva dur\
+ada: una diu que\
+ nom\xc3\xa9s dura el \
+teu seg\xc3\xbcent tor\
+n i una altra qu\
+e fins al final \
+de la m\xc3\xa0. Consu\
+lta el llibre de\
+ normes de la te\
+va caixa.\x0a\x0a**Cin\
+c dits: Dona'm c\
+inc.** Els altre\
+s jugadors, per \
+torn, et mostren\
+ cartes de les s\
+eves mans fins q\
+ue hi ha **5 car\
+tes en total** a\
+ la vista. Amb m\
+enys de sis juga\
+dors, alguns mos\
+tren m\xc3\xa9s d'una \
+carta. Tu en tri\
+es una i la pose\
+s a la teva m\xc3\xa0.\
+ El jugador del \
+qual procedeix *\
+*roba una carta \
+de reempla\xc3\xa7amen\
+t de la pila de \
+robar**.\x0a\x0a**Sign\
+e d'exclamaci\xc3\xb3:\
+ Salt.** La jugu\
+es davant d'un r\
+ival, que perd e\
+l seu seg\xc3\xbcent t\
+orn.\x0a\x0a## Final d\
+e la partida\x0a\x0aLa\
+ partida acaba q\
+uan un jugador c\
+ompleta la fase \
+10 i es queda se\
+nse cartes. Si d\
+os o m\xc3\xa9s jugado\
+rs la completen \
+en la mateixa ro\
+nda, guanya el q\
+ue tingui menys \
+punts de penalit\
+zaci\xc3\xb3 en tota l\
+a partida.\x0a\x0a## C\
+onsells per a Ga\
+melog\x0a\x0a- Registr\
+a per a cada jug\
+ador la fase a q\
+u\xc3\xa8 apuntava, si\
+ s'ha completat \
+i els punts de p\
+enalitzaci\xc3\xb3. La\
+ llista de fases\
+ al costat del t\
+auler mostra les\
+ fases Master.\x0a-\
+ L'app aplica a \
+Master les matei\
+xes comprovacion\
+s d'entrada de l\
+'edici\xc3\xb3 est\xc3\xa0nd\
+ard: puntuacions\
+ en m\xc3\xbaltiples d\
+e 5 i almenys 50\
+ per a un jugado\
+r que no ha comp\
+letat la seva fa\
+se. Si la caixa \
+Master puntua d'\
+una altra manera\
+ (vegeu la nota \
+sobre els valors\
+ de les cartes m\
+\xc3\xa9s amunt), l'ap\
+p pot rebutjar e\
+l n\xc3\xbamero que vo\
+ls introduir.\x0a- \
+L'interruptor **\
+Fases en ordre**\
+ est\xc3\xa0 activat p\
+er defecte i nom\
+\xc3\xa9s es pot canvi\
+ar a la primera \
+ronda. **Fases l\
+liures** permet \
+als jugadors tri\
+ar qualsevol fas\
+e que encara no \
+hagin superat; \xc3\
+\xa9s una opci\xc3\xb3 de\
+ la casa, no la \
+norma est\xc3\xa0ndard\
+.\x0a- Guanya la pa\
+rtida el jugador\
+ que ha superat \
+les 10 fases amb\
+ el total m\xc3\xa9s b\
+aix. Si els tota\
+ls empaten, l'ap\
+p prefereix la p\
+untuaci\xc3\xb3 m\xc3\xa9s b\
+aixa de l'\xc3\xbaltim\
+a ronda, i si ta\
+mb\xc3\xa9 empata, la \
+vict\xc3\xb2ria es com\
+parteix.\x0a\
+\x00\x00\x1c\xb1\
+#\
+ Azul \xe2\x80\x94 refer\xc3\
+\xa8ncia r\xc3\xa0pida\x0a\x0a*\
+Un resum per res\
+oldre disputes a\
+ la taula, no un\
+ substitut del r\
+eglament\x0aoficial\
+. Joc base, 2\xe2\x80\x93\
+4 jugadors, les \
+dues cares del t\
+auler de jugador\
+: la cara de\x0acol\
+ors (est\xc3\xa0ndard)\
+ i la cara grisa\
+ (variant).*\x0a\x0a##\
+ Objectiu\x0a\x0aTenir\
+ m\xc3\xa9s punts quan\
+ acaba la partid\
+a. La partida ac\
+aba just despr\xc3\xa9\
+s de la ronda\x0aen\
+ qu\xc3\xa8 **almenys \
+un jugador compl\
+eta una fila hor\
+itzontal de 5 ra\
+joles** al seu\x0am\
+ur.\x0a\x0a| Bonificac\
+i\xc3\xb3 de final de \
+partida | Punts \
+|\x0a|---|:---:|\x0a| \
+Cada fila horitz\
+ontal completa |\
+ 2 |\x0a| Cada colu\
+mna vertical com\
+pleta | 7 |\x0a| Ca\
+da color amb les\
+ 5 rajoles al mu\
+r | 10 |\x0a\x0a## Pre\
+paraci\xc3\xb3\x0a\x0a1. Cad\
+a jugador agafa \
+un tauler i posa\
+ el seu marcador\
+ a 0. Abans de c\
+omen\xc3\xa7ar,\x0a   aco\
+rdeu quina cara \
+jugareu: **de co\
+lors** (est\xc3\xa0nda\
+rd) o **grisa** \
+(variant).\x0a   Ve\
+geu *Cara de col\
+ors o cara grisa\
+* m\xc3\xa9s avall.\x0a2.\
+ F\xc3\xa0briques: **5\
+** per a 2 jugad\
+ors, **7** per a\
+ 3, **9** per a \
+4.\x0a3. La bossa c\
+ont\xc3\xa9 100 rajole\
+s (20 de cada un\
+ dels 5 colors).\
+ Cada f\xc3\xa0brica r\
+ep 4\x0a   rajoles.\
+\x0a4. Un jugador t\
+\xc3\xa9 el marcador d\
+e jugador inicia\
+l.\x0a\x0a## Una ronda\
+\x0a\x0aUna ronda t\xc3\xa9 \
+tres fases.\x0a\x0a###\
+ 1. Oferta de f\xc3\
+\xa0briques\x0a\x0aEn el \
+teu torn, agafa \
+**totes les rajo\
+les d'un color**\
+ de qualsevol d'\
+aquests\x0allocs:\x0a\x0a\
+- **una f\xc3\xa0brica\
+:** les rajoles \
+que no has agafa\
+t llisquen cap a\
+l centre; o\x0a- **\
+el centre:** el \
+primer jugador d\
+e cada ronda que\
+ agafi del centr\
+e tamb\xc3\xa9 agafa\x0a \
+ el **marcador d\
+e jugador inicia\
+l**, que va a l'\
+espai lliure m\xc3\xa9\
+s a l'esquerra d\
+e\x0a  la seva l\xc3\xadn\
+ia de terra i co\
+mpta com a rajol\
+a de terra.\x0a\x0aDes\
+pr\xc3\xa9s, col\xc2\xb7loca\
+ les rajoles en \
+**una** de les t\
+eves cinc l\xc3\xadnie\
+s de patr\xc3\xb3\x0a(cap\
+acitats d'1 a 5)\
+:\x0a\x0a- Una l\xc3\xadnia \
+de patr\xc3\xb3 nom\xc3\xa9s\
+ admet un color.\
+\x0a- No pots fer s\
+ervir una l\xc3\xadnia\
+ de patr\xc3\xb3 si aq\
+uella fila del t\
+eu mur **ja t\xc3\xa9\x0a\
+  aquest color**\
+.\x0a- Les rajoles \
+que no hi caben,\
+ o que no pots o\
+ no vols col\xc2\xb7lo\
+car, van a la\x0a  \
+**l\xc3\xadnia de terr\
+a**. Sempre pots\
+ enviar un agafa\
+ment complet a l\
+a l\xc3\xadnia de terr\
+a.\x0a- Si la l\xc3\xadni\
+a de terra \xc3\xa9s p\
+lena, les rajole\
+s addicionals to\
+rnen a la tapa d\
+e la\x0a  caixa.\x0a\x0aL\
+a fase acaba qua\
+n les f\xc3\xa0briques\
+ i el centre s\xc3\xb3\
+n buits.\x0a\x0a### 2.\
+ Col\xc2\xb7locaci\xc3\xb3 a\
+l mur\x0a\x0aAnant de \
+dalt a baix, per\
+ cada l\xc3\xadnia de \
+patr\xc3\xb3 **complet\
+a**, mou la seva\
+ rajola\x0am\xc3\xa9s a l\
+a dreta al mur i\
+ puntua-la de se\
+guida. Les altre\
+s rajoles d'aque\
+lla l\xc3\xadnia\x0avan a\
+ la tapa. Les l\xc3\
+\xadnies incomplete\
+s es queden per \
+a la ronda seg\xc3\xbc\
+ent.\x0a\x0a- **Cara d\
+e colors:** la r\
+ajola va a l'\xc3\xban\
+ic espai d'aquel\
+l color a la sev\
+a fila.\x0a- **Cara\
+ grisa:** tu tri\
+es l'espai; vege\
+u *Cara de color\
+s o cara grisa*.\
+\x0a\x0a**Puntuaci\xc3\xb3 d\
+'una rajola col\xc2\
+\xb7locada:**\x0a\x0a- Ca\
+p ve\xc3\xad a dalt, a\
+ baix, a l'esque\
+rra ni a la dret\
+a: **1 punt**.\x0a-\
+ Si no, compta e\
+l grup horitzont\
+al connectat (in\
+closa la nova ra\
+jola), si n'hi\x0a \
+ ha, **m\xc3\xa9s** el\
+ grup vertical c\
+onnectat (inclos\
+a la nova rajola\
+), si n'hi ha.\x0a \
+ Una rajola amb \
+ve\xc3\xafns en les du\
+es direccions pu\
+ntua els dos gru\
+ps, per tant\x0a  c\
+ompta dues vegad\
+es.\x0a\x0a**L\xc3\xadnia de\
+ terra:** cada r\
+ajola de terra c\
+osta punts, d'es\
+querra a dreta:\x0a\
+\x0a| Casella | 1 |\
+ 2 | 3 | 4 | 5 |\
+ 6 | 7 |\x0a|---|:-\
+--:|:---:|:---:|\
+:---:|:---:|:---\
+:|:---:|\x0a| Penal\
+itzaci\xc3\xb3 | -1 | \
+-1 | -2 | -2 | -\
+2 | -3 | -3 |\x0a\x0aL\
+a teva puntuaci\xc3\
+\xb3 **mai no pot b\
+aixar de 0** (la\
+ penalitzaci\xc3\xb3 s\
+'atura a 0). Les\
+\x0arajoles de terr\
+a van a la tapa,\
+ per\xc3\xb2 el marcad\
+or de jugador in\
+icial es queda a\
+mb\x0ael seu propie\
+tari, que comen\xc3\
+\xa7a la ronda seg\xc3\
+\xbcent.\x0a\x0a### 3. Ro\
+nda seg\xc3\xbcent\x0a\x0aSi\
+ ning\xc3\xba no ha co\
+mpletat una fila\
+, qui t\xc3\xa9 el mar\
+cador omple cada\
+ f\xc3\xa0brica amb 4\x0a\
+rajoles. Si la b\
+ossa s'acaba, om\
+ple-la amb la ta\
+pa. Si s'acaba d\
+e nou amb la tap\
+a\x0abuida, comen\xc3\xa7\
+a la ronda igual\
+ment amb f\xc3\xa0briq\
+ues parcialment \
+plenes.\x0a\x0a## Cara\
+ de colors o car\
+a grisa\x0a\x0aTota la\
+ resta d'aquest \
+full \xc3\xa9s igual e\
+n totes dues car\
+es: preparaci\xc3\xb3,\
+ oferta de\x0af\xc3\xa0br\
+iques, puntuaci\xc3\
+\xb3 d'una rajola c\
+ol\xc2\xb7locada, pena\
+litzacions de te\
+rra, final de la\
+\x0apartida i bonif\
+icacions de fina\
+l de partida. L'\
+\xc3\xbanica difer\xc3\xa8nc\
+ia \xc3\xa9s **on pot \
+anar\x0auna rajola \
+al mur**.\x0a\x0a| | C\
+ara de colors | \
+Cara grisa |\x0a|--\
+-|---|---|\x0a| Esp\
+ais del mur | Ca\
+da espai t\xc3\xa9 un \
+color fix | En b\
+lanc: tu tries l\
+'espai |\x0a| On va\
+ la rajola | A l\
+'espai del seu c\
+olor en aquella \
+fila | A qualsev\
+ol espai lliure \
+d'aquella fila |\
+\x0a| Repeticions |\
+ No poden passar\
+: cada color apa\
+reix una vegada \
+per fila i per c\
+olumna per disse\
+ny | **Cap color\
+ dues vegades en\
+ una fila, i cap\
+ color dues vega\
+des en una colum\
+na** |\x0a| L\xc3\xadnia \
+de patr\xc3\xb3 permes\
+a? | No, si la f\
+ila del mur ja t\
+\xc3\xa9 aquell color \
+| Mateixa restri\
+cci\xc3\xb3 |\x0a\x0aDetalls\
+ de la cara gris\
+a:\x0a\x0a- Tries l'es\
+pai quan la rajo\
+la es mou al mur\
+, durant la col\xc2\
+\xb7locaci\xc3\xb3 al mur\
+, i cada\x0a  espai\
+ compta com a ll\
+iure tret que la\
+ fila ja tingui \
+aquell color o l\
+a columna\x0a  el t\
+ingui.\x0a- Tria am\
+b cura: una rajo\
+la col\xc2\xb7locada a\
+ra pot deixar un\
+a l\xc3\xadnia posteri\
+or sense\x0a  espai\
+ v\xc3\xa0lid. La comp\
+rovaci\xc3\xb3 de l\xc3\xadn\
+ia de patr\xc3\xb3 a l\
+'oferta de f\xc3\xa0br\
+iques nom\xc3\xa9s mir\
+a\x0a  la **fila**,\
+ de manera que u\
+na l\xc3\xadnia es pot\
+ omplir legalmen\
+t i tot i aix\xc3\xad \
+quedar\x0a  bloquej\
+ada.\x0a- **L\xc3\xadnia \
+bloquejada:** si\
+ una l\xc3\xadnia de p\
+atr\xc3\xb3 completa *\
+*no t\xc3\xa9 cap espa\
+i v\xc3\xa0lid** al\x0a  \
+mur (cada espai \
+lliure de la sev\
+a fila \xc3\xa9s en un\
+a columna que ja\
+ t\xc3\xa9 aquell colo\
+r),\x0a  no pots co\
+l\xc2\xb7locar la seva\
+ rajola m\xc3\xa9s a l\
+a dreta. **Totes\
+ les rajoles d'a\
+quella\x0a  l\xc3\xadnia \
+van a la teva l\xc3\
+\xadnia de terra**,\
+ i costen punts \
+com de costum.\x0a-\
+ Les files, les \
+columnes i els c\
+olors continuen \
+valent 2, 7 i 10\
+ al final. A la\x0a\
+  cara grisa, co\
+m que cap color \
+no es repeteix, \
+una fila o colum\
+na completa t\xc3\xa9\x0a\
+  sempre els cin\
+c colors.\x0a\x0a## Gu\
+anyar\x0a\x0aGuanya la\
+ puntuaci\xc3\xb3 m\xc3\xa9s\
+ alta. **Desempa\
+t:** el jugador \
+empatat amb m\xc3\xa9s\
+ files\x0ahoritzont\
+als completes. S\
+i continua l'emp\
+at, la vict\xc3\xb2ria\
+ \xc3\xa9s **compartid\
+a**.\x0a\x0a## Dispute\
+s habituals\x0a\x0a- *\
+*El color ja \xc3\xa9s\
+ a la fila del m\
+ur?** No pots po\
+sar aquell color\
+ a la l\xc3\xadnia de\x0a\
+  patr\xc3\xb3 corresp\
+onent, encara qu\
+e la l\xc3\xadnia sigu\
+i buida. Aix\xc3\xb2 v\
+al per a totes d\
+ues\x0a  cares.\x0a- *\
+*Cara grisa, no \
+es pot col\xc2\xb7loca\
+r una rajola?** \
+Si tots els espa\
+is lliures de la\
+\x0a  fila estan bl\
+oquejats per una\
+ columna, tota l\
+a l\xc3\xadnia va a la\
+ l\xc3\xadnia de terra\
+.\x0a- **Cap l\xc3\xadnia\
+ de patr\xc3\xb3 legal\
+?** Agafa les ra\
+joles igualment;\
+ totes van a ter\
+ra.\x0a- **Marcador\
+ inicial:** qui \
+primer agafi del\
+ centre en una r\
+onda ha d'agafar\
+ tamb\xc3\xa9\x0a  el mar\
+cador, amb la se\
+va penalitzaci\xc3\xb3\
+ de terra. No \xc3\xa9\
+s opcional.\x0a- **\
+Fila completada:\
+** la partida no\
+m\xc3\xa9s acaba despr\
+\xc3\xa9s d'aquella fa\
+se de col\xc2\xb7locac\
+i\xc3\xb3\x0a  al mur, de\
+ manera que cada\
+ jugador puntua \
+primer la seva r\
+onda. Les column\
+es i\x0a  els color\
+s nom\xc3\xa9s compten\
+ al final.\x0a\x0a## C\
+onsells per a Ga\
+melog\x0a\x0a- Gamelog\
+ no distingeix e\
+ntre les dues ca\
+res: el tauler n\
+o est\xc3\xa0 modelat,\
+ aix\xc3\xad que\x0a  pot\
+s fer servir qua\
+lsevol de les du\
+es. Compta tu ma\
+teix els punts d\
+el mur, inclosa\x0a\
+  la penalitzaci\
+\xc3\xb3 de l\xc3\xadnia blo\
+quejada a la car\
+a grisa.\x0a- Intro\
+dueix la puntuac\
+i\xc3\xb3 de ronda de \
+cada jugador (pu\
+nts del mur meny\
+s\x0a  penalitzacio\
+ns de terra). S'\
+accepten puntuac\
+ions de ronda ne\
+gatives, fins a \
+-14.\x0a  Nom\xc3\xa9s el\
+ **total acumula\
+t** es mant\xc3\xa9 a \
+0 o m\xc3\xa9s: si una\
+ ronda negativa \
+el baixaria,\x0a  l\
+'app registra no\
+m\xc3\xa9s la penalitz\
+aci\xc3\xb3 necess\xc3\xa0ri\
+a per portar el \
+total a 0, de\x0a  \
+manera que la ro\
+nda mostra una p\
+\xc3\xa8rdua m\xc3\xa9s peti\
+ta que la que va\
+s introduir.\x0a- E\
+ls botons de bon\
+ificaci\xc3\xb3 de fil\
+a, columna i col\
+or nom\xc3\xa9s estan \
+disponibles a\x0a  \
+partir de la ron\
+da 5, la primera\
+ en qu\xc3\xa8 es pot \
+completar una fi\
+la. Marca'ls a l\
+a\x0a  ronda final \
+i l'app suma els\
+ seus punts per \
+tu.\x0a- La partida\
+ acaba autom\xc3\xa0ti\
+cament quan un j\
+ugador t\xc3\xa9 marca\
+da la bonificaci\
+\xc3\xb3 de fila,\x0a  i \
+els empats es de\
+sfan segons el n\
+ombre de files.\x0a\
+\
+\x00\x00\x18K\
+#\
+ Skull King \xe2\x80\x94 \
+referencia r\xc3\xa1pi\
+da\x0a\x0a*Un resumen \
+para resolver di\
+sputas en la mes\
+a, no un sustitu\
+to del reglament\
+o oficial. Juego\
+ base m\xc3\xa1s las r\
+eglas opcionales\
+ que admite la a\
+pp, de 2 a 8 jug\
+adores.*\x0a\x0a## Obj\
+etivo\x0a\x0aDurante d\
+iez rondas, pred\
+ice exactamente \
+cu\xc3\xa1ntas manos v\
+as a ganar. Las \
+apuestas exactas\
+ dan puntos; las\
+ apuestas err\xc3\xb3n\
+eas los restan. \
+**El total m\xc3\xa1s \
+alto tras la \xc3\xbal\
+tima ronda gana.\
+**\x0a\x0a## Preparaci\
+\xc3\xb3n\x0a\x0a- Retira la\
+s cartas en blan\
+co, el Bot\xc3\xadn [L\
+oot], el Kraken \
+y la Ballena Bla\
+nca, salvo que j\
+uegues con las r\
+eglas avanzadas.\
+\x0a- La ronda 1 re\
+parte 1 carta a \
+cada jugador, la\
+ ronda 2 reparte\
+ 2, y as\xc3\xad suces\
+ivamente hasta 1\
+0 en la ronda 10\
+. Con 8 jugadore\
+s, reparte 8 car\
+tas en las ronda\
+s 9 y 10.\x0a- El j\
+ugador a la izqu\
+ierda del repart\
+idor abre la pri\
+mera mano, y el \
+reparto pasa a l\
+a izquierda en c\
+ada ronda.\x0a\x0a## A\
+puestas\x0a\x0aCada ju\
+gador elige su a\
+puesta en secret\
+o y, despu\xc3\xa9s, t\
+odos la revelan \
+a la vez con los\
+ dedos de una ma\
+no (un pu\xc3\xb1o es \
+cero). No hay ni\
+nguna restricci\xc3\
+\xb3n sobre la suma\
+ de las apuestas\
+.\x0a\x0a## Las cartas\
+\x0a\x0a- **Palos:** v\
+erde, amarillo y\
+ morado son palo\
+s normales numer\
+ados del 1 al 14\
+. El negro es el\
+ palo **triunfo*\
+* y vence a todo\
+s los dem\xc3\xa1s.\x0a- \
+Sigue el palo de\
+ salida si puede\
+s. Siempre puede\
+s jugar una cart\
+a especial en su\
+ lugar, y puedes\
+ jugar cualquier\
+ carta si no tie\
+nes ninguna del \
+palo de salida.\x0a\
+- **Huida [Escap\
+e] (5):** siempr\
+e pierde. Si tod\
+os juegan una, g\
+ana la primera j\
+ugada.\x0a- **Pirat\
+a (5):** vence a\
+ todos los palos\
+, incluido el tr\
+iunfo. De varios\
+ Piratas, gana e\
+l primero jugado\
+.\x0a- **Rey Calave\
+ra [Skull King]:\
+** vence a todos\
+ los palos y a l\
+os Piratas, y so\
+lo pierde ante u\
+na Sirena.\x0a- **S\
+irena [Mermaid] \
+(2):** vence a t\
+odos los palos y\
+ al Rey Calavera\
+, y pierde ante \
+los Piratas. Si \
+un Pirata, el Re\
+y Calavera y una\
+ Sirena est\xc3\xa1n t\
+odos en una mism\
+a mano, **gana l\
+a Sirena**, sea \
+cual sea el orde\
+n.\x0a- **Tigresa [\
+Tigress]:** al j\
+ugarla, declara \
+si es un Pirata \
+o una Huida.\x0a- S\
+alir con una Hui\
+da (o con la Tig\
+resa como Huida)\
+: la siguiente c\
+arta numerada fi\
+ja el palo. Sali\
+r con un Pirata,\
+ una Sirena o el\
+ Rey Calavera no\
+ fija ning\xc3\xban pa\
+lo.\x0a\x0a## Puntuaci\
+\xc3\xb3n\x0a\x0a| Apuesta |\
+ Resultado | Pun\
+tos |\x0a|---|---|-\
+--|\x0a| 1 o m\xc3\xa1s |\
+ Exacta | +20 po\
+r mano ganada |\x0a\
+| 1 o m\xc3\xa1s | Err\
+\xc3\xb3nea | -10 por \
+mano de m\xc3\xa1s o d\
+e menos |\x0a| 0 | \
+No gan\xc3\xb3 ninguna\
+ mano | +10 x ca\
+rtas repartidas \
+en esa ronda |\x0a|\
+ 0 | Gan\xc3\xb3 1 o m\
+\xc3\xa1s manos | -10 \
+x cartas reparti\
+das en esa ronda\
+ |\x0a\x0aEjemplo: apu\
+esta 3, gana 3 =\
+ +60. Apuesta 2,\
+ gana 4 = -20.\x0a\x0a\
+## Puntos de bon\
+us\x0a\x0aLos bonus so\
+lo cuentan **si \
+tu apuesta fue e\
+xacta**.\x0a\x0a| Bonu\
+s | Puntos |\x0a|--\
+-|:---:|\x0a| Captu\
+ra un 14 verde, \
+amarillo o morad\
+o | 10 cada uno \
+|\x0a| Captura el 1\
+4 negro | 20 |\x0a|\
+ Un Pirata captu\
+ra una Sirena | \
+20 cada una |\x0a| \
+El Rey Calavera \
+captura un Pirat\
+a | 30 cada uno \
+|\x0a| Una Sirena c\
+aptura al Rey Ca\
+lavera | 40 |\x0a\x0aE\
+l bonus va para \
+el jugador que g\
+ana la mano, aun\
+que la carta la \
+haya jugado un r\
+ival. El orden d\
+e juego dentro d\
+e la mano no imp\
+orta. La carta q\
+ue captura debe \
+haber ganado la \
+mano: si una Sir\
+ena se lleva una\
+ mano que contie\
+ne al Rey Calave\
+ra y a un Pirata\
+, solo se punt\xc3\xba\
+a el bonus de la\
+ Sirena.\x0a\x0a## Emp\
+ates\x0a\x0aRegla ofic\
+ial: si la puntu\
+aci\xc3\xb3n m\xc3\xa1s alta\
+ est\xc3\xa1 empatada \
+tras la \xc3\xbaltima \
+ronda, se juegan\
+ m\xc3\xa1s rondas has\
+ta que alguien q\
+uede por delante\
+.\x0a\x0a## Reglas opc\
+ionales\x0a\x0a**Secue\
+ncias de rondas*\
+* (cartas repart\
+idas por ronda; \
+todas se pueden \
+elegir en la app\
+, en el tablero,\
+ antes de la ron\
+da 1):\x0a\x0a| Modo |\
+ Cartas por rond\
+a |\x0a|---|---|\x0a| \
+Est\xc3\xa1ndar | De 1\
+ a 10, diez rond\
+as |\x0a| Quilla un\
+iforme | 2, 4, 6\
+, 8, 10 |\x0a| Dire\
+ctos a la pelea \
+| 6, 7, 8, 9, 10\
+ |\x0a| Escaramuza \
+al punto | cinco\
+ rondas de 5 |\x0a|\
+ Andanada latera\
+l | diez rondas \
+de 10 |\x0a| Remoli\
+no | 9, 7, 5, 3,\
+ 1 |\x0a\x0a**Cartas a\
+vanzadas** (no m\
+odeladas por la \
+app m\xc3\xa1s all\xc3\xa1 d\
+e las indicacion\
+es descritas aba\
+jo)\x0a- **Kraken:*\
+* la mano se des\
+truye, nadie la \
+gana, y el jugad\
+or que la habr\xc3\xad\
+a ganado abre la\
+ siguiente.\x0a- **\
+Ballena Blanca:*\
+* las cartas esp\
+eciales de la ma\
+no cuentan como \
+Huidas, los n\xc3\xbam\
+eros pierden su \
+palo y gana el n\
+\xc3\xbamero m\xc3\xa1s alto\
+ (el primero jug\
+ado si hay empat\
+e). Si solo se j\
+ugaron cartas es\
+peciales, la man\
+o se descarta.\x0a-\
+ **Bot\xc3\xadn [Loot]\
+:** se juega com\
+o una Huida. El \
+jugador que la j\
+uega y el jugado\
+r que gana la ma\
+no son aliados, \
+y cada uno obtie\
+ne **+20** si am\
+bos aciertan exa\
+ctamente su apue\
+sta.\x0a- **Brib\xc3\xb3n\
+ de Roatan [Rasc\
+al of Roatan]** \
+(habilidad de un\
+ Pirata): cuando\
+ ganas una mano \
+con ese Pirata, \
+puedes apostar 1\
+0 o 20 sobre tu \
+apuesta: lo gana\
+s si aciertas y \
+lo pierdes si fa\
+llas.\x0a\x0a**Recuent\
+o del brib\xc3\xb3n** \
+(sistema de punt\
+uaci\xc3\xb3n alternat\
+ivo): el potenci\
+al de cada jugad\
+or en una ronda \
+es **10 x cartas\
+ repartidas**. U\
+na apuesta exact\
+a gana todo, fal\
+lar por exactame\
+nte 1 gana la mi\
+tad, y fallar po\
+r 2 o m\xc3\xa1s no ga\
+na nada. Los bon\
+us siguen el mis\
+mo patr\xc3\xb3n de to\
+do, mitad o nada\
+.\x0a\x0a## Consejos p\
+ara Gamelog\x0a\x0a- P\
+ara cada jugador\
+ introduce la ap\
+uesta, las manos\
+ ganadas y los b\
+onus. Las manos \
+ganadas entre to\
+dos deben sumar \
+las cartas repar\
+tidas. Si faltan\
+ una o dos, la a\
+pp pregunta si e\
+l Kraken (y la B\
+allena Blanca) d\
+escartaron manos\
+.\x0a- Hay tres **m\
+odos de puntuaci\
+\xc3\xb3n**, elegidos \
+antes de la rond\
+a 1:\x0a  - **Punta\
+je cl\xc3\xa1sico:** a\
+puestas exactas \
+y err\xc3\xb3neas como\
+ arriba, con sol\
+o los botones de\
+ bonus del Rey C\
+alavera y del Pi\
+rata.\x0a  - **Recu\
+ento est\xc3\xa1ndar:*\
+* a\xc3\xb1ade los bot\
+ones de Sirena, \
+Bot\xc3\xadn, bonus de\
+l 14, bonus del \
+14 negro y Roata\
+n. Como m\xc3\xa1ximo \
+se pueden dar 3 \
+bonus del 14 y 4\
+ de Bot\xc3\xadn en un\
+a ronda. El punt\
+aje cl\xc3\xa1sico no \
+se ofrece con m\xc3\
+\xa1s de 6 jugadore\
+s.\x0a  - **Recuent\
+o del brib\xc3\xb3n:**\
+ el recuento del\
+ brib\xc3\xb3n de arri\
+ba, m\xc3\xa1s un inte\
+rruptor **Cannon\
+ball**, una opci\
+\xc3\xb3n de todo o na\
+da que vale 15 x\
+ cartas repartid\
+as por una apues\
+ta exacta y nada\
+ por cualquier f\
+allo.\x0a- Los boto\
+nes de bonus sol\
+o se activan cua\
+ndo la apuesta d\
+e un jugador es \
+exacta. El Bot\xc3\xad\
+n requiere apues\
+ta exacta; Roata\
+n se activa cuan\
+do el jugador ha\
+ ganado al menos\
+ una mano.\x0a- Los\
+ valores de **ap\
+uesta cero** y d\
+el **Recuento de\
+l brib\xc3\xb3n** usan\
+ el **n\xc3\xbamero de\
+ ronda** de la a\
+pp, no las carta\
+s repartidas. So\
+lo coinciden en \
+la secuencia est\
+\xc3\xa1ndar. En otras\
+ secuencias, aj\xc3\
+\xbastalos a mano o\
+ revisa los tota\
+les.\x0a- El ganado\
+r es el total m\xc3\
+\xa1s alto tras la \
+\xc3\xbaltima ronda. S\
+i hay empate, la\
+ app comparte la\
+ victoria en lug\
+ar de jugar rond\
+as extra.\x0a\
 \x00\x00\x0dz\
 #\
  Qwirkle \xe2\x80\x94 qui\
@@ -11818,6 +15052,471 @@ ck the cards the\
 mselves, only th\
 e round totals.\x0a\
 \
+\x00\x00\x1c\xee\
+#\
+ Azul \xe2\x80\x94 refere\
+ncia r\xc3\xa1pida\x0a\x0a*U\
+n resumen para r\
+esolver disputas\
+ en la mesa, no \
+un sustituto del\
+ reglamento\x0aofic\
+ial. Juego base,\
+ 2\xe2\x80\x934 jugadores\
+, ambas caras de\
+l tablero de jug\
+ador: el lado\x0ade\
+ colores (est\xc3\xa1n\
+dar) y el lado g\
+ris (variante).*\
+\x0a\x0a## Objetivo\x0a\x0aT\
+ener m\xc3\xa1s puntos\
+ cuando termina \
+la partida. La p\
+artida termina j\
+usto despu\xc3\xa9s de\
+\x0ala ronda en la \
+que **al menos u\
+n jugador comple\
+ta una fila hori\
+zontal de 5\x0aazul\
+ejos** en su mur\
+o.\x0a\x0a| Bonificaci\
+\xc3\xb3n de final de \
+partida | Puntos\
+ |\x0a|---|:---:|\x0a|\
+ Cada fila horiz\
+ontal completa |\
+ 2 |\x0a| Cada colu\
+mna vertical com\
+pleta | 7 |\x0a| Ca\
+da color con los\
+ 5 azulejos en e\
+l muro | 10 |\x0a\x0a#\
+# Preparaci\xc3\xb3n\x0a\x0a\
+1. Cada jugador \
+toma un tablero \
+y pone su marcad\
+or en 0. Antes d\
+e empezar,\x0a   ac\
+ordad qu\xc3\xa9 cara \
+jug\xc3\xa1is: **de co\
+lores** (est\xc3\xa1nd\
+ar) o **gris** (\
+variante). V\xc3\xa9as\
+e\x0a   *Lado de co\
+lores o lado gri\
+s* m\xc3\xa1s abajo.\x0a2\
+. F\xc3\xa1bricas: **5\
+** para 2 jugado\
+res, **7** para \
+3, **9** para 4.\
+\x0a3. La bolsa con\
+tiene 100 azulej\
+os (20 de cada u\
+no de 5 colores)\
+. Cada f\xc3\xa1brica\x0a\
+   recibe 4 azul\
+ejos.\x0a4. Un juga\
+dor tiene el mar\
+cador de jugador\
+ inicial.\x0a\x0a## Un\
+a ronda\x0a\x0aUna ron\
+da tiene tres fa\
+ses.\x0a\x0a### 1. Ofe\
+rta de f\xc3\xa1bricas\
+\x0a\x0aEn tu turno, t\
+oma **todos los \
+azulejos de un c\
+olor** de cualqu\
+iera de estos\x0alu\
+gares:\x0a\x0a- **una \
+f\xc3\xa1brica:** los \
+azulejos que no \
+tomaste se desli\
+zan hacia el cen\
+tro; o\x0a- **el ce\
+ntro:** el prime\
+r jugador de cad\
+a ronda que tome\
+ del centro tamb\
+i\xc3\xa9n toma\x0a  el *\
+*marcador de jug\
+ador inicial**, \
+que va en el esp\
+acio libre m\xc3\xa1s \
+a la\x0a  izquierda\
+ de su l\xc3\xadnea de\
+ suelo y cuenta \
+como azulejo de \
+suelo.\x0a\x0aDespu\xc3\xa9s\
+, coloca los azu\
+lejos en **una**\
+ de tus cinco l\xc3\
+\xadneas de patr\xc3\xb3n\
+\x0a(capacidades de\
+ 1 a 5):\x0a\x0a- Una \
+l\xc3\xadnea de patr\xc3\xb3\
+n solo admite un\
+ color.\x0a- No pue\
+des usar una l\xc3\xad\
+nea de patr\xc3\xb3n s\
+i esa fila de tu\
+ muro **ya tiene\
+ ese\x0a  color**.\x0a\
+- Los azulejos q\
+ue no encajan, o\
+ que no puedes o\
+ no quieres colo\
+car, van a la\x0a  \
+**l\xc3\xadnea de suel\
+o**. Siempre pue\
+des enviar una t\
+oma completa a l\
+a l\xc3\xadnea de\x0a  su\
+elo.\x0a- Si la l\xc3\xad\
+nea de suelo est\
+\xc3\xa1 llena, los az\
+ulejos adicional\
+es vuelven a la \
+tapa de\x0a  la caj\
+a.\x0a\x0aLa fase term\
+ina cuando las f\
+\xc3\xa1bricas y el ce\
+ntro est\xc3\xa1n vac\xc3\
+\xados.\x0a\x0a### 2. Col\
+ocaci\xc3\xb3n en el m\
+uro\x0a\x0aYendo de ar\
+riba abajo, por \
+cada l\xc3\xadnea de p\
+atr\xc3\xb3n **complet\
+a**, mueve su az\
+ulejo\x0am\xc3\xa1s a la \
+derecha al muro \
+y punt\xc3\xbaalo de i\
+nmediato. Los de\
+m\xc3\xa1s azulejos de\
+ esa l\xc3\xadnea\x0avan \
+a la tapa. Las l\
+\xc3\xadneas incomplet\
+as se quedan par\
+a la siguiente r\
+onda.\x0a\x0a- **Lado \
+de colores:** el\
+ azulejo va en e\
+l \xc3\xbanico espacio\
+ de ese color de\
+ su fila.\x0a- **La\
+do gris:** t\xc3\xba e\
+liges el espacio\
+; v\xc3\xa9ase *Lado d\
+e colores o lado\
+ gris*.\x0a\x0a**Puntu\
+aci\xc3\xb3n de un azu\
+lejo colocado:**\
+\x0a\x0a- Sin vecino a\
+rriba, abajo, a \
+la izquierda ni \
+a la derecha: **\
+1 punto**.\x0a- Si \
+no, cuenta el gr\
+upo horizontal c\
+onectado (inclui\
+do el nuevo azul\
+ejo), si lo\x0a  ha\
+y, **m\xc3\xa1s** el g\
+rupo vertical co\
+nectado (incluid\
+o el nuevo azule\
+jo), si lo hay.\x0a\
+  Un azulejo con\
+ vecinos en amba\
+s direcciones pu\
+nt\xc3\xbaa los dos gr\
+upos, as\xc3\xad que\x0a \
+ cuenta dos vece\
+s.\x0a\x0a**L\xc3\xadnea de \
+suelo:** cada az\
+ulejo de suelo c\
+uesta puntos, de\
+ izquierda a der\
+echa:\x0a\x0a| Casilla\
+ | 1 | 2 | 3 | 4\
+ | 5 | 6 | 7 |\x0a|\
+---|:---:|:---:|\
+:---:|:---:|:---\
+:|:---:|:---:|\x0a|\
+ Penalizaci\xc3\xb3n |\
+ -1 | -1 | -2 | \
+-2 | -2 | -3 | -\
+3 |\x0a\x0aTu puntuaci\
+\xc3\xb3n **nunca pued\
+e bajar de 0** (\
+la penalizaci\xc3\xb3n\
+ se detiene en 0\
+). Los\x0aazulejos \
+de suelo van a l\
+a tapa, pero el \
+marcador de juga\
+dor inicial se q\
+ueda con\x0asu due\xc3\
+\xb1o, que empieza \
+la siguiente ron\
+da.\x0a\x0a### 3. Sigu\
+iente ronda\x0a\x0aSi \
+nadie ha complet\
+ado una fila, qu\
+ien tiene el mar\
+cador rellena ca\
+da f\xc3\xa1brica con\x0a\
+4 azulejos. Si l\
+a bolsa se agota\
+, rell\xc3\xa9nala con\
+ la tapa. Si vue\
+lve a agotarse c\
+on\x0ala tapa vac\xc3\xad\
+a, empieza la ro\
+nda igualmente c\
+on f\xc3\xa1bricas par\
+cialmente llenas\
+.\x0a\x0a## Lado de co\
+lores o lado gri\
+s\x0a\x0aTodo lo dem\xc3\xa1\
+s de esta hoja e\
+s igual en ambos\
+ lados: preparac\
+i\xc3\xb3n, oferta de\x0a\
+f\xc3\xa1bricas, puntu\
+aci\xc3\xb3n de un azu\
+lejo colocado, p\
+enalizaciones de\
+ suelo, final de\
+ la\x0apartida y bo\
+nificaciones de \
+final de partida\
+. La \xc3\xbanica dife\
+rencia es **d\xc3\xb3n\
+de\x0apuede ir un a\
+zulejo en el mur\
+o**.\x0a\x0a| | Lado d\
+e colores | Lado\
+ gris |\x0a|---|---\
+|---|\x0a| Espacios\
+ del muro | Cada\
+ espacio tiene u\
+n color fijo | E\
+n blanco: t\xc3\xba el\
+iges el espacio \
+|\x0a| D\xc3\xb3nde va el\
+ azulejo | En el\
+ espacio de su c\
+olor en esa fila\
+ | En cualquier \
+espacio libre de\
+ esa fila |\x0a| Re\
+peticiones | No \
+pueden ocurrir: \
+cada color apare\
+ce una vez por f\
+ila y por column\
+a por dise\xc3\xb1o | \
+**Ning\xc3\xban color \
+dos veces en una\
+ fila, y ning\xc3\xban\
+ color dos veces\
+ en una columna*\
+* |\x0a| \xc2\xbfL\xc3\xadnea d\
+e patr\xc3\xb3n permit\
+ida? | No, si la\
+ fila del muro y\
+a tiene ese colo\
+r | Misma restri\
+cci\xc3\xb3n |\x0a\x0aDetall\
+es del lado gris\
+:\x0a\x0a- Eliges el e\
+spacio cuando el\
+ azulejo se muev\
+e al muro, duran\
+te la colocaci\xc3\xb3\
+n en\x0a  el muro, \
+y cada espacio c\
+uenta como libre\
+ salvo que la fi\
+la ya tenga ese \
+color o\x0a  la col\
+umna lo tenga.\x0a-\
+ Elige con cuida\
+do: un azulejo c\
+olocado ahora pu\
+ede dejar una l\xc3\
+\xadnea posterior s\
+in\x0a  espacio v\xc3\xa1\
+lido. La comprob\
+aci\xc3\xb3n de l\xc3\xadnea\
+ de patr\xc3\xb3n en l\
+a oferta de f\xc3\xa1b\
+ricas mira\x0a  sol\
+o la **fila**, a\
+s\xc3\xad que una l\xc3\xadn\
+ea puede llenars\
+e legalmente y a\
+un as\xc3\xad acabar\x0a \
+ bloqueada.\x0a- **\
+L\xc3\xadnea bloqueada\
+:** si una l\xc3\xadne\
+a de patr\xc3\xb3n com\
+pleta **no tiene\
+ espacio v\xc3\xa1lido\
+**\x0a  en el muro \
+(cada espacio li\
+bre de su fila e\
+st\xc3\xa1 en una colu\
+mna que ya tiene\
+ ese\x0a  color), n\
+o puedes colocar\
+ su azulejo m\xc3\xa1s\
+ a la derecha. *\
+*Todos los azule\
+jos de\x0a  esa l\xc3\xad\
+nea van a tu l\xc3\xad\
+nea de suelo**, \
+y cuestan puntos\
+ como de costumb\
+re.\x0a- Las filas,\
+ columnas y colo\
+res siguen valie\
+ndo 2, 7 y 10 al\
+ final. En el la\
+do\x0a  gris, como \
+ning\xc3\xban color se\
+ repite, una fil\
+a o columna comp\
+leta siempre tie\
+ne los\x0a  cinco c\
+olores.\x0a\x0a## Gana\
+r\x0a\x0aGana la puntu\
+aci\xc3\xb3n m\xc3\xa1s alta\
+. **Desempate:**\
+ el jugador empa\
+tado con m\xc3\xa1s fi\
+las\x0ahorizontales\
+ completas. Si s\
+igue el empate, \
+la victoria es *\
+*compartida**.\x0a\x0a\
+## Disputas habi\
+tuales\x0a\x0a- **\xc2\xbfEl\
+ color ya est\xc3\xa1 \
+en la fila del m\
+uro?** No puedes\
+ poner ese color\
+ en la\x0a  l\xc3\xadnea \
+de patr\xc3\xb3n corre\
+spondiente, aunq\
+ue la l\xc3\xadnea est\
+\xc3\xa9 vac\xc3\xada. Lo mi\
+smo vale en\x0a  am\
+bos lados.\x0a- **L\
+ado gris, \xc2\xbfno s\
+e puede colocar \
+un azulejo?** Si\
+ todos los espac\
+ios libres de\x0a  \
+la fila est\xc3\xa1n b\
+loqueados por un\
+a columna, toda \
+la l\xc3\xadnea va a l\
+a l\xc3\xadnea de suel\
+o.\x0a- **\xc2\xbfNinguna\
+ l\xc3\xadnea de patr\xc3\
+\xb3n legal?** Toma\
+ los azulejos ig\
+ualmente; todos \
+van al\x0a  suelo.\x0a\
+- **Marcador ini\
+cial:** quien to\
+me primero del c\
+entro en una ron\
+da debe tomar\x0a  \
+tambi\xc3\xa9n el marc\
+ador, con su pen\
+alizaci\xc3\xb3n de su\
+elo. No es opcio\
+nal.\x0a- **Fila co\
+mpletada:** la p\
+artida termina s\
+olo despu\xc3\xa9s de \
+esa fase de colo\
+caci\xc3\xb3n\x0a  en el \
+muro, as\xc3\xad que c\
+ada jugador punt\
+\xc3\xbaa primero su r\
+onda. Las column\
+as y los\x0a  color\
+es cuentan solo \
+al final.\x0a\x0a## Co\
+nsejos para Game\
+log\x0a\x0a- Gamelog n\
+o distingue entr\
+e los dos lados:\
+ el tablero no e\
+st\xc3\xa1 modelado, a\
+s\xc3\xad que\x0a  puedes\
+ usar cualquiera\
+. Cuenta t\xc3\xba los\
+ puntos del muro\
+, incluida la pe\
+nalizaci\xc3\xb3n\x0a  de\
+ l\xc3\xadnea bloquead\
+a en el lado gri\
+s.\x0a- Introduce l\
+a puntuaci\xc3\xb3n de\
+ ronda de cada j\
+ugador (puntos d\
+el muro menos\x0a  \
+penalizaciones d\
+e suelo). Se ace\
+ptan puntuacione\
+s de ronda negat\
+ivas, hasta\x0a  -1\
+4. Solo el **tot\
+al acumulado** s\
+e mantiene en 0 \
+o m\xc3\xa1s: si una r\
+onda negativa lo\
+\x0a  bajar\xc3\xada, la \
+app registra sol\
+o la penalizaci\xc3\
+\xb3n necesaria par\
+a llevar el tota\
+l a 0,\x0a  as\xc3\xad qu\
+e la ronda muest\
+ra una p\xc3\xa9rdida \
+menor que la que\
+ introdujiste.\x0a-\
+ Los botones de \
+bonificaci\xc3\xb3n de\
+ fila, columna y\
+ color solo est\xc3\
+\xa1n disponibles\x0a \
+ desde la ronda \
+5, la primera en\
+ la que puede co\
+mpletarse una fi\
+la. M\xc3\xa1rcalos en\
+ la\x0a  ronda fina\
+l y la app suma \
+sus puntos por t\
+i.\x0a- La partida \
+termina autom\xc3\xa1t\
+icamente cuando \
+un jugador tiene\
+ marcada la\x0a  bo\
+nificaci\xc3\xb3n de f\
+ila, y los empat\
+es se desempatan\
+ seg\xc3\xban el n\xc3\xbame\
+ro de filas.\x0a\
 \x00\x00\x10\x81\
 #\
  Catan \xe2\x80\x94 quick\
@@ -12085,7 +15784,541 @@ er to enter them\
  when a\x0a  player\
  reaches 10 VP.\x0a\
 \
-\x00\x00\x13\xd9\
+\x00\x00\x12C\
+#\
+ Phase 10 \xe2\x80\x94 re\
+ferencia r\xc3\xa1pida\
+\x0a\x0a*Resumen para \
+resolver disputa\
+s en la mesa, no\
+ un sustituto de\
+l libro de regla\
+s oficial. Edici\
+\xc3\xb3n est\xc3\xa1ndar, 2\
+\xe2\x80\x936 jugadores.*\
+\x0a\x0a## Objetivo\x0a\x0aS\
+er el primer jug\
+ador en **comple\
+tar las 10 fases\
+**. En cada mano\
+ intentas bajar \
+tu fase actual. \
+Quien se queda s\
+in cartas primer\
+o gana la mano, \
+y los dem\xc3\xa1s son\
+ penalizados por\
+ las cartas que \
+les quedan en la\
+ mano. **La punt\
+uaci\xc3\xb3n total m\xc3\
+\xa1s baja desempat\
+a.**\x0a\x0a## Las die\
+z fases\x0a\x0a| Fase \
+| Requisito |\x0a|:\
+---:|---|\x0a| 1 | \
+2 grupos de 3 |\x0a\
+| 2 | 1 grupo de\
+ 3 + 1 escalera \
+de 4 |\x0a| 3 | 1 g\
+rupo de 4 + 1 es\
+calera de 4 |\x0a| \
+4 | 1 escalera d\
+e 7 |\x0a| 5 | 1 es\
+calera de 8 |\x0a| \
+6 | 1 escalera d\
+e 9 |\x0a| 7 | 2 gr\
+upos de 4 |\x0a| 8 \
+| 7 cartas de un\
+ mismo color |\x0a|\
+ 9 | 1 grupo de \
+5 + 1 grupo de 2\
+ |\x0a| 10 | 1 grup\
+o de 5 + 1 grupo\
+ de 3 |\x0a\x0a- Un **\
+grupo** son cart\
+as con el mismo \
+n\xc3\xbamero, de cual\
+quier color.\x0a- U\
+na **escalera** \
+son cartas con n\
+\xc3\xbameros consecut\
+ivos (del 1 al 1\
+2), de cualquier\
+ color. Las esca\
+leras no dan la \
+vuelta del 12 al\
+ 1.\x0a- **Las fase\
+s deben completa\
+rse en orden, de\
+l 1 al 10.** Si \
+no logras comple\
+tar tu fase en u\
+na mano, la repi\
+tes en la siguie\
+nte.\x0a\x0a## Mazo y \
+preparaci\xc3\xb3n\x0a\x0a- \
+108 cartas: n\xc3\xbam\
+eros del 1 al 12\
+ en cuatro color\
+es (dos de cada \
+n\xc3\xbamero por colo\
+r), **8 cartas C\
+omod\xc3\xadn** [Wild]\
+ y **4 cartas Sa\
+lto** [Skip].\x0a- \
+Reparte **10 car\
+tas** a cada jug\
+ador. Da la vuel\
+ta a la carta su\
+perior del resto\
+ para iniciar el\
+ mont\xc3\xb3n de desc\
+arte. Empieza el\
+ jugador a la iz\
+quierda del repa\
+rtidor, el juego\
+ avanza en el se\
+ntido de las agu\
+jas del reloj y \
+el reparto pasa \
+a la izquierda d\
+espu\xc3\xa9s de cada \
+mano.\x0a\x0a## Un tur\
+no\x0a\x0a1. **Roba** \
+la carta superio\
+r del mazo o del\
+ mont\xc3\xb3n de desc\
+arte.\x0a2. Si tien\
+es toda tu fase,\
+ puedes **bajarl\
+a**, boca arriba\
+. Nunca puedes b\
+ajar solo una pa\
+rte de una fase.\
+\x0a3. Una vez baja\
+da tu fase, pued\
+es **pegar** [hi\
+t]: a\xc3\xb1adir cart\
+as a cualquier f\
+ase bajada, tuya\
+ o de otro jugad\
+or, siempre que \
+encajen (una car\
+ta a un grupo, e\
+l n\xc3\xbamero siguie\
+nte o anterior a\
+ una escalera).\x0a\
+4. **Descarta** \
+una carta para t\
+erminar tu turno\
+.\x0a\x0aSolo se puede\
+ bajar **una fas\
+e** por mano. Pu\
+edes bajar carta\
+s extra junto co\
+n ella solo si a\
+mpl\xc3\xadan lo que b\
+ajas (cartas ext\
+ra de un grupo o\
+ escalera que ya\
+ tienes), nunca \
+un grupo o escal\
+era adicional.\x0a\x0a\
+Cuentas como **c\
+ompletada la fas\
+e en el momento \
+en que la bajas*\
+*, aunque otro j\
+ugador se quede \
+sin cartas antes\
+.\x0a\x0a## Cartas Com\
+od\xc3\xadn y Salto\x0a\x0a-\
+ Un **Comod\xc3\xadn**\
+ sustituye a cua\
+lquier n\xc3\xbamero y\
+ color. Puedes u\
+sar todos los qu\
+e quieras, pero \
+una fase necesit\
+a **al menos una\
+ carta natural**\
+ (no comod\xc3\xadn). \
+Una vez colocado\
+, un Comod\xc3\xadn se\
+ queda como esa \
+carta hasta que \
+termina la mano.\
+\x0a- Un **Salto** \
+se descarta dela\
+nte del jugador \
+que elijas: pier\
+de su pr\xc3\xb3ximo t\
+urno. Cuenta com\
+o tu descarte.\x0a-\
+ Un Salto no pue\
+de recogerse del\
+ mont\xc3\xb3n de desc\
+arte, no puede f\
+ormar parte de u\
+na fase y no pue\
+de jugarse sobre\
+ alguien que ya \
+tiene un salto.\x0a\
+- Si la primera \
+carta del mont\xc3\xb3\
+n de descarte es\
+ un Salto, el pr\
+imer jugador pie\
+rde su turno.\x0a\x0a#\
+# Terminar la ma\
+no y puntuaci\xc3\xb3n\
+\x0a\x0aEl primer juga\
+dor que se desha\
+ce de todas sus \
+cartas (descarta\
+ndo o pegando) *\
+*gana la mano y \
+anota 0**. Los d\
+em\xc3\xa1s anotan las\
+ cartas que a\xc3\xban\
+ tienen en la ma\
+no:\x0a\x0a| Carta | P\
+untos |\x0a|---|:--\
+-:|\x0a| Del 1 al 9\
+ | 5 |\x0a| Del 10 \
+al 12 | 10 |\x0a| S\
+alto | 15 |\x0a| Co\
+mod\xc3\xadn | 20 |\x0a\x0aL\
+as cartas ya baj\
+adas no cuentan.\
+ Los jugadores q\
+ue completaron s\
+u fase avanzan a\
+ la siguiente, a\
+unque no se haya\
+n quedado sin ca\
+rtas.\x0a\x0a## Fin de\
+ la partida\x0a\x0aLa \
+partida termina \
+al final de la m\
+ano en la que al\
+guien completa l\
+a fase 10. Si va\
+rios jugadores l\
+a completan en l\
+a misma mano, ga\
+na la **puntuaci\
+\xc3\xb3n total m\xc3\xa1s b\
+aja**. Seg\xc3\xban la\
+s reglas oficial\
+es, un empate qu\
+e quede se resue\
+lve jugando una \
+mano m\xc3\xa1s de la \
+fase 10 entre es\
+os jugadores: ga\
+na quien se qued\
+e primero sin ca\
+rtas.\x0a\x0a## Consej\
+os para Gamelog\x0a\
+\x0a- En cada ronda\
+, anota para cad\
+a jugador la fas\
+e que intent\xc3\xb3 y\
+ si la complet\xc3\xb3\
+, adem\xc3\xa1s de sus\
+ puntos de penal\
+izaci\xc3\xb3n. La lis\
+ta de fases al l\
+ado del tablero \
+muestra qui\xc3\xa9n h\
+a superado cada \
+una.\x0a- Las puntu\
+aciones se intro\
+ducen en m\xc3\xbaltip\
+los de 5. Un jug\
+ador que **no** \
+complet\xc3\xb3 su fas\
+e no puede anota\
+r menos de 50, y\
+a que sigue teni\
+endo las 10 cart\
+as.\x0a- El interru\
+ptor **Fases en \
+orden** est\xc3\xa1 ac\
+tivado por defec\
+to y solo puede \
+cambiarse en la \
+primera ronda. A\
+l cambiar a **Fa\
+ses libres**, lo\
+s jugadores pued\
+en elegir cualqu\
+ier fase que a\xc3\xba\
+n no hayan super\
+ado, lo cual no \
+forma parte de l\
+as reglas est\xc3\xa1n\
+dar.\x0a- Gana la p\
+artida el jugado\
+r que ha superad\
+o las 10 fases c\
+on el total m\xc3\xa1s\
+ bajo. Si los to\
+tales empatan, l\
+a app prefiere l\
+a puntuaci\xc3\xb3n m\xc3\
+\xa1s baja de la \xc3\xba\
+ltima ronda, y s\
+i tambi\xc3\xa9n empat\
+a, la victoria s\
+e comparte. Esto\
+ difiere de la r\
+egla oficial, qu\
+e consiste en re\
+petir la fase 10\
+.\x0a\
+\x00\x00\x0e\xc9\
+#\
+ Parch\xc3\xads \xe2\x80\x94 re\
+fer\xc3\xa8ncia r\xc3\xa0pid\
+a\x0a\x0a*Resum de les\
+ normes del Parc\
+h\xc3\xads espanyol m\xc3\
+\xa9s habituals per\
+ resoldre disput\
+es a la taula. N\
+o hi ha un \xc3\xbanic\
+ llibre de norme\
+s oficial: les e\
+dicions i les re\
+gions difereixen\
+, aix\xc3\xad que acor\
+deu les variants\
+ seg\xc3\xbcents abans\
+ de comen\xc3\xa7ar. A\
+quest full segue\
+ix el que regist\
+ra l'app (fitxes\
+ a la meta i cap\
+tures). 2\xe2\x80\x934 ju\
+gadors (fins a 6\
+ en alguns taule\
+rs).*\x0a\x0a## Object\
+iu\x0a\x0aSer el prime\
+r jugador a port\
+ar **les 4 fitxe\
+s a la meta**. E\
+ls altres poden \
+seguir jugant pe\
+l segon i el ter\
+cer lloc.\x0a\x0a## Pr\
+eparaci\xc3\xb3\x0a\x0a- Cad\
+a jugador t\xc3\xa9 4 \
+fitxes, totes co\
+mencen a la seva\
+ **casa**.\x0a- Nec\
+essites un **5**\
+ per treure una \
+fitxa a la teva \
+pr\xc3\xb2pia **casell\
+a de sortida**. \
+Sortir de casa \xc3\
+\xa9s obligatori qu\
+an treus un 5 i \
+pots fer-ho.\x0a- L\
+es fitxes recorr\
+en tot el tauler\
+ i despr\xc3\xa9s puge\
+n per la **colum\
+na de casa** del\
+ seu color fins \
+a la meta.\x0a\x0a## U\
+n torn\x0a\x0a1. Tira \
+el dau (edici\xc3\xb3 \
+d'**un dau**) o \
+els dos daus (ed\
+ici\xc3\xb3 de **dos d\
+aus**, en la qua\
+l pots sumar-los\
+ per a una sola \
+fitxa o fer serv\
+ir cada dau en u\
+na fitxa diferen\
+t).\x0a2. Mou una f\
+itxa tantes case\
+lles com indiqui\
+ la tirada.\x0a3. U\
+n **6** (un dau)\
+ o uns **dobles*\
+* (dos daus) don\
+en una **tirada \
+extra**.\x0a4. Pass\
+a els daus, tret\
+ que s'apliqui u\
+na tirada extra \
+o una bonificaci\
+\xc3\xb3 (vegeu m\xc3\xa9s a\
+vall).\x0a\x0a**Tres s\
+eguides:** treur\
+e un tercer 6 co\
+nsecutiu (un dau\
+) o uns tercers \
+dobles consecuti\
+us (dos daus) en\
+via **l'\xc3\xbaltima \
+fitxa que has mo\
+gut** de tornada\
+ a casa, excepte\
+ si aquella fitx\
+a ja ha arribat \
+a la columna de \
+casa.\x0a\x0a## Casell\
+es segures\x0a\x0a- Le\
+s caselles marca\
+des amb un cercl\
+e i les **casell\
+es de sortida** \
+s\xc3\xb3n **segures**\
+: una fitxa en e\
+lles no es pot c\
+apturar.\x0a- Fitxe\
+s de colors dife\
+rents poden comp\
+artir una casell\
+a segura.\x0a\x0a## Ba\
+rreres\x0a\x0a- **Dues\
+ fitxes del mate\
+ix color en una \
+casella** formen\
+ una **barrera**\
+. Cap fitxa, ni \
+tan sols la del \
+seu propietari, \
+pot saltar-la ni\
+ passar-la, i no\
+ es pot capturar\
+.\x0a- Si treus un \
+6 (un dau) o uns\
+ dobles (dos dau\
+s) i pots moure \
+una fitxa de la \
+teva pr\xc3\xb2pia bar\
+rera, en general\
+ **has** d'obrir\
+-la.\x0a- Una casel\
+la de sortida am\
+b dues de les te\
+ves fitxes vol d\
+ir que no pots t\
+reure'n una altr\
+a.\x0a\x0a## Captures \
+(\xc2\xabassassinats\xc2\xbb\
+) i bonificacion\
+s\x0a\x0a| Esdevenimen\
+t | Resultat |\x0a|\
+---|---|\x0a| Caure\
+ exactament sobr\
+e una fitxa riva\
+l en una casella\
+ no segura | Va \
+**a casa**; **co\
+mpta 20** casell\
+es amb una de le\
+s teves fitxes |\
+\x0a| Una fitxa ent\
+ra a la **meta**\
+ | **Compta 10**\
+ caselles amb un\
+a altra de les t\
+eves fitxes |\x0a\x0a-\
+ Una bonificaci\xc3\
+\xb3 s'aplica sence\
+ra amb **una** s\
+ola fitxa i es *\
+*perd** si cap f\
+itxa la pot fer \
+servir (algunes \
+taules permeten \
+passar en lloc d\
+'aix\xc3\xb2).\x0a- Per a\
+rribar a la meta\
+ cal una tirada \
+**exacta**. Una \
+tirada massa alt\
+a no la pot usar\
+ aquella fitxa. \
+Les taules difer\
+eixen en si rebo\
+ta enrere.\x0a- Qua\
+n **totes** les \
+teves fitxes hag\
+in sortit de cas\
+a, un 6 tirat co\
+mpta com a 7 (ed\
+ici\xc3\xb3 d'un dau).\
+\x0a- Si una fitxa \
+rival \xc3\xa9s a **la\
+ teva** casella \
+de sortida i tre\
+us un 5, es capt\
+ura perqu\xc3\xa8 pugu\
+is sortir. Si hi\
+ ha dues fitxes \
+rivals, les taul\
+es difereixen so\
+bre quina va a c\
+asa.\x0a\x0a## Consell\
+s per a Gamelog\x0a\
+\x0a- Cada entrada \
+\xc3\xa9s un esdevenim\
+ent de puntuaci\xc3\
+\xb3 per a un jugad\
+or: tria el juga\
+dor, indica el *\
+*nombre de metes\
+** (de 0 a 4) i,\
+ per a cada riva\
+l, els **assassi\
+nats** fets cont\
+ra ell. Una entr\
+ada sense metes \
+ni assassinats e\
+s rebutja.\x0a- La \
+partida acaba en\
+ el moment que e\
+l total de metes\
+ d'un jugador ar\
+riba a **4**.\x0a- \
+Els assassinats \
+es comptabilitze\
+n en una taula d\
+'assassins contr\
+a v\xc3\xadctimes. Cap\
+turar una fitxa \
+pr\xc3\xb2pia tamb\xc3\xa9 e\
+s registra (es m\
+ostra com a su\xc3\xaf\
+cidi).\x0a- Un **co\
+mbo** \xc3\xa9s qualse\
+vol acci\xc3\xb3 a m\xc3\xa9\
+s de la primera \
+en una sola entr\
+ada. Tant les me\
+tes com els assa\
+ssinats compten,\
+ aix\xc3\xad que una m\
+eta m\xc3\xa9s dos ass\
+assinats s\xc3\xb3n 2 \
+combos.\x0a- Les bo\
+nificacions de 2\
+0 i de 10 casell\
+es no es registr\
+en, nom\xc3\xa9s les m\
+etes i els assas\
+sinats.\x0a\
+\x00\x00\x13g\
 #\
  Phase 10 Master\
  \xe2\x80\x94 quick refer\
@@ -12193,218 +16426,884 @@ r who goes out s\
 cores nothing. C\
 ards already lai\
 d down do\x0a  not \
-count.\x0a\x0a## Other\
- things to know\x0a\
-\x0a- In the standa\
-rd game phases a\
-re played **in o\
-rder, 1 to 10**.\
-\x0a- The Master bo\
-x adds **action \
-cards**; see the\
- next section. T\
-he app does not\x0a\
-  track them.\x0a- \
-**Card values:**\
- reports disagre\
-e with the stand\
-ard edition. Two\
- German\x0a  review\
-s say Master pen\
-alises cards lef\
-t in hand at a f\
-lat **1 point pe\
-r\x0a  card**, what\
-ever the card, a\
-nd one of them s\
-ays action cards\
- have no value.\x0a\
-  The standard e\
-dition uses 5 (1\
-\xe2\x80\x939), 10 (10\xe2\x80\x93\
-12), 15 (Skip) a\
-nd 25 (Wild).\x0a  \
-Check the player\
- aid in your box\
-. The app only a\
-sks for each pla\
-yer's total.\x0a\x0a##\
- Action cards\x0a\x0aT\
-he box has 18 ac\
-tion cards of fo\
-ur kinds, plus 3\
- blank cards for\
- inventing\x0ayour \
-own. Each shows \
-a symbol instead\
- of a number:\x0a\x0a|\
- Symbol | Name |\
- Cards |\x0a|---|--\
--|:---:|\x0a| Thumb\
- | **All mine** \
-| 4 |\x0a| Thumb an\
-d index finger (\
-two fingers) | *\
-*Take two** | 4 \
-|\x0a| Open hand (f\
-ive fingers) | *\
-*Give me five** \
-| 4 |\x0a| Exclamat\
-ion mark | **Ski\
-p** | 6 |\x0a\x0a**Whe\
-n they are playe\
-d.** Ravensburge\
-r's own FAQ says\
- action cards ar\
-e played\x0a**at th\
-e end of your tu\
-rn**, put on the\
- discard pile **\
-instead of disca\
-rding a\x0anormal c\
-ard**. Playing o\
-ne always ends y\
-our turn. So you\
- cannot lay down\
- your\x0aphase on t\
-he same turn aft\
-er playing one, \
-for example afte\
-r taking a card \
-with\x0aGive me fiv\
-e.\x0a\x0a**Thumb: All\
- mine.** If you \
-play it and the \
-hand ends before\
- you finish, you\
-\x0amay **keep all \
-the cards in you\
-r hand for the n\
-ext hand**. You \
-decide at the\x0aen\
-d of the hand. T\
-he sources do no\
-t say whether th\
-ose cards still \
-cost you\x0apenalty\
- points, so chec\
-k the rule book \
+count.\x0a\x0a## Penal\
+ty points\x0a\x0a| Car\
+d | Points |\x0a|--\
+-|:---:|\x0a| 1 to \
+9 | 5 |\x0a| 10 to \
+12 | 10 |\x0a| Acti\
+on cards | 15 |\x0a\
+| Wild | 20 |\x0a\x0a#\
+# Other things t\
+o know\x0a\x0a- Game p\
+hases may be pla\
+yed **in any ord\
+er**. Players ne\
+ed to announce t\
+he phase\x0a  they \
+are playing befo\
+re the round sta\
+rts.\x0a- The Maste\
+r box adds **act\
+ion cards**; see\
+ the next sectio\
+n. The app does \
+not\x0a  track them\
+.\x0a- **Card value\
+s:**  5 (1\xe2\x80\x939),\
+ 10 (10\xe2\x80\x9312), 1\
+5 (Skip) and 25 \
+(Wild).\x0a  Check \
+the player aid i\
+n your box. The \
+app only asks fo\
+r each player's \
+total.\x0a\x0a## Actio\
+n cards\x0a\x0aThe box\
+ has 18 action c\
+ards of four kin\
+ds, plus 3 blank\
+ cards for inven\
+ting\x0ayour own. E\
+ach shows a symb\
+ol instead of a \
+number:\x0a\x0a| Symbo\
+l | Name | Cards\
+ |\x0a|---|---|:---\
+:|\x0a| Thumb | **A\
+ll mine** | 4 |\x0a\
+| Thumb and inde\
+x finger (two fi\
+ngers) | **Take \
+two** | 4 |\x0a| Op\
+en hand (five fi\
+ngers) | **Give \
+me five** | 4 |\x0a\
+| Exclamation ma\
+rk | **Skip** | \
+6 |\x0a\x0a**When they\
+ are played.** R\
+avensburger's ow\
+n FAQ says actio\
+n cards are play\
+ed\x0a**at the end \
+of your turn**, \
+put on the disca\
+rd pile **instea\
+d of discarding \
+a\x0anormal card**.\
+ Playing one alw\
+ays ends your tu\
+rn. So you canno\
+t lay down your\x0a\
+phase on the sam\
+e turn after pla\
+ying one, for ex\
+ample after taki\
+ng a card with\x0aG\
+ive me five.\x0a\x0a**\
+Thumb: All mine.\
+** If you play i\
+t and the hand e\
+nds before you f\
+inish, you\x0amay *\
+*keep any or all\
+ the cards in yo\
+ur hand for the \
+next hand**. You\
+ decide at the\x0ae\
+nd of the hand. \
+Those cards stil\
+l cost you penal\
+ty points.\x0a\x0a**Tw\
+o fingers: Take \
+two.** On your n\
+ext turn you may\
+ take **two card\
+s from\x0athe draw \
+pile instead of \
+one**, keep one \
+and discard the \
+other. You still\
+ end\x0athe turn wi\
+th a discard as \
+usual. Sources d\
+iffer on how lon\
+g it lasts: one\x0a\
+says only your n\
+ext turn, anothe\
+r says until the\
+ hand ends. Chec\
+k the rule\x0abook \
 in your box.\x0a\x0a**\
-Two fingers: Tak\
-e two.** On your\
- next turn you m\
-ay take **two ca\
-rds from\x0athe dra\
-w pile instead o\
-f one**, keep on\
-e and discard th\
-e other. You sti\
-ll end\x0athe turn \
-with a discard a\
-s usual. Sources\
- differ on how l\
-ong it lasts: on\
-e\x0asays only your\
- next turn, anot\
-her says until t\
-he hand ends. Ch\
-eck the rule\x0aboo\
-k in your box.\x0a\x0a\
-**Five fingers: \
-Give me five.** \
-The other player\
-s, in turn, show\
- you cards\x0afrom \
-their hands unti\
-l **5 cards in t\
-otal** are on vi\
-ew. With fewer t\
-han six\x0aplayers,\
- some players sh\
-ow more than one\
- card. You choos\
-e one of them an\
-d take\x0ait into y\
-our hand. The pl\
-ayer it came fro\
-m **draws a repl\
-acement from the\
-\x0adraw pile**.\x0a\x0a*\
-*Exclamation mar\
-k: Skip.** You p\
-lay it in front \
-of an opponent, \
-who misses\x0atheir\
- next turn.\x0a\x0a## \
-End of the game\x0a\
-\x0aThe game ends w\
-hen a player com\
-pletes phase 10 \
-and goes out. If\
- two or more\x0apla\
-yers complete it\
- in the same rou\
-nd, the one with\
- the fewest pena\
-lty points\x0aover \
-the whole game w\
-ins.\x0a\x0a## Gamelog\
- tips\x0a\x0a- Record \
-for each player \
-the phase aimed \
-at, whether it w\
-as completed, an\
-d the\x0a  penalty \
-points. The phas\
-e list on the si\
-de of the board \
-shows the Master\
-\x0a  phases.\x0a- The\
- app applies the\
- standard editio\
-n's entry checks\
- to Master as we\
-ll: scores\x0a  in \
-multiples of 5, \
-and at least 50 \
-for a player who\
- did not complet\
-e their\x0a  phase.\
- If your Master \
-box scores diffe\
-rently (see the \
-note on card val\
-ues\x0a  above), th\
-e app may reject\
- the number you \
-want to enter.\x0a-\
- The **Phases in\
- order** switch \
-is on by default\
- and can only be\
- changed in the\x0a\
-  first round. *\
-*Free phase orde\
-r** lets players\
- choose any phas\
-e they have not\x0a\
-  cleared yet; t\
-his is a house o\
-ption, not the s\
-tandard rule.\x0a- \
-A match is won b\
-y the player who\
- has cleared all\
- 10 phases with \
-the lowest\x0a  tot\
-al. If totals ti\
-e, the app prefe\
-rs the lower sco\
-re in the last r\
-ound, and\x0a  if t\
-hat is also tied\
- the victory is \
-shared.\x0a\
+Five fingers: Gi\
+ve me five.** Th\
+e other players,\
+ in turn, show y\
+ou cards\x0afrom th\
+eir hands until \
+**5 cards in tot\
+al** are on view\
+. With fewer tha\
+n six\x0aplayers, s\
+ome players show\
+ more than one c\
+ard. You choose \
+one of them and \
+take\x0ait into you\
+r hand. The play\
+er it came from \
+**draws a replac\
+ement from the\x0ad\
+raw pile**.\x0a\x0a**E\
+xclamation mark:\
+ Skip.** You pla\
+y it in front of\
+ an opponent, wh\
+o misses\x0atheir n\
+ext turn.\x0a\x0a## En\
+d of the game\x0a\x0aT\
+he game ends whe\
+n a player compl\
+etes phase 10 an\
+d goes out. If t\
+wo or more\x0aplaye\
+rs complete it i\
+n the same round\
+, the one with t\
+he fewest penalt\
+y points\x0aover th\
+e whole game win\
+s.\x0a\x0a## Gamelog t\
+ips\x0a\x0a- Record fo\
+r each player th\
+e phase aimed at\
+, whether it was\
+ completed, and \
+the\x0a  penalty po\
+ints. The phase \
+list on the side\
+ of the board sh\
+ows the Master\x0a \
+ phases.\x0a- The a\
+pp applies the s\
+tandard edition'\
+s entry checks t\
+o Master as well\
+: scores\x0a  in mu\
+ltiples of 5, an\
+d at least 50 fo\
+r a player who d\
+id not complete \
+their\x0a  phase. I\
+f your Master bo\
+x scores differe\
+ntly (see the no\
+te on card value\
+s\x0a  above), the \
+app may reject t\
+he number you wa\
+nt to enter.\x0a- T\
+he **Phases in o\
+rder** switch is\
+ on by default a\
+nd can only be c\
+hanged in the\x0a  \
+first round. **F\
+ree phase order*\
+* lets players c\
+hoose any phase \
+they have not\x0a  \
+cleared yet; thi\
+s is a house opt\
+ion, not the sta\
+ndard rule.\x0a- A \
+match is won by \
+the player who h\
+as cleared all 1\
+0 phases with th\
+e lowest\x0a  total\
+. If totals tie,\
+ the app prefers\
+ the lower score\
+ in the last rou\
+nd, and\x0a  if tha\
+t is also tied t\
+he victory is sh\
+ared.\x0a\
+\x00\x00\x11z\
+#\
+ Scrabble \xe2\x80\x94 re\
+ferencia r\xc3\xa1pida\
+\x0a\x0a*Un resumen pa\
+ra resolver disp\
+utas en la mesa,\
+ no un sustituto\
+ del reglamento \
+oficial. Versi\xc3\xb3\
+n inglesa est\xc3\xa1n\
+dar del juego, 2\
+\xe2\x80\x934 jugadores, \
+basada en la hoj\
+a de reglas de M\
+attel. El tratam\
+iento de las imp\
+ugnaciones difie\
+re entre editori\
+ales y torneos.*\
+\x0a\x0a## Objetivo\x0a\x0aT\
+ener la puntuaci\
+\xc3\xb3n m\xc3\xa1s alta al\
+ final formando \
+palabras entrecr\
+uzadas, al estil\
+o de un crucigra\
+ma. Hay 100 fich\
+as: 98 letras y \
+**2 comodines** \
+que valen 0 punt\
+os.\x0a\x0a## Preparac\
+i\xc3\xb3n\x0a\x0a1. Cada ju\
+gador roba **7**\
+ fichas para su \
+atril. El turno \
+pasa en sentido \
+horario.\x0a2. Acor\
+dad de antemano \
+qu\xc3\xa9 **diccionar\
+io** resuelve la\
+s disputas.\x0a\x0a## \
+Primera palabra\x0a\
+\x0a- Al menos **2 \
+letras**, en hor\
+izontal o en ver\
+tical (nunca en \
+diagonal), con u\
+na ficha sobre l\
+a **casilla cent\
+ral con estrella\
+**.\x0a- La casilla\
+ central es una \
+casilla de **pal\
+abra doble**, po\
+r lo que la prim\
+era palabra se d\
+uplica.\x0a\x0a## Un t\
+urno\x0a\x0aHaz **una*\
+* de estas accio\
+nes:\x0a\x0a1. **Juega\
+** fichas y lueg\
+o roba hasta ten\
+er 7.\x0a2. **Cambi\
+a** algunas o to\
+das tus fichas: \
+deja las que des\
+cartas boca abaj\
+o, roba el mismo\
+ n\xc3\xbamero y mezcl\
+a las descartada\
+s de nuevo en la\
+ bolsa. No punt\xc3\
+\xbaas nada.\x0a3. **P\
+asa** y no punt\xc3\
+\xbaas nada.\x0a\x0a## Co\
+locar fichas\x0a\x0a- \
+Todas las fichas\
+ que coloques de\
+ben estar en **u\
+na fila o en una\
+ columna**.\x0a- Tu\
+ jugada debe con\
+ectar con fichas\
+ que ya hay en e\
+l tablero y form\
+ar palabras de 2\
+ o m\xc3\xa1s letras.\x0a\
+- Cualquier fich\
+a que quede toca\
+ndo a otras tamb\
+i\xc3\xa9n forma palab\
+ras, y **cada un\
+a de esas palabr\
+as debe ser v\xc3\xa1l\
+ida**.\x0a- Puedes:\
+ a\xc3\xb1adir letras \
+a uno o a ambos \
+extremos de una \
+palabra; jugar u\
+na palabra que c\
+ruce otra existe\
+nte en \xc3\xa1ngulo r\
+ecto usando una \
+de sus letras; j\
+ugar una palabra\
+ junto a palabra\
+s existentes (to\
+das las letras q\
+ue se tocan debe\
+n formar palabra\
+s v\xc3\xa1lidas); o c\
+olocar letras qu\
+e unan dos palab\
+ras.\x0a- Las ficha\
+s no se pueden m\
+over una vez jug\
+adas, salvo tras\
+ una impugnaci\xc3\xb3\
+n exitosa.\x0a- Pal\
+abras permitidas\
+: cualquiera del\
+ diccionario aco\
+rdado, excepto l\
+as que necesitan\
+ may\xc3\xbascula inic\
+ial, abreviatura\
+s, prefijos y su\
+fijos por s\xc3\xad so\
+los, y las palab\
+ras con ap\xc3\xb3stro\
+fos o guiones.\x0a\x0a\
+## Puntuaci\xc3\xb3n\x0a\x0a\
+Suma los valores\
+ de las letras d\
+e **cada palabra\
+ que hayas forma\
+do o ampliado** \
+en el turno.\x0a\x0a| \
+Casilla | Efecto\
+ |\x0a|---|---|\x0a| L\
+etra doble (azul\
+ claro) | La let\
+ra que hay en el\
+la cuenta x2 |\x0a|\
+ Letra triple (a\
+zul oscuro) | La\
+ letra que hay e\
+n ella cuenta x3\
+ |\x0a| Palabra dob\
+le (rojo claro, \
+y la casilla cen\
+tral) | Palabra \
+completa x2 |\x0a| \
+Palabra triple (\
+rojo oscuro) | P\
+alabra completa \
+x3 |\x0a\x0a- Las casi\
+llas de bonifica\
+ci\xc3\xb3n cuentan **\
+solo en el turno\
+ en que se coloc\
+a** una ficha so\
+bre ellas. Las p\
+alabras posterio\
+res que pasen po\
+r ellas punt\xc3\xbaan\
+ su valor facial\
+.\x0a- Si una palab\
+ra cubre dos cas\
+illas de palabra\
+, multiplica ent\
+re s\xc3\xad: **x4** (\
+doble y doble) o\
+ **x9** (triple \
+y triple).\x0a- Una\
+ ficha que forma\
+ dos palabras nu\
+evas cuenta en c\
+ada palabra, con\
+ su bonificaci\xc3\xb3\
+n en ambas.\x0a- Un\
+ **comod\xc3\xadn** pu\
+nt\xc3\xbaa 0 como let\
+ra, pero un como\
+d\xc3\xadn sobre una c\
+asilla de palabr\
+a sigue duplican\
+do o triplicando\
+ la palabra. Deb\
+es indicar qu\xc3\xa9 \
+letra es, y se q\
+ueda con esa let\
+ra.\x0a- **Bingo:**\
+ usar las 7 fich\
+as en un turno a\
+\xc3\xb1ade **50 punto\
+s**, despu\xc3\xa9s de\
+ cualquier multi\
+plicador de pala\
+bra.\x0a\x0a## Impugna\
+ciones\x0a\x0aDespu\xc3\xa9s\
+ de que se juegu\
+e una palabra y \
+**antes** de con\
+tar la puntuaci\xc3\
+\xb3n, cualquier ju\
+gador puede impu\
+gnarla y consult\
+ar el diccionari\
+o. Si la palabra\
+ no es aceptable\
+, el jugador rec\
+upera sus fichas\
+ y **pierde su t\
+urno** (esta es \
+la regla de Matt\
+el; otros reglam\
+entos difieren).\
+\x0a\x0a## Final de la\
+ partida\x0a\x0aLa par\
+tida termina cua\
+ndo:\x0a\x0a- se han r\
+obado todas las \
+fichas y un juga\
+dor usa la \xc3\xbalti\
+ma, o\x0a- ya no es\
+ posible ninguna\
+ jugada, o\x0a- tod\
+os los jugadores\
+ pasan dos veces\
+ seguidas.\x0a\x0aEnto\
+nces, cada jugad\
+or **resta** el \
+valor de las fic\
+has que le queda\
+n en el atril. S\
+i un jugador us\xc3\
+\xb3 todas sus fich\
+as, **suma** el \
+valor total de l\
+as fichas sobran\
+tes de los dem\xc3\xa1\
+s.\x0a\x0a## Consejos \
+para Gamelog\x0a\x0a- \
+Introduce la pun\
+tuaci\xc3\xb3n de cada\
+ turno. Los boto\
+nes de bonificac\
+i\xc3\xb3n (letra dobl\
+e, letra triple,\
+ palabra doble, \
+palabra triple, \
+bingo) registran\
+ qu\xc3\xa9 bonificaci\
+ones us\xc3\xb3 el tur\
+no para que apar\
+ezcan en las est\
+ad\xc3\xadsticas. Los \
+puntos siguen sa\
+liendo de la pun\
+tuaci\xc3\xb3n que esc\
+ribes.\x0a- **Desem\
+pate de la app**\
+ (no forma parte\
+ de la hoja de r\
+eglas): si los j\
+ugadores empatan\
+ en puntuaci\xc3\xb3n,\
+ gana quien haya\
+ usado m\xc3\xa1s boni\
+ficaciones; desp\
+u\xc3\xa9s, el mejor t\
+urno individual.\
+ Si siguen empat\
+ados, comparten \
+la victoria.\x0a- N\
+o hay un control\
+ separado para l\
+os ajustes de fi\
+chas sobrantes a\
+l final.\x0a\
+\x00\x00\x18O\
+#\
+ Skull King \xe2\x80\x94 \
+refer\xc3\xa8ncia r\xc3\xa0p\
+ida\x0a\x0a*Un resum p\
+er resoldre disp\
+utes a taula, no\
+ substitueix el \
+reglament oficia\
+l. Joc base m\xc3\xa9s\
+ les regles opci\
+onals que admet \
+l'app, de 2 a 8 \
+jugadors.*\x0a\x0a## O\
+bjectiu\x0a\x0aDurant \
+deu rondes, pred\
+iu exactament qu\
+antes mans guany\
+ar\xc3\xa0s. Les apost\
+es exactes donen\
+ punts; les apos\
+tes err\xc3\xb2nies en\
+ resten. **El to\
+tal m\xc3\xa9s alt des\
+pr\xc3\xa9s de l'\xc3\xbalti\
+ma ronda guanya.\
+**\x0a\x0a## Preparaci\
+\xc3\xb3\x0a\x0a- Treu les c\
+artes en blanc, \
+el Bot\xc3\xad [Loot],\
+ el Kraken i la \
+Balena Blanca, t\
+ret que jugueu a\
+mb les regles av\
+an\xc3\xa7ades.\x0a- La r\
+onda 1 reparteix\
+ 1 carta a cadas\
+c\xc3\xba, la ronda 2 \
+en reparteix 2, \
+i aix\xc3\xad successi\
+vament fins a 10\
+ a la ronda 10. \
+Amb 8 jugadors, \
+reparteix 8 cart\
+es a les rondes \
+9 i 10.\x0a- El jug\
+ador a l'esquerr\
+a del repartidor\
+ obre la primera\
+ m\xc3\xa0, i el repar\
+timent passa a l\
+'esquerra a cada\
+ ronda.\x0a\x0a## Apos\
+tes\x0a\x0aCada jugado\
+r tria la seva a\
+posta en secret \
+i, despr\xc3\xa9s, tot\
+s la revelen alh\
+ora amb els dits\
+ d'una m\xc3\xa0 (un p\
+uny \xc3\xa9s zero). N\
+o hi ha cap rest\
+ricci\xc3\xb3 sobre la\
+ suma de les apo\
+stes.\x0a\x0a## Les ca\
+rtes\x0a\x0a- **Pals:*\
+* verd, groc i l\
+ila s\xc3\xb3n pals no\
+rmals numerats d\
+e l'1 al 14. El \
+negre \xc3\xa9s el pal\
+ de **triomf** i\
+ ven\xc3\xa7 tots els \
+altres.\x0a- Seguei\
+x el pal que s'h\
+a obert si pots.\
+ Sempre pots jug\
+ar una carta esp\
+ecial en lloc d'\
+aix\xc3\xb2, i pots ju\
+gar qualsevol ca\
+rta si no tens c\
+ap carta del pal\
+ obert.\x0a- **Fugi\
+da [Escape] (5):\
+** sempre perd. \
+Si tothom n'hi j\
+uga una, guanya \
+la primera jugad\
+a.\x0a- **Pirata (5\
+):** ven\xc3\xa7 tots \
+els pals, incl\xc3\xb2\
+s el triomf. De \
+diversos Pirates\
+, guanya el prim\
+er jugat.\x0a- **Re\
+i Calavera [Skul\
+l King]:** ven\xc3\xa7\
+ tots els pals i\
+ els Pirates, i \
+nom\xc3\xa9s perd dava\
+nt d'una Sirena.\
+\x0a- **Sirena [Mer\
+maid] (2):** ven\
+\xc3\xa7 tots els pals\
+ i el Rei Calave\
+ra, i perd davan\
+t dels Pirates. \
+Si un Pirata, el\
+ Rei Calavera i \
+una Sirena s\xc3\xb3n \
+tots en una mate\
+ixa m\xc3\xa0, **guany\
+a la Sirena**, s\
+igui quin sigui \
+l'ordre.\x0a- **Tig\
+ressa [Tigress]:\
+** en jugar-la, \
+declara si \xc3\xa9s u\
+n Pirata o una F\
+ugida.\x0a- Sortir \
+amb una Fugida (\
+o amb la Tigress\
+a com a Fugida):\
+ la carta numera\
+da seg\xc3\xbcent fixa\
+ el pal. Sortir \
+amb un Pirata, u\
+na Sirena o el R\
+ei Calavera no f\
+ixa cap pal.\x0a\x0a##\
+ Puntuaci\xc3\xb3\x0a\x0a| A\
+posta | Resultat\
+ | Punts |\x0a|---|\
+---|---|\x0a| 1 o m\
+\xc3\xa9s | Exacta | +\
+20 per m\xc3\xa0 guany\
+ada |\x0a| 1 o m\xc3\xa9s\
+ | Err\xc3\xb2nia | -1\
+0 per m\xc3\xa0 de m\xc3\xa9\
+s o de menys |\x0a|\
+ 0 | No ha guany\
+at cap m\xc3\xa0 | +10\
+ x cartes repart\
+ides en aquella \
+ronda |\x0a| 0 | Ha\
+ guanyat 1 o m\xc3\xa9\
+s mans | -10 x c\
+artes repartides\
+ en aquella rond\
+a |\x0a\x0aExemple: ap\
+osta 3, guanya 3\
+ = +60. Aposta 2\
+, guanya 4 = -20\
+.\x0a\x0a## Punts de b\
+onus\x0a\x0aEls bonus \
+nom\xc3\xa9s compten *\
+*si la teva apos\
+ta ha estat exac\
+ta**.\x0a\x0a| Bonus |\
+ Punts |\x0a|---|:-\
+--:|\x0a| Captura u\
+n 14 verd, groc \
+o lila | 10 cada\
+scun |\x0a| Captura\
+ el 14 negre | 2\
+0 |\x0a| Un Pirata \
+captura una Sire\
+na | 20 cadascun\
+a |\x0a| El Rei Cal\
+avera captura un\
+ Pirata | 30 cad\
+ascun |\x0a| Una Si\
+rena captura el \
+Rei Calavera | 4\
+0 |\x0a\x0aEl bonus va\
+ per al jugador \
+que guanya la m\xc3\
+\xa0, encara que la\
+ carta l'hagi ju\
+gat un rival. L'\
+ordre de joc din\
+s de la m\xc3\xa0 no i\
+mporta. La carta\
+ que captura ha \
+d'haver guanyat \
+la m\xc3\xa0: si una S\
+irena s'emporta \
+una m\xc3\xa0 que cont\
+\xc3\xa9 el Rei Calave\
+ra i un Pirata, \
+nom\xc3\xa9s es puntua\
+ el bonus de la \
+Sirena.\x0a\x0a## Empa\
+ts\x0a\x0aRegla oficia\
+l: si la puntuac\
+i\xc3\xb3 m\xc3\xa9s alta es\
+t\xc3\xa0 empatada des\
+pr\xc3\xa9s de l'\xc3\xbalti\
+ma ronda, es jug\
+uen m\xc3\xa9s rondes \
+fins que alg\xc3\xba q\
+uedi per davant.\
+\x0a\x0a## Regles opci\
+onals\x0a\x0a**Seq\xc3\xbc\xc3\xa8\
+ncies de rondes*\
+* (cartes repart\
+ides per ronda; \
+totes es poden t\
+riar a l'app, al\
+ tauler, abans d\
+e la ronda 1):\x0a\x0a\
+| Mode | Cartes \
+per ronda |\x0a|---\
+|---|\x0a| Est\xc3\xa0nda\
+rd | De l'1 al 1\
+0, deu rondes |\x0a\
+| Quilla uniform\
+e | 2, 4, 6, 8, \
+10 |\x0a| Directes \
+a la baralla | 6\
+, 7, 8, 9, 10 |\x0a\
+| Escaramussa al\
+ punt | cinc ron\
+des de 5 |\x0a| Bom\
+bardeig lateral \
+| deu rondes de \
+10 |\x0a| Remol\xc3\xad |\
+ 9, 7, 5, 3, 1 |\
+\x0a\x0a**Cartes avan\xc3\
+\xa7ades** (no mode\
+lades per l'app \
+m\xc3\xa9s enll\xc3\xa0 de l\
+es indicacions d\
+escrites a conti\
+nuaci\xc3\xb3)\x0a- **Kra\
+ken:** la m\xc3\xa0 es\
+ destrueix, ning\
+\xc3\xba la guanya, i \
+el jugador que l\
+'hauria guanyada\
+ obre la seg\xc3\xbcen\
+t.\x0a- **Balena Bl\
+anca:** les cart\
+es especials de \
+la m\xc3\xa0 compten c\
+om a Fugides, el\
+s n\xc3\xbameros perde\
+n el seu pal, i \
+guanya el n\xc3\xbamer\
+o m\xc3\xa9s alt (el p\
+rimer jugat si h\
+i ha empat). Si \
+nom\xc3\xa9s s'han jug\
+at cartes especi\
+als, la m\xc3\xa0 es d\
+escarta.\x0a- **Bot\
+\xc3\xad [Loot]:** es \
+juga com una Fug\
+ida. El jugador \
+que la juga i el\
+ jugador que gua\
+nya la m\xc3\xa0 s\xc3\xb3n \
+aliats, i cadasc\
+un obt\xc3\xa9 **+20**\
+ si tots dos han\
+ encertat exacta\
+ment la seva apo\
+sta.\x0a- **Canalla\
+ de Roatan [Rasc\
+al of Roatan]** \
+(habilitat d'un \
+Pirata): quan gu\
+anyes una m\xc3\xa0 am\
+b aquest Pirata,\
+ pots apostar 10\
+ o 20 sobre la t\
+eva aposta: el g\
+uanyes si l'ence\
+rtes i el perds \
+si fallas.\x0a\x0a**Re\
+compte del canal\
+la** (sistema de\
+ puntuaci\xc3\xb3 alte\
+rnatiu): el pote\
+ncial de cada ju\
+gador en una ron\
+da \xc3\xa9s **10 x ca\
+rtes repartides*\
+*. Una aposta ex\
+acta guanya tot,\
+ fallar per exac\
+tament 1 guanya \
+la meitat, i fal\
+lar per 2 o m\xc3\xa9s\
+ no guanya res. \
+Els bonus seguei\
+xen el mateix pa\
+tr\xc3\xb3 de tot, la \
+meitat o res.\x0a\x0a#\
+# Consells per a\
+ Gamelog\x0a\x0a- Per \
+a cada jugador, \
+introdueix l'apo\
+sta, les mans gu\
+anyades i els bo\
+nus. Les mans gu\
+anyades entre to\
+ts han de sumar \
+les cartes repar\
+tides. Si en fal\
+ten una o dues, \
+l'app pregunta s\
+i el Kraken (i l\
+a Balena Blanca)\
+ han descartat m\
+ans.\x0a- Hi ha tre\
+s **modes de pun\
+tuaci\xc3\xb3**, triat\
+s abans de la ro\
+nda 1:\x0a  - **Pun\
+tatge cl\xc3\xa0ssic:*\
+* apostes exacte\
+s i err\xc3\xb2nies co\
+m a dalt, amb no\
+m\xc3\xa9s els botons \
+de bonus del Rei\
+ Calavera i del \
+Pirata.\x0a  - **Re\
+compte est\xc3\xa0ndar\
+:** afegeix els \
+botons de Sirena\
+, Bot\xc3\xad, bonus d\
+el 14, bonus del\
+ 14 negre i Roat\
+an. Com a m\xc3\xa0xim\
+ es poden donar \
+3 bonus del 14 i\
+ 4 de Bot\xc3\xad en u\
+na ronda. El pun\
+tatge cl\xc3\xa0ssic n\
+o s'ofereix amb \
+m\xc3\xa9s de 6 jugado\
+rs.\x0a  - **Recomp\
+te del canalla:*\
+* el recompte de\
+l canalla de dal\
+t, m\xc3\xa9s un inter\
+ruptor **Cannonb\
+all**, una opci\xc3\
+\xb3 de tot o res q\
+ue val 15 x cart\
+es repartides pe\
+r una aposta exa\
+cta i res per qu\
+alsevol fallada.\
+\x0a- Els botons de\
+ bonus nom\xc3\xa9s s'\
+activen quan l'a\
+posta d'un jugad\
+or \xc3\xa9s exacta. E\
+l Bot\xc3\xad requerei\
+x aposta exacta;\
+ el Roatan s'act\
+iva quan el juga\
+dor ha guanyat a\
+lmenys una m\xc3\xa0.\x0a\
+- Els valors de \
+**aposta zero** \
+i del **Recompte\
+ del canalla** u\
+sen el **n\xc3\xbamero\
+ de ronda** de l\
+'app, no les car\
+tes repartides. \
+Nom\xc3\xa9s coincidei\
+xen en la seq\xc3\xbc\xc3\
+\xa8ncia est\xc3\xa0ndard\
+. En altres seq\xc3\
+\xbc\xc3\xa8ncies, ajusta\
+-ho a m\xc3\xa0 o revi\
+sa els totals.\x0a-\
+ El guanyador \xc3\xa9\
+s el total m\xc3\xa9s \
+alt despr\xc3\xa9s de \
+l'\xc3\xbaltima ronda.\
+ Si hi ha empat,\
+ l'app compartei\
+x la vict\xc3\xb2ria e\
+n lloc de jugar \
+rondes extra.\x0a\
 \x00\x00\x15]\
 #\
  Skull King \xe2\x80\x94 \
@@ -12749,7 +17648,7 @@ e app\x0a  shares t\
 he victory inste\
 ad of playing ex\
 tra rounds.\x0a\
-\x00\x00\x10A\
+\x00\x00\x0f\x8f\
 #\
  Pocha \xe2\x80\x94 quick\
  reference\x0a\x0a*Poc\
@@ -12769,249 +17668,1912 @@ gree on and to w\
 hat the app scor\
 es.\x0aAgree the va\
 riants below bef\
-ore you start. R\
-oughly 3\xe2\x80\x935 pla\
-yers.*\x0a\x0a## Goal\x0a\
-\x0aBefore each han\
-d, every player \
-predicts exactly\
- how many tricks\
- they will win.\x0a\
-You score by get\
-ting it **exactl\
-y right**, not b\
-y winning the mo\
-st tricks.\x0a**Hig\
-hest total after\
- the last hand w\
-ins.**\x0a\x0a## Deck \
-and trump\x0a\x0a- **S\
-panish 40-card d\
-eck.** Card orde\
-r, high to low: \
-ace, 3, king, kn\
-ight\x0a  (caballo)\
-, jack (sota), 7\
-, 6, 5, 4, 2. Ca\
-rds carry no poi\
-nts.\x0a- Deal one \
-card at a time. \
-The next card is\
- turned face up \
-and its suit is\x0a\
-  **trump** (*tr\
-iunfo*). Any tru\
-mp beats any car\
-d of another sui\
-t.\x0a- If the whol\
-e deck is dealt \
-in a hand, the d\
-ealer's own last\
- card, shown to\x0a\
-  everybody, set\
-s the trump.\x0a- W\
-ith 3 players th\
-e 2s are usually\
- removed. At mos\
-t 5 players can \
-take part in\x0a  t\
-he 8-card hands \
-(8 x 5 = 40, the\
- whole deck).\x0a\x0a#\
-# Hands\x0a\x0aThe num\
-ber of cards dea\
-lt changes every\
- hand. The app u\
-ses 18 hands:\x0a\x0a|\
- Hands | Cards e\
-ach |\x0a|---|---|\x0a\
-| 1 to 7 | 1, 2,\
- 3, 4, 5, 6, 7 (\
-going up) |\x0a| 8 \
-to 11 | 8 cards,\
- four hands in a\
- row |\x0a| 12 to 1\
-8 | 7, 6, 5, 4, \
-3, 2, 1 (going d\
-own) |\x0a\x0aOther ta\
-bles use a diffe\
-rent peak, a dif\
-ferent number of\
- full-deck hands\
- or\x0aeven a fixed\
- number of hands\
-, so agree it fi\
-rst.\x0a\x0a## Bidding\
-\x0a\x0a- Starting wit\
-h the player who\
- leads (to the d\
-ealer's right) a\
-nd ending with\x0a \
- the dealer, eve\
-ryone says how m\
-any tricks they \
-expect to win.\x0a-\
- **Last bidder r\
-estriction:** th\
-e last player to\
- bid may **not**\
- choose a number\
-\x0a  that makes th\
-e total of all b\
-ids equal the nu\
-mber of tricks i\
-n the hand. At\x0a \
- least one playe\
-r must therefore\
- miss.\x0a\x0a## Playi\
-ng\x0a\x0a- The player\
- to the dealer's\
- right leads any\
- card.\x0a- You mus\
-t **follow suit*\
-* if you can. If\
- you cannot, you\
- must play a **t\
-rump**\x0a  if you \
-have one. If you\
- have neither, p\
-lay anything.\x0a- \
-Sources disagree\
- on whether you \
-must also **beat\
-** the winning c\
-ard when you\x0a  c\
-an (a higher car\
-d of the led sui\
-t, or a higher t\
-rump). Agree thi\
-s first.\x0a- If a \
-trump is led, ev\
-eryone holding a\
- trump must play\
- one.\x0a- The high\
-est trump wins t\
-he trick, or, if\
- there is none, \
-the highest card\
- of\x0a  the led su\
-it. The winner l\
-eads the next tr\
-ick.\x0a\x0a## Scoring\
-\x0a\x0aThe commonly p\
-ublished scoring\
- is **10 points \
-plus 5 per trick\
- won** for an\x0aex\
-act bid, and **-\
-5 per trick of d\
-ifference** (ove\
-r or under) for \
-a miss.\x0a\x0a**The a\
-pp scores 3 poin\
-ts per trick ins\
-tead:**\x0a\x0a| Resul\
-t | Points |\x0a|--\
--|---|\x0a| Exact b\
-id | 10 + 3 per \
-trick won |\x0a| Mi\
-ssed bid | -3 pe\
-r trick over or \
-under |\x0a\x0aExample\
- in the app: bid\
- 3 and win 3 = 1\
-9 points. Bid 3 \
-and win 1 = -6.\x0a\
-\x0aA bid of zero t\
-hat is kept scor\
-es the flat 10. \
-Check your table\
-'s rule if you\x0ap\
-lay with a diffe\
-rent value.\x0a\x0a## \
-Ties and other v\
-ariants\x0a\x0a- If th\
-e final totals a\
-re tied, common \
-rules say to dea\
-l extra one-card\
- hands\x0a  until i\
-t is broken, or \
-to prefer the pl\
-ayer with fewer \
-missed bids. The\
- app\x0a  simply **\
-shares the victo\
-ry** between tie\
-d players.\x0a- Var\
-iants you may me\
-et, not scored b\
-y the app: a \x22Po\
-cha\x22 call worth \
-100 points\x0a  wit\
-h 5 or more play\
-ers, hands with \
-the trump chosen\
- by auction, han\
-ds without\x0a  tru\
-mp, hands where \
-you see only the\
- others' cards, \
-and score multip\
-liers for\x0a  cert\
-ain trump suits.\
-\x0a- Penalties for\
- playing a wrong\
- card (*renuncio\
-*) are usually a\
-greed in advance\
-.\x0a\x0a## Gamelog ti\
-ps\x0a\x0a- The board \
-counts the hands\
- and shows how m\
-any cards to dea\
-l. The four 8-ca\
-rd\x0a  hands are l\
-abelled with one\
- suit each, usin\
-g the suit names\
- of the chosen\x0a \
- deck (Spanish: \
-coins, cups, swo\
-rds, clubs). The\
- other hands are\
- labelled\x0a  \x22goi\
-ng up\x22 or \x22going\
- down\x22.\x0a- For ea\
-ch player, enter\
- the bid and the\
- tricks won. The\
- tricks won must\
- add up\x0a  to the\
- cards dealt in \
-that hand.\x0a- Whi\
-le entering bids\
-, the app **bloc\
-ks the last bid \
-that would make \
-the total\x0a  equa\
-l the cards deal\
-t**, for whichev\
-er player is the\
- last one withou\
-t a bid, so\x0a  en\
-ter the bids in \
-playing order wi\
-th the dealer la\
-st.\x0a- Scores use\
- the app's 10 + \
-3 per trick and \
--3 per trick dif\
-ference, not the\
-\x0a  5-point scori\
-ng found in most\
- written rules.\x0a\
-\
+ore you start. 3\
+\xe2\x80\x936 players.*\x0a\x0a\
+## Goal\x0a\x0aBefore \
+each hand, every\
+ player predicts\
+ exactly how man\
+y tricks they wi\
+ll win.\x0aYou scor\
+e by getting it \
+**exactly right*\
+*, not by winnin\
+g the most trick\
+s.\x0a**Highest tot\
+al after the las\
+t hand wins.**\x0a\x0a\
+## Deck and trum\
+p\x0a\x0a- **Spanish 4\
+0 or 48 card dec\
+k.** Card order,\
+ high to low: ac\
+e, 3, king, knig\
+ht\x0a  (caballo), \
+jack (sota), 9, \
+8, 7, 6, 5, 4, 2\
+. Cards carry no\
+ points.\x0a- Deal \
+one card at a ti\
+me. The next car\
+d is turned face\
+ up and its suit\
+ is\x0a  **trump** \
+(*triunfo*). Any\
+ trump beats any\
+ card of another\
+ suit.\x0a- With 3 \
+players the 2s a\
+re usually remov\
+ed. At most 5 pl\
+ayers can take p\
+art in\x0a  the 8-c\
+ard hands (8 x 5\
+ = 40, the whole\
+ 40-card deck), \
+and up to 6 if u\
+sing\x0a  the 48-ca\
+rd deck.\x0a\x0a## Han\
+ds\x0a\x0aThe number o\
+f cards dealt ch\
+anges every hand\
+. The app uses 1\
+8 hands:\x0a\x0a| Hand\
+s | Cards each |\
+\x0a|---|---|\x0a| 1 t\
+o 7 | 1, 2, 3, 4\
+, 5, 6, 7 (going\
+ up) |\x0a| 8 to 11\
+ | 8 cards, four\
+ hands in a row \
+|\x0a| 12 to 18 | 7\
+, 6, 5, 4, 3, 2,\
+ 1 (going down) \
+|\x0a\x0a\x0a## Bidding\x0a\x0a\
+- Starting with \
+the player who l\
+eads (to the dea\
+ler's right) and\
+ ending with\x0a  t\
+he dealer, every\
+one says how man\
+y tricks they ex\
+pect to win.\x0a- *\
+*Last bidder res\
+triction:** the \
+last player to b\
+id may **not** c\
+hoose a number\x0a \
+ that makes the \
+total of all bid\
+s equal the numb\
+er of tricks in \
+the hand. At\x0a  l\
+east one player \
+must therefore m\
+iss.\x0a\x0a## Playing\
+\x0a\x0a- The player t\
+o the dealer's r\
+ight leads any c\
+ard.\x0a- You must \
+**follow suit** \
+if you can. If y\
+ou cannot, you m\
+ust play a **tru\
+mp**\x0a  if you ha\
+ve one. If you h\
+ave neither, pla\
+y anything.\x0a- So\
+urces disagree o\
+n whether you mu\
+st also **beat**\
+ the winning car\
+d when you\x0a  can\
+ (a higher card \
+of the led suit,\
+ or a higher tru\
+mp). Agree this \
+first.\x0a- If a tr\
+ump is led, ever\
+yone holding a t\
+rump must play o\
+ne.\x0a- The highes\
+t trump wins the\
+ trick, or, if t\
+here is none, th\
+e highest card o\
+f\x0a  the led suit\
+. The winner lea\
+ds the next tric\
+k.\x0a\x0a## Scoring\x0a\x0a\
+The commonly pub\
+lished scoring i\
+s **10 points pl\
+us 5 per trick w\
+on** for an\x0aexac\
+t bid, and **-5 \
+per trick of dif\
+ference** (over \
+or under) for a \
+miss.\x0a\x0a**The app\
+ scores 3 points\
+ per trick inste\
+ad:**\x0a\x0a| Result \
+| Points |\x0a|---|\
+---|\x0a| Exact bid\
+ | 10 + 3 per tr\
+ick won |\x0a| Miss\
+ed bid | -3 per \
+trick over or un\
+der |\x0a\x0aExample i\
+n the app: bid 3\
+ and win 3 = 19 \
+points. Bid 3 an\
+d win 1 = -6.\x0a\x0aA\
+ bid of zero tha\
+t is kept scores\
+ the flat 10. Ch\
+eck your table's\
+ rule if you\x0apla\
+y with a differe\
+nt value.\x0a\x0a## Ti\
+es and other var\
+iants\x0a\x0a- If the \
+final totals are\
+ tied, common ru\
+les say to deal \
+extra one-card h\
+ands\x0a  until it \
+is broken, or to\
+ prefer the play\
+er with fewer mi\
+ssed bids. The a\
+pp\x0a  simply **sh\
+ares the victory\
+** between tied \
+players.\x0a- Varia\
+nts you may meet\
+, not scored by \
+the app: a \x22Poch\
+a\x22 call worth 10\
+0 points\x0a  with \
+5 or more player\
+s, hands with th\
+e trump chosen b\
+y auction, hands\
+ without\x0a  trump\
+, hands where yo\
+u see only the o\
+thers' cards, an\
+d score multipli\
+ers for\x0a  certai\
+n trump suits.\x0a-\
+ Penalties for p\
+laying a wrong c\
+ard (*renuncio*)\
+ are usually agr\
+eed in advance.\x0a\
+\x0a## Gamelog tips\
+\x0a\x0a- The board co\
+unts the hands a\
+nd shows how man\
+y cards to deal.\
+ The four 8-card\
+\x0a  hands are lab\
+elled with one s\
+uit each, using \
+the suit names o\
+f the chosen\x0a  d\
+eck (Spanish: co\
+ins, cups, sword\
+s, clubs). The o\
+ther hands are l\
+abelled\x0a  \x22going\
+ up\x22 or \x22going d\
+own\x22.\x0a- For each\
+ player, enter t\
+he bid and the t\
+ricks won. The t\
+ricks won must a\
+dd up\x0a  to the c\
+ards dealt in th\
+at hand.\x0a- While\
+ entering bids, \
+the app **blocks\
+ the last bid th\
+at would make th\
+e total\x0a  equal \
+the cards dealt*\
+*, for whichever\
+ player is the l\
+ast one without \
+a bid, so\x0a  ente\
+r the bids in pl\
+aying order with\
+ the dealer last\
+.\x0a- Scores use t\
+he app's 10 + 3 \
+per trick and -3\
+ per trick diffe\
+rence, not the\x0a \
+ 5-point scoring\
+ found in most w\
+ritten rules.\x0a\
+\x00\x00\x11\xd2\
+#\
+ Azul: Pavell\xc3\xb3 \
+d'Estiu \xe2\x80\x94 refe\
+r\xc3\xa8ncia r\xc3\xa0pida\x0a\
+\x0a*Un resum per r\
+esoldre disputes\
+ a la taula, no \
+un substitut del\
+ reglament\x0aofici\
+al. Cara d'estre\
+lles de colors d\
+el tauler, 2\xe2\x80\x934\
+ jugadors.*\x0a\x0a## \
+Objectiu\x0a\x0aTenir \
+m\xc3\xa9s punts en ac\
+abar **6 rondes*\
+* m\xc3\xa9s la puntua\
+ci\xc3\xb3 final. Toth\
+om comen\xc3\xa7a amb\x0a\
+**5 punts**. Els\
+ empats es compa\
+rteixen.\x0a\x0a| Boni\
+ficaci\xc3\xb3 de fina\
+l de partida | P\
+unts |\x0a|---|:---\
+:|\x0a| Completar l\
+'estrella centra\
+l multicolor | 1\
+2 |\x0a| Completar \
+l'estrella verme\
+lla | 14 |\x0a| Com\
+pletar l'estrell\
+a blava | 15 |\x0a|\
+ Completar l'est\
+rella groga | 16\
+ |\x0a| Completar l\
+'estrella taronj\
+a | 17 |\x0a| Compl\
+etar l'estrella \
+verda | 18 |\x0a| C\
+ompletar l'estre\
+lla lila | 20 |\x0a\
+| Cobrir tots el\
+s 1 | 4 |\x0a| Cobr\
+ir tots els 2 | \
+8 |\x0a| Cobrir tot\
+s els 3 | 12 |\x0a|\
+ Cobrir tots els\
+ 4 | 16 |\x0a\x0aPerds\
+ tamb\xc3\xa9 **1 punt\
+** per cada rajo\
+la sense usar qu\
+e quedi a les ca\
+selles de\x0acanton\
+ada del teu taul\
+er despr\xc3\xa9s de l\
+'\xc3\xbaltima ronda.\x0a\
+\x0a## Preparaci\xc3\xb3\x0a\
+\x0a1. F\xc3\xa0briques: \
+**5** per a 2 ju\
+gadors, **7** pe\
+r a 3, **9** per\
+ a 4. Cada una r\
+ep 4\x0a   rajoles.\
+\x0a2. 132 rajoles \
+a la bossa (6 co\
+lors). 10 rajole\
+s es col\xc2\xb7loquen\
+ a les caselles \
+de\x0a   subministr\
+ament.\x0a3. Un com\
+ptador de rondes\
+ mostra la ronda\
+ i el **color co\
+mod\xc3\xad**. La rond\
+a 1 \xc3\xa9s\x0a   lila.\
+\x0a\x0a## Una ronda\x0a\x0a\
+### 1. Adquirir \
+rajoles\x0a\x0aEn el t\
+eu torn, agafa *\
+*totes les rajol\
+es d'un color no\
+ comod\xc3\xad** d'una\
+ f\xc3\xa0brica o\x0adel \
+centre. Les sobr\
+ants d'una f\xc3\xa0br\
+ica van al centr\
+e.\x0a\x0a- Si la f\xc3\xa0b\
+rica (o el centr\
+e) t\xc3\xa9 rajoles *\
+*comod\xc3\xad**, tamb\
+\xc3\xa9 has d'agafar \
+**exactament\x0a  u\
+na** d'elles.\x0a- \
+Si nom\xc3\xa9s hi ha \
+rajoles comod\xc3\xad,\
+ pots agafar **n\
+om\xc3\xa9s una**.\x0a- E\
+l primer jugador\
+ que agafi del c\
+entre agafa la *\
+*fitxa de jugado\
+r inicial** i\x0a  \
+retrocedeix el s\
+eu marcador un e\
+spai per cada ra\
+jola agafada en \
+aquell torn\x0a  (i\
+nclosa la comod\xc3\
+\xad), sense passar\
+ de l'espai 1.\x0a\x0a\
+La fase acaba qu\
+an tot \xc3\xa9s buit.\
+ Guarda les teve\
+s rajoles al cos\
+tat del tauler.\x0a\
+\x0a### 2. Col\xc2\xb7loc\
+ar i puntuar raj\
+oles\x0a\x0aComen\xc3\xa7ant\
+ per qui t\xc3\xa9 la \
+fitxa, a cada to\
+rn col\xc2\xb7loques *\
+*una** rajola en\
+ un espai\x0arombo\xc3\
+\xafdal buit (mai a\
+ pilars, est\xc3\xa0tu\
+es o finestres).\
+ O passes.\x0a\x0a- Un\
+ espai necessita\
+ **tantes rajole\
+s del seu color \
+com el n\xc3\xbamero i\
+mpr\xc3\xa8s en ell**.\
+\x0a  Col\xc2\xb7loca'n u\
+na al tauler i d\
+escarta a la tor\
+re les altres qu\
+e calguin.\x0a- Les\
+ rajoles que sob\
+rin es queden al\
+ costat del taul\
+er per a torns p\
+osteriors.\x0a- A l\
+'estrella centra\
+l multicolor, qu\
+alsevol color va\
+ a qualsevol llo\
+c, per\xc3\xb2 les 6\x0a \
+ rajoles han de \
+ser **de colors \
+diferents**.\x0a- *\
+*Color comod\xc3\xad:*\
+* les rajoles co\
+mod\xc3\xad poden subs\
+tituir les que f\
+alten, per\xc3\xb2 enc\
+ara\x0a  has de ten\
+ir almenys una r\
+ajola real del c\
+olor que col\xc2\xb7lo\
+ques. Les rajole\
+s\x0a  comod\xc3\xad que \
+facis servir es \
+descarten a la t\
+orre. Els comodi\
+ns mai no substi\
+tueixen\x0a  el seu\
+ propi color: us\
+ats sols, van a \
+l'estrella del c\
+olor comod\xc3\xad.\x0a- \
+Les rajoles como\
+d\xc3\xad s\xc3\xb3n comod\xc3\xad\
+ **nom\xc3\xa9s a la r\
+onda en qu\xc3\xa8 es \
+van agafar**.\x0a\x0a*\
+*Puntuar una raj\
+ola:** 1 punt pe\
+r la rajola, m\xc3\xa9\
+s 1 punt per cad\
+a rajola a la qu\
+al\x0aestigui conne\
+ctada (espais co\
+ntigus a la mate\
+ixa estrella). M\
+ou el teu marcad\
+or.\x0a\x0a**Rajoles d\
+e bonificaci\xc3\xb3**\
+ agafades del su\
+bministrament en\
+ acabar de envol\
+tar:\x0a\x0a| Envoltat\
+ | Agafes |\x0a|---\
+|---|\x0a| Un pilar\
+ (els seus 4 esp\
+ais) | 1 rajola \
+a la teva elecci\
+\xc3\xb3 |\x0a| Una est\xc3\xa0\
+tua (els seus 4 \
+espais) | 2 rajo\
+les a la teva el\
+ecci\xc3\xb3 |\x0a| Una f\
+inestra (els seu\
+s 2 espais) | 3 \
+rajoles a la tev\
+a elecci\xc3\xb3 |\x0a\x0aOm\
+ple el subminist\
+rament de la bos\
+sa (o de la torr\
+e) abans del seg\
+\xc3\xbcent torn.\x0a\x0a**P\
+assar:** pots qu\
+edar-te amb fins\
+ a **4** rajoles\
+ posant-les a le\
+s caselles de\x0aca\
+ntonada. No punt\
+uen res. Descart\
+a la resta a la \
+torre i perd **1\
+ punt per cada\x0ar\
+ajola descartada\
+**. No fas m\xc3\xa9s \
+torns en aquesta\
+ ronda.\x0a\x0a### 3. \
+Ronda seg\xc3\xbcent\x0a\x0a\
+El jugador inici\
+al avan\xc3\xa7a el co\
+mptador, omple l\
+es f\xc3\xa0briques am\
+b 4 rajoles cada\
+scuna\x0a(omplint l\
+a bossa des de l\
+a torre si cal) \
+i torna la fitxa\
+ al centre. Toth\
+om torna\x0ales sev\
+es rajoles de ca\
+ntonada al costa\
+t del tauler.\x0a\x0a#\
+# Consells per a\
+ Gamelog\x0a\x0a- Intr\
+odueix la puntua\
+ci\xc3\xb3 de ronda de\
+ cada jugador, q\
+ue pot ser negat\
+iva per passar\x0a \
+ i per les penal\
+itzacions de mar\
+cador (fins a -2\
+0). Els totals c\
+omencen a 5 i es\
+\x0a  mantenen a 0 \
+o m\xc3\xa9s: si una r\
+onda negativa ba\
+ixaria el total,\
+ l'app registra \
+nom\xc3\xa9s\x0a  la pena\
+litzaci\xc3\xb3 necess\
+\xc3\xa0ria per portar\
+-lo a 0.\x0a- Els b\
+otons de bonific\
+aci\xc3\xb3 d'estrelle\
+s i de n\xc3\xbameros \
+nom\xc3\xa9s estan dis\
+ponibles a la\x0a  \
+ronda 6, i cadas\
+cun es pot marca\
+r una vegada. L'\
+app suma els seu\
+s punts per tu.\x0a\
+- La partida aca\
+ba autom\xc3\xa0ticame\
+nt despr\xc3\xa9s de l\
+a sisena ronda, \
+i els empats es\x0a\
+  comparteixen.\x0a\
+- Les penalitzac\
+ions (marcador, \
+passar, rajoles \
+de cantonada) no\
+ s\xc3\xb3n controls\x0a \
+ separats: inclo\
+u-les a la puntu\
+aci\xc3\xb3 de ronda q\
+ue introdueixes.\
+\x0a\
+\x00\x00\x0e\xc9\
+#\
+ Parch\xc3\xads \xe2\x80\x94 re\
+ferencia r\xc3\xa1pida\
+\x0a\x0a*Resumen de la\
+s reglas del Par\
+ch\xc3\xads espa\xc3\xb1ol m\
+\xc3\xa1s habituales p\
+ara resolver dis\
+putas en la mesa\
+. No existe un \xc3\
+\xbanico libro de r\
+eglas oficial: l\
+as ediciones y l\
+as regiones difi\
+eren, as\xc3\xad que a\
+cordad las varia\
+ntes siguientes \
+antes de empezar\
+. Esta hoja sigu\
+e lo que registr\
+a la app (fichas\
+ en la meta y ca\
+pturas). 2\xe2\x80\x934 j\
+ugadores (hasta \
+6 en algunos tab\
+leros).*\x0a\x0a## Obj\
+etivo\x0a\x0aSer el pr\
+imer jugador en \
+llevar **sus 4 f\
+ichas a la meta*\
+*. Los dem\xc3\xa1s pu\
+eden seguir juga\
+ndo por el segun\
+do y el tercer p\
+uesto.\x0a\x0a## Prepa\
+raci\xc3\xb3n\x0a\x0a- Cada \
+jugador tiene 4 \
+fichas, todas em\
+piezan en su **c\
+asa**.\x0a- Necesit\
+as un **5** para\
+ sacar una ficha\
+ a tu propia **c\
+asilla de salida\
+**. Salir de cas\
+a es obligatorio\
+ cuando sacas un\
+ 5 y puedes hace\
+rlo.\x0a- Las ficha\
+s recorren todo \
+el tablero y des\
+pu\xc3\xa9s suben por \
+la **columna de \
+casa** de su col\
+or hasta la meta\
+.\x0a\x0a## Un turno\x0a\x0a\
+1. Tira el dado \
+(edici\xc3\xb3n de **u\
+n dado**) o los \
+dos dados (edici\
+\xc3\xb3n de **dos dad\
+os**, en la que \
+puedes sumarlos \
+para una sola fi\
+cha o usar cada \
+dado en una fich\
+a distinta).\x0a2. \
+Mueve una ficha \
+tantas casillas \
+como indique la \
+tirada.\x0a3. Un **\
+6** (un dado) o \
+un **doble** (do\
+s dados) da una \
+**tirada extra**\
+.\x0a4. Pasa los da\
+dos, salvo que s\
+e aplique una ti\
+rada extra o una\
+ bonificaci\xc3\xb3n (\
+ver abajo).\x0a\x0a**T\
+res seguidas:** \
+sacar un tercer \
+6 consecutivo (u\
+n dado) o un ter\
+cer doble consec\
+utivo (dos dados\
+) env\xc3\xada de vuel\
+ta a casa la **\xc3\
+\xbaltima ficha que\
+ has movido**, s\
+alvo que esa fic\
+ha ya haya llega\
+do a la columna \
+de casa.\x0a\x0a## Cas\
+illas seguras\x0a\x0a-\
+ Las casillas ma\
+rcadas con un c\xc3\
+\xadrculo y las **c\
+asillas de salid\
+a** son **segura\
+s**: una ficha e\
+n ellas no puede\
+ ser capturada.\x0a\
+- Fichas de colo\
+res distintos pu\
+eden compartir u\
+na casilla segur\
+a.\x0a\x0a## Barreras\x0a\
+\x0a- **Dos fichas \
+del mismo color \
+en una casilla**\
+ forman una **ba\
+rrera**. Ninguna\
+ ficha, ni siqui\
+era la de su due\
+\xc3\xb1o, puede salta\
+rla ni pasar m\xc3\xa1\
+s all\xc3\xa1 de ella,\
+ y no puede ser \
+capturada.\x0a- Si \
+sacas un 6 (un d\
+ado) o un doble \
+(dos dados) y pu\
+edes mover una f\
+icha de tu propi\
+a barrera, por l\
+o general **debe\
+s** abrirla.\x0a- U\
+na casilla de sa\
+lida con dos de \
+tus fichas signi\
+fica que no pued\
+es sacar otra.\x0a\x0a\
+## Capturas (\xc2\xaba\
+sesinatos\xc2\xbb) y b\
+onificaciones\x0a\x0a|\
+ Suceso | Result\
+ado |\x0a|---|---|\x0a\
+| Caer exactamen\
+te sobre una fic\
+ha rival en una \
+casilla no segur\
+a | Esa ficha vu\
+elve a **casa**;\
+ **cuentas 20** \
+casillas con una\
+ de tus fichas |\
+\x0a| Una ficha ent\
+ra en la **meta*\
+* | **Cuentas 10\
+** casillas con \
+otra de tus fich\
+as |\x0a\x0a- Una boni\
+ficaci\xc3\xb3n se apl\
+ica completa con\
+ **una** sola fi\
+cha y se **pierd\
+e** si ninguna f\
+icha puede usarl\
+a (algunas mesas\
+ permiten pasar \
+en su lugar).\x0a- \
+Para entrar en l\
+a meta hace falt\
+a una tirada **e\
+xacta**. Una tir\
+ada demasiado al\
+ta no puede usar\
+la esa ficha. La\
+s mesas difieren\
+ en si rebota ha\
+cia atr\xc3\xa1s.\x0a- Cu\
+ando **todas** t\
+us fichas hayan \
+salido de casa, \
+un 6 sacado cuen\
+ta como 7 (edici\
+\xc3\xb3n de un dado).\
+\x0a- Si una ficha \
+rival est\xc3\xa1 en *\
+*tu** casilla de\
+ salida y sacas \
+un 5, es captura\
+da para que pued\
+as salir. Si hay\
+ dos fichas riva\
+les, las mesas d\
+ifieren sobre cu\
+\xc3\xa1l vuelve a cas\
+a.\x0a\x0a## Consejos \
+para Gamelog\x0a\x0a- \
+Cada entrada es \
+un suceso de pun\
+tuaci\xc3\xb3n de un j\
+ugador: elige el\
+ jugador, indica\
+ el **n\xc3\xbamero de\
+ metas** (de 0 a\
+ 4) y, para cada\
+ rival, los **as\
+esinatos** comet\
+idos contra \xc3\xa9l.\
+ Una entrada sin\
+ metas ni asesin\
+atos se rechaza.\
+\x0a- La partida te\
+rmina en cuanto \
+el total de meta\
+s de un jugador \
+llega a **4**.\x0a-\
+ Los asesinatos \
+se registran en \
+una tabla de mat\
+anzas (asesino c\
+ontra v\xc3\xadctima).\
+ Capturar una fi\
+cha propia tambi\
+\xc3\xa9n se registra \
+(aparece como su\
+icidio).\x0a- Un **\
+combo** es cualq\
+uier acci\xc3\xb3n ade\
+m\xc3\xa1s de la prime\
+ra en una misma \
+entrada. Cuentan\
+ tanto las metas\
+ como los asesin\
+atos, as\xc3\xad que u\
+na meta m\xc3\xa1s dos\
+ asesinatos son \
+2 combos.\x0a- Las \
+bonificaciones d\
+e 20 y de 10 cas\
+illas no se regi\
+stran; solo las \
+metas y los ases\
+inatos.\x0a\
+\x00\x00\x0d\xb8\
+#\
+ Ratuki \xe2\x80\x94 refe\
+r\xc3\xa8ncia r\xc3\xa0pida\x0a\
+\x0a*Un resum per r\
+esoldre disputes\
+ a la taula, no \
+un substitut del\
+ full de regles \
+oficial. Joc bas\
+e, 2\xe2\x80\x935 jugador\
+s.*\x0a\x0a## Objectiu\
+\x0a\x0aAconseguir **1\
+00 punts** o m\xc3\xa9\
+s al llarg de di\
+verses rondes. E\
+n cada ronda tot\
+hom juga alhora,\
+ sense torns.\x0a\x0a#\
+# Cartes\x0a\x0aCada j\
+ugador t\xc3\xa9 la se\
+va pr\xc3\xb2pia baral\
+la de color. Les\
+ cartes estan nu\
+merades de l'**1\
+ al 5**. Cada ba\
+ralla cont\xc3\xa9, a \
+m\xc3\xa9s, 2 cartes *\
+*RATUKI**, que v\
+alen el n\xc3\xbamero \
+que necessitis.\x0a\
+\x0a## Preparaci\xc3\xb3 \
+d'una ronda\x0a\x0a1. \
+Cada jugador bar\
+reja la seva pr\xc3\
+\xb2pia baralla i l\
+a col\xc2\xb7loca cara\
+ avall com a **p\
+ila de robar**.\x0a\
+2. Agafa-ne 3 ca\
+rtes a la m\xc3\xa0.\x0a3\
+. Mant\xc3\xa9n tres p\
+iles separades d\
+avant teu: **rob\
+ar**, **descarta\
+ts** i **punts**\
+.\x0a4. Alg\xc3\xba crida\
+ \x22RATUKI!\x22 i tot\
+hom comen\xc3\xa7a alh\
+ora.\x0a\x0a## Jugar\x0a\x0a\
+- Nom\xc3\xa9s pots co\
+men\xc3\xa7ar una pila\
+ central amb un \
+**1** o una cart\
+a **RATUKI**.\x0a- \
+El nombre de pil\
+es centrals no p\
+ot superar mai e\
+l **nombre de ju\
+gadors**.\x0a- Per \
+afegir a una pil\
+a, juga una cart\
+a que sigui **un\
+a unitat m\xc3\xa9s al\
+ta o m\xc3\xa9s baixa*\
+* que la de dalt\
+. El dibuix no i\
+mporta, per\xc3\xb2 no\
+ pots posar el m\
+ateix n\xc3\xbamero a \
+sobre de si mate\
+ix. Les cartes R\
+ATUKI valen el q\
+ue necessitis.\x0a-\
+ Una pila es gua\
+nya quan hi ha u\
+n **5** (o una c\
+arta RATUKI) a d\
+alt: l'agafes i \
+poses aquestes c\
+artes cara amunt\
+ a la teva **pil\
+a de punts**, cr\
+idant \x22RATUKI!\x22.\
+ Tamb\xc3\xa9 pots con\
+struir una pila \
+cap avall per fe\
+r-ne una de m\xc3\xa9s\
+ gran i guanyar-\
+la.\x0a- Sempre rep\
+osa la m\xc3\xa0 fins \
+a 3 cartes des d\
+e la teva pila d\
+e robar despr\xc3\xa9s\
+ de jugar.\x0a- T'h\
+as quedat encall\
+at amb una carta\
+? Posa-la cara a\
+vall a la teva *\
+*pila de descart\
+ats** i agafa'n \
+una altra.\x0a- **N\
+om\xc3\xa9s una m\xc3\xa0:**\
+ pots posar cart\
+es amb una sola \
+m\xc3\xa0. No importa \
+quina, per\xc3\xb2 un \
+cop n'has triat \
+una, t'hi has de\
+ mantenir.\x0a- La \
+ronda acaba en e\
+l moment en qu\xc3\xa8\
+ un jugador es q\
+ueda sense carte\
+s i crida \x22OUT!\x22\
+. Tothom s'atura\
+ immediatament.\x0a\
+\x0a## Puntuaci\xc3\xb3 d\
+e la ronda\x0a\x0aPer \
+a cada jugador:\x0a\
+\x0a> **Puntuaci\xc3\xb3 \
+de la ronda = ca\
+rtes de la teva \
+pila de punts, m\
+enys cartes de l\
+a teva pila de r\
+obar, menys cart\
+es de la teva pi\
+la de descartats\
+.**\x0a\x0aCada carta \
+val 1 punt. Per \
+tant, la puntuac\
+i\xc3\xb3 d'una ronda \
+pot ser **negati\
+va**. Les cartes\
+ que encara tens\
+ a la m\xc3\xa0 no s'e\
+smenten al full \
+oficial; acordeu\
+-ho a la taula a\
+bans de jugar.\x0a\x0a\
+Torna a barrejar\
+ cada color junt\
+ i juga la ronda\
+ seg\xc3\xbcent.\x0a\x0a## F\
+inal de la parti\
+da\x0a\x0aEl primer ju\
+gador que arribi\
+ a **100 punts o\
+ m\xc3\xa9s** guanya.\x0a\
+\x0a- Si diversos j\
+ugadors superen \
+els 100 a la mat\
+eixa ronda, guan\
+ya el que tingui\
+ el total **m\xc3\xa9s\
+ alt**.\x0a- Si aqu\
+ests jugadors te\
+nen exactament e\
+l **mateix** tot\
+al, \xc3\xa9s un **emp\
+at**.\x0a\x0aUna \x22part\
+ida r\xc3\xa0pida\x22 \xc3\xa9s\
+ una sola ronda.\
+ Guanya el jugad\
+or que tingui m\xc3\
+\xa9s punts en ella\
+.\x0a\x0a## Consells p\
+er a Gamelog\x0a\x0a- \
+Regles de casa: \
+l'app nom\xc3\xa9s reg\
+istra les puntua\
+cions de ronda, \
+no les cartes ni\
+ les piles. Intr\
+odueix la puntua\
+ci\xc3\xb3 de ronda de\
+ cada jugador (a\
+mb la f\xc3\xb3rmula d\
+'adalt) al final\
+ de cada ronda. \
+Una sola entrada\
+ accepta de -100\
+ a 100.\x0a- Opcion\
+alment pots fer \
+clic a la casell\
+a d'un jugador (\
+o pr\xc3\xa9mer Espai \
+al seu camp de p\
+untuaci\xc3\xb3) per m\
+arcar-lo com a g\
+uanyador de la r\
+onda. La ins\xc3\xadgn\
+ia nom\xc3\xa9s \xc3\xa9s un\
+a etiqueta a la \
+taula de rondes.\
+\x0a- L'objectiu de\
+ punts \xc3\xa9s 100 p\
+er defecte i es \
+pot canviar fins\
+ que comenci la \
+segona ronda. Qu\
+an algun jugador\
+ l'assoleix, l'a\
+pp finalitza la \
+partida i la don\
+a al jugador amb\
+ el total m\xc3\xa9s a\
+lt. Els jugadors\
+ empatats amb el\
+ total m\xc3\xa9s alt \
+comparteixen la \
+vict\xc3\xb2ria, d'aco\
+rd amb la regla \
+oficial d'empat.\
+\x0a- Una partida r\
+\xc3\xa0pida \xc3\xa9s simpl\
+ement una sola r\
+onda: anota el g\
+uanyador sense d\
+ependre de l'obj\
+ectiu.\x0a\
+\x00\x00\x11l\
+#\
+ Pocha \xe2\x80\x94 refer\
+\xc3\xa8ncia r\xc3\xa0pida\x0a\x0a\
+*La pocha (tamb\xc3\
+\xa9 anomenada \xc2\xabla\
+ podrida\xc2\xbb) \xc3\xa9s \
+un joc de cartes\
+ tradicional esp\
+anyol sense llib\
+re de normes ofi\
+cial de cap edit\
+orial, i les nor\
+mes varien segon\
+s la regi\xc3\xb3 i la\
+ fam\xc3\xadlia. Aques\
+t full es cenyei\
+x al que coincid\
+eixen diverses d\
+escripcions de n\
+ormes i al que p\
+untua l'app. Aco\
+rdar les variant\
+s seg\xc3\xbcents aban\
+s de comen\xc3\xa7ar. \
+3\xe2\x80\x936 jugadors.*\
+\x0a\x0a## Objectiu\x0a\x0aA\
+bans de cada m\xc3\xa0\
+, cada jugador p\
+rediu exactament\
+ quantes bazes g\
+uanyar\xc3\xa0. Es pun\
+tua encertant **\
+exactament**, no\
+ guanyant m\xc3\xa9s b\
+azes. **Guanya e\
+l total m\xc3\xa9s alt\
+ despr\xc3\xa9s de l'\xc3\
+\xbaltima m\xc3\xa0.**\x0a\x0a#\
+# Baralla i trio\
+mf\x0a\x0a- **Baralla \
+espanyola de 40 \
+o 48 cartes.** O\
+rdre de les cart\
+es, de m\xc3\xa9s alta\
+ a m\xc3\xa9s baixa: a\
+s, 3, rei, caval\
+l, sota, 9, 8, 7\
+, 6, 5, 4, 2. Le\
+s cartes no tene\
+n punts.\x0a- Es re\
+parteix una cart\
+a cada vegada. L\
+a carta seg\xc3\xbcent\
+ es gira cara am\
+unt i el seu pal\
+ \xc3\xa9s el **triomf\
+** (*trump*). Qu\
+alsevol triomf g\
+uanya a qualsevo\
+l carta d'un alt\
+re pal.\x0a- Amb 3 \
+jugadors se sole\
+n treure els dos\
+es. A les mans d\
+e 8 cartes poden\
+ participar com \
+a m\xc3\xa0xim 5 jugad\
+ors (8 x 5 = 40,\
+ tota la baralla\
+ de 40 cartes), \
+i fins a 6 si s'\
+usa la baralla d\
+e 48 cartes.\x0a\x0a##\
+ Mans\x0a\x0aEl nombre\
+ de cartes repar\
+tides canvia en \
+cada m\xc3\xa0. L'app \
+usa 18 mans:\x0a\x0a| \
+Mans | Cartes pe\
+r jugador |\x0a|---\
+|---|\x0a| De la 1 \
+a la 7 | 1, 2, 3\
+, 4, 5, 6, 7 (pu\
+jant) |\x0a| De la \
+8 a la 11 | 8 ca\
+rtes, quatre man\
+s seguides |\x0a| D\
+e la 12 a la 18 \
+| 7, 6, 5, 4, 3,\
+ 2, 1 (baixant) \
+|\x0a\x0a\x0a## Apostes\x0a\x0a\
+- Comen\xc3\xa7ant pel\
+ jugador que sur\
+t (a la dreta de\
+l repartidor) i \
+acabant amb el r\
+epartidor, cada \
+jugador diu quan\
+tes bazes espera\
+ guanyar.\x0a- **Re\
+stricci\xc3\xb3 de l'\xc3\
+\xbaltim apostador:\
+** l'\xc3\xbaltim juga\
+dor a apostar **\
+no** pot triar u\
+n n\xc3\xbamero que fa\
+ci que la suma d\
+e totes les apos\
+tes sigui igual \
+al nombre de baz\
+es de la m\xc3\xa0. Pe\
+r tant, almenys \
+un jugador ha de\
+ fallar.\x0a\x0a## Joc\
+\x0a\x0a- El jugador a\
+ la dreta del re\
+partidor surt am\
+b qualsevol cart\
+a.\x0a- Has de **se\
+rvir el pal** si\
+ pots. Si no pot\
+s, has de jugar \
+un **triomf** si\
+ en tens. Si no \
+en tens cap dels\
+ dos, juga quals\
+evol carta.\x0a- Le\
+s fonts no coinc\
+ideixen sobre si\
+ tamb\xc3\xa9 has de *\
+*superar** la ca\
+rta guanyadora q\
+uan puguis (una \
+carta m\xc3\xa9s alta \
+del pal de sorti\
+da, o un triomf \
+m\xc3\xa9s alt). Acord\
+ar-ho primer.\x0a- \
+Si es treu un tr\
+iomf, tots els q\
+ue en tinguin ha\
+n de jugar-ne un\
+.\x0a- Guanya la ba\
+za el triomf m\xc3\xa9\
+s alt o, si no n\
+'hi ha, la carta\
+ m\xc3\xa9s alta del p\
+al de sortida. E\
+l guanyador treu\
+ la baza seg\xc3\xbcen\
+t.\x0a\x0a## Puntuaci\xc3\
+\xb3\x0a\x0aLa puntuaci\xc3\xb3\
+ habitual public\
+ada \xc3\xa9s **10 pun\
+ts m\xc3\xa9s 5 per ba\
+za guanyada** pe\
+r una aposta exa\
+cta, i **-5 per \
+baza de difer\xc3\xa8n\
+cia** (per exc\xc3\xa9\
+s o per defecte)\
+ per una fallada\
+.\x0a\x0a**L'app puntu\
+a 3 punts per ba\
+za en lloc d'aix\
+\xc3\xb2:**\x0a\x0a| Resulta\
+t | Punts |\x0a|---\
+|---|\x0a| Aposta e\
+xacta | 10 + 3 p\
+er baza guanyada\
+ |\x0a| Aposta fall\
+ida | -3 per baz\
+a de difer\xc3\xa8ncia\
+ (per exc\xc3\xa9s o p\
+er defecte) |\x0a\x0aE\
+xemple a l'app: \
+aposta 3 i guany\
+a 3 = 19 punts. \
+Aposta 3 i guany\
+a 1 = -6.\x0a\x0aUna a\
+posta de zero qu\
+e es compleix pu\
+ntua 10 fixos. C\
+onsulta la norma\
+ de la teva taul\
+a si jugues amb \
+un altre valor.\x0a\
+\x0a## Empats i alt\
+res variants\x0a\x0a- \
+Si els totals fi\
+nals empaten, le\
+s normes habitua\
+ls diuen que es \
+reparteixen mans\
+ extra d'una car\
+ta fins a trenca\
+r l'empat, o que\
+ es prefereixi e\
+l jugador amb me\
+nys apostes fall\
+ides. L'app simp\
+lement **compart\
+eix la vict\xc3\xb2ria\
+** entre els jug\
+adors empatats.\x0a\
+- Variants que p\
+ots trobar i que\
+ l'app no puntua\
+: una jugada \xc2\xabP\
+ocha\xc2\xbb que val 1\
+00 punts amb 5 o\
+ m\xc3\xa9s jugadors, \
+mans amb el trio\
+mf triat per sub\
+hasta, mans sens\
+e triomf, mans e\
+n qu\xc3\xa8 nom\xc3\xa9s ve\
+us les cartes de\
+ls altres, i mul\
+tiplicadors de p\
+untuaci\xc3\xb3 per a \
+certs pals de tr\
+iomf.\x0a- Les pena\
+litzacions per j\
+ugar una carta i\
+ncorrecta (*renu\
+ncio*) solen aco\
+rdar-se per enda\
+vant.\x0a\x0a## Consel\
+ls per a Gamelog\
+\x0a\x0a- El tauler co\
+mpta les mans i \
+mostra quantes c\
+artes cal repart\
+ir. Les quatre m\
+ans de 8 cartes \
+porten cadascuna\
+ el nom d'un pal\
+, amb els noms d\
+e pal de la bara\
+lla triada (en c\
+atal\xc3\xa0: oros, co\
+pes, espases, ba\
+stos). Les altre\
+s mans s'indique\
+n com a \xc2\xabpujant\
+\xc2\xbb o \xc2\xabbaixant\xc2\xbb\
+.\x0a- Per a cada j\
+ugador, introdue\
+ix l'aposta i le\
+s bazes guanyade\
+s. Les bazes gua\
+nyades han de su\
+mar el nombre de\
+ cartes repartid\
+es en aquella m\xc3\
+\xa0.\x0a- En introdui\
+r les apostes, l\
+'app **bloqueja \
+l'\xc3\xbaltima aposta\
+ que faria que e\
+l total fos igua\
+l a les cartes r\
+epartides**, per\
+ al jugador que \
+sigui l'\xc3\xbaltim s\
+ense aposta; per\
+ aix\xc3\xb2 introduei\
+x les apostes en\
+ ordre de joc, a\
+mb el repartidor\
+ al final.\x0a- La \
+puntuaci\xc3\xb3 usa e\
+ls 10 + 3 per ba\
+za i -3 per baza\
+ de difer\xc3\xa8ncia \
+de l'app, no els\
+ 5 punts de la m\
+ajoria de normes\
+ escrites.\x0a\
+\x00\x00\x0c\x00\
+#\
+ Toma6 (6 nimmt!\
+) \xe2\x80\x94 refer\xc3\xa8nci\
+a r\xc3\xa0pida\x0a\x0a*Un r\
+esum per resoldr\
+e disputes a tau\
+la, no substitue\
+ix el reglament \
+oficial. Joc b\xc3\xa0\
+sic, de 2 a 10 j\
+ugadors. Les var\
+iants Pro i Aniv\
+ersari no hi s\xc3\xb3\
+n cobertes.*\x0a\x0a##\
+ Objectiu\x0a\x0aRecul\
+l el menor nombr\
+e possible de **\
+bous** [bullhead\
+s] (punts negati\
+us). Jugues dive\
+rses rondes; qua\
+n una ronda deix\
+a alg\xc3\xba amb la p\
+untuaci\xc3\xb3 object\
+iu o m\xc3\xa9s, la pa\
+rtida acaba i gu\
+anya el total **\
+m\xc3\xa9s baix**. L'o\
+bjectiu oficial \
+\xc3\xa9s **66**.\x0a\x0a## \
+Cartes i bous\x0a\x0a1\
+04 cartes numera\
+des de l'1 al 10\
+4. Cada carta po\
+rta bous, que s\xc3\
+\xb3n els teus punt\
+s de penalitzaci\
+\xc3\xb3:\x0a\x0a| Carta | B\
+ous |\x0a|---|:---:\
+|\x0a| La majoria d\
+e cartes | 1 |\x0a|\
+ Acaba en 5 (5, \
+15, 25 ...) | 2 \
+|\x0a| M\xc3\xbaltiple de\
+ 10 (10, 20, 30 \
+...) | 3 |\x0a| Dob\
+les (11, 22, 33 \
+...) | 5 |\x0a| 55 \
+(un doble que ac\
+aba en 5) | 7 |\x0a\
+\x0a## Preparaci\xc3\xb3 \
+d'una ronda\x0a\x0a1. \
+Reparteix 10 car\
+tes a cada jugad\
+or.\x0a2. Gira 4 ca\
+rtes m\xc3\xa9s cara a\
+munt, en columna\
+. Cadascuna inic\
+ia una **fila**.\
+\x0a3. Una fila mai\
+ t\xc3\xa9 m\xc3\xa9s de 5 c\
+artes. La resta \
+de la baralla es\
+ reserva a part.\
+\x0a\x0a## Jugar un to\
+rn\x0a\x0aTothom tria \
+en secret una ca\
+rta i la posa ca\
+ra avall. Quan t\
+othom ha triat, \
+les reveleu tote\
+s. Despr\xc3\xa9s, col\
+\xc2\xb7loqueu-les una\
+ a una, **del n\xc3\
+\xbamero m\xc3\xa9s baix \
+al m\xc3\xa9s alt**:\x0a\x0a\
+1. **Ordre ascen\
+dent:** una cart\
+a nom\xc3\xa9s pot ana\
+r en una fila l'\
+\xc3\xbaltima carta de\
+ la qual sigui m\
+\xc3\xa9s baixa.\x0a2. **\
+Difer\xc3\xa8ncia m\xc3\xadn\
+ima:** d'aqueste\
+s files, has d'u\
+sar la que t\xc3\xa9 l\
+'\xc3\xbaltima carta *\
+*m\xc3\xa9s propera** \
+a la teva. No te\
+ns cap opci\xc3\xb3.\x0a\x0a\
+Una ronda s\xc3\xb3n 1\
+0 torns, un per \
+cada carta a la \
+m\xc3\xa0.\x0a\x0a## Endur-s\
+e una fila\x0a\x0aAgaf\
+es cartes, les p\
+oses cara avall \
+al teu propi mun\
+t i la teva cart\
+a jugada esdev\xc3\xa9\
+ la primera cart\
+a d'aquella fila\
+ en dos casos:\x0a\x0a\
+- **Fila plena:*\
+* la teva carta \
+seria la 6a de l\
+a seva fila. T'e\
+nd\xc3\xbas les 5 cart\
+es que ja hi hav\
+ia.\x0a- **Carta ba\
+ixa:** la teva c\
+arta \xc3\xa9s m\xc3\xa9s ba\
+ixa que l'\xc3\xbaltim\
+a carta de totes\
+ les files. Trie\
+s **qualsevol fi\
+la** per endur-t\
+e-la (normalment\
+, la de menys bo\
+us).\x0a\x0aLes cartes\
+ que t'has endut\
+ mai tornen a la\
+ m\xc3\xa0.\x0a\x0a## Final \
+de ronda\x0a\x0aDespr\xc3\
+\xa9s del torn 10, \
+compta els bous \
+del teu munt. An\
+ota'ls i suma'ls\
+ al teu total ac\
+umulat. Barreja-\
+ho tot i reparte\
+ix la ronda seg\xc3\
+\xbcent.\x0a\x0a## Final \
+de la partida\x0a\x0aC\
+ontinua jugant r\
+ondes fins que a\
+lmenys un jugado\
+r hagi arribat a\
+ l'objectiu (66 \
+per defecte) o m\
+\xc3\xa9s. Guanya el j\
+ugador amb **men\
+ys** punts. Si d\
+iversos jugadors\
+ comparteixen el\
+ total m\xc3\xa9s baix\
+, **comparteixen\
+ la vict\xc3\xb2ria**.\
+ Arribar a l'obj\
+ectiu no et fa p\
+erdedor, nom\xc3\xa9s \
+el que acaba la \
+partida: guanya \
+igualment el tot\
+al m\xc3\xa9s baix.\x0a\x0aE\
+l reglament tamb\
+\xc3\xa9 permet jugar \
+fins a una altra\
+ puntuaci\xc3\xb3 o un\
+ nombre fix de r\
+ondes si tothom \
+hi est\xc3\xa0 d'acord\
+.\x0a\x0a## Consells p\
+er a Gamelog\x0a\x0a- \
+Introdueix el re\
+compte de bous d\
+e cada jugador a\
+l final de cada \
+ronda.\x0a- La punt\
+uaci\xc3\xb3 objectiu \
+es configura a l\
+es opcions de la\
+ partida (66 per\
+ defecte) i a la\
+ configuraci\xc3\xb3 (\
+L\xc3\xadmit de punts)\
+. Quan algun jug\
+ador l'arriba, l\
+'app acaba la pa\
+rtida i dona la \
+vict\xc3\xb2ria al tot\
+al m\xc3\xa9s baix. El\
+s jugadors empat\
+ats al total m\xc3\xa9\
+s baix compartei\
+xen la vict\xc3\xb2ria\
+, com diu el reg\
+lament.\x0a- L'app \
+no registra les \
+cartes en si, no\
+m\xc3\xa9s els totals \
+de cada ronda.\x0a\
+\x00\x00\x0e\x5c\
+#\
+ Remigio \xe2\x80\x94 ref\
+erencia r\xc3\xa1pida\x0a\
+\x0a*Un resumen de \
+las reglas de Re\
+migio m\xc3\xa1s habit\
+uales para resol\
+ver disputas en \
+la mesa. Existen\
+ muchas variante\
+s caseras (comod\
+ines, multiplica\
+dores, puntuaci\xc3\
+\xb3n de eliminaci\xc3\
+\xb3n), as\xc3\xad que ac\
+ordadlas primero\
+. Esta hoja sigu\
+e lo que punt\xc3\xbaa\
+ la app. 2\xe2\x80\x936 j\
+ugadores.*\x0a\x0a## O\
+bjetivo\x0a\x0aEvitar \
+acumular puntos \
+de penalizaci\xc3\xb3n\
+. Despu\xc3\xa9s de ca\
+da ronda, los ju\
+gadores que no h\
+an cerrado suman\
+ puntos por las \
+cartas que les q\
+uedan en la mano\
+. Un jugador que\
+ alcanza la **pu\
+ntuaci\xc3\xb3n de eli\
+minaci\xc3\xb3n** (100\
+ por defecto) qu\
+eda **eliminado*\
+*. **Gana el \xc3\xbal\
+timo jugador que\
+ queda en la par\
+tida.**\x0a\x0a## Prep\
+araci\xc3\xb3n\x0a\x0a- Dos \
+barajas de 48 ca\
+rtas m\xc3\xa1s comodi\
+nes (100 cartas,\
+ incluidos cuatr\
+o comodines). Lo\
+s grupos grandes\
+ a\xc3\xb1aden una ter\
+cera baraja.\x0a- A\
+ cada jugador se\
+ le reparten **1\
+0 cartas**. Una \
+carta se pone bo\
+ca arriba para e\
+mpezar el descar\
+te y el resto fo\
+rma el mazo.\x0a\x0a##\
+ Un turno\x0a\x0a1. Ro\
+ba la carta supe\
+rior del **mazo*\
+* o del **descar\
+te**.\x0a2. Descart\
+a una carta boca\
+ arriba. El turn\
+o pasa al siguie\
+nte jugador.\x0a\x0a##\
+ Juegos y cierre\
+ (\x22cerrar\x22)\x0a\x0a- U\
+n **juego** tien\
+e al menos **3 c\
+artas**: un **tr\
+\xc3\xado** (mismo val\
+or) o una **esca\
+lera** (cartas c\
+onsecutivas de u\
+n mismo palo). E\
+l as es bajo (po\
+r debajo del 2) \
+o alto (por enci\
+ma del rey).\x0a- U\
+n **comod\xc3\xadn** s\
+ustituye a cualq\
+uier carta.\x0a- **\
+Cierras** cuando\
+, en tu descarte\
+, **todas tus ca\
+rtas** est\xc3\xa1n en\
+ juegos. Descart\
+as tu \xc3\xbaltima ca\
+rta boca abajo y\
+ luego todos mue\
+stran su mano.\x0a-\
+ Los juegos no s\
+e ponen sobre la\
+ mesa durante la\
+ partida: se que\
+dan en la mano h\
+asta que alguien\
+ cierra.\x0a\x0a## Man\
+os especiales\x0a\x0a|\
+ Mano | Signific\
+ado |\x0a|---|---|\x0a\
+| **Color** | La\
+s 10 cartas de u\
+n mismo palo, si\
+n necesidad de j\
+uegos |\x0a| **Stra\
+ight flush** (*e\
+scalera de color\
+*) | Las 10 cart\
+as en una sola e\
+scalera de un mi\
+smo palo |\x0a| **F\
+iguras** | Las 1\
+0 cartas del mis\
+mo valor (necesi\
+ta comodines) |\x0a\
+\x0a## Puntuar una \
+ronda\x0a\x0aEl jugado\
+r que cierra pun\
+t\xc3\xbaa **0**. Todo\
+s los dem\xc3\xa1s sum\
+an las cartas qu\
+e les quedan en \
+la mano y **mult\
+iplican** el tot\
+al por el multip\
+licador de quien\
+ cerr\xc3\xb3.\x0a\x0a| Cart\
+a | Puntos |\x0a|--\
+-|---|\x0a| As | 1 \
+|\x0a| 2\xe2\x80\x9310 | Val\
+or facial |\x0a| So\
+ta, caballo, rey\
+ | 10, 11 y 12 r\
+espectivamente |\
+\x0a\x0a| C\xc3\xb3mo se cer\
+r\xc3\xb3 la ronda | M\
+ultiplicador |\x0a|\
+---|:---:|\x0a| Cie\
+rre ordinario, c\
+on un comod\xc3\xadn |\
+ 1 |\x0a| Sin comod\
+ines | 2 |\x0a| Col\
+or | 3 |\x0a| Figur\
+as | 3 |\x0a| Strai\
+ght flush | 4 |\x0a\
+\x0a## Eliminaci\xc3\xb3n\
+ y victoria\x0a\x0a- A\
+cordad la puntua\
+ci\xc3\xb3n de elimina\
+ci\xc3\xb3n antes de l\
+a primera ronda.\
+ 100 es la opci\xc3\
+\xb3n habitual.\x0a- U\
+n jugador cuyo t\
+otal acumulado *\
+*alcanza o super\
+a** esa cifra qu\
+eda eliminado y \
+no juega m\xc3\xa1s ro\
+ndas.\x0a- Gana el \
+\xc3\xbaltimo jugador \
+que sigue en la \
+partida.\x0a\x0a## Con\
+sejos para Gamel\
+og\x0a\x0a- Introduce \
+cada ronda en el\
+ tablero: para c\
+ada jugador que \
+siga en la parti\
+da, escribe los \
+puntos que le qu\
+edan en la mano.\
+ Este campo acep\
+ta de 0 a 100 po\
+r jugador.\x0a- Par\
+a marcar qui\xc3\xa9n \
+cerr\xc3\xb3, haz dobl\
+e clic en la cas\
+illa de ese juga\
+dor (o pulsa Esp\
+acio en ella). S\
+i vuelves a hace\
+r clic en la cas\
+illa del ganador\
+, el multiplicad\
+or de cierre cic\
+la entre **1x, 2\
+x, 3x, 4x**. Su \
+puntuaci\xc3\xb3n es 0\
+.\x0a- La app multi\
+plica los puntos\
+ introducidos de\
+ cada uno de los\
+ dem\xc3\xa1s jugadore\
+s por ese multip\
+licador al guard\
+ar la ronda, as\xc3\
+\xad que introduce \
+los puntos bruto\
+s de las cartas.\
+\x0a- Un jugador cu\
+yo total est\xc3\xa1 e\
+n o por encima d\
+e la puntuaci\xc3\xb3n\
+ de eliminaci\xc3\xb3n\
+ aparece en gris\
+ y se omite cuan\
+do rota el repar\
+tidor. La partid\
+a termina cuando\
+ queda un solo j\
+ugador activo.\x0a-\
+ La puntuaci\xc3\xb3n \
+de eliminaci\xc3\xb3n \
+solo puede cambi\
+arse antes de re\
+gistrar la prime\
+ra ronda. Borrar\
+ una ronda reinc\
+orpora a quienes\
+ vuelvan a queda\
+r por debajo de \
+ella.\x0a- La app n\
+o tiene opci\xc3\xb3n \
+de reentrada ni \
+de compra inicia\
+l, y no comprueb\
+a el tama\xc3\xb1o de \
+las manos.\x0a\
+\x00\x00\x0d\x86\
+#\
+ Ratuki \xe2\x80\x94 refe\
+rencia r\xc3\xa1pida\x0a\x0a\
+*Un resumen para\
+ resolver disput\
+as en la mesa, n\
+o un sustituto d\
+e la hoja de reg\
+las oficial. Jue\
+go base, 2\xe2\x80\x935 j\
+ugadores.*\x0a\x0a## O\
+bjetivo\x0a\x0aConsegu\
+ir **100 puntos*\
+* o m\xc3\xa1s a lo la\
+rgo de varias ro\
+ndas. En cada ro\
+nda todos juegan\
+ a la vez, sin t\
+urnos.\x0a\x0a## Carta\
+s\x0a\x0aCada jugador \
+tiene su propia \
+baraja de color.\
+ Las cartas est\xc3\
+\xa1n numeradas del\
+ **1 al 5**. Cad\
+a baraja contien\
+e adem\xc3\xa1s 2 cart\
+as **RATUKI**, q\
+ue valen el n\xc3\xbam\
+ero que necesite\
+s.\x0a\x0a## Preparaci\
+\xc3\xb3n de una ronda\
+\x0a\x0a1. Cada jugado\
+r baraja su prop\
+ia baraja y la c\
+oloca boca abajo\
+ como su **pila \
+de robar**.\x0a2. R\
+oba 3 cartas de \
+ella a tu mano.\x0a\
+3. Mant\xc3\xa9n tres \
+pilas separadas \
+delante de ti: *\
+*robar**, **desc\
+artes** y **punt\
+os**.\x0a4. Alguien\
+ grita \x22RATUKI!\x22\
+ y todos empieza\
+n a la vez.\x0a\x0a## \
+Jugar\x0a\x0a- Solo pu\
+edes empezar una\
+ pila central co\
+n un **1** o una\
+ carta **RATUKI*\
+*.\x0a- El n\xc3\xbamero \
+de pilas central\
+es nunca puede s\
+uperar el **n\xc3\xbam\
+ero de jugadores\
+**.\x0a- Para a\xc3\xb1ad\
+ir a una pila, j\
+uega una carta q\
+ue sea **una uni\
+dad m\xc3\xa1s alta o \
+m\xc3\xa1s baja** que \
+la carta de arri\
+ba. El dibujo no\
+ importa, pero n\
+o puedes poner e\
+l mismo n\xc3\xbamero \
+encima de s\xc3\xad mi\
+smo. Las cartas \
+RATUKI valen lo \
+que necesites.\x0a-\
+ Una pila se gan\
+a cuando queda u\
+n **5** (o una c\
+arta RATUKI) enc\
+ima: la coges y \
+pones esas carta\
+s boca arriba en\
+ tu **pila de pu\
+ntos**, gritando\
+ \x22RATUKI!\x22. Tamb\
+i\xc3\xa9n puedes cons\
+truir una pila h\
+acia abajo para \
+formar una pila \
+m\xc3\xa1s grande y ga\
+narla.\x0a- Siempre\
+ rep\xc3\xb3n tu mano \
+hasta 3 cartas d\
+esde tu pila de \
+robar despu\xc3\xa9s d\
+e jugar.\x0a- \xc2\xbfAta\
+scado con una ca\
+rta? Ponla boca \
+abajo en tu **pi\
+la de descartes*\
+* y coge otra.\x0a-\
+ **Una sola mano\
+:** puedes poner\
+ cartas con una \
+sola mano. No im\
+porta cu\xc3\xa1l, per\
+o una vez elegid\
+a, debes mantene\
+rla.\x0a- La ronda \
+termina en el mo\
+mento en que un \
+jugador se queda\
+ sin cartas y gr\
+ita \x22OUT!\x22. Todo\
+s paran de inmed\
+iato.\x0a\x0a## Puntua\
+ci\xc3\xb3n de la rond\
+a\x0a\x0aPara cada jug\
+ador:\x0a\x0a> **Puntu\
+aci\xc3\xb3n de la ron\
+da = cartas de t\
+u pila de puntos\
+, menos cartas d\
+e tu pila de rob\
+ar, menos cartas\
+ de tu pila de d\
+escartes.**\x0a\x0aCad\
+a carta vale 1 p\
+unto. Por tanto,\
+ la puntuaci\xc3\xb3n \
+de una ronda pue\
+de ser **negativ\
+a**. Las cartas \
+que siguen en tu\
+ mano no se menc\
+ionan en la hoja\
+ oficial; acorda\
+dlo en la mesa a\
+ntes de empezar.\
+\x0a\x0aVuelve a baraj\
+ar cada color ju\
+nto y juega la s\
+iguiente ronda.\x0a\
+\x0a## Final de la \
+partida\x0a\x0aEl prim\
+er jugador que l\
+legue a **100 pu\
+ntos o m\xc3\xa1s** ga\
+na.\x0a\x0a- Si varios\
+ jugadores super\
+an los 100 en la\
+ misma ronda, ga\
+na el de total *\
+*m\xc3\xa1s alto**.\x0a- \
+Si esos jugadore\
+s tienen exactam\
+ente el **mismo*\
+* total, es un *\
+*empate**.\x0a\x0aUna \
+\x22partida r\xc3\xa1pida\
+\x22 es una sola ro\
+nda. Gana el jug\
+ador con m\xc3\xa1s pu\
+ntos en ella.\x0a\x0a#\
+# Consejos para \
+Gamelog\x0a\x0a- Regla\
+s de la casa: la\
+ app solo regist\
+ra puntuaciones \
+de ronda, no car\
+tas ni pilas. In\
+troduce la puntu\
+aci\xc3\xb3n de ronda \
+de cada jugador \
+(con la f\xc3\xb3rmula\
+ de arriba) al f\
+inal de cada ron\
+da. Una sola ent\
+rada acepta de -\
+100 a 100.\x0a- Opc\
+ionalmente puede\
+s hacer clic en \
+la casilla de un\
+ jugador (o puls\
+ar Espacio en su\
+ campo de puntua\
+ci\xc3\xb3n) para marc\
+arlo como ganado\
+r de la ronda. L\
+a insignia es so\
+lo una etiqueta \
+en la tabla de r\
+ondas.\x0a- El obje\
+tivo de puntos e\
+s 100 por defect\
+o y se puede cam\
+biar hasta que e\
+mpiece la segund\
+a ronda. Cuando \
+alg\xc3\xban jugador l\
+o alcanza, la ap\
+p finaliza la pa\
+rtida y se la da\
+ al jugador con \
+el total m\xc3\xa1s al\
+to. Los jugadore\
+s empatados en e\
+l total m\xc3\xa1s alt\
+o comparten la v\
+ictoria, de acue\
+rdo con la regla\
+ oficial de empa\
+te.\x0a- Una partid\
+a r\xc3\xa1pida es sim\
+plemente una sol\
+a ronda: anota e\
+l ganador sin de\
+pender del objet\
+ivo.\x0a\
 \x00\x00\x0d\x22\
 #\
  Parch\xc3\xads \xe2\x80\x94 qu\
@@ -13812,7 +20374,7 @@ Points |\x0a|---|:-\
 --:|\x0a| 1 to 9 | \
 5 |\x0a| 10 to 12 |\
  10 |\x0a| Skip | 1\
-5 |\x0a| Wild | 25 \
+5 |\x0a| Wild | 20 \
 |\x0a\x0aCards already\
  laid down do no\
 t count. Players\
@@ -13894,7 +20456,7 @@ fers from the of\
 ficial\x0a  rule, w\
 hich is to repla\
 y phase 10.\x0a\
-\x00\x00\x0f\x89\
+\x00\x00\x0e\xff\
 #\
  Scrabble \xe2\x80\x94 qu\
 ick reference\x0a\x0a*\
@@ -13923,229 +20485,984 @@ s: 98 letters an\
 d **2 blanks** w\
 orth 0 points.\x0a\x0a\
 ## Setup\x0a\x0a1. Eac\
-h player draws o\
-ne tile. The one\
- nearest the sta\
-rt of the alphab\
-et goes\x0a   first\
- (a blank beats \
-A). Put the tile\
-s back and shuff\
-le.\x0a2. Each play\
-er draws **7** t\
-iles for their r\
-ack. Play goes c\
-lockwise.\x0a3. Agr\
-ee beforehand wh\
-ich **dictionary\
-** settles dispu\
-tes.\x0a\x0a## First w\
-ord\x0a\x0a- At least \
-**2 letters**, a\
-cross or down (n\
-ever diagonal), \
-with one tile on\
- the\x0a  **centre \
-star**.\x0a- The ce\
-ntre star is a *\
-*double-word** s\
-quare, so the fi\
-rst word is doub\
-led.\x0a\x0a## A turn\x0a\
-\x0aDo **one** of t\
-hese:\x0a\x0a1. **Play\
-** tiles, then d\
-raw back up to 7\
-.\x0a2. **Exchange*\
-* some or all of\
- your tiles: dis\
-card them face d\
-own, draw the sa\
-me\x0a   number, th\
-en mix the disca\
-rds back into th\
-e bag. You score\
- nothing.\x0a3. **P\
-ass** and score \
-nothing.\x0a\x0a## Pla\
-cing tiles\x0a\x0a- Al\
-l tiles you plac\
-e must be in **o\
-ne row or one co\
-lumn**.\x0a- Your p\
-lay must connect\
- with tiles alre\
-ady on the board\
- and form words \
-of 2 or\x0a  more l\
-etters.\x0a- Any ti\
-les that end up \
-touching others \
-form words too, \
-and **every such\
- word\x0a  must be \
-valid**.\x0a- You c\
-an: add letters \
-to one or both e\
-nds of a word, p\
-lay a word cross\
-ing an\x0a  existin\
-g one at right a\
-ngles using one \
-of its letters, \
-play a word alon\
-gside\x0a  existing\
- words (all the \
-touching letters\
- must make valid\
- words), or brid\
-ge\x0a  letters bet\
-ween two words.\x0a\
-- Tiles cannot b\
-e moved once pla\
-yed, except afte\
-r a successful c\
-hallenge.\x0a- Word\
-s allowed: anyth\
-ing in the agree\
-d dictionary, ex\
-cept words that \
-need an\x0a  initia\
-l capital, abbre\
-viations, prefix\
-es and suffixes \
-on their own, an\
-d words\x0a  with a\
-postrophes or hy\
-phens.\x0a\x0a## Scori\
-ng\x0a\x0aAdd the face\
- values of the l\
-etters of **ever\
-y word you forme\
-d or extended** \
-in\x0athe turn.\x0a\x0a| \
-Square | Effect \
-|\x0a|---|---|\x0a| Do\
-uble letter (lig\
-ht blue) | Lette\
-r on it counts x\
-2 |\x0a| Triple let\
-ter (dark blue) \
-| Letter on it c\
-ounts x3 |\x0a| Dou\
-ble word (light \
-red, and the cen\
-tre star) | Whol\
-e word x2 |\x0a| Tr\
-iple word (dark \
-red) | Whole wor\
-d x3 |\x0a\x0a- Premiu\
-m squares count \
-**only on the tu\
-rn a tile is pla\
-ced** on them. L\
-ater\x0a  words thr\
-ough them score \
-face value.\x0a- If\
- a word covers t\
-wo word squares,\
- multiply togeth\
-er: **x4** (doub\
-le and\x0a  double)\
- or **x9** (trip\
-le and triple).\x0a\
-- A tile in two \
-new words counts\
- in each word, w\
-ith its premium \
-in both.\x0a- A **b\
-lank** scores 0 \
-as a letter, but\
- a blank on a wo\
-rd square still \
-doubles\x0a  or tri\
-ples the word. Y\
-ou must say whic\
-h letter it is, \
-and it stays tha\
-t letter.\x0a- **Bi\
-ngo:** using all\
- 7 tiles in one \
-turn adds **50 p\
-oints**, after a\
-ny word\x0a  multip\
-lier.\x0a\x0a## Challe\
-nges\x0a\x0aAfter a wo\
-rd is played and\
- **before** the \
-score is counted\
-, any player may\
-\x0achallenge it an\
-d check the dict\
-ionary. If the w\
-ord is not accep\
-table, the playe\
-r\x0atakes back the\
-ir tiles and **l\
-oses their turn*\
-* (this is the M\
-attel rule; othe\
-r\x0arule sets diff\
-er).\x0a\x0a## End of \
-the game\x0a\x0aThe ga\
-me ends when:\x0a\x0a-\
- all tiles are d\
-rawn and a playe\
-r uses their las\
-t tile, or\x0a- no \
-more plays are p\
-ossible, or\x0a- al\
-l players pass t\
-wice in a row.\x0a\x0a\
-Then every playe\
-r **subtracts** \
-the value of the\
- tiles left on t\
-heir rack. If a\x0a\
-player used all \
-their tiles, the\
-y **add** the to\
-tal value of eve\
-ryone else's\x0alef\
-tover tiles.\x0a\x0a##\
- Gamelog tips\x0a\x0a-\
- Enter the score\
- of each turn. T\
-he bonus buttons\
- (double letter,\
- triple letter,\x0a\
-  double word, t\
-riple word, bing\
-o) record which \
-bonuses the turn\
- used so they\x0a  \
-show in the stat\
-istics. The poin\
-ts still come fr\
-om the score you\
- type in.\x0a- **Ap\
-p tie-break** (n\
-ot part of the r\
-ule sheet): if p\
-layers tie on sc\
-ore, the\x0a  one w\
-ho used more bon\
-uses wins, then \
-the best single \
-turn. If still t\
-ied, they\x0a  shar\
-e the win.\x0a- The\
-re is no separat\
-e control for th\
-e leftover-tile \
-adjustments at t\
-he end.\x0a\
-\x00\x00\x0e\x15\
+h player draws *\
+*7** tiles for t\
+heir rack. Play \
+goes clockwise.\x0a\
+2. Agree beforeh\
+and which **dict\
+ionary** settles\
+ disputes.\x0a\x0a## F\
+irst word\x0a\x0a- At \
+least **2 letter\
+s**, across or d\
+own (never diago\
+nal), with one t\
+ile on the\x0a  **c\
+entre star**.\x0a- \
+The centre star \
+is a **double-wo\
+rd** square, so \
+the first word i\
+s doubled.\x0a\x0a## A\
+ turn\x0a\x0aDo **one*\
+* of these:\x0a\x0a1. \
+**Play** tiles, \
+then draw back u\
+p to 7.\x0a2. **Exc\
+hange** some or \
+all of your tile\
+s: discard them \
+face down, draw \
+the same\x0a   numb\
+er, then mix the\
+ discards back i\
+nto the bag. You\
+ score nothing.\x0a\
+3. **Pass** and \
+score nothing.\x0a\x0a\
+## Placing tiles\
+\x0a\x0a- All tiles yo\
+u place must be \
+in **one row or \
+one column**.\x0a- \
+Your play must c\
+onnect with tile\
+s already on the\
+ board and form \
+words of 2 or\x0a  \
+more letters.\x0a- \
+Any tiles that e\
+nd up touching o\
+thers form words\
+ too, and **ever\
+y such word\x0a  mu\
+st be valid**.\x0a-\
+ You can: add le\
+tters to one or \
+both ends of a w\
+ord, play a word\
+ crossing an\x0a  e\
+xisting one at r\
+ight angles usin\
+g one of its let\
+ters, play a wor\
+d alongside\x0a  ex\
+isting words (al\
+l the touching l\
+etters must make\
+ valid words), o\
+r bridge\x0a  lette\
+rs between two w\
+ords.\x0a- Tiles ca\
+nnot be moved on\
+ce played, excep\
+t after a succes\
+sful challenge.\x0a\
+- Words allowed:\
+ anything in the\
+ agreed dictiona\
+ry, except words\
+ that need an\x0a  \
+initial capital,\
+ abbreviations, \
+prefixes and suf\
+fixes on their o\
+wn, and words\x0a  \
+with apostrophes\
+ or hyphens.\x0a\x0a##\
+ Scoring\x0a\x0aAdd th\
+e face values of\
+ the letters of \
+**every word you\
+ formed or exten\
+ded** in\x0athe tur\
+n.\x0a\x0a| Square | E\
+ffect |\x0a|---|---\
+|\x0a| Double lette\
+r (light blue) |\
+ Letter on it co\
+unts x2 |\x0a| Trip\
+le letter (dark \
+blue) | Letter o\
+n it counts x3 |\
+\x0a| Double word (\
+light red, and t\
+he centre star) \
+| Whole word x2 \
+|\x0a| Triple word \
+(dark red) | Who\
+le word x3 |\x0a\x0a- \
+Premium squares \
+count **only on \
+the turn a tile \
+is placed** on t\
+hem. Later\x0a  wor\
+ds through them \
+score face value\
+.\x0a- If a word co\
+vers two word sq\
+uares, multiply \
+together: **x4**\
+ (double and\x0a  d\
+ouble) or **x9**\
+ (triple and tri\
+ple).\x0a- A tile i\
+n two new words \
+counts in each w\
+ord, with its pr\
+emium in both.\x0a-\
+ A **blank** sco\
+res 0 as a lette\
+r, but a blank o\
+n a word square \
+still doubles\x0a  \
+or triples the w\
+ord. You must sa\
+y which letter i\
+t is, and it sta\
+ys that letter.\x0a\
+- **Bingo:** usi\
+ng all 7 tiles i\
+n one turn adds \
+**50 points**, a\
+fter any word\x0a  \
+multiplier.\x0a\x0a## \
+Challenges\x0a\x0aAfte\
+r a word is play\
+ed and **before*\
+* the score is c\
+ounted, any play\
+er may\x0achallenge\
+ it and check th\
+e dictionary. If\
+ the word is not\
+ acceptable, the\
+ player\x0atakes ba\
+ck their tiles a\
+nd **loses their\
+ turn** (this is\
+ the Mattel rule\
+; other\x0arule set\
+s differ).\x0a\x0a## E\
+nd of the game\x0a\x0a\
+The game ends wh\
+en:\x0a\x0a- all tiles\
+ are drawn and a\
+ player uses the\
+ir last tile, or\
+\x0a- no more plays\
+ are possible, o\
+r\x0a- all players \
+pass twice in a \
+row.\x0a\x0aThen every\
+ player **subtra\
+cts** the value \
+of the tiles lef\
+t on their rack.\
+ If a\x0aplayer use\
+d all their tile\
+s, they **add** \
+the total value \
+of everyone else\
+'s\x0aleftover tile\
+s.\x0a\x0a## Gamelog t\
+ips\x0a\x0a- Enter the\
+ score of each t\
+urn. The bonus b\
+uttons (double l\
+etter, triple le\
+tter,\x0a  double w\
+ord, triple word\
+, bingo) record \
+which bonuses th\
+e turn used so t\
+hey\x0a  show in th\
+e statistics. Th\
+e points still c\
+ome from the sco\
+re you type in.\x0a\
+- **App tie-brea\
+k** (not part of\
+ the rule sheet)\
+: if players tie\
+ on score, the\x0a \
+ one who used mo\
+re bonuses wins,\
+ then the best s\
+ingle turn. If s\
+till tied, they\x0a\
+  share the win.\
+\x0a- There is no s\
+eparate control \
+for the leftover\
+-tile adjustment\
+s at the end.\x0a\
+\x00\x00\x0d\xda\
+#\
+ Remigio \xe2\x80\x94 ref\
+er\xc3\xa8ncia r\xc3\xa0pida\
+\x0a\x0a*Un resum de l\
+es regles de Rem\
+igio m\xc3\xa9s habitu\
+als per resoldre\
+ disputes a la t\
+aula. Hi ha molt\
+es variants de c\
+asa (comodins, m\
+ultiplicadors, l\
+\xc3\xadmit de punts),\
+ aix\xc3\xad que acord\
+eu-les primer. A\
+quest full segue\
+ix el que puntua\
+ l'app. 2\xe2\x80\x936 ju\
+gadors.*\x0a\x0a## Obj\
+ectiu\x0a\x0aEvitar ac\
+umular punts de \
+penalitzaci\xc3\xb3. D\
+espr\xc3\xa9s de cada \
+ronda, els jugad\
+ors que no han t\
+ancat sumen punt\
+s per les cartes\
+ que els queden \
+a la m\xc3\xa0. Un jug\
+ador que arriba \
+al **l\xc3\xadmit de p\
+unts** (100 per \
+defecte) queda *\
+*eliminat**. **G\
+uanya l'\xc3\xbaltim j\
+ugador que queda\
+ a la partida.**\
+\x0a\x0a## Preparaci\xc3\xb3\
+\x0a\x0a- Dues baralle\
+s de 48 cartes m\
+\xc3\xa9s comodins (10\
+0 cartes, incloe\
+nt-hi quatre com\
+odins). Els grup\
+s grans afegeixe\
+n una tercera ba\
+ralla.\x0a- A cada \
+jugador se li re\
+parteixen **10 c\
+artes**. Una car\
+ta es posa cara \
+amunt per comen\xc3\
+\xa7ar la pila de d\
+escart i la rest\
+a forma la pila \
+de robar.\x0a\x0a## Un\
+ torn\x0a\x0a1. Roba l\
+a carta de dalt \
+de la **pila de \
+robar** o de la \
+**pila de descar\
+t**.\x0a2. Descarta\
+ una carta cara \
+amunt. El torn p\
+assa al seg\xc3\xbcent\
+ jugador.\x0a\x0a## Jo\
+cs i tancament (\
+\x22tancar\x22)\x0a\x0a- Un \
+**joc** t\xc3\xa9 alme\
+nys **3 cartes**\
+: un **trio** (m\
+ateix valor) o u\
+na **escala** (c\
+artes consecutiv\
+es d'un mateix p\
+al). L'as \xc3\xa9s ba\
+ix (per sota del\
+ 2) o alt (per s\
+obre del rei).\x0a-\
+ Un **comod\xc3\xad** \
+substitueix qual\
+sevol carta.\x0a- *\
+*Tanques** quan,\
+ en el teu desca\
+rt, **totes les \
+teves cartes** s\
+\xc3\xb3n en jocs. Des\
+cartes l'\xc3\xbaltima\
+ carta cara aval\
+l i despr\xc3\xa9s tot\
+hom mostra la m\xc3\
+\xa0.\x0a- Els jocs no\
+ es posen a la t\
+aula durant la p\
+artida: es quede\
+n a la m\xc3\xa0 fins \
+que alg\xc3\xba tanca.\
+\x0a\x0a## Mans especi\
+als\x0a\x0a| M\xc3\xa0 | Sig\
+nificat |\x0a|---|-\
+--|\x0a| **Color** \
+| Les 10 cartes \
+d'un mateix pal,\
+ sense necessita\
+t de jocs |\x0a| **\
+Straight flush**\
+ (*escala de col\
+or*) | Les 10 ca\
+rtes en una sola\
+ escala d'un mat\
+eix pal |\x0a| **Fi\
+gures** | Les 10\
+ cartes del mate\
+ix valor (cal co\
+modins) |\x0a\x0a## Pu\
+ntuar una ronda\x0a\
+\x0aEl jugador que \
+tanca puntua **0\
+**. Tots els alt\
+res sumen les ca\
+rtes que els que\
+den a la m\xc3\xa0 i *\
+*multipliquen** \
+el total pel mul\
+tiplicador de qu\
+i ha tancat.\x0a\x0a| \
+Carta | Punts |\x0a\
+|---|---|\x0a| As |\
+ 1 |\x0a| 2\xe2\x80\x9310 | \
+Valor facial |\x0a|\
+ Sota, cavall, r\
+ei | 10, 11 i 12\
+ respectivament \
+|\x0a\x0a| Com s'ha ta\
+ncat la ronda | \
+Multiplicador |\x0a\
+|---|:---:|\x0a| Ta\
+ncament ordinari\
+, amb un comod\xc3\xad\
+ | 1 |\x0a| Sense c\
+omodins | 2 |\x0a| \
+Color | 3 |\x0a| Fi\
+gures | 3 |\x0a| St\
+raight flush | 4\
+ |\x0a\x0a## Eliminaci\
+\xc3\xb3 i vict\xc3\xb2ria\x0a\x0a\
+- Acordeu el l\xc3\xad\
+mit de punts aba\
+ns de la primera\
+ ronda. 100 \xc3\xa9s \
+l'opci\xc3\xb3 habitua\
+l.\x0a- Un jugador \
+el total acumula\
+t del qual **arr\
+iba o supera** a\
+quest l\xc3\xadmit que\
+da eliminat i no\
+ juga m\xc3\xa9s ronde\
+s.\x0a- Guanya l'\xc3\xba\
+ltim jugador que\
+ encara \xc3\xa9s a la\
+ partida.\x0a\x0a## Co\
+nsells per a Gam\
+elog\x0a\x0a- Introdue\
+ix cada ronda a \
+la taula: per a \
+cada jugador que\
+ encara \xc3\xa9s a la\
+ partida, escriu\
+ els punts que t\
+\xc3\xa9 a la m\xc3\xa0. Aqu\
+est camp accepta\
+ de 0 a 100 per \
+jugador.\x0a- Per m\
+arcar qui ha tan\
+cat, fes doble c\
+lic a la casella\
+ d'aquest jugado\
+r (o prem Espai)\
+. En tornar a fe\
+r clic a la case\
+lla del guanyado\
+r, el multiplica\
+dor de tancament\
+ cicla per **1x,\
+ 2x, 3x, 4x**. L\
+a seva puntuaci\xc3\
+\xb3 \xc3\xa9s 0.\x0a- L'app\
+ multiplica els \
+punts introdu\xc3\xaft\
+s de cada altre \
+jugador per aque\
+st multiplicador\
+ en desar la ron\
+da, aix\xc3\xad que in\
+trodueix els pun\
+ts bruts de les \
+cartes.\x0a- Un jug\
+ador amb un tota\
+l igual o superi\
+or al l\xc3\xadmit de \
+punts es mostra \
+en gris i se n'o\
+met quan rota el\
+ repartidor. La \
+partida acaba qu\
+an en queda un d\
+e sol actiu.\x0a- E\
+l l\xc3\xadmit de punt\
+s nom\xc3\xa9s es pot \
+canviar abans de\
+ registrar la pr\
+imera ronda. Esb\
+orrar una ronda \
+reincorpora qui \
+torni a quedar p\
+er sota.\x0a- L'app\
+ no t\xc3\xa9 cap opci\
+\xc3\xb3 de reentrada \
+ni de compra ini\
+cial, i no compr\
+ova la mida de l\
+es mans.\x0a\
+\x00\x00\x0f\x82\
+#\
+ Qwirkle \xe2\x80\x94 ref\
+er\xc3\xa8ncia r\xc3\xa0pida\
+\x0a\x0a*Un resum per \
+resoldre dispute\
+s a la taula, no\
+ un substitut de\
+l reglament ofic\
+ial. Joc base, 2\
+\xe2\x80\x934 jugadors.*\x0a\
+\x0a## Objectiu\x0a\x0aTe\
+nir m\xc3\xa9s punts q\
+uan acaba la par\
+tida. Hi ha 108 \
+fitxes: 6 colors\
+ i 6 formes, **3\
+ c\xc3\xb2pies de cada\
+ combinaci\xc3\xb3 de \
+color i forma**.\
+\x0a\x0a| Puntuaci\xc3\xb3 |\
+ Punts |\x0a|---|:-\
+--:|\x0a| Cada fitx\
+a de cada l\xc3\xadnia\
+ que crees o a l\
+a qual afegeixes\
+ | 1 per fitxa |\
+\x0a| Completar una\
+ l\xc3\xadnia de 6 (un\
+ **Qwirkle**) | \
++6 de bonificaci\
+\xc3\xb3 (12 per la l\xc3\
+\xadnia) |\x0a| Primer\
+ jugador que es \
+queda sense fitx\
+es quan la bossa\
+ ja \xc3\xa9s buida | \
++6 |\x0a\x0a## Prepara\
+ci\xc3\xb3\x0a\x0a1. Totes l\
+es fitxes van a \
+la bossa. Cada j\
+ugador n'agafa *\
+*6** i les guard\
+a ocultes.\x0a2. Ca\
+da jugador anunc\
+ia el seu conjun\
+t m\xc3\xa9s llarg de \
+fitxes que compa\
+rteixen un color\
+ o una forma, **\
+sense duplicats*\
+*. El jugador am\
+b el conjunt m\xc3\xa9\
+s gran el juga p\
+er comen\xc3\xa7ar (en\
+ cas d'empat, co\
+men\xc3\xa7a el jugado\
+r empatat m\xc3\xa9s a\
+ntic). Les fitxe\
+s van en una l\xc3\xad\
+nia i puntuen co\
+m una sola l\xc3\xadni\
+a.\x0a3. El torn pa\
+ssa en sentit ho\
+rari.\x0a\x0a## Un tor\
+n\x0a\x0aFes **una** d\
+'aquestes accion\
+s:\x0a\x0a1. **Juga** \
+una o m\xc3\xa9s fitxe\
+s, puntua-les i \
+despr\xc3\xa9s agafa f\
+ins a tenir 6.\x0a2\
+. **Canvia** qua\
+lsevol nombre de\
+ fitxes: aparta-\
+les, agafa el ma\
+teix nombre de f\
+itxes noves i de\
+spr\xc3\xa9s torna les\
+ antigues a la b\
+ossa. No puntues\
+ **res**, i no p\
+ots canviar m\xc3\xa9s\
+ fitxes de les q\
+ue caben a la bo\
+ssa.\x0a\x0a## Col\xc2\xb7lo\
+car fitxes\x0a\x0a- To\
+tes les fitxes q\
+ue jugues en un \
+torn han d'estar\
+ en **una l\xc3\xadnia\
+** (la mateixa f\
+ila o la mateixa\
+ columna) i comp\
+artir **un atrib\
+ut**: totes del \
+mateix color o t\
+otes de la matei\
+xa forma.\x0a- No c\
+al que es toquin\
+ entre elles, pe\
+r\xc3\xb2 almenys una \
+ha de tocar una \
+fitxa que ja hi \
+ha a la taula, i\
+ la nova fitxa h\
+a de coincidir a\
+mb ella en color\
+ o en forma.\x0a- T\
+ota l\xc3\xadnia que e\
+s formi a la tau\
+la, en qualsevol\
+ direcci\xc3\xb3, ha d\
+e ser del mateix\
+ color o de la m\
+ateixa forma, se\
+nse fitxes **dup\
+licades** (per e\
+xemple, nom\xc3\xa9s u\
+n quadrat blau e\
+n una l\xc3\xadnia de \
+quadrats).\x0a- Una\
+ l\xc3\xadnia **mai** \
+no t\xc3\xa9 m\xc3\xa9s de 6\
+ fitxes.\x0a- Pots \
+afegir als **dos\
+ extrems** d'una\
+ l\xc3\xadnia en un ma\
+teix torn.\x0a- Alg\
+unes caselles ac\
+aben sense cap f\
+itxa legal. \xc3\x89s \
+normal.\x0a\x0a## Punt\
+uar una jugada\x0a\x0a\
+- Compta cada l\xc3\
+\xadnia que la teva\
+ jugada crea o a\
+mplia: 1 punt pe\
+r fitxa de la l\xc3\
+\xadnia, **incloses\
+ les fitxes que \
+ja hi eren**.\x0a- \
+Una fitxa que pe\
+rtany a dues l\xc3\xad\
+nies (horitzonta\
+l i vertical) co\
+mpta en totes du\
+es.\x0a- **Qwirkle:\
+** una l\xc3\xadnia co\
+mpleta de 6 punt\
+ua les seves 6 f\
+itxes m\xc3\xa9s 6 pun\
+ts de bonificaci\
+\xc3\xb3. Pots complet\
+ar m\xc3\xa9s d'una en\
+ un torn i puntu\
+ar cadascuna.\x0a\x0aE\
+xemple: col\xc2\xb7loc\
+ar una fitxa que\
+ forma una l\xc3\xadni\
+a de 4 en horitz\
+ontal i una l\xc3\xadn\
+ia de 3 en verti\
+cal puntua 4 + 3\
+ = 7.\x0a\x0a## Final \
+de la partida\x0a\x0aQ\
+uan la bossa \xc3\xa9s\
+ buida, la parti\
+da continua per\xc3\
+\xb2 ning\xc3\xba no agaf\
+a fitxes. El pri\
+mer jugador que \
+faci servir tote\
+s les seves fitx\
+es acaba la part\
+ida i obt\xc3\xa9 la *\
+*bonificaci\xc3\xb3 de\
+ 6 punts**. Guan\
+ya la puntuaci\xc3\xb3\
+ m\xc3\xa9s alta.\x0a\x0a## \
+Disputes habitua\
+ls\x0a\x0a- **Duplicat\
+s:** dues fitxes\
+ id\xc3\xa8ntiques (ma\
+teix color i mat\
+eixa forma) mai \
+no poden estar a\
+ la mateixa l\xc3\xadn\
+ia, encara que s\
+iguin lluny.\x0a- *\
+*Buits:** una l\xc3\
+\xadnia nom\xc3\xa9s comp\
+ta les fitxes qu\
+e es toquen en f\
+ila. Les fitxes \
+amb un buit entr\
+e elles s\xc3\xb3n l\xc3\xad\
+nies separades.\x0a\
+- **Dos atributs\
+ en un torn:** n\
+o pots jugar un \
+quadrat vermell \
+i despr\xc3\xa9s un ce\
+rcle blau en el \
+mateix torn. Han\
+ de compartir co\
+lor o forma.\x0a- *\
+*Canviar puntua \
+0:** i acaba el \
+teu torn.\x0a\x0a## Co\
+nsells per a Gam\
+elog\x0a\x0a- Introdue\
+ix la puntuaci\xc3\xb3\
+ de cada jugada.\
+ El bot\xc3\xb3 de bon\
+ificaci\xc3\xb3 Qwirkl\
+e registra quant\
+s Qwirkles ha co\
+mpletat aquella \
+jugada (fins a 6\
+) perqu\xc3\xa8 apareg\
+uin a les estad\xc3\
+\xadstiques. Els pu\
+nts continuen so\
+rtint de la punt\
+uaci\xc3\xb3 que escri\
+us.\x0a- La partida\
+ es finalitza de\
+ forma expl\xc3\xadcit\
+a des de l'app, \
+ja que el final \
+dep\xc3\xa8n que la bo\
+ssa es buidi i q\
+ue un jugador es\
+ quedi sense fit\
+xes a la m\xc3\xa0.\x0a- \
+**Desempat de l'\
+app** (no forma \
+part del reglame\
+nt oficial): si \
+els jugadors emp\
+aten en puntuaci\
+\xc3\xb3, guanya el qu\
+e tingui m\xc3\xa9s Qw\
+irkles; despr\xc3\xa9s\
+, la millor juga\
+da individual. S\
+i segueixen empa\
+tats, comparteix\
+en la vict\xc3\xb2ria.\
+\x0a\
+\x00\x00\x11\xe9\
+#\
+ Azul: Pabell\xc3\xb3n\
+ de Verano \xe2\x80\x94 r\
+eferencia r\xc3\xa1pid\
+a\x0a\x0a*Un resumen p\
+ara resolver dis\
+putas en la mesa\
+, no un sustitut\
+o del reglamento\
+\x0aoficial. Cara d\
+e estrellas de c\
+olores del table\
+ro, 2\xe2\x80\x934 jugado\
+res.*\x0a\x0a## Objeti\
+vo\x0a\x0aTener m\xc3\xa1s p\
+untos al termina\
+r **6 rondas** m\
+\xc3\xa1s la puntuaci\xc3\
+\xb3n final. Todos \
+empiezan\x0acon **5\
+ puntos**. Los e\
+mpates se compar\
+ten.\x0a\x0a| Bonifica\
+ci\xc3\xb3n de final d\
+e partida | Punt\
+os |\x0a|---|:---:|\
+\x0a| Completar la \
+estrella central\
+ multicolor | 12\
+ |\x0a| Completar l\
+a estrella roja \
+| 14 |\x0a| Complet\
+ar la estrella a\
+zul | 15 |\x0a| Com\
+pletar la estrel\
+la amarilla | 16\
+ |\x0a| Completar l\
+a estrella naran\
+ja | 17 |\x0a| Comp\
+letar la estrell\
+a verde | 18 |\x0a|\
+ Completar la es\
+trella morada | \
+20 |\x0a| Cubrir to\
+dos los 1 | 4 |\x0a\
+| Cubrir todos l\
+os 2 | 8 |\x0a| Cub\
+rir todos los 3 \
+| 12 |\x0a| Cubrir \
+todos los 4 | 16\
+ |\x0a\x0aPierdes tamb\
+i\xc3\xa9n **1 punto**\
+ por cada azulej\
+o sin usar que q\
+uede en las casi\
+llas de\x0aesquina \
+de tu tablero tr\
+as la \xc3\xbaltima ro\
+nda.\x0a\x0a## Prepara\
+ci\xc3\xb3n\x0a\x0a1. F\xc3\xa1bri\
+cas: **5** para \
+2 jugadores, **7\
+** para 3, **9**\
+ para 4. Cada un\
+a recibe 4\x0a   az\
+ulejos.\x0a2. 132 a\
+zulejos en la bo\
+lsa (6 colores).\
+ 10 azulejos se \
+colocan en las c\
+asillas de\x0a   su\
+ministro.\x0a3. Un \
+contador de rond\
+as muestra la ro\
+nda y el **color\
+ comod\xc3\xadn**. La \
+ronda 1 es\x0a   mo\
+rada.\x0a\x0a## Una ro\
+nda\x0a\x0a### 1. Adqu\
+irir azulejos\x0a\x0aE\
+n tu turno, toma\
+ **todos los azu\
+lejos de un colo\
+r no comod\xc3\xadn** \
+de una f\xc3\xa1brica \
+o\x0adel centro. Lo\
+s sobrantes de u\
+na f\xc3\xa1brica van \
+al centro.\x0a\x0a- Si\
+ la f\xc3\xa1brica (o \
+el centro) tiene\
+ azulejos **como\
+d\xc3\xadn**, tambi\xc3\xa9n\
+ debes tomar\x0a  *\
+*exactamente uno\
+** de ellos.\x0a- S\
+i solo hay azule\
+jos comod\xc3\xadn, pu\
+edes tomar **sol\
+o uno**.\x0a- El pr\
+imer jugador que\
+ tome del centro\
+ toma la **ficha\
+ de jugador inic\
+ial** y\x0a  retroc\
+ede su marcador \
+un espacio por c\
+ada azulejo toma\
+do en ese turno \
+(incluido\x0a  el c\
+omod\xc3\xadn), sin pa\
+sar del espacio \
+1.\x0a\x0aLa fase term\
+ina cuando todo \
+est\xc3\xa1 vac\xc3\xado. Gu\
+arda tus azulejo\
+s junto a tu tab\
+lero.\x0a\x0a### 2. Co\
+locar y puntuar \
+azulejos\x0a\x0aEmpeza\
+ndo por quien ti\
+ene la ficha, en\
+ cada turno colo\
+cas **un** azule\
+jo en un\x0aespacio\
+ romboidal vac\xc3\xad\
+o (nunca en pila\
+res, estatuas o \
+ventanas). O pas\
+as.\x0a\x0a- Un espaci\
+o necesita **tan\
+tos azulejos de \
+su color como el\
+ n\xc3\xbamero impreso\
+ en \xc3\xa9l**.\x0a  Col\
+oca uno en el ta\
+blero y descarta\
+ a la torre los \
+dem\xc3\xa1s que hagan\
+ falta.\x0a- Los az\
+ulejos que sobre\
+n se quedan junt\
+o a tu tablero p\
+ara turnos poste\
+riores.\x0a- En la \
+estrella central\
+ multicolor, cua\
+lquier color pue\
+de ir a cualquie\
+r sitio,\x0a  pero \
+los 6 azulejos d\
+eben ser **de co\
+lores distintos*\
+*.\x0a- **Color com\
+od\xc3\xadn:** los azu\
+lejos comod\xc3\xadn p\
+ueden sustituir \
+a los que faltan\
+, pero\x0a  aun as\xc3\
+\xad debes tener al\
+ menos un azulej\
+o real del color\
+ que colocas. Lo\
+s\x0a  azulejos com\
+od\xc3\xadn que uses s\
+e descartan a la\
+ torre. Los como\
+dines nunca sust\
+ituyen\x0a  a su pr\
+opio color: usad\
+os por s\xc3\xad solos\
+, van a la estre\
+lla del color co\
+mod\xc3\xadn.\x0a- Los az\
+ulejos comod\xc3\xadn \
+son comod\xc3\xadn **s\
+olo en la ronda \
+en que se tomaro\
+n**.\x0a\x0a**Puntuar \
+un azulejo:** 1 \
+punto por el azu\
+lejo, m\xc3\xa1s 1 pun\
+to por cada azul\
+ejo al\x0aque est\xc3\xa9\
+ conectado (espa\
+cios contiguos e\
+n la misma estre\
+lla). Mueve tu m\
+arcador.\x0a\x0a**Azul\
+ejos de bonifica\
+ci\xc3\xb3n** tomados \
+del suministro a\
+l terminar de ro\
+dear:\x0a\x0a| Rodeado\
+ | Tomas |\x0a|---|\
+---|\x0a| Un pilar \
+(sus 4 espacios)\
+ | 1 azulejo a t\
+u elecci\xc3\xb3n |\x0a| \
+Una estatua (sus\
+ 4 espacios) | 2\
+ azulejos a tu e\
+lecci\xc3\xb3n |\x0a| Una\
+ ventana (sus 2 \
+espacios) | 3 az\
+ulejos a tu elec\
+ci\xc3\xb3n |\x0a\x0aRellena\
+ el suministro d\
+esde la bolsa (o\
+ la torre) antes\
+ del siguiente t\
+urno.\x0a\x0a**Pasar:*\
+* puedes quedart\
+e con hasta **4*\
+* azulejos coloc\
+\xc3\xa1ndolos en las \
+casillas de\x0aesqu\
+ina. No punt\xc3\xbaan\
+ nada. Descarta \
+el resto a la to\
+rre y pierde **1\
+ punto por cada\x0a\
+azulejo descarta\
+do**. No juegas \
+m\xc3\xa1s turnos en e\
+sta ronda.\x0a\x0a### \
+3. Siguiente ron\
+da\x0a\x0aEl jugador i\
+nicial avanza el\
+ contador, relle\
+na las f\xc3\xa1bricas\
+ con 4 azulejos \
+cada\x0auna (rellen\
+ando la bolsa de\
+sde la torre si \
+hace falta) y de\
+vuelve la ficha \
+al\x0acentro. Todos\
+ devuelven sus a\
+zulejos de esqui\
+na junto a su ta\
+blero.\x0a\x0a## Conse\
+jos para Gamelog\
+\x0a\x0a- Introduce la\
+ puntuaci\xc3\xb3n de \
+ronda de cada ju\
+gador, que puede\
+ ser negativa po\
+r\x0a  pasar y por \
+las penalizacion\
+es de marcador (\
+hasta -20). Los \
+totales empiezan\
+ en 5\x0a  y se man\
+tienen en 0 o m\xc3\
+\xa1s: si una ronda\
+ negativa bajar\xc3\
+\xada el total, la \
+app registra\x0a  s\
+olo la penalizac\
+i\xc3\xb3n necesaria p\
+ara llevarlo a 0\
+.\x0a- Los botones \
+de bonificaci\xc3\xb3n\
+ de estrellas y \
+de n\xc3\xbameros solo\
+ est\xc3\xa1n disponib\
+les en\x0a  la rond\
+a 6, y cada uno \
+puede marcarse u\
+na vez. La app s\
+uma sus puntos p\
+or ti.\x0a- La part\
+ida termina auto\
+m\xc3\xa1ticamente des\
+pu\xc3\xa9s de la sext\
+a ronda, y los e\
+mpates se\x0a  comp\
+arten.\x0a- Las pen\
+alizaciones (mar\
+cador, pasar, az\
+ulejos de esquin\
+a) no son contro\
+les\x0a  separados:\
+ incl\xc3\xbayelas en \
+la puntuaci\xc3\xb3n d\
+e ronda que intr\
+oduces.\x0a\
+\x00\x00\x0cH\
 #\
  Remigio \xe2\x80\x94 qui\
 ck reference\x0a\x0a*A\
@@ -14179,133 +21496,118 @@ by default) is *\
 *out**. The **la\
 st player left\x0aw\
 ins**.\x0a\x0a## Setup\
-\x0a\x0a- Two 52-card \
+\x0a\x0a- Two 48-card \
 decks plus joker\
-s (108 cards wit\
-h four jokers). \
-Large groups add\
-\x0a  a third deck.\
-\x0a- Each player i\
-s dealt **10 car\
-ds**. One card i\
-s turned face up\
- to start the\x0a  \
-discard pile and\
- the rest form t\
-he stock.\x0a\x0a## A \
-turn\x0a\x0a1. Draw th\
-e top card of th\
-e **stock** or o\
-f the **discard \
-pile**.\x0a2. Disca\
-rd one card face\
- up. Play passes\
- on.\x0a\x0a## Melds a\
-nd going out (\x22c\
-errar\x22)\x0a\x0a- A **m\
-eld** is at leas\
-t **3 cards**: a\
- **set** (same r\
-ank) or a **run*\
-*\x0a  (consecutive\
- cards of one su\
-it). The ace is \
-low (below the 2\
-) or high (above\
-\x0a  the king).\x0a- \
-A **joker** stan\
-ds in for any ca\
-rd.\x0a- You **go o\
-ut** when, at yo\
-ur discard, **al\
-l your cards** a\
-re in melds. You\
-\x0a  discard your \
-last card face d\
-own and everyone\
- then shows thei\
-r hand.\x0a- Melds \
-are not laid on \
-the table during\
- play: they stay\
- in the hand unt\
-il\x0a  someone goe\
-s out.\x0a\x0a## Speci\
-al hands\x0a\x0a| Hand\
- | Meaning |\x0a|--\
--|---|\x0a| **Color\
-** | All 10 card\
-s in one suit, n\
-o melds needed |\
-\x0a| **Straight fl\
-ush** (*escalera\
- de color*) | Al\
-l 10 cards in a \
-single run of on\
-e suit |\x0a| **Rem\
-igio** | All 10 \
-cards of the sam\
-e rank (needs jo\
-kers) |\x0a\x0a## Scor\
-ing a round\x0a\x0aThe\
- player who goes\
- out scores **0*\
-*. Everyone else\
- counts the card\
-s left in\x0atheir \
-hand and **multi\
-plies** the tota\
-l by the closer'\
-s multiplier.\x0a\x0a|\
- Card | Points |\
-\x0a|---|---|\x0a| Ace\
- | 1 |\x0a| 2\xe2\x80\x9310 \
-| Face value |\x0a|\
- Jack, Queen, Ki\
-ng | 10 each |\x0a|\
- Joker | 20 each\
- (the usual valu\
-e; check at your\
- table) |\x0a\x0a| How\
- the round was c\
-losed | Multipli\
-er |\x0a|---|:---:|\
-\x0a| Ordinary clos\
-e, with a joker \
-| 1 |\x0a| No joker\
-s | 2 |\x0a| Color \
-| 3 |\x0a| Color, n\
-o jokers | 4 |\x0a|\
- Straight flush \
-| 5 |\x0a| Straight\
- flush, no joker\
-s | 6 |\x0a| Remigi\
-o | 10 |\x0a\x0a## Eli\
-mination and win\
-ning\x0a\x0a- Agree th\
-e elimination sc\
-ore before round\
- one. 100 is the\
- usual choice.\x0a-\
- A player whose \
-running total **\
-reaches or passe\
-s** it is elimin\
-ated and does\x0a  \
-not play further\
- rounds.\x0a- The l\
-ast player still\
- in the game win\
-s.\x0a- Some tables\
- instead play un\
-til two players \
-remain, or give \
-points to the\x0a  \
-closer and let t\
-he first to a ta\
-rget win. Agree \
-on this beforeha\
-nd.\x0a\x0a## Gamelog \
+s (100 cards inc\
+luding four joke\
+rs). Large group\
+s add\x0a  a third \
+deck.\x0a- Each pla\
+yer is dealt **1\
+0 cards**. One c\
+ard is turned fa\
+ce up to start t\
+he\x0a  discard pil\
+e and the rest f\
+orm the stock.\x0a\x0a\
+## A turn\x0a\x0a1. Dr\
+aw the top card \
+of the **stock**\
+ or of the **dis\
+card pile**.\x0a2. \
+Discard one card\
+ face up. Play p\
+asses on.\x0a\x0a## Me\
+lds and going ou\
+t (\x22cerrar\x22)\x0a\x0a- \
+A **meld** is at\
+ least **3 cards\
+**: a **set** (s\
+ame rank) or a *\
+*run**\x0a  (consec\
+utive cards of o\
+ne suit). The ac\
+e is low (below \
+the 2) or high (\
+above\x0a  the king\
+).\x0a- A **joker**\
+ stands in for a\
+ny card.\x0a- You *\
+*go out** when, \
+at your discard,\
+ **all your card\
+s** are in melds\
+. You\x0a  discard \
+your last card f\
+ace down and eve\
+ryone then shows\
+ their hand.\x0a- M\
+elds are not lai\
+d on the table d\
+uring play: they\
+ stay in the han\
+d until\x0a  someon\
+e goes out.\x0a\x0a## \
+Special hands\x0a\x0a|\
+ Hand | Meaning \
+|\x0a|---|---|\x0a| **\
+Color** | All 10\
+ cards in one su\
+it, no melds nee\
+ded |\x0a| **Straig\
+ht flush** (*esc\
+alera de color*)\
+ | All 10 cards \
+in a single run \
+of one suit |\x0a| \
+**Figures** | Al\
+l 10 cards of th\
+e same rank (nee\
+ds jokers) |\x0a\x0a##\
+ Scoring a round\
+\x0a\x0aThe player who\
+ goes out scores\
+ **0**. Everyone\
+ else counts the\
+ cards left in\x0at\
+heir hand and **\
+multiplies** the\
+ total by the cl\
+oser's multiplie\
+r.\x0a\x0a| Card | Poi\
+nts |\x0a|---|---|\x0a\
+| Ace | 1 |\x0a| 2\xe2\
+\x80\x9310 | Face valu\
+e |\x0a| Jack, Quee\
+n, King | 10, 11\
+ and 12 respecti\
+vely |\x0a\x0a| How th\
+e round was clos\
+ed | Multiplier \
+|\x0a|---|:---:|\x0a| \
+Ordinary close, \
+with a joker | 1\
+ |\x0a| No jokers |\
+ 2 |\x0a| Color | 3\
+ |\x0a| Figures | 3\
+ |\x0a| Straight fl\
+ush | 4 |\x0a\x0a## El\
+imination and wi\
+nning\x0a\x0a- Agree t\
+he elimination s\
+core before roun\
+d one. 100 is th\
+e usual choice.\x0a\
+- A player whose\
+ running total *\
+*reaches or pass\
+es** it is elimi\
+nated and does\x0a \
+ not play furthe\
+r rounds.\x0a- The \
+last player stil\
+l in the game wi\
+ns.\x0a\x0a## Gamelog \
 tips\x0a\x0a- Enter ea\
 ch round on the \
 board: for every\
@@ -14334,45 +21636,573 @@ by that multipli\
 er\x0a  when the ro\
 und is saved, so\
  enter raw card \
-points. For a mu\
-ltiplier above\x0a \
- 4x (5x, 6x or 1\
-0x), keep the wi\
-nner at 1x and e\
-nter the already\
- multiplied\x0a  po\
-ints yourself.\x0a-\
- The multiplier \
-names are not la\
-belled in the ap\
-p, so decide at \
-your table\x0a  whi\
-ch close is 1x t\
-o 4x.\x0a- A player\
- whose total is \
-at or above the \
-elimination scor\
-e is greyed out \
-and\x0a  skipped wh\
-en the dealer ro\
-tates. The match\
- ends when one a\
-ctive player\x0a  r\
-emains.\x0a- The el\
-imination score \
-can only be chan\
-ged before the f\
-irst round is\x0a  \
-recorded. Deleti\
-ng a round reins\
-tates anyone who\
- falls back unde\
-r it.\x0a- The app \
-has no re-entry \
-or buy-in option\
-, and it does no\
-t check hand siz\
-es.\x0a\
+points. \x0a- A pla\
+yer whose total \
+is at or above t\
+he elimination s\
+core is greyed o\
+ut and\x0a  skipped\
+ when the dealer\
+ rotates. The ma\
+tch ends when on\
+e active player\x0a\
+  remains.\x0a- The\
+ elimination sco\
+re can only be c\
+hanged before th\
+e first round is\
+\x0a  recorded. Del\
+eting a round re\
+instates anyone \
+who falls back u\
+nder it.\x0a- The a\
+pp has no re-ent\
+ry or buy-in opt\
+ion, and it does\
+ not check hand \
+sizes.\x0a\
+\x00\x00\x12$\
+#\
+ Phase 10 \xe2\x80\x94 re\
+fer\xc3\xa8ncia r\xc3\xa0pid\
+a\x0a\x0a*Resum per re\
+soldre disputes \
+a la taula, no u\
+n substitut del \
+llibre de normes\
+ oficial. Edici\xc3\
+\xb3 est\xc3\xa0ndard, 2\xe2\
+\x80\x936 jugadors.*\x0a\x0a\
+## Objectiu\x0a\x0aSer\
+ el primer jugad\
+or a **completar\
+ les 10 fases**.\
+ Cada m\xc3\xa0, inten\
+tar baixar la fa\
+se actual. Qui e\
+s queda sense ca\
+rtes primer guan\
+ya la m\xc3\xa0, i la \
+resta s\xc3\xb3n penal\
+itzats per les c\
+artes que els qu\
+eden a la m\xc3\xa0. *\
+*La puntuaci\xc3\xb3 t\
+otal m\xc3\xa9s baixa \
+desf\xc3\xa0 els empat\
+s.**\x0a\x0a## Les deu\
+ fases\x0a\x0a| Fase |\
+ Requisit |\x0a|:--\
+-:|---|\x0a| 1 | 2 \
+grups de 3 |\x0a| 2\
+ | 1 grup de 3 +\
+ 1 escala de 4 |\
+\x0a| 3 | 1 grup de\
+ 4 + 1 escala de\
+ 4 |\x0a| 4 | 1 esc\
+ala de 7 |\x0a| 5 |\
+ 1 escala de 8 |\
+\x0a| 6 | 1 escala \
+de 9 |\x0a| 7 | 2 g\
+rups de 4 |\x0a| 8 \
+| 7 cartes d'un \
+mateix color |\x0a|\
+ 9 | 1 grup de 5\
+ + 1 grup de 2 |\
+\x0a| 10 | 1 grup d\
+e 5 + 1 grup de \
+3 |\x0a\x0a- Un **grup\
+** s\xc3\xb3n cartes a\
+mb el mateix n\xc3\xba\
+mero, de qualsev\
+ol color.\x0a- Una \
+**escala** s\xc3\xb3n \
+cartes amb n\xc3\xbame\
+ros consecutius \
+(de l'1 al 12), \
+de qualsevol col\
+or. Les escales \
+no es donen la v\
+olta del 12 a l'\
+1.\x0a- **Les fases\
+ s'han de comple\
+tar en ordre, de\
+ l'1 al 10.** Si\
+ no completes la\
+ fase en una m\xc3\xa0\
+, la repeteixes \
+a la seg\xc3\xbcent.\x0a\x0a\
+## Baralla i pre\
+paraci\xc3\xb3\x0a\x0a- 108 \
+cartes: n\xc3\xbameros\
+ de l'1 al 12 en\
+ quatre colors (\
+dues de cada n\xc3\xba\
+mero per color),\
+ **8 cartes Como\
+d\xc3\xad** [Wild] i *\
+*4 cartes Salt**\
+ [Skip].\x0a- Repar\
+teix **10 cartes\
+** a cada jugado\
+r. Gira la carta\
+ de dalt de la r\
+esta per comen\xc3\xa7\
+ar la pila de de\
+scart. Comen\xc3\xa7a \
+el jugador de l'\
+esquerra del rep\
+artidor, el joc \
+avan\xc3\xa7a en el se\
+ntit de les agul\
+les del rellotge\
+ i el repartimen\
+t passa a l'esqu\
+erra despr\xc3\xa9s de\
+ cada m\xc3\xa0.\x0a\x0a## U\
+n torn\x0a\x0a1. **Aga\
+fa** la carta de\
+ dalt de la pila\
+ de robar o de l\
+a pila de descar\
+t.\x0a2. Si tens to\
+ta la teva fase,\
+ pots **baixar-l\
+a**, cara amunt.\
+ Mai no pots bai\
+xar nom\xc3\xa9s una p\
+art d'una fase.\x0a\
+3. Un cop baixad\
+a la teva fase, \
+pots **afegir ca\
+rtes** [hit]: af\
+egir cartes a qu\
+alsevol fase bai\
+xada, teva o d'u\
+n altre jugador,\
+ sempre que enca\
+ixin (una carta \
+a un grup, el n\xc3\
+\xbamero seg\xc3\xbcent o\
+ anterior a una \
+escala).\x0a4. **De\
+scarta** una car\
+ta per acabar el\
+ teu torn.\x0a\x0aNom\xc3\
+\xa9s es pot baixar\
+ **una fase** pe\
+r m\xc3\xa0. Nom\xc3\xa9s po\
+ts baixar cartes\
+ extra amb ella \
+si amplien el qu\
+e est\xc3\xa0s baixant\
+ (cartes extra d\
+'un grup o escal\
+a que ja tens), \
+mai un grup o es\
+cala extra.\x0a\x0aEs \
+compta com a **c\
+ompletada la fas\
+e des del moment\
+ en qu\xc3\xa8 la baix\
+es**, encara que\
+ un altre jugado\
+r es quedi sense\
+ cartes abans.\x0a\x0a\
+## Cartes Comod\xc3\
+\xad i Salt\x0a\x0a- Un *\
+*Comod\xc3\xad** subst\
+itueix qualsevol\
+ n\xc3\xbamero i color\
+. Pots fer-ne se\
+rvir tants com v\
+ulguis, per\xc3\xb2 un\
+a fase necessita\
+ **almenys una c\
+arta natural** (\
+no comod\xc3\xad). Un \
+cop col\xc2\xb7locat, \
+el Comod\xc3\xad es qu\
+eda com aquella \
+carta fins que a\
+caba la m\xc3\xa0.\x0a- U\
+n **Salt** es de\
+scarta davant de\
+l jugador que tr\
+ies: perd el seu\
+ proper torn. Co\
+mpta com el teu \
+descart.\x0a- Un Sa\
+lt no es pot rec\
+ollir de la pila\
+ de descart, no \
+pot formar part \
+d'una fase i no \
+es pot jugar sob\
+re alg\xc3\xba que ja \
+t\xc3\xa9 un salt.\x0a- S\
+i la primera car\
+ta de la pila de\
+ descart \xc3\xa9s un \
+Salt, el primer \
+jugador perd un \
+torn.\x0a\x0a## Acabar\
+ la m\xc3\xa0 i puntua\
+ci\xc3\xb3\x0a\x0aEl primer \
+jugador que es l\
+liura de totes l\
+es cartes (desca\
+rtant o afegint)\
+ **guanya la m\xc3\xa0\
+ i puntua 0**. T\
+ots els altres p\
+untuen les carte\
+s que els queden\
+ a la m\xc3\xa0:\x0a\x0a| Ca\
+rta | Punts |\x0a|-\
+--|:---:|\x0a| De l\
+'1 al 9 | 5 |\x0a| \
+Del 10 al 12 | 1\
+0 |\x0a| Salt | 15 \
+|\x0a| Comod\xc3\xad | 20\
+ |\x0a\x0aLes cartes j\
+a baixades no co\
+mpten. Els jugad\
+ors que han comp\
+letat la seva fa\
+se avancen a la \
+seg\xc3\xbcent, encara\
+ que no s'hagin \
+quedat sense car\
+tes.\x0a\x0a## Final d\
+e la partida\x0a\x0aLa\
+ partida acaba a\
+l final de la m\xc3\
+\xa0 en qu\xc3\xa8 alg\xc3\xba \
+completa la fase\
+ 10. Si diversos\
+ jugadors la com\
+pleten en la mat\
+eixa m\xc3\xa0, guanya\
+ el **total de p\
+unts m\xc3\xa9s baix**\
+. Segons les nor\
+mes oficials, un\
+ empat que quedi\
+ es resol jugant\
+ els jugadors un\
+a m\xc3\xa0 m\xc3\xa9s de la\
+ fase 10: el pri\
+mer que es queda\
+ sense cartes gu\
+anya.\x0a\x0a## Consel\
+ls per a Gamelog\
+\x0a\x0a- En cada rond\
+a, registra per \
+a cada jugador l\
+a fase a qu\xc3\xa8 ap\
+untava i si l'ha\
+ completada, m\xc3\xa9\
+s els seus punts\
+ de penalitzaci\xc3\
+\xb3. La llista de \
+fases al costat \
+del tauler mostr\
+a qui ha superat\
+ cada una.\x0a- Les\
+ puntuacions s'i\
+ntrodueixen en m\
+\xc3\xbaltiples de 5. \
+Un jugador que *\
+*no** ha complet\
+at la seva fase \
+no pot puntuar p\
+er sota de 50, j\
+a que encara t\xc3\xa9\
+ les 10 cartes.\x0a\
+- L'interruptor \
+**Fases en ordre\
+** est\xc3\xa0 activat\
+ per defecte i n\
+om\xc3\xa9s es pot can\
+viar a la primer\
+a ronda. Canviar\
+ a **Fases lliur\
+es** permet als \
+jugadors triar q\
+ualsevol fase qu\
+e encara no hagi\
+n superat, cosa \
+que no forma par\
+t de les normes \
+est\xc3\xa0ndard.\x0a- Gu\
+anya la partida \
+el jugador que h\
+a superat les 10\
+ fases amb el to\
+tal m\xc3\xa9s baix. S\
+i els totals emp\
+aten, l'app pref\
+ereix la puntuac\
+i\xc3\xb3 m\xc3\xa9s baixa d\
+e l'\xc3\xbaltima rond\
+a, i si tamb\xc3\xa9 e\
+mpata, la vict\xc3\xb2\
+ria es compartei\
+x. Aix\xc3\xb2 diferei\
+x de la norma of\
+icial, que \xc3\xa9s r\
+epetir la fase 1\
+0.\x0a\
+\x00\x00\x0fh\
+#\
+ Qwirkle \xe2\x80\x94 ref\
+erencia r\xc3\xa1pida\x0a\
+\x0a*Un resumen par\
+a resolver dispu\
+tas en la mesa, \
+no un sustituto \
+del reglamento o\
+ficial. Juego ba\
+se, 2\xe2\x80\x934 jugado\
+res.*\x0a\x0a## Objeti\
+vo\x0a\x0aTener m\xc3\xa1s p\
+untos cuando ter\
+mina la partida.\
+ Hay 108 fichas:\
+ 6 colores y 6 f\
+ormas, **3 copia\
+s de cada combin\
+aci\xc3\xb3n de color \
+y forma**.\x0a\x0a| Pu\
+ntuaci\xc3\xb3n | Punt\
+os |\x0a|---|:---:|\
+\x0a| Cada ficha de\
+ cada l\xc3\xadnea que\
+ creas o a la qu\
+e a\xc3\xb1ades | 1 po\
+r ficha |\x0a| Comp\
+letar una l\xc3\xadnea\
+ de 6 (un **Qwir\
+kle**) | +6 de b\
+onificaci\xc3\xb3n (12\
+ por la l\xc3\xadnea) \
+|\x0a| Primer jugad\
+or que se queda \
+sin fichas tras \
+vaciarse la bols\
+a | +6 |\x0a\x0a## Pre\
+paraci\xc3\xb3n\x0a\x0a1. To\
+das las fichas v\
+an a la bolsa. C\
+ada jugador roba\
+ **6** fichas y \
+las mantiene ocu\
+ltas.\x0a2. Cada ju\
+gador anuncia su\
+ conjunto m\xc3\xa1s l\
+argo de fichas q\
+ue comparten un \
+color o una form\
+a, **sin duplica\
+dos**. El jugado\
+r con el conjunt\
+o m\xc3\xa1s grande lo\
+ juega para empe\
+zar (en caso de \
+empate, empieza \
+el jugador empat\
+ado m\xc3\xa1s antiguo\
+). Las fichas va\
+n en una l\xc3\xadnea \
+y punt\xc3\xbaan como \
+una sola l\xc3\xadnea.\
+\x0a3. El turno pas\
+a en sentido hor\
+ario.\x0a\x0a## Un tur\
+no\x0a\x0aHaz **una** \
+de estas accione\
+s:\x0a\x0a1. **Juega**\
+ una o m\xc3\xa1s fich\
+as, punt\xc3\xbaalas y\
+ luego roba hast\
+a tener 6.\x0a2. **\
+Cambia** cualqui\
+er n\xc3\xbamero de fi\
+chas: ap\xc3\xa1rtalas\
+, roba el mismo \
+n\xc3\xbamero de ficha\
+s nuevas y luego\
+ devuelve las an\
+tiguas a la bols\
+a. No punt\xc3\xbaas *\
+*nada**, y no pu\
+edes cambiar m\xc3\xa1\
+s fichas de las \
+que caben en la \
+bolsa.\x0a\x0a## Coloc\
+ar fichas\x0a\x0a- Tod\
+as las fichas qu\
+e juegues en un \
+turno deben esta\
+r en **una l\xc3\xadne\
+a** (la misma fi\
+la o la misma co\
+lumna) y compart\
+ir **un atributo\
+**: todas del mi\
+smo color o toda\
+s de la misma fo\
+rma.\x0a- No tienen\
+ que tocarse ent\
+re s\xc3\xad, pero al \
+menos una debe t\
+ocar una ficha q\
+ue ya est\xc3\xa1 en l\
+a mesa, y la nue\
+va ficha debe co\
+incidir con ella\
+ en color o en f\
+orma.\x0a- Toda l\xc3\xad\
+nea formada en l\
+a mesa, en cualq\
+uier direcci\xc3\xb3n,\
+ debe ser de un \
+solo color o de \
+una sola forma, \
+sin fichas **dup\
+licadas** (por e\
+jemplo, solo un \
+cuadrado azul en\
+ una l\xc3\xadnea de c\
+uadrados).\x0a- Una\
+ l\xc3\xadnea **nunca*\
+* tiene m\xc3\xa1s de \
+6 fichas.\x0a- Pued\
+es a\xc3\xb1adir a **a\
+mbos extremos** \
+de una l\xc3\xadnea en\
+ un mismo turno.\
+\x0a- Algunas casil\
+las acaban sin n\
+inguna ficha leg\
+al. Es normal.\x0a\x0a\
+## Puntuar una j\
+ugada\x0a\x0a- Cuenta \
+cada l\xc3\xadnea que \
+tu jugada crea o\
+ ampl\xc3\xada: 1 punt\
+o por ficha de l\
+a l\xc3\xadnea, **incl\
+uidas las fichas\
+ que ya estaban*\
+*.\x0a- Una ficha q\
+ue pertenece a d\
+os l\xc3\xadneas (hori\
+zontal y vertica\
+l) cuenta en amb\
+as.\x0a- **Qwirkle:\
+** una l\xc3\xadnea co\
+mpleta de 6 punt\
+\xc3\xbaa sus 6 fichas\
+ m\xc3\xa1s 6 puntos d\
+e bonificaci\xc3\xb3n.\
+ Puedes completa\
+r m\xc3\xa1s de una en\
+ un turno y punt\
+uar cada una.\x0a\x0aE\
+jemplo: colocar \
+una ficha que fo\
+rma una l\xc3\xadnea d\
+e 4 en horizonta\
+l y una l\xc3\xadnea d\
+e 3 en vertical \
+punt\xc3\xbaa 4 + 3 = \
+7.\x0a\x0a## Final de \
+la partida\x0a\x0aCuan\
+do la bolsa est\xc3\
+\xa1 vac\xc3\xada, la par\
+tida contin\xc3\xbaa p\
+ero nadie roba. \
+El primer jugado\
+r que use todas \
+sus fichas termi\
+na la partida y \
+obtiene la **bon\
+ificaci\xc3\xb3n de 6 \
+puntos**. Gana l\
+a puntuaci\xc3\xb3n m\xc3\
+\xa1s alta.\x0a\x0a## Dis\
+putas habituales\
+\x0a\x0a- **Duplicados\
+:** dos fichas i\
+d\xc3\xa9nticas (mismo\
+ color y misma f\
+orma) nunca pued\
+en estar en la m\
+isma l\xc3\xadnea, aun\
+que est\xc3\xa9n aleja\
+das.\x0a- **Huecos:\
+** una l\xc3\xadnea so\
+lo cuenta las fi\
+chas que se toca\
+n en fila. Las f\
+ichas separadas \
+por un hueco son\
+ l\xc3\xadneas distint\
+as.\x0a- **Dos atri\
+butos en un turn\
+o:** no puedes j\
+ugar un cuadrado\
+ rojo y despu\xc3\xa9s\
+ un c\xc3\xadrculo azu\
+l en el mismo tu\
+rno. Deben compa\
+rtir color o for\
+ma.\x0a- **Cambiar \
+punt\xc3\xbaa 0:** y t\
+ermina tu turno.\
+\x0a\x0a## Consejos pa\
+ra Gamelog\x0a\x0a- In\
+troduce la puntu\
+aci\xc3\xb3n de cada j\
+ugada. El bot\xc3\xb3n\
+ de bonificaci\xc3\xb3\
+n Qwirkle regist\
+ra cu\xc3\xa1ntos Qwir\
+kles complet\xc3\xb3 e\
+sa jugada (hasta\
+ 6) para que apa\
+rezcan en las es\
+tad\xc3\xadsticas. Los\
+ puntos siguen s\
+aliendo de la pu\
+ntuaci\xc3\xb3n que es\
+cribes.\x0a- La par\
+tida se finaliza\
+ de forma expl\xc3\xad\
+cita desde la ap\
+p, ya que el fin\
+al depende de qu\
+e se vac\xc3\xade la b\
+olsa y de que un\
+ jugador se qued\
+e sin fichas en \
+la mano.\x0a- **Des\
+empate de la app\
+** (no forma par\
+te del reglament\
+o oficial): si l\
+os jugadores emp\
+atan en puntuaci\
+\xc3\xb3n, gana quien \
+tenga m\xc3\xa1s Qwirk\
+les; despu\xc3\xa9s, l\
+a mejor jugada i\
+ndividual. Si si\
+guen empatados, \
+comparten la vic\
+toria.\x0a\
 \x00\x00&=\
 #\
  Carcassonne \xe2\x80\x94\
@@ -14987,6 +22817,1046 @@ ed co-owner's po\
 ints separately,\
  since each scor\
 es in full.\x0a\
+\x00\x00\x15\xa4\
+#\
+ Phase 10 Master\
+ \xe2\x80\x94 referencia \
+r\xc3\xa1pida\x0a\x0a*Resume\
+n para resolver \
+disputas en la m\
+esa, no un susti\
+tuto del libro d\
+e reglas de tu c\
+aja. Edici\xc3\xb3n Ph\
+ase 10 Master, 2\
+\xe2\x80\x936 jugadores. \
+El desarrollo de\
+l juego es el mi\
+smo que en el Ph\
+ase 10 est\xc3\xa1ndar\
+; las fases son \
+m\xc3\xa1s dif\xc3\xadciles.\
+*\x0a\x0a## \xc2\xbfCu\xc3\xa1l es\
+ este \xc2\xabMaster\xc2\xbb\
+?\x0a\x0aLa edici\xc3\xb3n M\
+aster de la app \
+usa la lista de \
+fases del **Phas\
+e 10 Master de R\
+avensburger** (2\
+008). No es la m\
+isma que la caja\
+ inglesa \xc2\xabPhase\
+ 10 Masters Edit\
+ion\xc2\xbb, cuyas reg\
+las (elegir tu f\
+ase en cada mano\
+ y apartar una c\
+arta \xc2\xabguardada\xc2\
+\xbb) son diferente\
+s. \x0a\x0a## Objetivo\
+\x0a\x0aSer el primer \
+jugador en **com\
+pletar las 10 fa\
+ses**. El total \
+de puntos m\xc3\xa1s b\
+ajo desempata.\x0a\x0a\
+## Las diez fase\
+s\x0a\x0a| Fase | Requ\
+isito |\x0a|:---:|-\
+--|\x0a| 1 | 4 grup\
+os de 2 |\x0a| 2 | \
+6 cartas de un m\
+ismo color |\x0a| 3\
+ | 1 grupo de 4 \
++ 1 escalera de \
+4 |\x0a| 4 | 1 esca\
+lera de 8 |\x0a| 5 \
+| 7 cartas de un\
+ mismo color |\x0a|\
+ 6 | 1 escalera \
+de 9 |\x0a| 7 | 2 g\
+rupos de 4 |\x0a| 8\
+ | 1 escalera de\
+ color de 4 + 1 \
+grupo de 3 |\x0a| 9\
+ | 1 grupo de 5 \
++ 1 grupo de 3 |\
+\x0a| 10 | 1 grupo \
+de 5 + 1 escaler\
+a de color de 3 \
+|\x0a\x0a- Un **grupo*\
+* son cartas con\
+ el mismo n\xc3\xbamer\
+o, de cualquier \
+color.\x0a- Una **e\
+scalera** son ca\
+rtas con n\xc3\xbamero\
+s consecutivos, \
+de cualquier col\
+or.\x0a- Una **esca\
+lera de color** \
+es una escalera \
+en la que todas \
+las cartas son d\
+el mismo color.\x0a\
+- Una **fase de \
+un solo color** \
+significa cartas\
+ de n\xc3\xbameros cua\
+lesquiera, todas\
+ del mismo color\
+.\x0a\x0a## C\xc3\xb3mo func\
+iona una mano\x0a\x0a-\
+ En cada mano in\
+tentas una fase.\
+ Si bajas toda t\
+u fase, pasas a \
+la siguiente; si\
+ no, la repites \
+en la mano sigui\
+ente. El cr\xc3\xa9dit\
+o se obtiene al \
+bajar la fase, a\
+unque otro jugad\
+or se quede sin \
+cartas antes.\x0a- \
+La mano termina \
+en cuanto un jug\
+ador ha bajado s\
+u fase y no le q\
+uedan cartas.\x0a- \
+Los jugadores qu\
+e no se quedaron\
+ sin cartas anot\
+an como puntos d\
+e penalizaci\xc3\xb3n \
+las cartas que l\
+es quedan en la \
+mano; quien se q\
+ueda sin cartas \
+no anota nada. L\
+as cartas ya baj\
+adas no cuentan.\
+\x0a\x0a## Puntos de p\
+enalizaci\xc3\xb3n\x0a\x0a| \
+Carta | Puntos |\
+\x0a|---|:---:|\x0a| D\
+el 1 al 9 | 5 |\x0a\
+| Del 10 al 12 |\
+ 10 |\x0a| Cartas d\
+e acci\xc3\xb3n | 15 |\
+\x0a| Comod\xc3\xadn | 20\
+ |\x0a\x0a## Otros dat\
+os a tener en cu\
+enta\x0a\x0a- Las fase\
+s pueden jugarse\
+ en **cualquier \
+orden**. Los jug\
+adores deben anu\
+nciar la fase qu\
+e juegan antes d\
+e empezar la ron\
+da.\x0a- La caja Ma\
+ster a\xc3\xb1ade **ca\
+rtas de acci\xc3\xb3n*\
+*; v\xc3\xa9ase la sec\
+ci\xc3\xb3n siguiente.\
+ La app no las r\
+egistra.\x0a- **Val\
+ores de las cart\
+as:** 5 (1\xe2\x80\x939),\
+ 10 (10\xe2\x80\x9312), 1\
+5 (Salto) y 25 (\
+Comod\xc3\xadn). Consu\
+lta la ayuda de \
+jugador de tu ca\
+ja. La app solo \
+pide el total de\
+ cada jugador.\x0a\x0a\
+## Cartas de acc\
+i\xc3\xb3n\x0a\x0aLa caja co\
+ntiene 18 cartas\
+ de acci\xc3\xb3n de c\
+uatro tipos, ade\
+m\xc3\xa1s de 3 cartas\
+ en blanco para \
+inventar las tuy\
+as. Cada una mue\
+stra un s\xc3\xadmbolo\
+ en lugar de un \
+n\xc3\xbamero:\x0a\x0a| S\xc3\xadm\
+bolo | Nombre | \
+Cartas |\x0a|---|--\
+-|:---:|\x0a| Pulga\
+r | **Todo m\xc3\xado*\
+* [All mine] | 4\
+ |\x0a| Pulgar e \xc3\xad\
+ndice (dos dedos\
+) | **Toma dos**\
+ [Take two] | 4 \
+|\x0a| Mano abierta\
+ (cinco dedos) |\
+ **Dame cinco** \
+[Give me five] |\
+ 4 |\x0a| Signo de \
+exclamaci\xc3\xb3n | *\
+*Salto** | 6 |\x0a\x0a\
+**Cu\xc3\xa1ndo se jue\
+gan.** Las pregu\
+ntas frecuentes \
+(FAQ) de Ravensb\
+urger dicen que \
+las cartas de ac\
+ci\xc3\xb3n se juegan \
+**al final de tu\
+ turno**, y se c\
+olocan en el mon\
+t\xc3\xb3n de descarte\
+ **en lugar de d\
+escartar una car\
+ta normal**. Jug\
+ar una siempre t\
+ermina tu turno.\
+ Por tanto, no p\
+uedes bajar tu f\
+ase en el mismo \
+turno despu\xc3\xa9s d\
+e jugar una, por\
+ ejemplo despu\xc3\xa9\
+s de tomar una c\
+arta con Dame ci\
+nco.\x0a\x0a**Pulgar: \
+Todo m\xc3\xado.** Si \
+la juegas y la m\
+ano termina ante\
+s de que acabes,\
+ puedes **quedar\
+te con todas o a\
+lgunas de las ca\
+rtas de tu mano \
+para la mano sig\
+uiente**. Decide\
+s al final de la\
+ mano. Esas cart\
+as te siguen cos\
+tando puntos de \
+penalizaci\xc3\xb3n.\x0a\x0a\
+**Dos dedos: Tom\
+a dos.** En tu s\
+iguiente turno p\
+uedes tomar **do\
+s cartas del maz\
+o en lugar de un\
+a**, quedarte co\
+n una y descarta\
+r la otra. Igual\
+mente terminas e\
+l turno con un d\
+escarte. Las fue\
+ntes difieren so\
+bre su duraci\xc3\xb3n\
+: una dice que s\
+olo dura tu sigu\
+iente turno y ot\
+ra que hasta el \
+final de la mano\
+. Consulta el li\
+bro de reglas de\
+ tu caja.\x0a\x0a**Cin\
+co dedos: Dame c\
+inco.** Los dem\xc3\
+\xa1s jugadores, po\
+r turno, te mues\
+tran cartas de s\
+us manos hasta q\
+ue haya **5 cart\
+as en total** a \
+la vista. Con me\
+nos de seis juga\
+dores, algunos m\
+uestran m\xc3\xa1s de \
+una carta. T\xc3\xba e\
+liges una de ell\
+as y la tomas en\
+ tu mano. El jug\
+ador del que pro\
+cede **roba una \
+carta de reempla\
+zo del mazo**.\x0a\x0a\
+**Signo de excla\
+maci\xc3\xb3n: Salto.*\
+* La juegas dela\
+nte de un rival,\
+ que pierde su s\
+iguiente turno.\x0a\
+\x0a## Fin de la pa\
+rtida\x0a\x0aLa partid\
+a termina cuando\
+ un jugador comp\
+leta la fase 10 \
+y se queda sin c\
+artas. Si dos o \
+m\xc3\xa1s jugadores l\
+a completan en l\
+a misma ronda, g\
+ana el que tenga\
+ menos puntos de\
+ penalizaci\xc3\xb3n e\
+n toda la partid\
+a.\x0a\x0a## Consejos \
+para Gamelog\x0a\x0a- \
+Anota para cada \
+jugador la fase \
+intentada, si se\
+ complet\xc3\xb3 y los\
+ puntos de penal\
+izaci\xc3\xb3n. La lis\
+ta de fases al l\
+ado del tablero \
+muestra las fase\
+s Master.\x0a- La a\
+pp aplica a Mast\
+er las mismas co\
+mprobaciones de \
+entrada de la ed\
+ici\xc3\xb3n est\xc3\xa1ndar\
+: puntuaciones e\
+n m\xc3\xbaltiplos de \
+5 y al menos 50 \
+para un jugador \
+que no complet\xc3\xb3\
+ su fase. Si la \
+caja Master punt\
+\xc3\xbaa de otra form\
+a (v\xc3\xa9ase la not\
+a sobre los valo\
+res de las carta\
+s arriba), la ap\
+p puede rechazar\
+ el n\xc3\xbamero que \
+quieres introduc\
+ir.\x0a- El interru\
+ptor **Fases en \
+orden** est\xc3\xa1 ac\
+tivado por defec\
+to y solo puede \
+cambiarse en la \
+primera ronda. *\
+*Fases libres** \
+permite a los ju\
+gadores elegir c\
+ualquier fase qu\
+e a\xc3\xban no hayan \
+superado; es una\
+ opci\xc3\xb3n de la c\
+asa, no la regla\
+ est\xc3\xa1ndar.\x0a- Ga\
+na la partida el\
+ jugador que ha \
+superado las 10 \
+fases con el tot\
+al m\xc3\xa1s bajo. Si\
+ los totales emp\
+atan, la app pre\
+fiere la puntuac\
+i\xc3\xb3n m\xc3\xa1s baja d\
+e la \xc3\xbaltima ron\
+da, y si tambi\xc3\xa9\
+n empata, la vic\
+toria se compart\
+e.\x0a\
+\x00\x00+\x09\
+#\
+ Carcassonne \xe2\x80\x94\
+ referencia r\xc3\xa1p\
+ida\x0a\x0a*Un resumen\
+ para resolver d\
+isputas en la me\
+sa, no un sustit\
+uto del reglamen\
+to\x0aoficial. Jueg\
+o base, 2\xe2\x80\x935 ju\
+gadores (la app \
+permite hasta 6)\
+, con granjeros.\
+ Tres\x0aexpansione\
+s se tratan m\xc3\xa1s\
+ abajo: **Posada\
+s y Catedrales**\
+, **Mercaderes y\
+\x0aConstructores**\
+ y **La catapult\
+a**. Las reglas \
+de las expansion\
+es siguen las\x0aed\
+iciones actuales\
+ (revisadas).*\x0a\x0a\
+## Objetivo\x0a\x0aTen\
+er m\xc3\xa1s puntos c\
+uando se haya co\
+locado la \xc3\xbaltim\
+a loseta y se ha\
+ya hecho la\x0apunt\
+uaci\xc3\xb3n final. L\
+os elementos **c\
+ompletados** se \
+punt\xc3\xbaan durante\
+ la partida, y\x0al\
+os elementos **i\
+ncompletos** (y \
+los campos) al f\
+inal.\x0a\x0a| Element\
+o | Completado d\
+urante la partid\
+a | Incompleto a\
+l final de la pa\
+rtida |\x0a|---|:--\
+-:|:---:|\x0a| Cami\
+no | 1 por loset\
+a | 1 por loseta\
+ |\x0a| Ciudad | 2 \
+por loseta + 2 p\
+or escudo | 1 po\
+r loseta + 1 por\
+ escudo |\x0a| Mona\
+sterio (claustro\
+) | 9 (\xc3\xa9l mismo\
+ + 8 vecinos) | \
+1 + 1 por loseta\
+ que lo rodea |\x0a\
+| Campo (granjer\
+os) | nunca se p\
+unt\xc3\xbaa durante l\
+a partida | 3 po\
+r **cada ciudad \
+completada** que\
+ lo toque |\x0a\x0aUna\
+ loseta cuenta u\
+na vez por eleme\
+nto, aunque el c\
+amino o la ciuda\
+d pasen por\x0aella\
+ varias veces. U\
+n monasterio com\
+pletado siempre \
+vale 9; necesita\
+ las 8 losetas\x0aq\
+ue lo rodean.\x0a\x0a#\
+# Preparaci\xc3\xb3n\x0a\x0a\
+1. Coloca la los\
+eta inicial (dor\
+so oscuro) en el\
+ centro. Baraja \
+las dem\xc3\xa1s loset\
+as\x0a   en pilas b\
+oca abajo al alc\
+ance de todos.\x0a2\
+. Cada jugador t\
+oma **7 meeples*\
+* de un color; e\
+l 8.\xc2\xba va en el \
+marcador de\x0a   p\
+untuaci\xc3\xb3n.\x0a3. E\
+mpieza el jugado\
+r m\xc3\xa1s joven y s\
+e juega en el se\
+ntido de las agu\
+jas del reloj.\x0a\x0a\
+## Un turno\x0a\x0a1. \
+**Coloca una los\
+eta.** Roba exac\
+tamente una y co\
+l\xc3\xb3cala boca arr\
+iba junto a las\x0a\
+   losetas ya en\
+ la mesa. Cada b\
+orde que toque d\
+ebe coincidir (c\
+amino con camino\
+,\x0a   ciudad con \
+ciudad, campo co\
+n campo). Los mo\
+nasterios siempr\
+e est\xc3\xa1n en el c\
+entro\x0a   de una \
+loseta.\x0a2. **Col\
+oca un meeple (o\
+pcional).** Uno,\
+ de tu reserva, \
+solo en la loset\
+a que\x0a   acabas \
+de colocar, y so\
+lo en un element\
+o que **no tenga\
+ ning\xc3\xban meeple*\
+*, ni\x0a   siquier\
+a m\xc3\xa1s all\xc3\xa1 en \
+el camino o la c\
+iudad.\x0a3. **Punt\
+\xc3\xbaa.** Punt\xc3\xbaa c\
+ada elemento que\
+ tu loseta haya \
+completado.\x0a\x0aSi \
+la loseta que ro\
+baste no puede c\
+olocarse legalme\
+nte en ning\xc3\xban s\
+itio, devu\xc3\xa9lvel\
+a\x0aa la caja y ro\
+ba otra.\x0a\x0a## Tip\
+os de meeple\x0a\x0a| \
+Papel | Se coloc\
+a en | Puntuaci\xc3\
+\xb3n |\x0a|---|---|--\
+-|\x0a| Viajero | C\
+amino | al compl\
+etarse, o al fin\
+al |\x0a| Caballero\
+ | Ciudad | al c\
+ompletarse, o al\
+ final |\x0a| Monje\
+ | Monasterio | \
+al completarse, \
+o al final |\x0a| G\
+ranjero | Campo \
+(tumbado) | **so\
+lo** al final; p\
+ermanece all\xc3\xad t\
+oda la partida |\
+\x0a\x0aLos meeples pu\
+ntuados vuelven \
+de inmediato a t\
+u reserva, excep\
+to los granjeros\
+,\x0aque nunca vuel\
+ven. Las expansi\
+ones a\xc3\xb1aden el \
+**seguidor grand\
+e** (Posadas y\x0aC\
+atedrales), y el\
+ **constructor**\
+ y el **cerdo** \
+(Mercaderes y Co\
+nstructores); v\xc3\
+\xa9anse\x0asus seccio\
+nes.\x0a\x0a## Element\
+os completados\x0a\x0a\
+- **Camino:** am\
+bos extremos cie\
+rran en una alde\
+a, una ciudad, u\
+n monasterio u o\
+tro\x0a  extremo, o\
+ vuelve sobre s\xc3\
+\xad mismo.\x0a- **Ciu\
+dad:** completam\
+ente rodeada de \
+murallas, sin hu\
+ecos en su inter\
+ior.\x0a- **Monaste\
+rio:** las 8 los\
+etas que lo rode\
+an est\xc3\xa1n coloca\
+das.\x0a\x0a## Element\
+os compartidos y\
+ empates\x0a\x0aDos me\
+eples de jugador\
+es distintos pue\
+den acabar en el\
+ mismo elemento,\
+ porque\x0apuedes c\
+olocar una loset\
+a que una dos pi\
+ezas ocupadas po\
+r separado.\x0a\x0a- E\
+l jugador con **\
+m\xc3\xa1s meeples** e\
+n el elemento lo\
+ punt\xc3\xbaa complet\
+o.\x0a- Si varios j\
+ugadores est\xc3\xa1n \
+**empatados** co\
+n m\xc3\xa1s meeples, \
+**cada uno** pun\
+t\xc3\xbaa los\x0a  punto\
+s completos.\x0a- L\
+os jugadores con\
+ menos meeples n\
+o punt\xc3\xbaan nada \
+de ese elemento.\
+\x0a\x0aEsto vale tamb\
+i\xc3\xa9n para los ca\
+mpos: el jugador\
+ con m\xc3\xa1s granje\
+ros en un campo\x0a\
+punt\xc3\xbaa el campo\
+ entero.\x0a\x0a## Cam\
+pos (granjeros)\x0a\
+\x0aLos campos est\xc3\
+\xa1n separados por\
+ caminos, ciudad\
+es y otros divis\
+ores, as\xc3\xad que u\
+na\x0aloseta puede \
+tocar varios cam\
+pos. Al final, c\
+ada campo punt\xc3\xba\
+a **3 puntos por\
+ cada\x0aciudad com\
+pletada** que lo\
+ toque. Una ciud\
+ad todav\xc3\xada inco\
+mpleta no suma n\
+ada a\x0aning\xc3\xban ca\
+mpo.\x0a\x0a## Expansi\
+\xc3\xb3n: Posadas y C\
+atedrales\x0a\x0aA\xc3\xb1ad\
+e 18 losetas, un\
+ seguidor grande\
+ para cada jugad\
+or y las losetas\
+ de 50 / 100\x0apun\
+tos (da la vuelt\
+a a la loseta cu\
+ando tu puntuaci\
+\xc3\xb3n supere 50 o \
+100, como de\x0acos\
+tumbre).\x0a\x0a- **Se\
+guidor grande:**\
+ col\xc3\xb3calo **en \
+lugar de** un se\
+guidor normal, e\
+n un camino,\x0a  u\
+na ciudad, un mo\
+nasterio o un ca\
+mpo, siguiendo l\
+as reglas habitu\
+ales de\x0a  coloca\
+ci\xc3\xb3n. Cuenta co\
+mo **uno** a efe\
+ctos de seguidor\
+es, pero como **\
+dos** al\x0a  decid\
+ir qui\xc3\xa9n tiene \
+la mayor\xc3\xada. No \
+punt\xc3\xbaa doble: u\
+n seguidor grand\
+e en un\x0a  monast\
+erio punt\xc3\xbaa exa\
+ctamente lo mism\
+o que uno normal\
+. Vuelve tras pu\
+ntuar, como\x0a  cu\
+alquier seguidor\
+, salvo como gra\
+njero, donde per\
+manece hasta el \
+final.\x0a- **Posad\
+as:** un camino \
+con al menos una\
+ posada a su lad\
+o punt\xc3\xbaa **2 pu\
+ntos por\x0a  loset\
+a** al completar\
+se, pero **0 al \
+final de la part\
+ida** si sigue i\
+ncompleto.\x0a  Una\
+ posada solo afe\
+cta al tramo de \
+camino junto a e\
+lla, no a todos \
+los caminos de\x0a \
+ su loseta.\x0a- **\
+Catedrales:** un\
+a ciudad con al \
+menos una catedr\
+al punt\xc3\xbaa **3 p\
+untos por\x0a  lose\
+ta y 3 por escud\
+o** al completar\
+se, pero **0 al \
+final de la part\
+ida** si est\xc3\xa1\x0a \
+ incompleta. Pue\
+des colocar una \
+catedral en la c\
+iudad de otro ju\
+gador, y puedes\x0a\
+  hacer lo mismo\
+ con una posada \
+en un camino.\x0a\x0a#\
+# Expansi\xc3\xb3n: Me\
+rcaderes y Const\
+ructores\x0a\x0aA\xc3\xb1ade\
+ 24 losetas, un \
+constructor y un\
+ cerdo para cada\
+ jugador, y 20 f\
+ichas de\x0acomerci\
+o (9 de vino, 6 \
+de grano, 5 de p\
+a\xc3\xb1o). Los const\
+ructores y los c\
+erdos **no\x0ason**\
+ seguidores: nun\
+ca cuentan para \
+la mayor\xc3\xada y no\
+ pueden colocars\
+e sin un\x0aseguido\
+r.\x0a\x0a**Constructo\
+r**\x0a\x0a- Col\xc3\xb3calo\
+ **en lugar de**\
+ un seguidor, so\
+bre la loseta qu\
+e acabas de colo\
+car, en\x0a  un cam\
+ino o una ciudad\
+ donde **ya teng\
+as un seguidor**\
+. Pueden estar t\
+ambi\xc3\xa9n\x0a  seguid\
+ores de otros ju\
+gadores. Nunca p\
+uede ir a un cam\
+po.\x0a- A partir d\
+e entonces, cada\
+ vez que coloque\
+s una loseta que\
+ **extienda** es\
+e\x0a  camino o esa\
+ ciudad, tienes \
+un **turno doble\
+**: termina tu t\
+urno normal (col\
+oca\x0a  un seguido\
+r, punt\xc3\xbaa) y lu\
+ego roba una seg\
+unda loseta y ju\
+\xc3\xa9gala completa.\
+\x0a- No hay reacci\
+\xc3\xb3n en cadena: n\
+unca se roba una\
+ tercera loseta \
+en un mismo turn\
+o.\x0a- El construc\
+tor permanece ha\
+sta que su camin\
+o o ciudad se co\
+mplete y se punt\
+\xc3\xbae, y\x0a  luego v\
+uelve a ti junto\
+ con tu seguidor\
+. Si tu \xc3\xbaltimo \
+seguidor abandon\
+a ese\x0a  elemento\
+, el constructor\
+ tambi\xc3\xa9n vuelve\
+.\x0a- Una loseta q\
+ue solo **comple\
+ta** un elemento\
+ sin extenderlo \
+(como una abad\xc3\xad\
+a) no\x0a  da turno\
+ doble.\x0a\x0a**Cerdo\
+**\x0a\x0a- Col\xc3\xb3calo \
+**en lugar de** \
+un seguidor, sob\
+re la loseta que\
+ acabas de coloc\
+ar, en\x0a  un camp\
+o donde **ya ten\
+gas un granjero*\
+*.\x0a- Al final de\
+ la partida, si \
+eres due\xc3\xb1o del \
+campo (tienes la\
+ mayor\xc3\xada de gra\
+njeros o\x0a  empat\
+as en ella), cad\
+a ciudad complet\
+ada en \xc3\xa9l vale \
+**4 puntos en lu\
+gar de 3**. Si\x0a \
+ no punt\xc3\xbaas el \
+campo, el cerdo \
+no suma nada.\x0a- \
+El cerdo permane\
+ce hasta el fina\
+l, a menos que t\
+u \xc3\xbaltimo granje\
+ro en ese campo \
+sea\x0a  retirado: \
+entonces vuelve \
+a ti.\x0a\x0a**Mercanc\
+\xc3\xadas**\x0a\x0a- Las ci\
+udades con s\xc3\xadmb\
+olo de vino, gra\
+no o pa\xc3\xb1o punt\xc3\
+\xbaan como de cost\
+umbre al\x0a  compl\
+etarse. El jugad\
+or que **complet\
+a** la ciudad to\
+ma **una ficha d\
+e comercio\x0a  por\
+ s\xc3\xadmbolo**, aun\
+que no tenga nin\
+g\xc3\xban caballero e\
+n ella.\x0a- Al fin\
+al de la partida\
+, el jugador con\
+ **m\xc3\xa1s fichas d\
+e cada tipo** pu\
+nt\xc3\xbaa **10\x0a  pun\
+tos** por ese ti\
+po (vino, grano \
+y pa\xc3\xb1o cuentan \
+por separado). L\
+os jugadores\x0a  e\
+mpatados en m\xc3\xa1s\
+ fichas punt\xc3\xbaan\
+ 10 **cada uno**\
+.\x0a\x0a## Expansi\xc3\xb3n\
+: La catapulta\x0a\x0a\
+A\xc3\xb1ade 12 loseta\
+s con una **feri\
+a**, una catapul\
+ta de madera y u\
+n tablero de\x0amed\
+ici\xc3\xb3n, y 4 fich\
+as de catapulta \
+por jugador (Der\
+ribo, Seducci\xc3\xb3n\
+, Lanzamiento al\
+\x0ablanco y Captur\
+a). Una feria te\
+rmina un camino,\
+ pues es un elem\
+ento propio.\x0a\x0a**\
+Siempre que algu\
+ien roba una los\
+eta de feria:**\x0a\
+\x0a1. La coloca y \
+termina su turno\
+ como de costumb\
+re.\x0a2. Empieza u\
+na **ronda de ca\
+tapulta**. El ju\
+gador que rob\xc3\xb3 \
+la loseta elige \
+una de\x0a   sus cu\
+atro fichas y la\
+ lanza con la ca\
+tapulta. Los dem\
+\xc3\xa1s jugadores, e\
+n el sentido\x0a   \
+de las agujas de\
+l reloj, lanzan \
+cada uno el **mi\
+smo tipo** de fi\
+cha. Todos tiene\
+n\x0a   **un intent\
+o**.\x0a3. Todos re\
+cuperan sus fich\
+as y la partida \
+contin\xc3\xbaa en el \
+sentido de las a\
+gujas del\x0a   rel\
+oj.\x0a\x0a| Ficha | Q\
+u\xc3\xa9 ocurre |\x0a|--\
+-|---|\x0a| **Derri\
+bo** | Cada segu\
+idor que toque l\
+a ficha vuelve a\
+ su due\xc3\xb1o, **in\
+cluido el tuyo**\
+, y un seguidor \
+empujado contra \
+otro retira tamb\
+i\xc3\xa9n a este. Cue\
+ntan las reaccio\
+nes en cadena. |\
+\x0a| **Seducci\xc3\xb3n*\
+* | La ficha deb\
+e quedar en repo\
+so **sobre el ma\
+pa**; si resbala\
+ fuera, no ocurr\
+e nada. El segui\
+dor del oponente\
+ m\xc3\xa1s cercano a \
+ella (usa el tab\
+lero de medici\xc3\xb3\
+n) se cambia por\
+ uno **tuyo**, d\
+e tu reserva o y\
+a en el mapa. El\
+ seguidor cambia\
+do vuelve a su d\
+ue\xc3\xb1o. |\x0a| **Lan\
+zamiento al blan\
+co** | Quien cai\
+ga m\xc3\xa1s cerca de\
+ la loseta de fe\
+ria que inici\xc3\xb3 \
+la ronda punt\xc3\xbaa\
+ **5**. Los empa\
+tes punt\xc3\xbaan 5 c\
+ada uno. |\x0a| **C\
+aptura** | El la\
+nzador y el rece\
+ptor (el jugador\
+ a la izquierda \
+del lanzador) se\
+ turnan hasta qu\
+e todos hayan si\
+do ambos. El lan\
+zador coloca el \
+tablero de medic\
+i\xc3\xb3n a mitad de \
+camino del recep\
+tor e intenta la\
+nzar m\xc3\xa1s all\xc3\xa1 \
+de \xc3\xa9l, y el rec\
+eptor intenta at\
+rapar la ficha. \
+**5 puntos** par\
+a el receptor si\
+ la atrapa, o si\
+ cae antes del t\
+ablero. **5 punt\
+os** para el lan\
+zador si pasa el\
+ tablero y no es\
+ atrapada, o si \
+el receptor la t\
+oca sin atraparl\
+a. |\x0a\x0aLos seguid\
+ores en la pista\
+ de puntuaci\xc3\xb3n \
+nunca son alcanz\
+ados.\x0a\x0a## Final \
+de la partida\x0a\x0aL\
+a partida termin\
+a cuando todas l\
+as losetas est\xc3\xa1\
+n colocadas. Ent\
+onces:\x0a\x0a1. Punt\xc3\
+\xbaa todos los cam\
+inos, ciudades y\
+ monasterios inc\
+ompletos seg\xc3\xban \
+la tabla.\x0a   (La\
+s posadas y cate\
+drales cambian e\
+sto; v\xc3\xa9ase Posa\
+das y Catedrales\
+.)\x0a2. Punt\xc3\xbaa to\
+dos los campos.\x0a\
+3. Con Mercadere\
+s y Constructore\
+s, punt\xc3\xbaa las f\
+ichas de comerci\
+o.\x0a4. Gana el to\
+tal m\xc3\xa1s alto. U\
+n empate por el \
+total m\xc3\xa1s alto \
+es una **victori\
+a\x0a   compartida*\
+*; las reglas of\
+iciales no tiene\
+n ning\xc3\xban otro c\
+riterio de desem\
+pate.\x0a\x0a## Consej\
+os para Gamelog\x0a\
+\x0a- Reglas de cas\
+a: la app **no**\
+ lleva un tabler\
+o. Introduces lo\
+s puntos como\x0a  \
+entradas separad\
+as, una por cada\
+ evento de puntu\
+aci\xc3\xb3n, y eliges\
+ el jugador y el\
+\x0a  **tipo**: Ciu\
+dad, Camino, Mon\
+asterio, Campo, \
+Bienes o Feria.\x0a\
+- Elegir Monaste\
+rio fija la punt\
+uaci\xc3\xb3n en 9 y l\
+a limita a 9.\x0a- \
+**Bienes** est\xc3\xa1\
+ fijado en **10 \
+puntos**, lo que\
+ corresponde a c\
+ada mayor\xc3\xada de\x0a\
+  fichas de come\
+rcio en Mercader\
+es y Constructor\
+es (una entrada \
+por cada tipo de\
+\x0a  ficha ganado)\
+. **Feria** est\xc3\
+\xa1 fijada en **5 \
+puntos**, lo que\
+ corresponde a c\
+ada\x0a  puntuaci\xc3\xb3\
+n de Lanzamiento\
+ al blanco o Cap\
+tura en La catap\
+ulta (una entrad\
+a por\x0a  cada jug\
+ador que punt\xc3\xbaa\
+).\x0a- Posadas y C\
+atedrales y el c\
+erdo no tienen t\
+ipo propio: intr\
+oduce esos punto\
+s como\x0a  entrada\
+s de Camino, Ciu\
+dad o Campo.\x0a- T\
+ermina la partid\
+a expl\xc3\xadcitament\
+e cuando hayas i\
+ntroducido la pu\
+ntuaci\xc3\xb3n final;\
+\x0a  no termina so\
+la.\x0a- **Desempat\
+e (regla de casa\
+, distinta de la\
+s reglas oficial\
+es):** si los ju\
+gadores\x0a  empata\
+n en el total, l\
+a app compara su\
+s totales por ti\
+po en el orden C\
+iudad,\x0a  Camino,\
+ Monasterio, Cam\
+po, Bienes, Feri\
+a. Gana el jugad\
+or que vaya por \
+delante en el\x0a  \
+primer tipo en q\
+ue difieran. Sol\
+o si siguen igua\
+lados en todos l\
+os tipos compart\
+en\x0a  la victoria\
+. Oficialmente, \
+un empate se com\
+parte sin m\xc3\xa1s.\x0a\
+- Introduce los \
+puntos de cada c\
+opropietario emp\
+atado por separa\
+do, ya que cada \
+uno\x0a  punt\xc3\xbaa co\
+mpleto.\x0a\
 \x00\x00\x04\xe7\
 \x00\
 \x00\x15>x\xda\xc5X[o\xdb6\x14~\xf7\xaf\xe0\
@@ -66541,10 +75411,50 @@ qt_resource_name = b"\
 \x00s\
 \x00c\x00r\x00a\x00b\x00b\x00l\x00e\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00q\x00m\
 \
+\x00\x11\
+\x07\xf9\xaf\xf4\
+\x00s\
+\x00c\x00r\x00a\x00b\x00b\x00l\x00e\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
+\
+\x00\x14\
+\x09\xb5QT\
+\x00c\
+\x00a\x00r\x00c\x00a\x00s\x00s\x00o\x00n\x00n\x00e\x00_\x00c\x00a\x00_\x00E\x00S\
+\x00.\x00m\x00d\
+\x00\x0e\
+\x08j\xf4\xd4\
+\x00c\
+\x00a\x00t\x00a\x00n\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x0e\
+\x02\x06\xd3t\
+\x00p\
+\x00o\x00c\x00h\x00a\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x0e\
+\x05S\xf0t\
+\x00t\
+\x00o\x00m\x00a\x006\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x0e\
+\x06j\xf4t\
+\x00c\
+\x00a\x00t\x00a\x00n\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
 \x00\x0f\
 \x07\xb9\x5c\x94\
 \x00r\
 \x00a\x00t\x00u\x00k\x00i\x00_\x00e\x00n\x00_\x00G\x00B\x00.\x00m\x00d\
+\x00\x16\
+\x04I\x14t\
+\x00p\
+\x00h\x00a\x00s\x00e\x001\x000\x00m\x00a\x00s\x00t\x00e\x00r\x00_\x00c\x00a\x00_\
+\x00E\x00S\x00.\x00m\x00d\
+\x00\x0d\
+\x05\x02/\xb4\
+\x00a\
+\x00z\x00u\x00l\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x12\
+\x04\xb9\x02T\
+\x00s\
+\x00k\x00u\x00l\x00l\x00k\x00i\x00n\x00g\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\
+\x00d\
 \x00\x10\
 \x02`\x06\x94\
 \x00q\
@@ -66558,15 +75468,37 @@ qt_resource_name = b"\
 \x00R\xc0\xd4\
 \x00t\
 \x00o\x00m\x00a\x006\x00_\x00e\x00n\x00_\x00G\x00B\x00.\x00m\x00d\
+\x00\x0d\
+\x0b\x02/\x14\
+\x00a\
+\x00z\x00u\x00l\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
 \x00\x0e\
 \x05k\xc4T\
 \x00c\
 \x00a\x00t\x00a\x00n\x00_\x00e\x00n\x00_\x00G\x00B\x00.\x00m\x00d\
+\x00\x10\
+\x0a/T\x94\
+\x00p\
+\x00h\x00a\x00s\x00e\x001\x000\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x10\
+\x04\xc6\xec4\
+\x00p\
+\x00a\x00r\x00c\x00h\x00i\x00s\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
 \x00\x16\
 \x03I\xe4T\
 \x00p\
 \x00h\x00a\x00s\x00e\x001\x000\x00m\x00a\x00s\x00t\x00e\x00r\x00_\x00e\x00n\x00_\
 \x00G\x00B\x00.\x00m\x00d\
+\x00\x11\
+\x09\xf9\xafT\
+\x00s\
+\x00c\x00r\x00a\x00b\x00b\x00l\x00e\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
+\
+\x00\x12\
+\x0a\xb9\x02\xf4\
+\x00s\
+\x00k\x00u\x00l\x00l\x00k\x00i\x00n\x00g\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\
+\x00d\
 \x00\x12\
 \x01\xb9\xfd4\
 \x00s\
@@ -66576,6 +75508,35 @@ qt_resource_name = b"\
 \x0b\x07\xa3\xf4\
 \x00p\
 \x00o\x00c\x00h\x00a\x00_\x00e\x00n\x00_\x00G\x00B\x00.\x00m\x00d\
+\x00\x1d\
+\x00\xfd\xdet\
+\x00a\
+\x00z\x00u\x00l\x00_\x00s\x00u\x00m\x00m\x00e\x00r\x00_\x00p\x00a\x00v\x00i\x00l\
+\x00i\x00o\x00n\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x10\
+\x0a\xc6\xec\x94\
+\x00p\
+\x00a\x00r\x00c\x00h\x00i\x00s\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x0f\
+\x00\xb8l4\
+\x00r\
+\x00a\x00t\x00u\x00k\x00i\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x0e\
+\x0c\x06\xd3\xd4\
+\x00p\
+\x00o\x00c\x00h\x00a\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x0e\
+\x0bS\xf0\xd4\
+\x00t\
+\x00o\x00m\x00a\x006\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x10\
+\x06\x9c\xfeT\
+\x00r\
+\x00e\x00m\x00i\x00g\x00i\x00o\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x0f\
+\x0e\xb8l\x94\
+\x00r\
+\x00a\x00t\x00u\x00k\x00i\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
 \x00\x10\
 \x03\xc7\xdc\x94\
 \x00p\
@@ -66594,13 +75555,44 @@ qt_resource_name = b"\
 \x00c\x00r\x00a\x00b\x00b\x00l\x00e\x00_\x00e\x00n\x00_\x00G\x00B\x00.\x00m\x00d\
 \
 \x00\x10\
+\x08\x9c\xfe\xf4\
+\x00r\
+\x00e\x00m\x00i\x00g\x00i\x00o\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x10\
+\x05a64\
+\x00q\
+\x00w\x00i\x00r\x00k\x00l\x00e\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x1d\
+\x0e\xfd\xde\xd4\
+\x00a\
+\x00z\x00u\x00l\x00_\x00s\x00u\x00m\x00m\x00e\x00r\x00_\x00p\x00a\x00v\x00i\x00l\
+\x00i\x00o\x00n\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x10\
 \x0f\x9d\xce\xd4\
 \x00r\
 \x00e\x00m\x00i\x00g\x00i\x00o\x00_\x00e\x00n\x00_\x00G\x00B\x00.\x00m\x00d\
+\x00\x10\
+\x04/T4\
+\x00p\
+\x00h\x00a\x00s\x00e\x001\x000\x00_\x00c\x00a\x00_\x00E\x00S\x00.\x00m\x00d\
+\x00\x10\
+\x0ba6\x94\
+\x00q\
+\x00w\x00i\x00r\x00k\x00l\x00e\x00_\x00e\x00s\x00_\x00E\x00S\x00.\x00m\x00d\
 \x00\x14\
 \x0e\xb4!t\
 \x00c\
 \x00a\x00r\x00c\x00a\x00s\x00s\x00o\x00n\x00n\x00e\x00_\x00e\x00n\x00_\x00G\x00B\
+\x00.\x00m\x00d\
+\x00\x16\
+\x0aI\x14\xd4\
+\x00p\
+\x00h\x00a\x00s\x00e\x001\x000\x00m\x00a\x00s\x00t\x00e\x00r\x00_\x00e\x00s\x00_\
+\x00E\x00S\x00.\x00m\x00d\
+\x00\x14\
+\x07\xb5Q\xf4\
+\x00c\
+\x00a\x00r\x00c\x00a\x00s\x00s\x00o\x00n\x00n\x00e\x00_\x00e\x00s\x00_\x00E\x00S\
 \x00.\x00m\x00d\
 \x00\x08\
 \x08\x8eU\xe3\
@@ -66776,208 +75768,264 @@ qt_resource_name = b"\
 qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x01\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x002\x00\x02\x00\x00\x00*\x00\x00\x00<\
+\x00\x00\x002\x00\x02\x00\x00\x00*\x00\x00\x00X\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00\x00\x00\x02\x00\x00\x00'\x00\x00\x00\x15\
+\x00\x00\x00\x00\x00\x02\x00\x00\x00'\x00\x00\x001\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00\x22\x00\x02\x00\x00\x00\x0e\x00\x00\x00\x07\
+\x00\x00\x00\x22\x00\x02\x00\x00\x00*\x00\x00\x00\x07\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x10\x00\x02\x00\x00\x00\x02\x00\x00\x00\x05\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x08t\x00\x01\x00\x00\x00\x01\x00\x03\xa0\x86\
+\x00\x00\x0c\xdc\x00\x01\x00\x00\x00\x01\x00\x05\xc7\x06\
 \x00\x00\x01\xa0\xa8\xed\xa5\xc1\
-\x00\x00\x08\x8a\x00\x01\x00\x00\x00\x01\x00\x03\xa5q\
+\x00\x00\x0c\xf2\x00\x01\x00\x00\x00\x01\x00\x05\xcb\xf1\
 \x00\x00\x01\xa0\xa8\xed\xa5\xc1\
-\x00\x00\x06\xca\x00\x00\x00\x00\x00\x01\x00\x02\xd0\xde\
+\x00\x00\x08$\x00\x00\x00\x00\x00\x01\x00\x03\x99\xab\
 \x00\x00\x01\xa14\xfa\x1b\xd0\
-\x00\x00\x07@\x00\x00\x00\x00\x00\x01\x00\x03\x00E\
+\x00\x00\x0a\x0a\x00\x00\x00\x00\x00\x01\x00\x04v\x0e\
+\x00\x00\x01\xa16\x0c$5\
+\x00\x00\x09\xa4\x00\x00\x00\x00\x00\x01\x00\x04Uk\
+\x00\x00\x01\xa16\x0cc\x0c\
+\x00\x00\x09X\x00\x00\x00\x00\x00\x01\x00\x040w\
 \x00\x00\x01\xa14\xfeZr\
-\x00\x00\x07\xb2\x00\x00\x00\x00\x00\x01\x00\x033\x11\
+\x00\x00\x0a\xe2\x00\x00\x00\x00\x00\x01\x00\x04\xcaN\
 \x00\x00\x01\xa15z~H\
-\x00\x00\x06d\x00\x00\x00\x00\x00\x01\x00\x02\xb3w\
+\x00\x00\x06\xb8\x00\x00\x00\x00\x00\x01\x00\x02\xf5:\
+\x00\x00\x01\xa16\x0cU1\
+\x00\x00\x07\xbe\x00\x00\x00\x00\x00\x01\x00\x03|D\
 \x00\x00\x01\xa14\xfa\x90D\
-\x00\x00\x07\xd2\x00\x00\x00\x00\x00\x01\x00\x03L>\
-\x00\x00\x01\xa14\xfd\x86\xdb\
-\x00\x00\x07\x0e\x00\x00\x00\x00\x00\x01\x00\x02\xech\
-\x00\x00\x01\xa15\x8fs\x11\
-\x00\x00\x07\x8c\x00\x00\x00\x00\x00\x01\x00\x03%\xeb\
+\x00\x00\x0b\x02\x00\x00\x00\x00\x00\x01\x00\x04\xe3{\
+\x00\x00\x01\xa15\xe1\x9c\xcd\
+\x00\x00\x08\xd4\x00\x00\x00\x00\x00\x01\x00\x03\xf3;\
+\x00\x00\x01\xa15\xef\x1a=\
+\x00\x00\x0a\xbc\x00\x00\x00\x00\x00\x01\x00\x04\xbd(\
 \x00\x00\x01\xa15\x8c\xb1\x06\
-\x00\x00\x07\xf8\x00\x00\x00\x00\x00\x01\x00\x03\x5c\x9f\
-\x00\x00\x01\xa14\xfa\x90F\
-\x00\x00\x06\xec\x00\x00\x00\x00\x00\x01\x00\x02\xdb\xe3\
+\x00\x00\x0c\x02\x00\x00\x00\x00\x00\x01\x00\x05>|\
+\x00\x00\x01\xa16\x0c\x82\xcb\
+\x00\x00\x07B\x00\x00\x00\x00\x00\x01\x00\x031r\
+\x00\x00\x01\xa16\x0c\x01\xd1\
+\x00\x00\x07\x94\x00\x00\x00\x00\x00\x01\x00\x03c\xf5\
+\x00\x00\x01\xa16\x0b+\x96\
+\x00\x00\x08\xae\x00\x00\x00\x00\x00\x01\x00\x03\xe4n\
+\x00\x00\x01\xa16\x0b\x8a\x08\
+\x00\x00\x0b(\x00\x00\x00\x00\x00\x01\x00\x04\xf3\xdc\
+\x00\x00\x01\xa15\xf6U\xdc\
+\x00\x00\x07t\x00\x00\x00\x00\x00\x01\x00\x03G@\
+\x00\x00\x01\xa16\x0c#\xb1\
+\x00\x00\x06\xda\x00\x00\x00\x00\x00\x01\x00\x03\x06\xf1\
+\x00\x00\x01\xa16\x0b+\xba\
+\x00\x00\x0bv\x00\x00\x00\x00\x00\x01\x00\x05\x10\xbd\
+\x00\x00\x01\xa16\x0c$\x08\
+\x00\x00\x08f\x00\x00\x00\x00\x00\x01\x00\x03\xc1\xa2\
 \x00\x00\x01\xa14\xd8\x8d'\
-\x00\x00\x06@\x00\x00\x00\x00\x00\x01\x00\x02\xa79\
+\x00\x00\x06\xfc\x00\x00\x00\x00\x00\x01\x00\x03\x12\xf9\
+\x00\x00\x01\xa16\x0c$\x12\
+\x00\x00\x0ar\x00\x00\x00\x00\x00\x01\x00\x04\xa1>\
+\x00\x00\x01\xa16\x0d\xca\xd3\
+\x00\x00\x0c\xae\x00\x00\x00\x00\x00\x01\x00\x05\x9b\xf9\
+\x00\x00\x01\xa16\x0c#\xda\
+\x00\x00\x07\x1e\x00\x00\x00\x00\x00\x01\x00\x03%4\
 \x00\x00\x01\xa14\xf9\xfb\xb6\
-\x00\x00\x06\x8a\x00\x00\x00\x00\x00\x01\x00\x02\xc0\xf5\
+\x00\x00\x06@\x00\x00\x00\x00\x00\x01\x00\x02\xa7;\
+\x00\x00\x01\xa16\x0c$t\
+\x00\x00\x07\xe4\x00\x00\x00\x00\x00\x01\x00\x03\x89\xc2\
 \x00\x00\x01\xa15z~I\
-\x00\x00\x07j\x00\x00\x00\x00\x00\x01\x00\x03\x15\xa6\
-\x00\x00\x01\xa14\xfe\x93^\
-\x00\x00\x08F\x00\x00\x00\x00\x00\x01\x00\x03zE\
+\x00\x00\x06\x96\x00\x00\x00\x00\x00\x01\x00\x02\xe3\x13\
+\x00\x00\x01\xa16\x0c#\xfc\
+\x00\x00\x0bP\x00\x00\x00\x00\x00\x01\x00\x05\x02\xdf\
+\x00\x00\x01\xa16\x0d\xe8\xd8\
+\x00\x00\x06h\x00\x00\x00\x00\x00\x01\x00\x02\xb8\xc0\
+\x00\x00\x01\xa16\x0c\xb9y\
+\x00\x00\x09\x06\x00\x00\x00\x00\x00\x01\x00\x04\x06\xa6\
+\x00\x00\x01\xa16\x0c$d\
+\x00\x00\x08\x88\x00\x00\x00\x00\x00\x01\x00\x03\xd2'\
+\x00\x00\x01\xa16\x0b\xbf\x00\
+\x00\x00\x0c|\x00\x00\x00\x00\x00\x01\x00\x05\x86Q\
+\x00\x00\x01\xa16\x0c\x01\xc0\
+\x00\x00\x09.\x00\x00\x00\x00\x00\x01\x00\x04\x18$\
+\x00\x00\x01\xa16\x0b+\xa8\
+\x00\x00\x09\xe4\x00\x00\x00\x00\x00\x01\x00\x04gA\
+\x00\x00\x01\xa16\x0b\x89\xf5\
+\x00\x00\x08F\x00\x00\x00\x00\x00\x01\x00\x03\xa4\xb0\
+\x00\x00\x01\xa16\x0c#\x95\
+\x00\x00\x09\x82\x00\x00\x00\x00\x00\x01\x00\x04E\xd8\
+\x00\x00\x01\xa15\xef\x1e#\
+\x00\x00\x0aP\x00\x00\x00\x00\x00\x01\x00\x04\x95:\
+\x00\x00\x01\xa16\x0b+\xd3\
+\x00\x00\x0c(\x00\x00\x00\x00\x00\x01\x00\x05P\xa4\
+\x00\x00\x01\xa16\x0c#\xf0\
+\x00\x00\x0a.\x00\x00\x00\x00\x00\x01\x00\x04\x83\xca\
+\x00\x00\x01\xa16\x0c=B\
+\x00\x00\x0cN\x00\x00\x00\x00\x00\x01\x00\x05`\x10\
 \x00\x00\x01\xa15\x81\xec\x95\
-\x00\x00\x08 \x00\x00\x00\x00\x00\x01\x00\x03l,\
-\x00\x00\x01\xa14\xf9\x0a'\
-\x00\x00\x0b\xfa\x00\x00\x00\x00\x00\x01\x00\x0a\xf7\xaf\
+\x00\x00\x0a\x98\x00\x00\x00\x00\x00\x01\x00\x04\xaf\x9e\
+\x00\x00\x01\xa16\x0c$\x1f\
+\x00\x00\x0b\x9c\x00\x00\x00\x00\x00\x01\x00\x05 C\
+\x00\x00\x01\xa16\x0cb\xf9\
+\x00\x00\x0b\xdc\x00\x00\x00\x00\x00\x01\x00\x0520\
+\x00\x00\x01\xa16\x0d\xa4\x88\
+\x00\x00\x10b\x00\x00\x00\x00\x00\x01\x00\x0d\x1e/\
 \x00\x00\x01\xa10\xd0\xa4\x18\
-\x00\x00\x0c\xc8\x00\x00\x00\x00\x00\x01\x00\x0b\x0dQ\
+\x00\x00\x110\x00\x00\x00\x00\x00\x01\x00\x0d3\xd1\
 \x00\x00\x01\xa0\xa8\xed\xa5\xc0\
-\x00\x00\x0c\xa0\x00\x00\x00\x00\x00\x01\x00\x0b\x0b;\
+\x00\x00\x11\x08\x00\x00\x00\x00\x00\x01\x00\x0d1\xbb\
 \x00\x00\x01\xa10\xd0\xa4\x19\
-\x00\x00\x09Z\x00\x00\x00\x00\x00\x01\x00\x042M\
+\x00\x00\x0d\xc2\x00\x00\x00\x00\x00\x01\x00\x06X\xcd\
 \x00\x00\x01\xa0\xa8\xed\xa5\xc0\
-\x00\x00\x0bL\x00\x00\x00\x00\x00\x01\x00\x0a\xe2\xc2\
+\x00\x00\x0f\xb4\x00\x00\x00\x00\x00\x01\x00\x0d\x09B\
 \x00\x00\x01\xa10LP\x83\
-\x00\x00\x0b0\x00\x00\x00\x00\x00\x01\x00\x0a\xe1_\
+\x00\x00\x0f\x98\x00\x00\x00\x00\x00\x01\x00\x0d\x07\xdf\
 \x00\x00\x01\xa0\xa8\xed\xa5\xbf\
-\x00\x00\x0aZ\x00\x00\x00\x00\x00\x01\x00\x0a\xa6\x96\
+\x00\x00\x0e\xc2\x00\x00\x00\x00\x00\x01\x00\x0c\xcd\x16\
 \x00\x00\x01\xa10LP\x82\
-\x00\x00\x0a\xd4\x00\x00\x00\x00\x00\x01\x00\x0a\xd2\x0e\
+\x00\x00\x0f<\x00\x00\x00\x00\x00\x01\x00\x0c\xf8\x8e\
 \x00\x00\x01\xa10LP\x83\
-\x00\x00\x09\x0c\x00\x00\x00\x00\x00\x01\x00\x03\xb6|\
+\x00\x00\x0dt\x00\x00\x00\x00\x00\x01\x00\x05\xdc\xfc\
 \x00\x00\x01\xa0\xa8\xed\xa5\xc0\
-\x00\x00\x0b\xb6\x00\x00\x00\x00\x00\x01\x00\x0a\xe9\x8d\
+\x00\x00\x10\x1e\x00\x00\x00\x00\x00\x01\x00\x0d\x10\x0d\
 \x00\x00\x01\xa10\xd0\xa4\x19\
-\x00\x00\x09\xd2\x00\x00\x00\x00\x00\x01\x00\x04C2\
+\x00\x00\x0e:\x00\x00\x00\x00\x00\x01\x00\x06i\xb2\
 \x00\x00\x01\xa10\xa9K\x02\
-\x00\x00\x09v\x00\x00\x00\x00\x00\x01\x00\x043\x10\
+\x00\x00\x0d\xde\x00\x00\x00\x00\x00\x01\x00\x06Y\x90\
 \x00\x00\x01\xa0\xa8\xed\xa5\xda\
-\x00\x00\x0c \x00\x00\x00\x00\x00\x01\x00\x0a\xf9*\
+\x00\x00\x10\x88\x00\x00\x00\x00\x00\x01\x00\x0d\x1f\xaa\
 \x00\x00\x01\xa0\xa8\xed\xa5\xdd\
-\x00\x00\x0b\x08\x00\x00\x00\x00\x00\x01\x00\x0a\xd8\x10\
+\x00\x00\x0fp\x00\x00\x00\x00\x00\x01\x00\x0c\xfe\x90\
 \x00\x00\x01\xa0\xa8\xed\xa5\xdd\
-\x00\x00\x0a\x88\x00\x00\x00\x00\x00\x01\x00\x0a\xa7\xf6\
+\x00\x00\x0e\xf0\x00\x00\x00\x00\x00\x01\x00\x0c\xcev\
 \x00\x00\x01\xa0\xa8\xed\xa5\xda\
-\x00\x00\x0a\xf6\x00\x00\x00\x00\x00\x01\x00\x0a\xd4?\
+\x00\x00\x0f^\x00\x00\x00\x00\x00\x01\x00\x0c\xfa\xbf\
 \x00\x00\x01\xa0\xa8\xed\xa5\xda\
-\x00\x00\x09\x8e\x00\x00\x00\x00\x00\x01\x00\x048\xa7\
+\x00\x00\x0d\xf6\x00\x00\x00\x00\x00\x01\x00\x06_'\
 \x00\x00\x01\xa0\xa8\xed\xa5\xde\
-\x00\x00\x0aH\x00\x00\x00\x00\x00\x01\x00\x0a\xa3q\
+\x00\x00\x0e\xb0\x00\x00\x00\x00\x00\x01\x00\x0c\xc9\xf1\
 \x00\x00\x01\xa0\xa8\xed\xa5\xda\
-\x00\x00\x0b\x1e\x00\x00\x00\x00\x00\x01\x00\x0a\xddo\
+\x00\x00\x0f\x86\x00\x00\x00\x00\x00\x01\x00\x0d\x03\xef\
 \x00\x00\x01\xa0\xa8\xed\xa5\xdb\
-\x00\x00\x0bn\x00\x00\x00\x00\x00\x01\x00\x0a\xe4&\
+\x00\x00\x0f\xd6\x00\x00\x00\x00\x00\x01\x00\x0d\x0a\xa6\
 \x00\x00\x01\xa10O\x89\xfa\
-\x00\x00\x0d\x14\x00\x00\x00\x00\x00\x01\x00\x10!\xac\
+\x00\x00\x11|\x00\x00\x00\x00\x00\x01\x00\x12H,\
 \x00\x00\x01\xa10\xa9K\x03\
-\x00\x00\x0c~\x00\x00\x00\x00\x00\x01\x00\x0b\x07\x0a\
+\x00\x00\x10\xe6\x00\x00\x00\x00\x00\x01\x00\x0d-\x8a\
 \x00\x00\x01\xa0\xa8\xed\xa5\xdd\
-\x00\x00\x08\xf2\x00\x00\x00\x00\x00\x01\x00\x03\xb1\x9d\
+\x00\x00\x0dZ\x00\x00\x00\x00\x00\x01\x00\x05\xd8\x1d\
 \x00\x00\x01\xa0\xa8\xed\xa5\xde\
-\x00\x00\x0c\xfc\x00\x00\x00\x00\x00\x01\x00\x0b\xab\xe1\
+\x00\x00\x11d\x00\x00\x00\x00\x00\x01\x00\x0d\xd2a\
 \x00\x00\x01\xa0\xa8\xed\xa5\xbf\
-\x00\x00\x0a\x12\x00\x00\x00\x00\x00\x01\x00\x04J_\
+\x00\x00\x0ez\x00\x00\x00\x00\x00\x01\x00\x06p\xdf\
 \x00\x00\x01\xa0\xa8\xed\xa5\xbf\
-\x00\x00\x0cX\x00\x00\x00\x00\x00\x01\x00\x0b\x04\x15\
+\x00\x00\x10\xc0\x00\x00\x00\x00\x00\x01\x00\x0d*\x95\
 \x00\x00\x01\xa10\xa9K\x02\
-\x00\x00\x09\xaa\x00\x00\x00\x00\x00\x01\x00\x04>=\
+\x00\x00\x0e\x12\x00\x00\x00\x00\x00\x01\x00\x06d\xbd\
 \x00\x00\x01\xa0\xa8\xed\xa5\xdd\
-\x00\x00\x0c>\x00\x00\x00\x00\x00\x01\x00\x0a\xfe \
+\x00\x00\x10\xa6\x00\x00\x00\x00\x00\x01\x00\x0d$\xa0\
 \x00\x00\x01\xa0\xa8\xed\xa5\xde\
-\x00\x00\x09&\x00\x00\x00\x00\x00\x01\x00\x03\xdd\xf8\
+\x00\x00\x0d\x8e\x00\x00\x00\x00\x00\x01\x00\x06\x04x\
 \x00\x00\x01\xa0\xa8\xed\xa5\xde\
-\x00\x00\x0a\x9a\x00\x00\x00\x00\x00\x01\x00\x0a\xaa\xf9\
+\x00\x00\x0f\x02\x00\x00\x00\x00\x00\x01\x00\x0c\xd1y\
 \x00\x00\x01\xa10\xd0\xa4\x18\
-\x00\x00\x0a*\x00\x00\x00\x00\x00\x01\x00\x0a\xa1\xd2\
+\x00\x00\x0e\x92\x00\x00\x00\x00\x00\x01\x00\x0c\xc8R\
 \x00\x00\x01\xa10LP\x83\
-\x00\x00\x09\xf2\x00\x00\x00\x00\x00\x01\x00\x04F!\
+\x00\x00\x0eZ\x00\x00\x00\x00\x00\x01\x00\x06l\xa1\
 \x00\x00\x01\xa0\xa8\xed\xa5\xde\
-\x00\x00\x0c\xe4\x00\x00\x00\x00\x00\x01\x00\x0b\x0f6\
+\x00\x00\x11L\x00\x00\x00\x00\x00\x01\x00\x0d5\xb6\
 \x00\x00\x01\xa0\xa8\xed\xa5\xd7\
-\x00\x00\x0a\xc0\x00\x00\x00\x00\x00\x01\x00\x0a\xac\xa7\
+\x00\x00\x0f(\x00\x00\x00\x00\x00\x01\x00\x0c\xd3'\
 \x00\x00\x01\xa0\xa8\xed\xa5\xc0\
-\x00\x00\x09@\x00\x00\x00\x00\x00\x01\x00\x03\xfb~\
+\x00\x00\x0d\xa8\x00\x00\x00\x00\x00\x01\x00\x06!\xfe\
 \x00\x00\x01\xa0\xa8\xed\xa5\xc0\
-\x00\x00\x08\xd4\x00\x00\x00\x00\x00\x01\x00\x03\xae~\
+\x00\x00\x0d<\x00\x00\x00\x00\x00\x01\x00\x05\xd4\xfe\
 \x00\x00\x01\xa0\xa8\xed\xa5\xd3\
-\x00\x00\x0b\x90\x00\x01\x00\x00\x00\x01\x00\x0a\xe8X\
+\x00\x00\x0f\xf8\x00\x01\x00\x00\x00\x01\x00\x0d\x0e\xd8\
 \x00\x00\x01\xa10\xd0\xa4\x17\
-\x00\x00\x08\xa2\x00\x00\x00\x00\x00\x01\x00\x03\xaaJ\
+\x00\x00\x0d\x0a\x00\x00\x00\x00\x00\x01\x00\x05\xd0\xca\
 \x00\x00\x01\xa10\xd0\xa4\x18\
-\x00\x00\x0b\xe0\x00\x00\x00\x00\x00\x01\x00\x0a\xebo\
+\x00\x00\x10H\x00\x00\x00\x00\x00\x01\x00\x0d\x11\xef\
 \x00\x00\x01\xa0\xa8\xed\xa5\xc0\
 \x00\x00\x01\xd8\x00\x00\x00\x00\x00\x01\x00\x00\xfb\xa1\
-\x00\x00\x01\xa14\xffC\x99\
+\x00\x00\x01\xa16\x0f_z\
 \x00\x00\x00\x86\x00\x00\x00\x00\x00\x01\x00\x00\xb92\
-\x00\x00\x01\xa14\xffC\x9a\
+\x00\x00\x01\xa16\x0f_\x82\
 \x00\x00\x00\xfa\x00\x00\x00\x00\x00\x01\x00\x00\xc9]\
-\x00\x00\x01\xa14\xffC\xbe\
+\x00\x00\x01\xa16\x0f_\x83\
 \x00\x00\x01\x92\x00\x00\x00\x00\x00\x01\x00\x00\xeb<\
-\x00\x00\x01\xa14\xffC\x95\
+\x00\x00\x01\xa16\x0f_\x8b\
 \x00\x00\x01\xfa\x00\x00\x00\x00\x00\x01\x00\x00\xfc\xed\
-\x00\x00\x01\xa14\xffCo\
-\x00\x00\x05\x1a\x00\x00\x00\x00\x00\x01\x00\x02^\xae\
-\x00\x00\x01\xa14\xffCn\
+\x00\x00\x01\xa16\x0f_\x91\
+\x00\x00\x05\x1a\x00\x00\x00\x00\x00\x01\x00\x02^\xb0\
+\x00\x00\x01\xa16\x0f_\x84\
 \x00\x00\x01\xb2\x00\x00\x00\x00\x00\x01\x00\x00\xf2\xd3\
-\x00\x00\x01\xa14\xffCn\
-\x00\x00\x04\xf4\x00\x00\x00\x00\x00\x01\x00\x02Yg\
-\x00\x00\x01\xa14\xffCo\
+\x00\x00\x01\xa16\x0f_\x89\
+\x00\x00\x04\xf4\x00\x00\x00\x00\x00\x01\x00\x02Yi\
+\x00\x00\x01\xa16\x0f_\x83\
 \x00\x00\x02\xb0\x00\x00\x00\x00\x00\x01\x00\x01\x11\xa0\
-\x00\x00\x01\xa14\xffC\xc8\
-\x00\x00\x04h\x00\x00\x00\x00\x00\x01\x00\x01\x866\
-\x00\x00\x01\xa14\xffC\xbe\
+\x00\x00\x01\xa16\x0f_\x98\
+\x00\x00\x04h\x00\x00\x00\x00\x00\x01\x00\x01\x868\
+\x00\x00\x01\xa16\x0f_\x83\
 \x00\x00\x00h\x00\x01\x00\x00\x00\x01\x00\x00\x01\xd9\
 \x00\x00\x01\xa0\xa8\xed\xa5\xbe\
-\x00\x00\x04\xb4\x00\x01\x00\x00\x00\x01\x00\x01\x94\xb9\
+\x00\x00\x04\xb4\x00\x01\x00\x00\x00\x01\x00\x01\x94\xbb\
 \x00\x00\x01\xa0\xa8\xed\xa5\xbe\
 \x00\x00\x02\xf4\x00\x00\x00\x00\x00\x01\x00\x01>\x12\
 \x00\x00\x01\xa0\xa8\xed\xa5\xbe\
 \x00\x00\x00\xaa\x00\x00\x00\x00\x00\x01\x00\x00\xba\xa0\
-\x00\x00\x01\xa14\xffC\xbd\
+\x00\x00\x01\xa16\x0f_[\
 \x00\x00\x034\x00\x00\x00\x00\x00\x01\x00\x01@\x19\
-\x00\x00\x01\xa14\xffC\xab\
+\x00\x00\x01\xa16\x0f_\x8d\
 \x00\x00\x00@\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
-\x00\x00\x01\xa14\xffC\xa5\
-\x00\x00\x05\xca\x00\x00\x00\x00\x00\x01\x00\x02\x97\x02\
-\x00\x00\x01\xa14\xffCo\
-\x00\x00\x04F\x00\x00\x00\x00\x00\x01\x00\x01\x84\xf2\
-\x00\x00\x01\xa14\xffCp\
-\x00\x00\x04\x00\x00\x00\x00\x00\x00\x01\x00\x01Z\xe6\
-\x00\x00\x01\xa14\xffC\xa4\
-\x00\x00\x04\xd2\x00\x00\x00\x00\x00\x01\x00\x02W\x84\
-\x00\x00\x01\xa14\xffC\x8d\
+\x00\x00\x01\xa16\x0f_[\
+\x00\x00\x05\xca\x00\x00\x00\x00\x00\x01\x00\x02\x97\x04\
+\x00\x00\x01\xa16\x0f_\x8d\
+\x00\x00\x04F\x00\x00\x00\x00\x00\x01\x00\x01\x84\xf4\
+\x00\x00\x01\xa16\x0f_\x86\
+\x00\x00\x04\x00\x00\x00\x00\x00\x00\x01\x00\x01Z\xe8\
+\x00\x00\x01\xa16\x0f_\x8b\
+\x00\x00\x04\xd2\x00\x00\x00\x00\x00\x01\x00\x02W\x86\
+\x00\x00\x01\xa16\x0f_\x80\
 \x00\x00\x03\x12\x00\x00\x00\x00\x00\x01\x00\x01>&\
-\x00\x00\x01\xa14\xffCl\
-\x00\x00\x05b\x00\x00\x00\x00\x00\x01\x00\x02f\xa3\
-\x00\x00\x01\xa14\xffCk\
-\x00\x00\x03Z\x00\x00\x00\x00\x00\x01\x00\x01E\xb6\
-\x00\x00\x01\xa14\xffC\xbd\
+\x00\x00\x01\xa16\x0f_\x87\
+\x00\x00\x05b\x00\x00\x00\x00\x00\x01\x00\x02f\xa5\
+\x00\x00\x01\xa16\x0f_Z\
+\x00\x00\x03Z\x00\x00\x00\x00\x00\x01\x00\x01E\xb8\
+\x00\x00\x01\xa16\x0f_Z\
 \x00\x00\x02\xd0\x00\x00\x00\x00\x00\x01\x00\x01<\xa6\
-\x00\x00\x01\xa14\xffCj\
-\x00\x00\x06\x18\x00\x00\x00\x00\x00\x01\x00\x02\xa5<\
-\x00\x00\x01\xa14\xffCk\
-\x00\x00\x05\xa8\x00\x00\x00\x00\x00\x01\x00\x02\x95\x07\
-\x00\x00\x01\xa14\xffCm\
+\x00\x00\x01\xa16\x0f_n\
+\x00\x00\x06\x18\x00\x00\x00\x00\x00\x01\x00\x02\xa5>\
+\x00\x00\x01\xa16\x0f_\x83\
+\x00\x00\x05\xa8\x00\x00\x00\x00\x00\x01\x00\x02\x95\x09\
+\x00\x00\x01\xa16\x0f_\x84\
 \x00\x00\x02\x8a\x00\x00\x00\x00\x00\x01\x00\x01\x0e\xe0\
-\x00\x00\x01\xa14\xffC\xa0\
-\x00\x00\x04&\x00\x00\x00\x00\x00\x01\x00\x01[\x96\
-\x00\x00\x01\xa14\xffC\x95\
-\x00\x00\x03\x88\x00\x00\x00\x00\x00\x01\x00\x01K\xdf\
-\x00\x00\x01\xa14\xffC\xc8\
-\x00\x00\x03\xd8\x00\x00\x00\x00\x00\x01\x00\x01X\xef\
-\x00\x00\x01\xa14\xffC\x99\
+\x00\x00\x01\xa16\x0f_\x87\
+\x00\x00\x04&\x00\x00\x00\x00\x00\x01\x00\x01[\x98\
+\x00\x00\x01\xa16\x0f_\x91\
+\x00\x00\x03\x88\x00\x00\x00\x00\x00\x01\x00\x01K\xe1\
+\x00\x00\x01\xa16\x0f_\x85\
+\x00\x00\x03\xd8\x00\x00\x00\x00\x00\x01\x00\x01X\xf1\
+\x00\x00\x01\xa16\x0f_[\
 \x00\x00\x02>\x00\x00\x00\x00\x00\x01\x00\x01\x05Z\
-\x00\x00\x01\xa14\xffC\xb4\
+\x00\x00\x01\xa16\x0f_v\
 \x00\x00\x01H\x00\x00\x00\x00\x00\x01\x00\x00\xd6\xbe\
-\x00\x00\x01\xa14\xffC\xb7\
-\x00\x00\x04\x8e\x00\x00\x00\x00\x00\x01\x00\x01\x8f\x08\
-\x00\x00\x01\xa14\xffCk\
+\x00\x00\x01\xa16\x0f_\x82\
+\x00\x00\x04\x8e\x00\x00\x00\x00\x00\x01\x00\x01\x8f\x0a\
+\x00\x00\x01\xa16\x0f_\x82\
 \x00\x00\x01r\x00\x00\x00\x00\x00\x01\x00\x00\xe2\xd3\
-\x00\x00\x01\xa14\xffC\x97\
-\x00\x00\x03\xb6\x00\x00\x00\x00\x00\x01\x00\x01Q\xfc\
-\x00\x00\x01\xa14\xffC\xac\
+\x00\x00\x01\xa16\x0f_\x8b\
+\x00\x00\x03\xb6\x00\x00\x00\x00\x00\x01\x00\x01Q\xfe\
+\x00\x00\x01\xa16\x0f_[\
 \x00\x00\x02\x1c\x00\x00\x00\x00\x00\x01\x00\x01\x04\x1a\
-\x00\x00\x01\xa14\xffCk\
+\x00\x00\x01\xa16\x0f_\x84\
 \x00\x00\x02d\x00\x00\x00\x00\x00\x01\x00\x01\x0e2\
-\x00\x00\x01\xa14\xffCr\
-\x00\x00\x05@\x00\x00\x00\x00\x00\x01\x00\x02_\x5c\
-\x00\x00\x01\xa14\xffC\xa0\
-\x00\x00\x05\x88\x00\x00\x00\x00\x00\x01\x00\x02ic\
-\x00\x00\x01\xa14\xffC\xb4\
-\x00\x00\x05\xea\x00\x00\x00\x00\x00\x01\x00\x02\x9fS\
-\x00\x00\x01\xa14\xffCj\
+\x00\x00\x01\xa16\x0f_i\
+\x00\x00\x05@\x00\x00\x00\x00\x00\x01\x00\x02_^\
+\x00\x00\x01\xa16\x0f_\x8b\
+\x00\x00\x05\x88\x00\x00\x00\x00\x00\x01\x00\x02ie\
+\x00\x00\x01\xa16\x0f_\x91\
+\x00\x00\x05\xea\x00\x00\x00\x00\x00\x01\x00\x02\x9fU\
+\x00\x00\x01\xa16\x0f_\x87\
 \x00\x00\x01$\x00\x00\x00\x00\x00\x01\x00\x00\xd5T\
-\x00\x00\x01\xa14\xffCk\
+\x00\x00\x01\xa16\x0f_v\
 \x00\x00\x00\xd4\x00\x00\x00\x00\x00\x01\x00\x00\xc6\xad\
-\x00\x00\x01\xa14\xffCk\
+\x00\x00\x01\xa16\x0f_\x81\
 "
 
 def qInitResources():

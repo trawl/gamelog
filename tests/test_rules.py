@@ -28,7 +28,8 @@ def test_candidate_locales_fall_back_to_english():
 
 
 def test_missing_translation_falls_back_to_english(qapp):
-    assert load_rules("catan", "es_ES") == load_rules("catan", "en_GB")
+    # French has no sheets, so it falls back to the English one.
+    assert load_rules("catan", "fr_FR") == load_rules("catan", "en_GB")
 
 
 def test_unknown_document_is_none(qapp):
@@ -121,3 +122,14 @@ def test_every_rules_sheet_renders_and_links_are_https(qapp):
         assert len(dialog.browser.toPlainText()) > 500, definition.name
         if definition.rules_url:
             assert definition.rules_url.startswith("https://"), definition.name
+
+
+def test_every_sheet_is_translated_to_spanish_and_catalan():
+    """Each English sheet has a Spanish and a Catalan counterpart."""
+    from pathlib import Path
+
+    for english in Path("games").glob("*/rules/*_en_GB.md"):
+        stem = english.name.removesuffix("_en_GB.md")
+        for locale in ("es_ES", "ca_ES"):
+            translated = english.with_name(f"{stem}_{locale}.md")
+            assert translated.is_file(), f"missing {translated}"

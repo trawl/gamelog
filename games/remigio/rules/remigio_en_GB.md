@@ -67,7 +67,6 @@ their hand and **multiplies** the total by the closer's multiplier.
 - A player whose running total **reaches or passes** it is eliminated and does
   not play further rounds.
 - The last player still in the game wins.
-  closer and let the first to a target win. Agree on this beforehand.
 
 ## Gamelog tips
 
