@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/trawl/gamelog/compare/v2.1.1...v2.2.0) (2026-10-13)
+
+
+### Features
+
+* New games and rules ([#24](https://github.com/trawl/gamelog/issues/24)) ([3f004cb](https://github.com/trawl/gamelog/commit/3f004cb9650fbb6953c5d2cfcf6e31093b4c1c99))
+
 ## [2.1.1](https://github.com/trawl/gamelog/compare/v2.1.0...v2.1.1) (2026-09-17)
 
 
