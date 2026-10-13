@@ -188,14 +188,12 @@ def test_pocha_highest_score_wins_after_last_hand():
     assert match.getWinner() == "Ann"
 
 
-def test_pocha_tie_goes_to_the_last_player_at_the_max_score():
-    """``computeWinner`` scans with ``>=``, so a tie favours iteration order --
-    a fragile behaviour worth pinning down explicitly."""
-    match = started_match("Pocha", ["Ann", "Bob"])
-    match.totalScores = {"Ann": 50, "Bob": 50}
+def test_pocha_tie_shares_the_victory():
+    match = started_match("Pocha", ["Ann", "Bob", "Cy"])
+    match.totalScores = {"Ann": 50, "Bob": 40, "Cy": 50}
     _pad_rounds(match, match.maxRounds)
     match.computeWinner()
-    assert match.getWinner() == "Bob"
+    assert match.getWinners() == ["Ann", "Cy"]
 
 
 # --- Skull King: a Pocha variant, so the same rules apply over its own hands --

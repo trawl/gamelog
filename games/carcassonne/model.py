@@ -87,8 +87,8 @@ class CarcassonneMatch(GenericRoundMatch):
                 for player in removed:
                     del details[k][player]
 
-        # Ultimate draw, pick the first candidate then...
-        self.winner = candidates.pop()
+        # Still tied after every tie-breaker: they share the victory.
+        self.setWinners(candidates)
         return
 
 

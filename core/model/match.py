@@ -43,7 +43,9 @@ class GenericMatch:
     def __init__(self, players: Sequence[str] = ()) -> None:
         self.game = "Generic"
         self.players: Sequence[str] = players
-        self.winner: str | None = None
+        # Usually one, but players still tied after every tie-breaker share
+        # the victory.
+        self.winners: list[str] = []
         self.start: datetime.datetime | None = None
         self.resumed: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
         self.finish: datetime.datetime | None = None
@@ -141,8 +143,10 @@ class GenericMatch:
     def updateWinner(self) -> None:
         """Recompute the winner and, if there is one, finish the match."""
         self.computeWinner()
-        if self.winner:
-            logger.info("%s match finished — winner: %s", self.game, self.winner)
+        if self.winners:
+            logger.info(
+                "%s match finished — winners: %s", self.game, ", ".join(self.winners)
+            )
             self.flushState(self.FINISHED)
 
     # --- Persistence -------------------------------------------------------
@@ -185,7 +189,7 @@ class GenericMatch:
             )
         for p in self.players:
             winner = 0
-            if str(p) == self.getWinner():
+            if self.isWinner(str(p)):
                 winner = 1
             db.execute(
                 "INSERT OR REPLACE INTO MatchPlayer"
@@ -270,8 +274,32 @@ class GenericMatch:
     def getScoreFromPlayer(self, player: str) -> int:
         return self.totalScores[player]
 
+    @property
+    def winner(self) -> str | None:
+        """The first winner, or ``None`` while the match is undecided.
+
+        Assigning a single player (or ``None``) replaces all the winners;
+        use :meth:`setWinners` to share the victory.
+        """
+        return self.winners[0] if self.winners else None
+
+    @winner.setter
+    def winner(self, player: str | None) -> None:
+        self.winners = [] if player is None else [player]
+
     def getWinner(self) -> str | None:
         return self.winner
+
+    def getWinners(self) -> list[str]:
+        """Return every winner, in playing order (empty while undecided)."""
+        return list(self.winners)
+
+    def setWinners(self, players: Sequence[str]) -> None:
+        """Make ``players`` share the victory, kept in playing order."""
+        self.winners = [p for p in self.players if p in players]
+
+    def isWinner(self, player: str) -> bool:
+        return player in self.winners
 
     # --- State queries -----------------------------------------------------
 

@@ -42,6 +42,9 @@ Adding a game is dropping in a directory; no other files need editing.
 1. Create `games/<name>/` with `model.py`, `engine.py`, `widget.py`.
 2. **model.py** — subclass `GenericRoundMatch` (or `GenericMatch`) and implement
    the rules: `computeWinner()`, per-round scoring, and any extra persistence.
+   In `computeWinner()`, set `self.winner` to a single player, or call
+   `self.setWinners(players)` when players are still tied after every
+   tie-breaker, so they share the victory.
 3. **engine.py** — subclass `RoundGameEngine` (or `GameEngine`).
 4. **widget.py** — subclass `GameWidget` and provide its input / detail widgets.
 5. **__init__.py** — register the game:

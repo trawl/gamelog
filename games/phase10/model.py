@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import random
 from collections.abc import Sequence
 from typing import cast
 
@@ -80,8 +79,8 @@ class Phase10Match(GenericRoundMatch):
     def computeWinner(self) -> None:
         """Pick the winner among players who cleared all 10 phases.
 
-        Ties break on lowest total score, then on lowest last-round score,
-        then at random.
+        Ties break on lowest total score, then on lowest last-round score;
+        players still tied share the victory.
         """
         playersIn10 = []
         for p, pc in self.phasesCleared.items():
@@ -119,7 +118,7 @@ class Phase10Match(GenericRoundMatch):
                 self.winner = last_round_candidates[0]
                 return
 
-            self.winner = random.choice(last_round_candidates)
+            self.setWinners(last_round_candidates)
 
     def createRound(self, numround: int) -> GenericRound:
         return Phase10Round(numround)

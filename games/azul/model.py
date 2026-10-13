@@ -99,15 +99,15 @@ class AzulMatch(GenericRoundMatch):
     def computeWinner(self) -> None:
         """Once the game is over, pick the highest score.
 
-        Ties go to the best :meth:`tieBreak`, then to the first in playing
-        order.
+        Ties go to the best :meth:`tieBreak`; players still tied share the
+        victory.
         """
         if not self.isOver():
             return
         maxscore = max(self.totalScores.values())
         candidates = [p for p, s in self.totalScores.items() if s == maxscore]
-        candidates.sort(key=self.tieBreak, reverse=True)
-        self.winner = candidates[0]
+        best = max(self.tieBreak(p) for p in candidates)
+        self.setWinners([p for p in candidates if self.tieBreak(p) == best])
 
     def getPlayerBonuses(self, player: str) -> dict[str, int]:
         """Return ``player``'s bonus counts summed over every round."""

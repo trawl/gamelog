@@ -358,9 +358,15 @@ class GameWidget(Tab):
         self.gameStatusLabel.setStyleSheet(
             "QLabel { font-size: 16px; font-weight:bold; color: red;}"
         )
-        winner = self.engine.getWinner()
-        if winner:
-            self.gameStatusLabel.setText(self.tr("{} won this match!").format(winner))
+        winners = self.engine.getWinners()
+        if len(winners) > 1:
+            self.gameStatusLabel.setText(
+                self.tr("{} share the victory!").format(", ".join(winners))
+            )
+        elif winners:
+            self.gameStatusLabel.setText(
+                self.tr("{} won this match!").format(winners[0])
+            )
         elif self.engine.isPaused():
             self.gameStatusLabel.setText(self.tr("Game is paused"))
         else:
@@ -663,7 +669,11 @@ class GameWidget(Tab):
 
     def setWinner(self) -> None:
         """Lock the board and highlight the winner once the match ends."""
-        logger.info("%s match ended — winner: %s", self.game, self.engine.getWinner())
+        logger.info(
+            "%s match ended — winners: %s",
+            self.game,
+            ", ".join(self.engine.getWinners()),
+        )
         self.finished = True
         self.pauseMatchButton.setDisabled(True)
         self.clock.stopTimer()
@@ -674,13 +684,12 @@ class GameWidget(Tab):
         if self.hideInputOnFinish:
             self.gameInput.hide()
         self.toggleScreenLock(True)
-        winner = self.engine.getWinner()
         if hasattr(self, "playerGroupBox"):
-            try:
-                if winner in self.players:
+            for winner in self.engine.getWinners():
+                try:
                     self.playerGroupBox[winner].setWinner()
-            except KeyError:
-                pass
+                except KeyError:
+                    pass
 
     def changePlayerOrder(self) -> None:
         """Open the reorder dialog and apply any new order, dealer or colours."""

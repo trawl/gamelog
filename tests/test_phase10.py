@@ -3,7 +3,6 @@ last-round score, then random) and phase bookkeeping when a round is added
 or undone."""
 
 from core.registry import registry
-from games.phase10 import model as phase10_model
 
 
 def started_match(players):
@@ -38,15 +37,14 @@ def test_tie_broken_by_last_round_score():
     assert match.getWinner() == "Ann"  # same total as Bob, but a lower last round
 
 
-def test_ultimate_tie_is_broken_at_random(monkeypatch):
+def test_ultimate_tie_shares_the_victory():
     match = started_match(["Ann", "Bob"])
     match.phasesCleared = {p: list(range(1, 11)) for p in ["Ann", "Bob"]}
     match.totalScores = {"Ann": 100, "Bob": 100}
     _add_round(match, {"Ann": 5, "Bob": 5}, {})
 
-    monkeypatch.setattr(phase10_model.random, "choice", lambda seq: seq[-1])
     match.computeWinner()
-    assert match.getWinner() == "Bob"
+    assert match.getWinners() == ["Ann", "Bob"]
 
 
 def test_no_winner_until_someone_clears_all_ten_phases():

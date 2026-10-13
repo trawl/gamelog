@@ -16,17 +16,11 @@ class Toma6Match(GenericRoundMatch):
         self.top = 66
 
     def computeWinner(self) -> None:
-        """Once any player reaches ``top``, the lowest total score wins."""
+        """Once any player reaches ``top``, the lowest total score wins;
+        players tied on it share the victory."""
         if max(self.totalScores.values()) >= self.top:
-            winner = None
-            minscore = 100000
-            for player, score in self.totalScores.items():
-                if score < minscore:
-                    winner = player
-                    minscore = score
-
-            if winner is not None:
-                self.winner = winner
+            minscore = min(self.totalScores.values())
+            self.setWinners([p for p, s in self.totalScores.items() if s == minscore])
 
     def createRound(self, numround: int) -> GenericRound:
         return Toma6Round(numround)

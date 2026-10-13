@@ -28,18 +28,12 @@ class PochaMatch(GenericRoundMatch):
         return True
 
     def computeWinner(self) -> None:
-        """Set the winner (highest total) once every round has been played."""
-        winner = None
+        """Set the winner (highest total) once every round has been played;
+        players tied on it share the victory."""
         if len(self.rounds) < self.maxRounds:
             return
-        maxscore = -1000
-        for player, score in self.totalScores.items():
-            if score >= maxscore:
-                winner = player
-                maxscore = score
-
-        if winner is not None:
-            self.winner = winner
+        maxscore = max(self.totalScores.values())
+        self.setWinners([p for p, s in self.totalScores.items() if s == maxscore])
 
     def getHands(self) -> list[int]:
         return self.hands

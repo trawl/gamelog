@@ -38,16 +38,11 @@ class RatukiMatch(GenericRoundMatch):
         return True
 
     def computeWinner(self) -> None:
-        """Set the winner as the highest scorer at or above the target score."""
-        winner = None
-        maxscore = self.top
-        for player, score in self.totalScores.items():
-            if score >= maxscore:
-                winner = player
-                maxscore = score
-
-        if winner is not None:
-            self.winner = winner
+        """Set the winner as the highest scorer at or above the target score;
+        players tied on it share the victory."""
+        maxscore = max(self.totalScores.values())
+        if maxscore >= self.top:
+            self.setWinners([p for p, s in self.totalScores.items() if s == maxscore])
 
     def getTop(self) -> int:
         return self.top

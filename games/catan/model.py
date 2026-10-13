@@ -82,7 +82,8 @@ class CatanMatch(GenericRoundMatch):
         """Pick the highest scorer at or above ``top``.
 
         A tie is broken in favour of the player who gained most points in the
-        last round (in Catan you can only win during your own turn).
+        last round (in Catan you can only win during your own turn); players
+        still tied share the victory.
         """
         candidates = [p for p, score in self.totalScores.items() if score >= self.top]
         if not candidates:
@@ -91,8 +92,9 @@ class CatanMatch(GenericRoundMatch):
         candidates = [p for p in candidates if self.totalScores[p] == maxscore]
         if len(candidates) > 1 and self.rounds:
             last = self.rounds[-1]
-            candidates.sort(key=lambda p: last.getPlayerScore(p), reverse=True)
-        self.winner = candidates[0]
+            best = max(last.getPlayerScore(p) for p in candidates)
+            candidates = [p for p in candidates if last.getPlayerScore(p) == best]
+        self.setWinners(candidates)
 
     def getPlayerState(self, player: str) -> dict[str, int]:
         """Return ``player``'s current holdings: setup plus every round."""

@@ -39,11 +39,11 @@ def test_tie_broken_by_the_first_kind_with_a_clear_leader():
     assert match.getWinner() == "Ann"
 
 
-def test_ultimate_tie_picks_the_last_candidate():
+def test_ultimate_tie_shares_the_victory():
     """Every kind is tied (nothing scored beyond City), so the cascade never
-    narrows the field -- the fallback picks arbitrarily via ``list.pop()``."""
+    narrows the field -- the tied players share the victory."""
     match = started_match(["Ann", "Bob"])
     _add_entry(match, "Ann", 10, "City")
     _add_entry(match, "Bob", 10, "City")
     match.computeWinner()
-    assert match.getWinner() == "Bob"
+    assert match.getWinners() == ["Ann", "Bob"]

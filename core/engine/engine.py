@@ -90,9 +90,16 @@ class GameEngine[MatchT: GenericMatch]:
         return self.game
 
     def getWinner(self) -> str | None:
+        """Return the (first) winner, or ``None`` while undecided."""
         if self.match:
             return self.match.getWinner()
         return None
+
+    def getWinners(self) -> list[str]:
+        """Return every winner: more than one if they share the victory."""
+        if self.match:
+            return self.match.getWinners()
+        return []
 
     def getPlayers(self) -> dict[str, Player]:
         return self.players
@@ -304,7 +311,8 @@ class RoundGameEngine(GameEngine[GenericRoundMatch]):
             if self.getWinner():
                 print()
                 print("!!!!!!!!! Winner: !!!!!!!!!")
-                print(f"{self.getWinner():^27}")
+                for winner in self.getWinners():
+                    print(f"{winner:^27}")
                 print("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 print()
                 print(

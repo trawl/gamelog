@@ -341,9 +341,11 @@ class Phase10InputWidget(GameInputWidget):
         self.playerInputList[self.engine.getDealer()].setDealer()
 
     def setWinner(self) -> None:
-        winner = self.engine.getWinner()
-        if winner in self.engine.getListPlayers():
-            self.playerInputList[winner].setWinner()
+        winners = self.engine.getWinners()
+        for winner in winners:
+            if winner in self.playerInputList:
+                self.playerInputList[winner].setWinner()
+        if winners:
             for pi in self.playerInputList.values():
                 pi.finish()
 
