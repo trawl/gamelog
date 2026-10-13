@@ -10,5 +10,7 @@ registry.register(
         "games.toma6.engine:Toma6Engine",
         "games.toma6.widget:Toma6Widget",
         settings_factory="games.toma6.settings:game_settings",
+        rules_doc="toma6",
+        rules_url="https://blog.amigo-spiele.de/content/ap/rule/04910-GB-AmigoRule.pdf",
     )
 )

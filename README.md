@@ -17,6 +17,9 @@ and pause/resume for matches that span several sittings.
   score-over-time chart update instantly.
 - **Statistics** — general and per-player stats plus game records, kept across
   all your matches.
+- **Rules at hand** — a quick-reference sheet for every game, opened from the 📖
+  button on the new-game and scoreboard screens, with a link to the official rule
+  book where one is available.
 - **Pause & resume** — save a match mid-game and pick it up later.
 - **Dealer tracking** — automatic dealer rotation (round-robin or winner-deals).
 - **Multi-language** — English, Spanish and Catalan.

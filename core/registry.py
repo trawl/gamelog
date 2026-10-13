@@ -28,6 +28,10 @@ class GameDefinition:
     stats_engine_factory: GameType | None = None
     particular_stats_engine_factory: GameType | None = None
     settings_factory: GameType | None = None
+    # Name of the bundled quick-reference sheet (``:/rules/<rules_doc>_<locale>.md``)
+    # and an optional link to the publisher's official rule book.
+    rules_doc: str | None = None
+    rules_url: str | None = None
 
     def database_row(self) -> tuple[str, int, str, str]:
         """Return the columns stored in the Game table for this game."""

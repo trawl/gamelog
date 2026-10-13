@@ -15,6 +15,7 @@ registry.register(
         "games.phase10.engine:Phase10StatsEngine",
         "games.phase10.engine:Phase10ParticularStatsEngine",
         settings_factory=_settings,
+        rules_doc="phase10",
     )
 )
 registry.register(
@@ -29,5 +30,6 @@ registry.register(
         "games.phase10.widget:Phase10QSTW",
         "games.phase10.engine:Phase10StatsEngine",
         "games.phase10.engine:Phase10ParticularStatsEngine",
+        rules_doc="phase10master",
     )
 )

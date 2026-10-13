@@ -2,11 +2,11 @@
 """Generate ``resources.qrc`` and compile it into ``resources_rc.py``.
 
 Resources are discovered automatically, so adding a game is a matter of
-dropping files into ``games/<name>/{icons,styles,i18n}`` — no manual edits to
+dropping files into ``games/<name>/{icons,styles,i18n,rules}`` — no manual edits to
 the ``.qrc`` are required.  Discovery covers two locations:
 
-* shared, framework-wide assets under ``core/resources/{icons,styles,i18n}``
-* per-game assets under ``games/<name>/{icons,styles,i18n}``
+* shared, framework-wide assets under ``core/resources/{icons,styles,i18n,rules}``
+* per-game assets under ``games/<name>/{icons,styles,i18n,rules}``
 
 Every file is exposed under a flat resource alias (``:/icons/<name>``,
 ``:/styles/<name>``, ``:/i18n/<name>``) regardless of where it physically
@@ -29,6 +29,7 @@ from pathlib import Path
 CATEGORIES = {
     "icons": {".svg", ".png", ".ico"},
     "styles": {".qss"},
+    "rules": {".md"},  # quick-reference sheets, one per game and language
     "i18n": {".qm"},  # only compiled catalogues; .ts sources stay out of the bundle
 }
 

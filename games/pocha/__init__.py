@@ -13,5 +13,7 @@ registry.register(
         "games.pocha.engine:PochaStatsEngine",
         "games.pocha.engine:PochaParticularStatsEngine",
         settings_factory="games.pocha.settings:game_settings",
+        rules_doc="pocha",
+        rules_url="https://www.nhfournier.es/en/como-jugar/pocha/",
     )
 )

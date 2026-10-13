@@ -13,5 +13,7 @@ registry.register(
         "games.scrabble.engine:ScrabbleStatsEngine",
         "games.scrabble.engine:ScrabbleParticularStatsEngine",
         settings_factory="games.scrabble.settings:game_settings",
+        rules_doc="scrabble",
+        rules_url="https://service.mattel.com/instruction_sheets/53639-ENG.pdf",
     )
 )

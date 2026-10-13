@@ -220,6 +220,18 @@ Every file is exposed under a flat alias regardless of where it lives:
 flat, **file names must be unique across all games** (the build script errors on
 a collision).
 
+### Rules sheets
+A game may ship a quick-reference rules sheet, shown by the 📖 button on its
+board:
+
+* `games/<name>/rules/<doc>_<locale>.md` — Markdown, one file per language
+  (e.g. `catan_en_GB.md`). A missing translation falls back to the language
+  root and then to `en_GB`, so languages can be added one at a time.
+* Point the game at it with `rules_doc="<doc>"` (and optionally `rules_url=` for
+  the publisher's rule book, opened in the system browser) on its
+  `GameDefinition`. Games without `rules_doc` show no button.
+* Write sheets in your own words — do not copy or bundle publisher text/PDFs.
+
 ### Per-game stylesheets
 A game may ship an optional stylesheet that is layered on top of the global
 theme, scoped to that game's widget:

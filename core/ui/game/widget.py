@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
 
 from core.engine.engine import EntryGameEngine, RoundGameEngine
 from core.engine.settings import appsettings
+from core.registry import registry
 from core.ui.game.colours import PlayerColours
 from core.ui.game.input import GameInputWidget
 from core.ui.game.matchedit import MatchTimesEditDialog
@@ -29,6 +30,7 @@ from core.ui.game.player import GamePlayerWidget
 from core.ui.game.rounds import GameRoundsDetail
 from core.ui.game.utils import SleepBlocker
 from core.ui.language import LanguageButton
+from core.ui.rules import RulesDialog
 from core.ui.settings import SettingsDialog
 from core.ui.tab import Tab
 from core.ui.timers import GameClock
@@ -123,6 +125,16 @@ class GameWidget(Tab):
         )
         self.buttonGroupLayout.addWidget(self.settingsButton)
         self.settingsButton.clicked.connect(self.onSettings)
+
+        self.rulesDialog: RulesDialog | None = None
+        definition = registry.get(self.game)
+        self.rulesButton = QPushButton(self)
+        self.rulesButton.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+        )
+        self.rulesButton.setVisible(bool(definition and definition.rules_doc))
+        self.buttonGroupLayout.addWidget(self.rulesButton)
+        self.rulesButton.clicked.connect(self.showRules)
 
         self.separator2 = QWidget(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.separator2)
@@ -288,6 +300,10 @@ class GameWidget(Tab):
             self.playerOrderButton.setText("♟↕")
             self.finishButton.setText("⏹")
         self.settingsButton.setText("⚙")
+        self.rulesButton.setText("📖")
+        self.rulesButton.setToolTip(self.tr("Rules"))
+        if self.rulesDialog is not None:
+            self.rulesDialog.retranslateUI()
         self.gameInput.retranslateUI()
         if self.engine.getDealingPolicy() not in (
             self.engine.NoDealer,
@@ -304,6 +320,18 @@ class GameWidget(Tab):
     def createRoundsDetail(self, parent: QWidget | None = None) -> GameRoundsDetail:
         """Build the rounds/plot/stats detail panel; games may override."""
         return GameRoundsDetail(self.engine, parent)
+
+    def showRules(self) -> None:
+        """Show the game's quick-reference rules without blocking the board."""
+        definition = registry.get(self.game)
+        if definition is None:
+            return
+        if self.rulesDialog is None:
+            self.rulesDialog = RulesDialog(definition, self)
+            self.rulesDialog.setModal(False)
+        self.rulesDialog.show()
+        self.rulesDialog.raise_()
+        self.rulesDialog.activateWindow()
 
     def onSettings(self) -> None:
         """Open the settings dialog and react to changed settings."""
