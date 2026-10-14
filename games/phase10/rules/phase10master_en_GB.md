@@ -62,7 +62,7 @@ ties.
   they are playing before the round starts.
 - The Master box adds **action cards**; see the next section. The app does not
   track them.
-- **Card values:**  5 (1–9), 10 (10–12), 15 (Skip) and 25 (Wild).
+- **Card values:** 5 (1–9), 10 (10–12), 15 (Skip) and 25 (Wild).
   Check the player aid in your box. The app only asks for each player's total.
 
 ## Action cards
@@ -113,10 +113,8 @@ over the whole game wins.
 - Record for each player the phase aimed at, whether it was completed, and the
   penalty points. The phase list on the side of the board shows the Master
   phases.
-- The app applies the standard edition's entry checks to Master as well: scores
-  in multiples of 5, and at least 50 for a player who did not complete their
-  phase. If your Master box scores differently (see the note on card values
-  above), the app may reject the number you want to enter.
+- Scores are entered in multiples of 5, and a player who did not complete their
+  phase cannot score under 50.
 - The **Phases in order** switch is on by default and can only be changed in the
   first round. **Free phase order** lets players choose any phase they have not
   cleared yet; this is a house option, not the standard rule.

@@ -79,6 +79,6 @@ La partida termina cuando un jugador completa la fase 10 y se queda sin cartas. 
 ## Consejos para Gamelog
 
 - Anota para cada jugador la fase intentada, si se completó y los puntos de penalización. La lista de fases al lado del tablero muestra las fases Master.
-- La app aplica a Master las mismas comprobaciones de entrada de la edición estándar: puntuaciones en múltiplos de 5 y al menos 50 para un jugador que no completó su fase. Si la caja Master puntúa de otra forma (véase la nota sobre los valores de las cartas arriba), la app puede rechazar el número que quieres introducir.
+- Las puntuaciones se introducen en múltiplos de 5, y un jugador que no completó su fase no puede puntuar menos de 50.
 - El interruptor **Fases en orden** está activado por defecto y solo puede cambiarse en la primera ronda. **Fases libres** permite a los jugadores elegir cualquier fase que aún no hayan superado; es una opción de la casa, no la regla estándar.
 - Gana la partida el jugador que ha superado las 10 fases con el total más bajo. Si los totales empatan, la app prefiere la puntuación más baja de la última ronda, y si también empata, la victoria se comparte.
