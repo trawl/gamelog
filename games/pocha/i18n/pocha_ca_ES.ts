@@ -4,17 +4,17 @@
 <context>
     <name>GeneralQuickStats</name>
     <message>
-        <location filename="../widget.py" line="648"/>
+        <location filename="../widget.py" line="644"/>
         <source>Max Hits</source>
         <translation>Max Encerts</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="649"/>
+        <location filename="../widget.py" line="645"/>
         <source>Min Hits</source>
         <translation>Min Encerts</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="650"/>
+        <location filename="../widget.py" line="646"/>
         <source>Best Round</source>
         <translation>Millor Ronda</translation>
     </message>
@@ -22,7 +22,7 @@
 <context>
     <name>PochaRoundTable</name>
     <message>
-        <location filename="../widget.py" line="593"/>
+        <location filename="../widget.py" line="589"/>
         <source> (Winner)</source>
         <translation> (Guanyador)</translation>
     </message>

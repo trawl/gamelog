@@ -433,13 +433,9 @@ class PochaPlayerInputWidget(QGroupBox):
 
     def getScore(self) -> int:
         """Compute this player's round score from their expected/won bids."""
-        expected = self.expectedGroup.checkedId()
-        won = self.wonGroup.checkedId()
-        if expected < 0 or won < 0:
-            return 0
-        if expected == won:
-            return 10 + 3 * won
-        return -3 * abs(expected - won)
+        return self.engine.computeBidScore(
+            self.expectedGroup.checkedId(), self.wonGroup.checkedId()
+        )
 
     def getWonHands(self) -> int:
         return self.wonGroup.checkedId()
