@@ -53,20 +53,19 @@ The number of cards dealt changes every hand. The app uses 18 hands:
 
 ## Scoring
 
-The commonly published scoring is **10 points plus 5 per trick won** for an
-exact bid, and **-5 per trick of difference** (over or under) for a miss.
-
-**The app scores 3 points per trick instead:**
+The commonly published scoring, which the app uses, is **10 points plus 5 per
+trick won** for an exact bid, and **-5 per trick of difference** (over or
+under) for a miss.
 
 | Result | Points |
 |---|---|
-| Exact bid | 10 + 3 per trick won |
-| Missed bid | -3 per trick over or under |
+| Exact bid | 10 + 5 per trick won |
+| Missed bid | -5 per trick over or under |
 
-Example in the app: bid 3 and win 3 = 19 points. Bid 3 and win 1 = -6.
+Example: bid 3 and win 3 = 25 points. Bid 3 and win 1 = -10.
 
-A bid of zero that is kept scores the flat 10. Check your table's rule if you
-play with a different value.
+A bid of zero that is kept scores the flat 10. Some tables play with other
+values, so agree on them before you start.
 
 ## Ties and other variants
 
@@ -90,5 +89,5 @@ play with a different value.
 - While entering bids, the app **blocks the last bid that would make the total
   equal the cards dealt**, for whichever player is the last one without a bid, so
   enter the bids in playing order with the dealer last.
-- Scores use the app's 10 + 3 per trick and -3 per trick difference, not the
-  5-point scoring found in most written rules.
+- The score of each hand is worked out for you from the bid and the tricks won,
+  as in the table above.

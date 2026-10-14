@@ -38,18 +38,16 @@ El número de cartas repartidas cambia en cada mano. La app usa 18 manos:
 
 ## Puntuación
 
-La puntuación habitual publicada es **10 puntos más 5 por baza ganada** por una apuesta exacta, y **-5 por baza de diferencia** (por exceso o por defecto) por un fallo.
-
-**La app puntúa 3 puntos por baza en su lugar:**
+La puntuación habitual publicada, que es la que usa la app, es **10 puntos más 5 por baza ganada** por una apuesta exacta, y **-5 por baza de diferencia** (por exceso o por defecto) por un fallo.
 
 | Resultado | Puntos |
 |---|---|
-| Apuesta exacta | 10 + 3 por baza ganada |
-| Apuesta fallida | -3 por baza de diferencia (por exceso o por defecto) |
+| Apuesta exacta | 10 + 5 por baza ganada |
+| Apuesta fallida | -5 por baza de diferencia (por exceso o por defecto) |
 
-Ejemplo en la app: apuesta 3 y gana 3 = 19 puntos. Apuesta 3 y gana 1 = -6.
+Ejemplo: apuesta 3 y gana 3 = 25 puntos. Apuesta 3 y gana 1 = -10.
 
-Una apuesta de cero que se cumple puntúa 10 fijos. Consulta la regla de tu mesa si juegas con otro valor.
+Una apuesta de cero que se cumple puntúa 10 fijos. Algunas mesas juegan con otros valores, así que acordadlos antes de empezar.
 
 ## Empates y otras variantes
 
@@ -62,4 +60,4 @@ Una apuesta de cero que se cumple puntúa 10 fijos. Consulta la regla de tu mesa
 - El tablero cuenta las manos y muestra cuántas cartas repartir. Las cuatro manos de 8 cartas llevan cada una el nombre de un palo, usando los nombres de palo de la baraja elegida (en español: oros, copas, espadas, bastos). Las demás manos se indican como «subiendo» o «bajando».
 - Para cada jugador, introduce la apuesta y las bazas ganadas. Las bazas ganadas deben sumar el número de cartas repartidas en esa mano.
 - Al introducir las apuestas, la app **bloquea la última apuesta que haría que el total sea igual a las cartas repartidas**, para el jugador que sea el último sin apuesta; por eso introduce las apuestas en orden de juego, con el repartidor al final.
-- La puntuación usa los 10 + 3 por baza y -3 por baza de diferencia de la app, no los 5 puntos de la mayoría de reglas escritas.
+- La puntuación de cada mano se calcula por ti a partir de la apuesta y las bazas ganadas, como en la tabla de arriba.

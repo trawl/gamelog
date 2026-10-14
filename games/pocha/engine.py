@@ -13,6 +13,11 @@ from games.pocha.model import PochaMatch
 class PochaEngine(RoundGameEngine):
     """Round engine for Pocha: tracks hands, suit type and dealing direction."""
 
+    # An exact bid earns 10 plus 5 per trick; a miss costs 5 per trick of
+    # difference, as in the traditional rules.
+    EXACT_BID_POINTS = 10
+    POINTS_PER_TRICK = 5
+
     def __init__(self) -> None:
         if not hasattr(self, "game"):
             self.game = "Pocha"
@@ -28,6 +33,14 @@ class PochaEngine(RoundGameEngine):
             "Sorry, invalid score number.",
         )
         self.addRoundInfo(player, score)
+
+    def computeBidScore(self, expected: int, won: int) -> int:
+        """Score one player's hand from their bid and the tricks they won."""
+        if expected < 0 or won < 0:
+            return 0
+        if expected == won:
+            return self.EXACT_BID_POINTS + self.POINTS_PER_TRICK * won
+        return -self.POINTS_PER_TRICK * abs(expected - won)
 
     def getHands(self, rnd: int | None = None) -> int:
         """Return the number of cards dealt in round ``rnd`` (default: current)."""
