@@ -72,9 +72,9 @@ class SkullKingEngine(PochaEngine):
     ) -> int:
         """Score a player's round under the classic/standard Skull King rules."""
         if expected == 0 and won == 0:
-            return self.getNumRound() * 10 + self.computePlayerBonuses(bonuses)
+            return self.getHands() * 10 + self.computePlayerBonuses(bonuses)
         if expected == 0 and won != 0:
-            return self.getNumRound() * -10
+            return self.getHands() * -10
         if expected == won:
             return won * 20 + self.computePlayerBonuses(bonuses)
         try:
@@ -92,9 +92,9 @@ class SkullKingEngine(PochaEngine):
         diff = abs(won - expected)
         cannonball = "cannonball" in bonuses and bonuses["cannonball"]
         if cannonball:
-            score = self.getNumRound() * 15 + self.computePlayerBonuses(bonuses)
+            score = self.getHands() * 15 + self.computePlayerBonuses(bonuses)
         else:
-            score = self.getNumRound() * 10 + self.computePlayerBonuses(bonuses)
+            score = self.getHands() * 10 + self.computePlayerBonuses(bonuses)
         if diff == 0:
             return score
         if diff == 1 and not cannonball:

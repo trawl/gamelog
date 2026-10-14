@@ -4,17 +4,17 @@
 <context>
     <name>SkullKingQSBox</name>
     <message>
-        <location filename="../widget.py" line="1094"/>
+        <location filename="../widget.py" line="1095"/>
         <source>Max Hit %</source>
         <translation>Max Encert %</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1096"/>
+        <location filename="../widget.py" line="1097"/>
         <source>Avg Hit %</source>
         <translation>Encert %</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1098"/>
+        <location filename="../widget.py" line="1099"/>
         <source>Best Round</source>
         <translation>Millor Ronda</translation>
     </message>
