@@ -52,6 +52,8 @@ Els bonus només compten **si la teva aposta ha estat exacta**.
 
 El bonus va per al jugador que guanya la mà, encara que la carta l'hagi jugat un rival. L'ordre de joc dins de la mà no importa. La carta que captura ha d'haver guanyat la mà: si una Sirena s'emporta una mà que conté el Rei Calavera i un Pirata, només es puntua el bonus de la Sirena.
 
+L'edició original pagava **50** en lloc de 40 quan una Sirena s'emporta el Rei Calavera. Tota la resta de dalt és igual en totes dues edicions.
+
 ## Empats
 
 Regla oficial: si la puntuació més alta està empatada després de l'última ronda, es juguen més rondes fins que algú quedi per davant.
@@ -82,8 +84,13 @@ Regla oficial: si la puntuació més alta està empatada després de l'última r
 - Per a cada jugador, introdueix l'aposta, les mans guanyades i els bonus. Les mans guanyades entre tots han de sumar les cartes repartides. Si en falten una o dues, l'app pregunta si el Kraken (i la Balena Blanca) han descartat mans.
 - Hi ha tres **modes de puntuació**, triats abans de la ronda 1:
   - **Puntatge clàssic:** apostes exactes i errònies com a dalt, amb només els botons de bonus del Rei Calavera i del Pirata.
-  - **Recompte estàndar:** afegeix els botons de Sirena, Botí, bonus del 14, bonus del 14 negre i Roatan. Com a màxim es poden donar 3 bonus del 14 i 4 de Botí en una ronda. El puntatge clàssic no s'ofereix amb més de 6 jugadors.
+  - **Recompte estàndar:** afegeix els botons de Sirena, Botí, bonus del 14, bonus del 14 negre i Roatan. Com a màxim es poden donar 3 bonus del 14 i 4 de Botí en una ronda. El puntatge clàssic no s'ofereix amb més de 6 jugadors, que comencen en estàndard.
   - **Recompte del canalla:** el recompte del canalla de dalt, més un interruptor **Cannonball**, una opció de tot o res que val 15 x cartes repartides per una aposta exacta i res per qualsevol fallada.
-- Els botons de bonus només s'activen quan l'aposta d'un jugador és exacta. El Botí requereix aposta exacta; el Roatan s'activa quan el jugador ha guanyat almenys una mà.
-- Els valors de **aposta zero** i del **Recompte del canalla** usen el **número de ronda** de l'app, no les cartes repartides. Només coincideixen en la seqüència estàndard. En altres seqüències, ajusta-ho a mà o revisa els totals.
+- Què signifiquen els botons de bonus:
+  - **Rei Calavera:** una Sirena ha capturat el Rei Calavera (50 al puntatge clàssic, 40 a estàndard i al recompte del canalla).
+  - **Pirata:** el Rei Calavera ha capturat Pirates. Premeu-lo una vegada per Pirata, fins a 6: 30 cadascun a estàndard i al recompte del canalla, 20 cadascun al puntatge clàssic.
+  - **Sirena:** un Pirata ha capturat una Sirena, 20 cadascuna, fins a 2.
+  - **Botí:** 20 cadascun, fins a 2. **14:** 10 cadascun, fins a 3. **14 negre:** 20. **Roatan:** l'aposta del Canalla de Roatan, 10 per pulsació, fins a 2.
+- Els botons de bonus s'activen quan un jugador ha guanyat almenys una mà i l'aposta és exacta. Al **Recompte del canalla** també s'activen quan l'aposta falla per una, ja que fallar per una continua donant la meitat. El Botí requereix aposta exacta; el Roatan s'activa quan el jugador ha guanyat almenys una mà. L'interruptor Cannonball està disponible tan bon punt s'introdueixen l'aposta i les mans guanyades, de manera que també es pot registrar un Cannonball fallit: no puntua res.
+- Els valors de **aposta zero** i del **Recompte del canalla** escalen amb les cartes repartides en aquella ronda, així que són correctes en qualsevol durada de ronda (una aposta zero reeixida en una ronda de deu cartes val 100).
 - El guanyador és el total més alt després de l'última ronda. Si hi ha empat, l'app comparteix la victòria en lloc de jugar rondes extra.
