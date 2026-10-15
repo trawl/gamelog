@@ -118,3 +118,24 @@ def test_closing_disconnects_the_database(mainwindow, monkeypatch):
     assert not db.isConnected()
     with pytest.raises(RuntimeError):
         db.execute("SELECT 1")
+
+
+def test_the_main_window_survives_garbage_collection(qapp, gamedb, monkeypatch):
+    """main() creates the window without a name of its own; the application
+    must hold it, or the cyclic collector eventually destroys it mid-use."""
+    import gc
+
+    import core.__main__ as entry
+
+    monkeypatch.setattr(entry, "GamelogApplication", lambda argv: qapp)
+    monkeypatch.setattr(entry, "install_desktop_entry", lambda: None)
+    monkeypatch.setattr(type(qapp), "exec", lambda self: 0)
+    with pytest.raises(SystemExit):
+        entry.main()
+
+    gc.collect()
+
+    window = qapp.mainWindow
+    assert window.isVisible()
+    assert window.explorerTab.table.model() is not None
+    window.hide()

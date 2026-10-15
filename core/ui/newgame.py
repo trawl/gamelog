@@ -76,9 +76,12 @@ class NewGameWidget(Tab):
         self.updateGameInfo()
         # self.playersGroupBox.setTitle(self.tr("Players"))
         self.startGameButton.setText("▶")
-        self.settingsButton.setText("⚙")
+        self.settingsButton.setText("⚙️")
+        self.settingsButton.setToolTip(self.tr("Settings"))
         self.rulesButton.setText("📖")
         self.rulesButton.setToolTip(self.tr("Rules"))
+        self.historyButton.setText("🗂")
+        self.historyButton.setToolTip(self.tr("Match history"))
         for dialog in self.rulesDialogs.values():
             dialog.retranslateUI()
         if appsettings["text_in_buttons"]:
@@ -131,6 +134,13 @@ class NewGameWidget(Tab):
         self.rulesButton.clicked.connect(self.showRules)
         self.settingsLayout.addWidget(self.rulesButton)
 
+        self.historyButton = QPushButton(self)
+        self.historyButton.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+        )
+        self.historyButton.clicked.connect(self.showHistory)
+        self.settingsLayout.addWidget(self.historyButton)
+
         self.languageChooser = LanguageButton(self)
         self.languageChooser.setSizePolicy(
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
@@ -143,7 +153,12 @@ class NewGameWidget(Tab):
         )
         self.settingsButton.clicked.connect(self.onSettings)
         self.settingsLayout.addWidget(self.settingsButton)
-        for button in (self.rulesButton, self.settingsButton):
+        for button in (
+            self.rulesButton,
+            self.historyButton,
+            self.languageChooser,
+            self.settingsButton,
+        ):
             button.setFixedSize(36, 36)
         self.startGameButton = QPushButton(self)
         self.startGameButton.setSizePolicy(
@@ -224,6 +239,11 @@ class NewGameWidget(Tab):
         dialog.show()
         dialog.raise_()
         dialog.activateWindow()
+
+    def showHistory(self) -> None:
+        """Open the match explorer in place of this screen."""
+        if self._parent:
+            self._parent.showExplorer()
 
     def updateStats(self) -> None:
         """Push the currently selected players into the quick-stats box."""

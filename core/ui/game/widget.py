@@ -65,6 +65,11 @@ class GameWidget(Tab):
     player_colours: list[QColor] = PlayerColours
     # Set to True in subclasses where colour is tied to position (e.g. Parchis).
     colour_locked: bool = False
+    # True for a stored match opened only to look at it (see setReviewOnly).
+    reviewOnly: bool = False
+    reviewStatus: str = ""
+    # True for a finished match opened from the history: its result is final.
+    resultLocked: bool = False
 
     def __init__(
         self,
@@ -135,16 +140,6 @@ class GameWidget(Tab):
         self.separator1 = QWidget(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.separator1)
 
-        self.languageButton = LanguageButton(self.roundGroup)
-        self.buttonGroupLayout.addWidget(self.languageButton)
-
-        self.settingsButton = QPushButton(self)
-        self.settingsButton.setSizePolicy(
-            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
-        )
-        self.buttonGroupLayout.addWidget(self.settingsButton)
-        self.settingsButton.clicked.connect(self.onSettings)
-
         self.rulesDialog: RulesDialog | None = None
         definition = registry.get(self.game)
         self.rulesButton = QPushButton(self)
@@ -154,6 +149,16 @@ class GameWidget(Tab):
         self.rulesButton.setVisible(bool(definition and definition.rules_doc))
         self.buttonGroupLayout.addWidget(self.rulesButton)
         self.rulesButton.clicked.connect(self.showRules)
+
+        self.languageButton = LanguageButton(self.roundGroup)
+        self.buttonGroupLayout.addWidget(self.languageButton)
+
+        self.settingsButton = QPushButton(self)
+        self.settingsButton.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+        )
+        self.buttonGroupLayout.addWidget(self.settingsButton)
+        self.settingsButton.clicked.connect(self.onSettings)
 
         self.separator2 = QWidget(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.separator2)
@@ -341,7 +346,8 @@ class GameWidget(Tab):
             self.undoButton.setText("⎌")
             self.playerOrderButton.setText("♟↕")
             self.finishButton.setText("⏹")
-        self.settingsButton.setText("⚙")
+        self.settingsButton.setText("⚙️")
+        self.settingsButton.setToolTip(self.tr("Settings"))
         self.rulesButton.setText("📖")
         self.rulesButton.setToolTip(self.tr("Rules"))
         if self.rulesDialog is not None:
@@ -439,6 +445,8 @@ class GameWidget(Tab):
             )
         elif self.engine.isPaused():
             self.gameStatusLabel.setText(self.tr("Game is paused"))
+        elif self.reviewOnly:
+            self.gameStatusLabel.setText(self.reviewStatus)
         else:
             self.gameStatusLabel.setText(self.tr(""))
 
@@ -518,7 +526,11 @@ class GameWidget(Tab):
 
     def guardCommitButton(self) -> None:
         """Enable/disable the commit button per the current input validity."""
-        if self.commitRoundSanityCheck() and not self.engine.getWinner():
+        if (
+            self.commitRoundSanityCheck()
+            and not self.engine.getWinner()
+            and not self.reviewOnly
+        ):
             self.commitRoundButton.setDisabled(False)
             self.gameInput.enterPressed.connect(self.commitRound)
             self._commit_round_connection = True
@@ -581,6 +593,8 @@ class GameWidget(Tab):
 
     def canUndo(self) -> bool:
         """Whether there is a round, entry or explicit finish to roll back."""
+        if self.reviewOnly or (self.resultLocked and self.engine.getWinner()):
+            return False
         return self.engine.getNumRound() > 1 or self.engine.getWinner() is not None
 
     def undoShortcut(self) -> None:
@@ -781,6 +795,40 @@ class GameWidget(Tab):
                 except KeyError:
                     pass
         self.dockUndoOnTopBar()
+
+    def setReviewOnly(self, status: str) -> None:
+        """Lock the board of a stored match that was not completed.
+
+        Used to look at cancelled or interrupted matches: nothing can be
+        entered, the clock stays still and leaving writes nothing back, so the
+        stored match is left exactly as it was. ``status`` explains why.
+        """
+        logger.info("%s match opened for review only", self.game)
+        self.reviewOnly = True
+        self.reviewStatus = status
+        self.finished = True  # nothing to save or discard when leaving
+        self.pauseMatchButton.setDisabled(True)
+        self.clock.stopTimer()
+        self.commitRoundButton.setDisabled(True)
+        self.undoButton.setDisabled(True)
+        self.finishButton.setDisabled(True)
+        self.playerOrderButton.setDisabled(True)
+        self.gameInput.setDisabled(True)
+        if self.hideInputOnFinish:
+            self.gameInput.hide()
+        self.toggleScreenLock(True)
+        self.clock.showTime(self.engine.getGameSeconds())
+        self.updateGameStatusLabel()
+
+    def showFinishedMatch(self) -> None:
+        """Present a stored finished match as it looked when it ended.
+
+        Its result is final: it cannot be rolled back and reopened, so the
+        archive is not rewritten by looking at it.
+        """
+        self.resultLocked = True
+        self.updatePanel()
+        self.clock.showTime(self.engine.getGameSeconds())
 
     def unsetWinner(self) -> None:
         """Unlock the board when a finished match is reopened.

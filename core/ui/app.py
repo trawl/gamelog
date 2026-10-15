@@ -7,7 +7,7 @@ import sys
 import traceback
 from typing import TYPE_CHECKING
 
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 
 from core.ui.language import LanguageManager
 from core.ui.theme import ThemeManager
@@ -23,6 +23,10 @@ class GamelogApplication(QApplication):
 
     languageManager: LanguageManager
     themeManager: ThemeManager
+    # Holds the main window: nothing else references it, and Python would
+    # otherwise garbage-collect (and so destroy) it the next time its cycle
+    # collector runs.
+    mainWindow: QMainWindow
 
     def __init__(self, *args: list[str]) -> None:
         super().__init__(*args)

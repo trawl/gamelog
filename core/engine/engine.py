@@ -86,6 +86,20 @@ class GameEngine[MatchT: GenericMatch]:
         logger.warning("Could not resume %s match #%d: not found", self.game, idMatch)
         return False
 
+    def load(self, idMatch: int) -> bool:
+        """Load a stored match in any state for review. False if not found."""
+        if not self.match:
+            self.match = registry.create_match(self.game)
+        if self.match.loadMatch(idMatch):
+            for nick in self.match.getPlayers():
+                self.addPlayer(nick)
+            logger.info(
+                "Loaded %s match #%d with players: %s", self.game, idMatch, self.porder
+            )
+            return True
+        logger.warning("Could not load %s match #%d: not found", self.game, idMatch)
+        return False
+
     def getGame(self) -> str | None:
         return self.game
 

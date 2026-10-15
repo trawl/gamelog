@@ -21,6 +21,10 @@ and pause/resume for matches that span several sittings.
   button on the new-game and scoreboard screens, with a link to the official rule
   book where one is available.
 - **Pause & resume** — save a match mid-game and pick it up later.
+- **Match history** — browse every match ever played from the new-game screen,
+  filter by game, players, winner, date, length or outcome (finished, saved,
+  cancelled), and open any of them: saved ones resume, finished ones show their
+  final scoreboard.
 - **Dealer tracking** — automatic dealer rotation (round-robin or winner-deals).
 - **Multi-language** — English, Spanish and Catalan.
 - **Light & dark themes**, following the system appearance by default.

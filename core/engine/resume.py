@@ -7,6 +7,7 @@ from typing import cast
 
 from core.engine.db import db
 from core.engine.engine import GameEngine, RoundGameEngine, readInput
+from core.model.match import GenericMatch
 from core.registry import registry
 
 
@@ -43,6 +44,25 @@ class ResumeEngine:
         if engine and engine.resume(idMatch):
             return engine
         return None
+
+
+def open_match(game: str, idMatch: int) -> GameEngine | None:
+    """Rebuild the engine of any stored match: saved ones are resumed, the
+    rest are loaded in their stored state for review. ``None`` if not found."""
+    row = db.execute(
+        "SELECT state FROM Match WHERE idMatch=? AND Game_name=?", (idMatch, game)
+    ).fetchone()
+    if row is None:
+        return None
+    engine = registry.create_engine(game)
+    if engine is None:
+        return None
+    opened = (
+        engine.resume(idMatch)
+        if row["state"] == GenericMatch.SAVED
+        else engine.load(idMatch)
+    )
+    return engine if opened else None
 
 
 if __name__ == "__main__":

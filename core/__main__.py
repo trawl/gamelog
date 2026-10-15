@@ -37,7 +37,7 @@ def main() -> None:
 
     app.languageManager = LanguageManager(app)
     app.themeManager = ThemeManager(app)
-    MainWindow()
+    app.mainWindow = MainWindow()
     sys.exit(app.exec())
 
 
