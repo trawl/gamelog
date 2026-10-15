@@ -256,6 +256,10 @@ class Phase10Widget(GameWidget):
         self.gameInput.setEnabled(True)
         cast(Phase10InputWidget, self.gameInput).setWinner()
 
+    def unsetWinner(self) -> None:
+        super().unsetWinner()
+        cast(Phase10InputWidget, self.gameInput).unsetWinner()
+
     def phasesInOrderChanged(self, _: bool | None = None) -> None:
         """Sync the phases-in-order flag and button label with the checkbox."""
         if self.phasesInOrderCheckBox.isChecked():
@@ -348,6 +352,12 @@ class Phase10InputWidget(GameInputWidget):
         if winners:
             for pi in self.playerInputList.values():
                 pi.finish()
+
+    def unsetWinner(self) -> None:
+        """Clear the winner marks and re-open every player's round input."""
+        for pi in self.playerInputList.values():
+            pi.unsetWinner()
+            pi.unfinish()
 
     def getWinner(self) -> str | None:  # pyright: ignore[reportIncompatibleMethodOverride]
         for player, piw in self.playerInputList.items():
@@ -633,6 +643,9 @@ class Phase10PlayerWidget(GamePlayerWidget):
     def finish(self) -> None:
         self.roundPhaseClearedCheckbox.setDisabled(True)
         self.roundScore.setDisabled(True)
+
+    def unfinish(self) -> None:
+        self.roundScore.setEnabled(True)
 
 
 class Phase10ClearedCheckBox(QPushButton):

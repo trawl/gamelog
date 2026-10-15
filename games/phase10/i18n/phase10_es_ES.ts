@@ -4,12 +4,12 @@
 <context>
     <name>Phase10QSBox</name>
     <message>
-        <location filename="../widget.py" line="959"/>
+        <location filename="../widget.py" line="972"/>
         <source>Lowest Ph</source>
         <translation>Fase Min</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="961"/>
+        <location filename="../widget.py" line="974"/>
         <source>Damned</source>
         <translation>Maldita</translation>
     </message>
@@ -17,12 +17,12 @@
 <context>
     <name>Phase10RoundPlot</name>
     <message>
-        <location filename="../widget.py" line="861"/>
+        <location filename="../widget.py" line="874"/>
         <source>Phases</source>
         <translation>Fases</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="862"/>
+        <location filename="../widget.py" line="875"/>
         <source>Scores</source>
         <translation>Puntuación</translation>
     </message>
@@ -30,12 +30,12 @@
 <context>
     <name>Phase10RoundTable</name>
     <message>
-        <location filename="../widget.py" line="784"/>
+        <location filename="../widget.py" line="797"/>
         <source>Winner</source>
         <translation>Ganador</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="792"/>
+        <location filename="../widget.py" line="805"/>
         <source> (Phase {})</source>
         <translation> (Fase {})</translation>
     </message>
@@ -43,7 +43,7 @@
 <context>
     <name>Phase10RoundsDetail</name>
     <message>
-        <location filename="../widget.py" line="749"/>
+        <location filename="../widget.py" line="762"/>
         <source>Score</source>
         <translation>Marcador</translation>
     </message>
@@ -74,7 +74,7 @@
 <context>
     <name>Phase10Widget</name>
     <message>
-        <location filename="../widget.py" line="264"/>
+        <location filename="../widget.py" line="268"/>
         <source>Phases in order</source>
         <translation>Fases en orden</translation>
     </message>
@@ -155,7 +155,7 @@
         <translation>Fases</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="268"/>
+        <location filename="../widget.py" line="272"/>
         <source>Free phase order</source>
         <translation>Fases libres</translation>
     </message>

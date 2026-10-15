@@ -153,6 +153,11 @@ class GameEngine[MatchT: GenericMatch]:
         """Whether the game only ends on an explicit 'finish' action."""
         return False
 
+    def reopen(self) -> None:
+        """Take back the end of a finished match, freezing its elapsed time."""
+        logger.info("Reopening %s match", self.game)
+        self.match.reopen()
+
     def updateTimes(
         self,
         start: datetime.datetime | None,
@@ -223,11 +228,28 @@ class RoundGameEngine(GameEngine[GenericRoundMatch]):
         logger.debug("Committed round %d for %s", self.getNumRound() - 1, self.game)
 
     def deleteRound(self, nrnd: int) -> None:
-        """Remove round ``nrnd`` and roll the dealer back one step."""
+        """Remove round ``nrnd`` and roll the dealer back one step.
+
+        Deleting a round from a finished match reopens it first. The dealer
+        stays put then: rotation froze when the match was decided, so the
+        current dealer already is the one of the round being taken back.
+        """
+        finished = self.match.getWinner() is not None
+        if finished:
+            self.reopen()
         self.match.deleteRound(nrnd)
-        self.updateDealer(back=True)
+        if not finished:
+            self.updateDealer(back=True)
         logger.info("Deleted round %d from %s match", nrnd, self.game)
         self.printStats()
+
+    def rollback(self) -> None:
+        """Undo the last action: the explicit finish, or else the last round."""
+        if self.match.getWinner() and self.requiresExplicitFinish():
+            self.reopen()
+            self.printStats()
+        elif self.getRounds():
+            self.deleteRound(len(self.getRounds()))
 
     def getRounds(self) -> list[GenericRound]:
         return self.match.getRounds()

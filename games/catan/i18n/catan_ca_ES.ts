@@ -32,7 +32,7 @@
 <context>
     <name>CatanRoundsDetail</name>
     <message>
-        <location filename="../widget.py" line="418"/>
+        <location filename="../widget.py" line="420"/>
         <source>Totals</source>
         <translation>Totals</translation>
     </message>

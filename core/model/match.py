@@ -149,6 +149,21 @@ class GenericMatch:
             )
             self.flushState(self.FINISHED)
 
+    def reopen(self) -> None:
+        """Take back the end of a finished match so play can carry on.
+
+        The elapsed time stays frozen at the moment the match ended: the
+        clock restarts from now. The stored row drops back to the running
+        state, so it no longer counts towards the statistics.
+        """
+        if not self.winners:
+            return
+        self.winners = []
+        self.state = self.RUNNING
+        self.resumed = datetime.datetime.now(tz=datetime.UTC)
+        self.flushToDB()
+        logger.info("%s match reopened", self.game)
+
     # --- Persistence -------------------------------------------------------
 
     def flushState(self, state: int) -> None:

@@ -88,6 +88,11 @@ class GamePlayerWidget(QGroupBox):
         self.background = self.winnerPixmap
         self.update()
 
+    def unsetWinner(self) -> None:
+        if self.background is self.winnerPixmap:
+            self.background = None
+            self.update()
+
     def setColour(self, colour: QColor | None = None) -> None:
         """Recolour the box (title, LCD and dimmed-out state)."""
         if colour:

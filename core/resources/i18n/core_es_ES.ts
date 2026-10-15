@@ -272,134 +272,144 @@
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="../../ui/game/widget.py" line="44"/>
+        <location filename="../../ui/game/widget.py" line="60"/>
         <source>Scoreboard</source>
         <translation>Marcador</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="284"/>
+        <location filename="../../ui/game/widget.py" line="326"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pausar/Reanudar</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="290"/>
+        <location filename="../../ui/game/widget.py" line="332"/>
         <source>Commit &amp;Round</source>
         <translation>Cerrar &amp;Ronda</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="588"/>
+        <location filename="../../ui/game/widget.py" line="653"/>
         <source>Winner deals</source>
         <translation>El ganador reparte</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="396"/>
+        <location filename="../../ui/game/widget.py" line="438"/>
         <source>{} won this match!</source>
         <translation>¡{} ha ganado la partida!</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="285"/>
+        <location filename="../../ui/game/widget.py" line="327"/>
         <source>&amp;Leave Match</source>
         <translation>&amp;Abandonar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="288"/>
+        <location filename="../../ui/game/widget.py" line="330"/>
         <source>Commit &amp;Entry</source>
         <translation>Confirma &amp;Entrada</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="304"/>
+        <location filename="../../ui/game/widget.py" line="346"/>
         <source>Rules</source>
         <translation>Reglas</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="392"/>
+        <location filename="../../ui/game/widget.py" line="434"/>
         <source>{} share the victory!</source>
         <translation>¡{} comparten la victoria!</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="399"/>
+        <location filename="../../ui/game/widget.py" line="441"/>
         <source>Game is paused</source>
         <translation>El juego está pausado</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="401"/>
+        <location filename="../../ui/game/widget.py" line="443"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="407"/>
+        <location filename="../../ui/game/widget.py" line="449"/>
         <source>Leave Match</source>
         <translation>Abandonar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="493"/>
+        <location filename="../../ui/game/widget.py" line="535"/>
         <source>No winner selected</source>
         <translation>No se ha seleccionado ningún ganador</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="503"/>
+        <location filename="../../ui/game/widget.py" line="545"/>
         <source>{} score is not valid</source>
         <translation>La puntuación de {} no es válida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="511"/>
+        <location filename="../../ui/game/widget.py" line="553"/>
         <source>No extras</source>
         <translation>No hay extras</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="291"/>
-        <location filename="../../ui/game/widget.py" line="545"/>
+        <location filename="../../ui/game/widget.py" line="333"/>
+        <location filename="../../ui/game/widget.py" line="600"/>
         <source>Rollback</source>
         <translation>Deshacer</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="546"/>
+        <location filename="../../ui/game/widget.py" line="602"/>
         <source>Are you sure you want to undo the last entry?</source>
         <translation>¿Estás seguro que quieres deshacer la última entrada?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="570"/>
+        <location filename="../../ui/game/widget.py" line="604"/>
+        <source>The match is over. Do you want to reopen it?</source>
+        <translation>La partida ha terminado. ¿Quieres reabrirla?</translation>
+    </message>
+    <message>
+        <location filename="../../ui/game/widget.py" line="607"/>
+        <source>The match is over. Undoing the last entry will reopen it. Are you sure?</source>
+        <translation>La partida ha terminado. Deshacer la última entrada la reabrirá. ¿Estás seguro?</translation>
+    </message>
+    <message>
+        <location filename="../../ui/game/widget.py" line="635"/>
         <source>Finish game</source>
         <translation>Finalizar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="571"/>
+        <location filename="../../ui/game/widget.py" line="636"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>¿Estás seguro que quieres finalizar la partida actual?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="592"/>
+        <location filename="../../ui/game/widget.py" line="657"/>
         <source>Next player deals</source>
         <translation>El siguiente reparte</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="630"/>
+        <location filename="../../ui/game/widget.py" line="695"/>
         <source>{} - Round {}</source>
         <translation>{} - Ronda {}</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="408"/>
-        <location filename="../../ui/game/widget.py" line="435"/>
+        <location filename="../../ui/game/widget.py" line="450"/>
+        <location filename="../../ui/game/widget.py" line="477"/>
         <source>Do you want to save the current {} match?</source>
         <translation>¿Quieres guardar la partida de {} actual?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="293"/>
+        <location filename="../../ui/game/widget.py" line="335"/>
         <source>&amp;Finish Game</source>
         <translation>&amp;Finalizar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="292"/>
+        <location filename="../../ui/game/widget.py" line="334"/>
         <source>Player &amp;Order</source>
         <translation>&amp;Orden Jugadores</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="286"/>
+        <location filename="../../ui/game/widget.py" line="328"/>
         <source>Restart &amp;Match</source>
         <translation>Nueva &amp;Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="434"/>
+        <location filename="../../ui/game/widget.py" line="476"/>
         <source>Restart Match</source>
         <translation>Nueva Partida</translation>
     </message>

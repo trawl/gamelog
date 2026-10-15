@@ -9,10 +9,12 @@ from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QCoreApplication, QFile, QTextStream
 from PySide6.QtGui import QColor, QShortcut
 from PySide6.QtWidgets import (
+    QAbstractSpinBox,
     QApplication,
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QMessageBox,
     QPushButton,
     QSizePolicy,
@@ -36,6 +38,20 @@ from core.ui.tab import Tab
 from core.ui.timers import GameClock
 
 logger = logging.getLogger(__name__)
+
+
+class _UndoShortcutGuard(QtCore.QObject):
+    """Event filter that keeps a board's text fields from claiming the undo
+    key sequence for their own text undo, so it reaches the board's rollback
+    shortcut instead."""
+
+    def eventFilter(self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:
+        if event.type() == QtCore.QEvent.Type.ShortcutOverride and cast(
+            QtGui.QKeyEvent, event
+        ).matches(QtGui.QKeySequence.StandardKey.Undo):
+            event.ignore()
+            return True
+        return False
 
 
 class GameWidget(Tab):
@@ -71,6 +87,9 @@ class GameWidget(Tab):
         self.engine.printStats()
         self.finished = False
         self.hideInputOnFinish = True
+        # Style and size policy of an Undo button docked in the input widget,
+        # saved while it stands in for Finish on the top bar of a finished match.
+        self._undoDockedStyle: tuple[str, QSizePolicy] | None = None
         self.colour_map: dict[str, int] = {p: i for i, p in enumerate(self.players)}
 
         self.screen_blocker = SleepBlocker()
@@ -145,9 +164,7 @@ class GameWidget(Tab):
 
         self.undoButton = QPushButton(self.roundGroup)
         self.buttonGroupLayout.addWidget(self.undoButton, 2)
-        self.undoButton.setEnabled(
-            self.engine.getNumRound() > 1 and not self.engine.getWinner()
-        )
+        self.undoButton.setEnabled(self.canUndo())
         self.undoButton.clicked.connect(self.undoCommit)
 
         self.finishButton = QPushButton(self.roundGroup)
@@ -222,6 +239,13 @@ class GameWidget(Tab):
         self.focussc = QShortcut(
             QtGui.QKeySequence("Ctrl+A"), self, self.gameInput.setFocus
         )
+        # Ctrl+Z (Cmd+Z on macOS) rolls back, taking precedence over the
+        # text undo of the score fields.
+        self.undosc = QShortcut(
+            QtGui.QKeySequence(QtGui.QKeySequence.StandardKey.Undo),
+            self,
+            self.undoShortcut,
+        )
         self.roundLayout.addWidget(self.gameInput)
         self.detailGroup = self.createRoundsDetail(self)
         self.leftLayout.addWidget(self.detailGroup)
@@ -233,7 +257,25 @@ class GameWidget(Tab):
         self._connectThemeStylesheet()
         self._applyGameStylesheet()
 
+        self.undoGuard = _UndoShortcutGuard(self)
+        self.guardFieldsFromUndo()
+
         QtCore.QTimer.singleShot(500, self.gameInput.setFocus)
+
+    def showEvent(self, event: QtGui.QShowEvent) -> None:
+        # Catch the fields games add after the base layout is built.
+        self.guardFieldsFromUndo()
+        super().showEvent(event)
+
+    def guardFieldsFromUndo(self) -> None:
+        """Let the rollback shortcut win over the text undo of the board's
+        fields (not those of dialogs it owns, such as the rules window)."""
+        for field in (
+            *self.findChildren(QLineEdit),
+            *self.findChildren(QAbstractSpinBox),
+        ):
+            if field.window() is self.window():
+                field.installEventFilter(self.undoGuard)
 
     def _gameStyleSlug(self) -> str | None:
         """Package name of the concrete game (e.g. ``skullking``), or None."""
@@ -537,13 +579,34 @@ class GameWidget(Tab):
         elif self.hideInputOnFinish:
             self.gameInput.hide()
 
+    def canUndo(self) -> bool:
+        """Whether there is a round, entry or explicit finish to roll back."""
+        return self.engine.getNumRound() > 1 or self.engine.getWinner() is not None
+
+    def undoShortcut(self) -> None:
+        """Roll back from the keyboard, when the Undo button could."""
+        if self.undoButton.isEnabled():
+            self.undoCommit()
+
     def undoCommit(self) -> None:
-        """Roll back the last committed round after confirmation."""
-        if len(self.engine.getRounds()) == 0:
+        """Roll back the last committed round after confirmation.
+
+        On a finished match this also reopens it, so a mistake in the entry
+        that ended the game can still be fixed.
+        """
+        if not self.canUndo():
             return
 
         title = self.tr("Rollback")
-        msg = self.tr("Are you sure you want to undo the last entry?")
+        if not self.engine.getWinner():
+            msg = self.tr("Are you sure you want to undo the last entry?")
+        elif self.engine.requiresExplicitFinish():
+            msg = self.tr("The match is over. Do you want to reopen it?")
+        else:
+            msg = self.tr(
+                "The match is over. Undoing the last entry will reopen it. "
+                "Are you sure?"
+            )
         ret = QMessageBox.question(
             self,
             title,
@@ -557,7 +620,9 @@ class GameWidget(Tab):
             self.unsetDealer()
         except KeyError:
             pass
-        self.engine.deleteRound(len(self.engine.getRounds()))
+        self.engine.rollback()
+        if self.finished and not self.engine.getWinner():
+            self.unsetWinner()
         self.updatePanel()
         try:
             self.setDealer()
@@ -634,9 +699,7 @@ class GameWidget(Tab):
         """Refresh scores, detail, dealer and title after a state change."""
         self.updateScores()
         self.gameInput.reset()
-        self.undoButton.setEnabled(
-            self.engine.getNumRound() > 1 and not self.engine.getWinner()
-        )
+        self.undoButton.setEnabled(self.canUndo())
         dpolicy = self.engine.getDealingPolicy()
         if dpolicy not in (self.engine.NoDealer, self.engine.StarterDealer):
             self.dealerPolicyCheckBox.setDisabled(self.engine.getNumRound() > 1)
@@ -649,8 +712,7 @@ class GameWidget(Tab):
         else:
             self.setRoundTitle()
             self.gameInput.setFocus()
-        if self.engine.getWinner() and self.engine.requiresExplicitFinish():
-            self.finishButton.setDisabled(True)
+        self.finishButton.setDisabled(bool(self.engine.getWinner()))
         self.guardCommitButton()
 
     def getGameName(self) -> str:
@@ -718,6 +780,64 @@ class GameWidget(Tab):
                     self.playerGroupBox[winner].setWinner()
                 except KeyError:
                     pass
+        self.dockUndoOnTopBar()
+
+    def unsetWinner(self) -> None:
+        """Unlock the board when a finished match is reopened.
+
+        Reverses :meth:`setWinner`. The clock resumes from the elapsed time
+        frozen when the match ended.
+        """
+        logger.info("%s match reopened", self.game)
+        self.finished = False
+        self.undockUndoFromTopBar()
+        self.pauseMatchButton.setEnabled(True)
+        self.clock.accumulated = self.engine.getGameSeconds()
+        self.clock.unpauseTimer()
+        self.playerOrderButton.setEnabled(True)
+        self.gameInput.setEnabled(True)
+        self.gameInput.show()
+        self.toggleScreenLock()
+        if hasattr(self, "playerGroupBox"):
+            for box in self.playerGroupBox.values():
+                box.unsetWinner()
+        self.updateGameStatusLabel()
+        if hasattr(self.detailGroup, "updateStats"):
+            self.detailGroup.updateStats()  # pyright: ignore[reportAttributeAccessIssue]
+
+    def dockUndoOnTopBar(self) -> None:
+        """Show an Undo kept in the input widget on the top bar instead.
+
+        Games that dock Undo in their input widget would lose it when the
+        input hides at the end of the match; it takes the Finish button's
+        place until the match is reopened.
+        """
+        if self._undoDockedStyle is not None or not self.gameInput.isAncestorOf(
+            self.undoButton
+        ):
+            return
+        self._undoDockedStyle = (
+            self.undoButton.styleSheet(),
+            self.undoButton.sizePolicy(),
+        )
+        self.undoButton.setStyleSheet(self.finishButton.styleSheet())
+        self.undoButton.setSizePolicy(self.finishButton.sizePolicy())
+        index = self.buttonGroupLayout.indexOf(self.finishButton)
+        self.finishButton.hide()
+        self.buttonGroupLayout.insertWidget(index, self.undoButton, 3)
+        self.undoButton.show()
+
+    def undockUndoFromTopBar(self) -> None:
+        """Return a docked Undo to the input widget, restoring Finish."""
+        if self._undoDockedStyle is None:
+            return
+        style, policy = self._undoDockedStyle
+        self._undoDockedStyle = None
+        self.buttonGroupLayout.removeWidget(self.undoButton)
+        self.undoButton.setStyleSheet(style)
+        self.undoButton.setSizePolicy(policy)
+        self.gameInput.placeUndoButton(self.undoButton)  # pyright: ignore[reportAttributeAccessIssue]
+        self.finishButton.setVisible(self.engine.requiresExplicitFinish())
 
     def changePlayerOrder(self) -> None:
         """Open the reorder dialog and apply any new order, dealer or colours."""

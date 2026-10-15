@@ -221,7 +221,8 @@ class ScrabbleInputWidget(GameInputWidget):
                 }
                 """
         self.commitButton.setStyleSheet(css)
-        self.undoButton.setStyleSheet(css)
+        if self.isAncestorOf(self.undoButton):  # not while on the top bar
+            self.undoButton.setStyleSheet(css)
 
     def placeCommitButton(self, cb) -> None:
         # cb.setStyleSheet("""
