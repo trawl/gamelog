@@ -288,7 +288,7 @@
         <translation>Tancar &amp;Ronda</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="667"/>
+        <location filename="../../ui/game/widget.py" line="668"/>
         <source>Winner deals</source>
         <translation>El guanyador reparteix</translation>
     </message>
@@ -338,58 +338,58 @@
         <translation>Abandonar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="547"/>
+        <location filename="../../ui/game/widget.py" line="548"/>
         <source>No winner selected</source>
         <translation>Cal sel·leccionar un guanyador</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="557"/>
+        <location filename="../../ui/game/widget.py" line="558"/>
         <source>{} score is not valid</source>
         <translation>La puntuació de {} no és vàlida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="565"/>
+        <location filename="../../ui/game/widget.py" line="566"/>
         <source>No extras</source>
         <translation>No hi ha extres</translation>
     </message>
     <message>
         <location filename="../../ui/game/widget.py" line="338"/>
-        <location filename="../../ui/game/widget.py" line="614"/>
+        <location filename="../../ui/game/widget.py" line="615"/>
         <source>Rollback</source>
         <translation>Desfer</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="616"/>
+        <location filename="../../ui/game/widget.py" line="617"/>
         <source>Are you sure you want to undo the last entry?</source>
         <translation>Estàs segur de voler desfer l&apos;última entrada?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="618"/>
+        <location filename="../../ui/game/widget.py" line="619"/>
         <source>The match is over. Do you want to reopen it?</source>
         <translation>La partida ha acabat. Vols reobrir-la?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="621"/>
+        <location filename="../../ui/game/widget.py" line="622"/>
         <source>The match is over. Undoing the last entry will reopen it. Are you sure?</source>
         <translation>La partida ha acabat. Desfer l&apos;última entrada la reobrirà. N&apos;estàs segur?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="649"/>
+        <location filename="../../ui/game/widget.py" line="650"/>
         <source>Finish game</source>
         <translation>Finalitzar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="650"/>
+        <location filename="../../ui/game/widget.py" line="651"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>Estàs segur de voler finalitzar la partida actual?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="671"/>
+        <location filename="../../ui/game/widget.py" line="672"/>
         <source>Next player deals</source>
         <translation>El següent reparteix</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="709"/>
+        <location filename="../../ui/game/widget.py" line="710"/>
         <source>{} - Round {}</source>
         <translation>{} - Ronda {}</translation>
     </message>

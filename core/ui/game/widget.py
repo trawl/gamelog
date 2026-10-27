@@ -532,8 +532,9 @@ class GameWidget(Tab):
             and not self.reviewOnly
         ):
             self.commitRoundButton.setDisabled(False)
-            self.gameInput.enterPressed.connect(self.commitRound)
-            self._commit_round_connection = True
+            if not self._commit_round_connection:
+                self.gameInput.enterPressed.connect(self.commitRound)
+                self._commit_round_connection = True
         else:
             self.commitRoundButton.setDisabled(True)
             if self._commit_round_connection:
