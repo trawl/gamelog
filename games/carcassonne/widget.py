@@ -341,11 +341,15 @@ class CarcassonneInputWidget(GameInputWidget):
         return cast("int", self.scoreSpinBox.value())
 
     def ensureInputGuardRails(self) -> None:
-        """Enable kind only when player is chosen; enable score only when both are."""
+        """Enable kind only when player is chosen; enable score only when both are.
+
+        Only the score field is locked, not its whole group: the group also
+        holds the commit and undo buttons, which the board enables itself.
+        """
         pid = self.playerButtonGroup.checkedId()
         cid = self.kindButtonGroup.checkedId()
         self.kindGroup.setEnabled(bool(pid))
-        self.scoreGroup.setEnabled(bool(pid and cid))
+        self.scoreSpinBox.setEnabled(bool(pid and cid))
 
     def updateScoreColour(self, pid: int) -> None:
         """Tint the score spinbox with the selected player's colour, or gray when none."""

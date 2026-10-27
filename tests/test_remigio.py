@@ -2,7 +2,32 @@
 player after a round is undone, and the dealer rotation skipping players
 who are already out."""
 
+from __future__ import annotations
+
+from PySide6.QtCore import Qt
+from PySide6.QtTest import QTest
+
 from core.registry import registry
+from games.remigio.widget import RemigioWidget
+
+PLAYERS = ["Ann", "Bob"]
+
+
+def make_input_valid(widget: RemigioWidget, winner: str = "Ann") -> None:
+    """Pick ``winner`` and give every other player a valid score."""
+    inputs = widget.gameInput.playerInputList  # pyright: ignore[reportAttributeAccessIssue]
+    inputs[winner].setWinner()
+    for player, piw in inputs.items():
+        if player != winner:
+            piw.scoreSpinBox.setValue(10)
+
+
+def make_input_invalid(widget: RemigioWidget, winner: str = "Ann") -> None:
+    """Blank a non-winner's score so the round is no longer committable."""
+    inputs = widget.gameInput.playerInputList  # pyright: ignore[reportAttributeAccessIssue]
+    for player, piw in inputs.items():
+        if player != winner:
+            piw.scoreSpinBox.setValue(-1)
 
 
 def started_match(players):
@@ -118,3 +143,61 @@ def test_dealer_rotation_back_also_skips_an_eliminated_player(gamedb):
 
     engine.updateRRDealer(back=True)
     assert engine.getDealer() == "Cy"  # stepping back from Ann also skips Bob
+
+
+# --- Pressing Enter commits a round exactly once ----------------------------
+
+
+def test_enter_calls_commit_round_once_despite_repeated_valid_changes(
+    qapp, settings, monkeypatch
+):
+    calls: list[int] = []
+    # Patched before the widget exists, so the Enter connection binds the
+    # counter: no real commit (and no disconnect) can hide duplicates.
+    monkeypatch.setattr(
+        RemigioWidget, "commitRound", lambda self: calls.append(len(calls))
+    )
+    widget = registry.create_widget("Remigio", PLAYERS, None, None)
+    assert isinstance(widget, RemigioWidget)
+
+    make_input_valid(widget)
+    assert widget.commitRoundSanityCheck()
+    for _ in range(5):
+        widget.gameInput.changed.emit()  # still valid: must not add connections
+    assert widget.commitRoundSanityCheck()
+
+    QTest.keyClick(widget.gameInput, Qt.Key.Key_Return)
+    assert len(calls) == 1
+
+    make_input_invalid(widget)
+    assert not widget.commitRoundSanityCheck()
+    QTest.keyClick(widget.gameInput, Qt.Key.Key_Return)
+    assert len(calls) == 1  # disconnected while invalid
+
+    make_input_valid(widget)
+    assert widget.commitRoundSanityCheck()
+    for _ in range(5):
+        widget.gameInput.changed.emit()
+    QTest.keyClick(widget.gameInput, Qt.Key.Key_Return)
+    assert len(calls) == 2
+
+
+def test_committing_several_rounds_with_enter_shows_no_warning_popups(
+    qapp, settings, monkeypatch
+):
+    warnings: list[str] = []
+    monkeypatch.setattr(
+        "core.ui.game.widget.QMessageBox.warning",
+        staticmethod(lambda *args, **kwargs: warnings.append(str(args[-1]))),
+    )
+    widget = registry.create_widget("Remigio", PLAYERS, None, None)
+    assert isinstance(widget, RemigioWidget)
+
+    for expected_round, winner in enumerate(["Ann", "Bob", "Ann", "Bob"], start=1):
+        assert widget.engine.getNumRound() == expected_round
+        make_input_valid(widget, winner)
+        assert widget.commitRoundSanityCheck()
+        QTest.keyClick(widget.gameInput, Qt.Key.Key_Return)
+
+    assert widget.engine.getNumRound() == 5
+    assert warnings == []

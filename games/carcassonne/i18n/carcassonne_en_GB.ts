@@ -4,7 +4,7 @@
 <context>
     <name>CarcassonneEntriesDetail</name>
     <message>
-        <location filename="../widget.py" line="497"/>
+        <location filename="../widget.py" line="501"/>
         <source>Totals</source>
         <translation>Totals</translation>
     </message>
@@ -60,27 +60,27 @@
 <context>
     <name>CarcassonneQSBox</name>
     <message>
-        <location filename="../widget.py" line="701"/>
+        <location filename="../widget.py" line="705"/>
         <source>Record</source>
         <translation>Records</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="702"/>
+        <location filename="../widget.py" line="706"/>
         <source>Player</source>
         <translation>Player</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="703"/>
+        <location filename="../widget.py" line="707"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="670"/>
+        <location filename="../widget.py" line="674"/>
         <source>Match Records</source>
         <translation>Match Records</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="669"/>
+        <location filename="../widget.py" line="673"/>
         <source>Individual Records</source>
         <translation>Individual Records</translation>
     </message>

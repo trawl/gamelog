@@ -38,18 +38,16 @@ El nombre de cartes repartides canvia en cada mà. L'app usa 18 mans:
 
 ## Puntuació
 
-La puntuació habitual publicada és **10 punts més 5 per baza guanyada** per una aposta exacta, i **-5 per baza de diferència** (per excés o per defecte) per una fallada.
-
-**L'app puntua 3 punts per baza en lloc d'això:**
+La puntuació habitual publicada, que és la que usa l'app, és **10 punts més 5 per baza guanyada** per una aposta exacta, i **-5 per baza de diferència** (per excés o per defecte) per una fallada.
 
 | Resultat | Punts |
 |---|---|
-| Aposta exacta | 10 + 3 per baza guanyada |
-| Aposta fallida | -3 per baza de diferència (per excés o per defecte) |
+| Aposta exacta | 10 + 5 per baza guanyada |
+| Aposta fallida | -5 per baza de diferència (per excés o per defecte) |
 
-Exemple a l'app: aposta 3 i guanya 3 = 19 punts. Aposta 3 i guanya 1 = -6.
+Exemple: aposta 3 i guanya 3 = 25 punts. Aposta 3 i guanya 1 = -10.
 
-Una aposta de zero que es compleix puntua 10 fixos. Consulta la norma de la teva taula si jugues amb un altre valor.
+Una aposta de zero que es compleix puntua 10 fixos. Algunes taules juguen amb altres valors, així que acordeu-los abans de començar.
 
 ## Empats i altres variants
 
@@ -62,4 +60,4 @@ Una aposta de zero que es compleix puntua 10 fixos. Consulta la norma de la teva
 - El tauler compta les mans i mostra quantes cartes cal repartir. Les quatre mans de 8 cartes porten cadascuna el nom d'un pal, amb els noms de pal de la baralla triada (en català: oros, copes, espases, bastos). Les altres mans s'indiquen com a «pujant» o «baixant».
 - Per a cada jugador, introdueix l'aposta i les bazes guanyades. Les bazes guanyades han de sumar el nombre de cartes repartides en aquella mà.
 - En introduir les apostes, l'app **bloqueja l'última aposta que faria que el total fos igual a les cartes repartides**, per al jugador que sigui l'últim sense aposta; per això introdueix les apostes en ordre de joc, amb el repartidor al final.
-- La puntuació usa els 10 + 3 per baza i -3 per baza de diferència de l'app, no els 5 punts de la majoria de normes escrites.
+- La puntuació de cada mà es calcula per tu a partir de l'aposta i les bazes guanyades, com a la taula de dalt.

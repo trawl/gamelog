@@ -68,6 +68,9 @@ an opponent. Order of play inside the trick does not matter. The capturing card
 must have won the trick: if a Mermaid takes a trick containing the Skull King
 and a Pirate, only the Mermaid bonus is scored.
 
+The original edition paid **50** instead of 40 when a Mermaid takes the Skull
+King. Everything else above is the same in both editions.
+
 ## Ties
 
 Official rule: if the top score is tied after the last round, play more rounds
@@ -114,14 +117,26 @@ all, half or none pattern.
     Pirate bonus buttons.
   - **Standard:** adds Mermaid, Loot, Fourteens, Black Fourteen and Roatan
     buttons. At most 3 Fourteen bonuses and 4 Loot bonuses can be given in a
-    round. Classic is not offered above 6 players.
+    round. Classic is not offered above 6 players, which start on Standard.
   - **Rascal:** the Rascal scoring above, plus a **Cannonball** switch, an
     all-or-nothing choice worth 15 x cards dealt for an exact bid and nothing
     for any miss.
-- Bonus buttons only unlock when a player's bid is exact. Loot needs an exact
-  bid; Roatan unlocks when the player won at least one trick.
-- The **zero-bid** and **Rascal** values use the **round number** in the app,
-  not the cards dealt. These are the same in the Standard round sequence only.
-  In other round lengths, adjust by hand or check the totals.
+- What the bonus buttons stand for:
+  - **Skull King:** a Mermaid captured the Skull King (50 in Classic scoring,
+    40 in Standard and Rascal).
+  - **Pirate:** the Skull King captured Pirates. Tick it once per Pirate, up
+    to 6: 30 each in Standard and Rascal, 20 each in Classic scoring.
+  - **Mermaid:** a Pirate captured a Mermaid, 20 each, up to 2.
+  - **Loot:** 20 each, up to 2. **Fourteens:** 10 each, up to 3. **Black
+    Fourteen:** 20. **Roatan:** the Rascal of Roatan bet, 10 per tick, up to 2.
+- Bonus buttons unlock once a player has won at least one trick and the bid is
+  exact. In **Rascal** scoring they also unlock when the bid is off by one,
+  since a miss by one still scores half. Loot needs an exact bid; Roatan
+  unlocks when the player won at least one trick. The Cannonball switch is
+  available as soon as the bid and the tricks won are entered, so a failed
+  cannonball can be recorded too: it scores nothing.
+- The **zero-bid** and **Rascal** values scale with the cards dealt in that
+  round, so they are right in every round length (a successful zero bid in a
+  ten-card round is worth 100).
 - The winner is the highest total after the last round. If it is tied, the app
   shares the victory instead of playing extra rounds.

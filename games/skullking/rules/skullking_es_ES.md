@@ -52,6 +52,8 @@ Los bonus solo cuentan **si tu apuesta fue exacta**.
 
 El bonus va para el jugador que gana la mano, aunque la carta la haya jugado un rival. El orden de juego dentro de la mano no importa. La carta que captura debe haber ganado la mano: si una Sirena se lleva una mano que contiene al Rey Calavera y a un Pirata, solo se puntúa el bonus de la Sirena.
 
+La edición original pagaba **50** en lugar de 40 cuando una Sirena se lleva al Rey Calavera. Todo lo demás de arriba es igual en ambas ediciones.
+
 ## Empates
 
 Regla oficial: si la puntuación más alta está empatada tras la última ronda, se juegan más rondas hasta que alguien quede por delante.
@@ -82,8 +84,13 @@ Regla oficial: si la puntuación más alta está empatada tras la última ronda,
 - Para cada jugador introduce la apuesta, las manos ganadas y los bonus. Las manos ganadas entre todos deben sumar las cartas repartidas. Si faltan una o dos, la app pregunta si el Kraken (y la Ballena Blanca) descartaron manos.
 - Hay tres **modos de puntuación**, elegidos antes de la ronda 1:
   - **Puntaje clásico:** apuestas exactas y erróneas como arriba, con solo los botones de bonus del Rey Calavera y del Pirata.
-  - **Recuento estándar:** añade los botones de Sirena, Botín, bonus del 14, bonus del 14 negro y Roatan. Como máximo se pueden dar 3 bonus del 14 y 4 de Botín en una ronda. El puntaje clásico no se ofrece con más de 6 jugadores.
+  - **Recuento estándar:** añade los botones de Sirena, Botín, bonus del 14, bonus del 14 negro y Roatan. Como máximo se pueden dar 3 bonus del 14 y 4 de Botín en una ronda. El puntaje clásico no se ofrece con más de 6 jugadores, que empiezan en estándar.
   - **Recuento del bribón:** el recuento del bribón de arriba, más un interruptor **Cannonball**, una opción de todo o nada que vale 15 x cartas repartidas por una apuesta exacta y nada por cualquier fallo.
-- Los botones de bonus solo se activan cuando la apuesta de un jugador es exacta. El Botín requiere apuesta exacta; Roatan se activa cuando el jugador ha ganado al menos una mano.
-- Los valores de **apuesta cero** y del **Recuento del bribón** usan el **número de ronda** de la app, no las cartas repartidas. Solo coinciden en la secuencia estándar. En otras secuencias, ajústalos a mano o revisa los totales.
+- Qué significan los botones de bonus:
+  - **Rey Calavera:** una Sirena capturó al Rey Calavera (50 en el puntaje clásico, 40 en estándar y en el recuento del bribón).
+  - **Pirata:** el Rey Calavera capturó Piratas. Púlsalo una vez por Pirata, hasta 6: 30 cada uno en estándar y en el recuento del bribón, 20 cada uno en el puntaje clásico.
+  - **Sirena:** un Pirata capturó una Sirena, 20 cada una, hasta 2.
+  - **Botín:** 20 cada uno, hasta 2. **14:** 10 cada uno, hasta 3. **14 negro:** 20. **Roatan:** la apuesta del Bribón de Roatan, 10 por pulsación, hasta 2.
+- Los botones de bonus se activan cuando un jugador ha ganado al menos una mano y la apuesta es exacta. En el **Recuento del bribón** también se activan cuando la apuesta falla por una, ya que fallar por una sigue dando la mitad. El Botín requiere apuesta exacta; Roatan se activa cuando el jugador ha ganado al menos una mano. El interruptor Cannonball está disponible en cuanto se introducen la apuesta y las manos ganadas, de modo que también se puede registrar un Cannonball fallido: no puntúa nada.
+- Los valores de **apuesta cero** y del **Recuento del bribón** escalan con las cartas repartidas en esa ronda, así que son correctos en cualquier duración de ronda (una apuesta cero lograda en una ronda de diez cartas vale 100).
 - El ganador es el total más alto tras la última ronda. Si hay empate, la app comparte la victoria en lugar de jugar rondas extra.

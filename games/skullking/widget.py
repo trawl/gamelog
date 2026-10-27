@@ -330,7 +330,6 @@ class SkullKingInputWidget(GameInputWidget):
                 i % players_per_column,
             )
             self.playerInputList[player].winnerSet.connect(self.changedWinner)
-            self.playerInputList[player].newExpected.connect(self.checkExpected)
             self.playerInputList[player].handsClicked.connect(self.newChoice)
             self.playerInputList[player].betTricksChanged.connect(
                 self.updateCandidateAction
@@ -415,13 +414,6 @@ class SkullKingInputWidget(GameInputWidget):
             expected[player] = piw.getExpectedHands()
         return expected
 
-    def checkExpected(self) -> None:
-        """Disable the won row of any player without an expected bet set."""
-        for piw in self.playerInputList.values():
-            piw.disableWonRow(piw.getExpectedHands() < 0)
-            # print(f"CheckExpected {player}: {piw.getExpectedHands()} {piw.getWonHands()}")
-            # piw.disableExtraRow(piw.getExpectedHands() != piw.getWonHands() or piw.getExpectedHands() < 1)
-
     def keyPressEvent(self, event: QKeyEvent) -> None:
         """Handle number keys for entry and backspace/delete to undo choices."""
         numberkeys: list[int] = [
@@ -445,10 +437,7 @@ class SkullKingInputWidget(GameInputWidget):
                 else:
                     pil = self.playerInputList[player]
                     pil.setWonHands(-1)
-                    pil.disableExtraRow(
-                        pil.getExpectedHands() != pil.getWonHands()
-                        or pil.getExpectedHands() < 1
-                    )
+                    pil.updateExtraRow()
                 event.accept()
                 return super().keyPressEvent(event)
             except IndexError:
@@ -484,10 +473,7 @@ class SkullKingInputWidget(GameInputWidget):
                 if self.playerInputList[player].setWonHands(number):
                     self.lastChoices.append(("won", player))
                     pil = self.playerInputList[player]
-                    pil.disableExtraRow(
-                        pil.getExpectedHands() != pil.getWonHands()
-                        or pil.getExpectedHands() < 1
-                    )
+                    pil.updateExtraRow()
                 return
 
         return
@@ -543,7 +529,6 @@ class SkullKingPlayerInputWidget(QGroupBox):
     """Per-player bet, trick and bonus input for a single Skull King player."""
 
     winnerSet = QtCore.Signal(str)
-    newExpected = QtCore.Signal()
     handsClicked = QtCore.Signal(str, str)
     betTricksChanged = QtCore.Signal()
 
@@ -649,9 +634,7 @@ class SkullKingPlayerInputWidget(QGroupBox):
             layout.addWidget(self.bonusButtons[btype], position)
             layout.setAlignment(self.bonusButtons[btype], alignment)
 
-        self.disableExtraRow(
-            self.getExpectedHands() != self.getWonHands() or self.getExpectedHands() < 1
-        )
+        self.updateExtraRow()
         self.epLayout.addStretch()
 
     def reset(self) -> None:
@@ -665,10 +648,33 @@ class SkullKingPlayerInputWidget(QGroupBox):
         hands = self.engine.getHands()
         self.btWidget.setMaxBet(hands)
 
+    def bonusesAllowed(self) -> bool:
+        """Whether the bid and tricks won leave bonus points to be scored.
+
+        Bonuses need at least one trick won. They count only on an exact bid,
+        except in Rascal scoring, where a bid off by one still scores half of
+        everything, bonuses included.
+        """
+        expected = self.getExpectedHands()
+        won = self.getWonHands()
+        if expected < 0 or won < 1:
+            return False
+        if self.engine.getScoringMode() == "rascal_scoring":
+            return abs(expected - won) <= 1
+        return expected == won
+
+    def updateExtraRow(self) -> None:
+        """Lock or unlock the bonus buttons for the current bid and tricks."""
+        self.disableExtraRow(not self.bonusesAllowed())
+
     def disableExtraRow(self, disable: bool = True) -> None:
         """Enable or disable each bonus button per current bet/trick state."""
         for btype, b in self.bonusButtons.items():
-            if btype == "loot":
+            if btype == "cannonball":
+                # The all-or-nothing bet is declared up front, so a failed
+                # one must be recordable too: it scores nothing.
+                b.setEnabled(self.getExpectedHands() >= 0 and self.getWonHands() >= 0)
+            elif btype == "loot":
                 b.setEnabled(
                     self.getExpectedHands() == self.getWonHands()
                     and self.getExpectedHands() >= 0
@@ -677,9 +683,6 @@ class SkullKingPlayerInputWidget(QGroupBox):
                 b.setEnabled(self.getExpectedHands() >= 0 and self.getWonHands() != 0)
             else:
                 b.setDisabled(disable)
-
-    def enableWonGroup(self, _button) -> None:
-        self.newExpected.emit()
 
     def isWinner(self) -> bool:
         return False
@@ -712,9 +715,7 @@ class SkullKingPlayerInputWidget(QGroupBox):
         self.handsClicked.emit("expected", self.player)
 
     def wonClickedAction(self, _) -> None:
-        self.disableExtraRow(
-            self.getExpectedHands() != self.getWonHands() or self.getExpectedHands() < 1
-        )
+        self.updateExtraRow()
         self.handsClicked.emit("won", self.player)
 
     def setColour(self, colour) -> None:

@@ -13,6 +13,7 @@ from abc import abstractmethod
 from collections.abc import Sequence
 
 from core.engine.db import db
+from core.engine.timeutil import parse_db_time
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,9 @@ class GenericMatch:
     PAUSED = 3
     SAVED = 4
 
+    # Stored states ``resumeMatch`` accepts; ``loadMatch`` widens it.
+    _resumable_states: tuple[int, ...] = (SAVED,)
+
     def __init__(self, players: Sequence[str] = ()) -> None:
         self.game = "Generic"
         self.players: Sequence[str] = players
@@ -53,6 +57,7 @@ class GenericMatch:
         self.totalScores: dict[str, int] = {}
         self.idMatch = -1
         self.state = self.CANCELLED
+        self.loadedState: int | None = None
         self.dealer: str | None = None
         self.dealingp = 0
 
@@ -77,7 +82,7 @@ class GenericMatch:
         row = cur.fetchone()
         if not row:
             return False
-        if row["Game_name"] != self.game or row["state"] != self.SAVED:
+        if row["Game_name"] != self.game or row["state"] not in self._resumable_states:
             return False
         self.elapsed = int(row["elapsed"])
         try:
@@ -103,6 +108,48 @@ class GenericMatch:
 
         self.state = self.RUNNING
         self.idMatch = idMatch
+        return True
+
+    def loadMatch(self, idMatch: int) -> bool:
+        """Reload a stored match in whatever state it was left, for review.
+
+        Unlike :meth:`resumeMatch` this accepts finished, cancelled and
+        interrupted matches too. The match keeps its stored outcome (winners,
+        finish time) and its clock stays frozen; ``loadedState`` records the
+        state it was stored in.
+        """
+        self._resumable_states = (
+            self.RUNNING,
+            self.FINISHED,
+            self.CANCELLED,
+            self.PAUSED,
+            self.SAVED,
+        )
+        try:
+            if not self.resumeMatch(idMatch):
+                return False
+        finally:
+            del self._resumable_states
+        row = db.execute(
+            "SELECT state,finished FROM Match WHERE idMatch =?;", (idMatch,)
+        ).fetchone()
+        self.loadedState = int(row["state"])
+        finish = parse_db_time(row["finished"])
+        if finish is not None:
+            self.finish = finish
+        if self.loadedState == self.FINISHED:
+            cur = db.execute(
+                "SELECT nick FROM MatchPlayer WHERE idMatch =? AND winner=1 "
+                "ORDER BY rowid;",
+                (idMatch,),
+            )
+            self.setWinners([str(r["nick"]) for r in cur])
+            self.state = self.FINISHED
+        elif self.loadedState == self.CANCELLED:
+            self.state = self.CANCELLED
+        else:
+            # Running or paused when the app stopped: nothing is playing now.
+            self.state = self.PAUSED
         return True
 
     def startMatch(self) -> None:
@@ -148,6 +195,21 @@ class GenericMatch:
                 "%s match finished — winners: %s", self.game, ", ".join(self.winners)
             )
             self.flushState(self.FINISHED)
+
+    def reopen(self) -> None:
+        """Take back the end of a finished match so play can carry on.
+
+        The elapsed time stays frozen at the moment the match ended: the
+        clock restarts from now. The stored row drops back to the running
+        state, so it no longer counts towards the statistics.
+        """
+        if not self.winners:
+            return
+        self.winners = []
+        self.state = self.RUNNING
+        self.resumed = datetime.datetime.now(tz=datetime.UTC)
+        self.flushToDB()
+        logger.info("%s match reopened", self.game)
 
     # --- Persistence -------------------------------------------------------
 
@@ -214,7 +276,7 @@ class GenericMatch:
 
     def getGameSeconds(self) -> int:
         """Return the total play time in seconds, including the live segment."""
-        if self.isPaused() or self.winner:
+        if self.isPaused() or self.isCancelled() or self.winner:
             return self.elapsed
         else:
             timediff = datetime.datetime.now(tz=datetime.UTC) - self.resumed

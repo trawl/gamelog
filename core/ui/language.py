@@ -9,13 +9,14 @@ from PySide6 import QtCore
 from PySide6.QtCore import (
     QCoreApplication,
     QDir,
+    QEvent,
     QLocale,
     QObject,
     QSize,
     QTranslator,
     Signal,
 )
-from PySide6.QtGui import QIcon, QResizeEvent
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QApplication,
     QDialog,
@@ -23,7 +24,8 @@ from PySide6.QtWidgets import (
     QGroupBox,
     QListWidget,
     QListWidgetItem,
-    QToolButton,
+    QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -91,8 +93,8 @@ class LanguageManager(QObject):
         return self.current_locale
 
 
-class LanguageButton(QToolButton):
-    """Toolbar button that cycles through the supported languages on click."""
+class LanguageButton(QPushButton):
+    """Button that cycles through the supported languages on click."""
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -104,15 +106,16 @@ class LanguageButton(QToolButton):
         self.languageChooser = LanguageChooser(self)
         self.languageChooser.newQM.connect(self.changeLanguage)
         self.clicked.connect(self.nextLanguage)
-        self.setMinimumSize(32, 32)
-        self.setStyleSheet("""
-            QToolButton {
-                background: transparent;
-                border: none;
-                padding: 0px;
-            }
-        """)
+        # A push button, like the buttons around it, sized by its row.
+        self.setIconSize(QSize(20, 20))
+        self.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
+        self.setToolTip(self.tr("Language"))
         self.changeLanguage()
+
+    def changeEvent(self, event: QEvent) -> None:
+        if event.type() == QEvent.Type.LanguageChange:
+            self.setToolTip(self.tr("Language"))
+        super().changeEvent(event)
 
     def showLanguageChooser(self) -> None:
         """Open the modal language-selection dialog."""
@@ -171,11 +174,6 @@ class LanguageButton(QToolButton):
         if not icon:
             icon = "english.svg"
         self.setIcon(QIcon(f":/icons/{icon}"))
-
-    def resizeEvent(self, event: QResizeEvent) -> None:
-        super().resizeEvent(event)
-        size = int(min(self.width(), self.height()) * 0.9)
-        self.setIconSize(QSize(size, size))
 
 
 class LanguageChooser(QDialog):

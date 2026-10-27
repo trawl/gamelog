@@ -273,134 +273,149 @@
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="../../ui/game/widget.py" line="44"/>
+        <location filename="../../ui/game/widget.py" line="60"/>
         <source>Scoreboard</source>
         <translation>Marcador</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="284"/>
+        <location filename="../../ui/game/widget.py" line="331"/>
         <source>&amp;Pause/Play</source>
         <translation>&amp;Pausa/Reanuda</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="290"/>
+        <location filename="../../ui/game/widget.py" line="337"/>
         <source>Commit &amp;Round</source>
         <translation>Tancar &amp;Ronda</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="588"/>
+        <location filename="../../ui/game/widget.py" line="668"/>
         <source>Winner deals</source>
         <translation>El guanyador reparteix</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="396"/>
+        <location filename="../../ui/game/widget.py" line="444"/>
         <source>{} won this match!</source>
         <translation>{} ha guanyat la partida!</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="285"/>
+        <location filename="../../ui/game/widget.py" line="332"/>
         <source>&amp;Leave Match</source>
         <translation>&amp;Abandonar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="288"/>
+        <location filename="../../ui/game/widget.py" line="335"/>
         <source>Commit &amp;Entry</source>
         <translation>Confirma &amp;Entrada</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="304"/>
+        <location filename="../../ui/game/widget.py" line="350"/>
+        <source>Settings</source>
+        <translation>Configuració</translation>
+    </message>
+    <message>
+        <location filename="../../ui/game/widget.py" line="352"/>
         <source>Rules</source>
         <translation>Normes</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="392"/>
+        <location filename="../../ui/game/widget.py" line="440"/>
         <source>{} share the victory!</source>
         <translation>{} comparteixen la victòria!</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="399"/>
+        <location filename="../../ui/game/widget.py" line="447"/>
         <source>Game is paused</source>
         <translation>El joc està pausat</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="401"/>
+        <location filename="../../ui/game/widget.py" line="451"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="407"/>
+        <location filename="../../ui/game/widget.py" line="457"/>
         <source>Leave Match</source>
         <translation>Abandonar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="493"/>
+        <location filename="../../ui/game/widget.py" line="548"/>
         <source>No winner selected</source>
         <translation>Cal sel·leccionar un guanyador</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="503"/>
+        <location filename="../../ui/game/widget.py" line="558"/>
         <source>{} score is not valid</source>
         <translation>La puntuació de {} no és vàlida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="511"/>
+        <location filename="../../ui/game/widget.py" line="566"/>
         <source>No extras</source>
         <translation>No hi ha extres</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="291"/>
-        <location filename="../../ui/game/widget.py" line="545"/>
+        <location filename="../../ui/game/widget.py" line="338"/>
+        <location filename="../../ui/game/widget.py" line="615"/>
         <source>Rollback</source>
         <translation>Desfer</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="546"/>
+        <location filename="../../ui/game/widget.py" line="617"/>
         <source>Are you sure you want to undo the last entry?</source>
         <translation>Estàs segur de voler desfer l&apos;última entrada?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="570"/>
+        <location filename="../../ui/game/widget.py" line="619"/>
+        <source>The match is over. Do you want to reopen it?</source>
+        <translation>La partida ha acabat. Vols reobrir-la?</translation>
+    </message>
+    <message>
+        <location filename="../../ui/game/widget.py" line="622"/>
+        <source>The match is over. Undoing the last entry will reopen it. Are you sure?</source>
+        <translation>La partida ha acabat. Desfer l&apos;última entrada la reobrirà. N&apos;estàs segur?</translation>
+    </message>
+    <message>
+        <location filename="../../ui/game/widget.py" line="650"/>
         <source>Finish game</source>
         <translation>Finalitzar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="571"/>
+        <location filename="../../ui/game/widget.py" line="651"/>
         <source>Are you sure you want to finish the current game?</source>
         <translation>Estàs segur de voler finalitzar la partida actual?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="592"/>
+        <location filename="../../ui/game/widget.py" line="672"/>
         <source>Next player deals</source>
         <translation>El següent reparteix</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="630"/>
+        <location filename="../../ui/game/widget.py" line="710"/>
         <source>{} - Round {}</source>
         <translation>{} - Ronda {}</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="408"/>
-        <location filename="../../ui/game/widget.py" line="435"/>
+        <location filename="../../ui/game/widget.py" line="458"/>
+        <location filename="../../ui/game/widget.py" line="485"/>
         <source>Do you want to save the current {} match?</source>
         <translation>Vols desar la partida de {} actual?</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="293"/>
+        <location filename="../../ui/game/widget.py" line="340"/>
         <source>&amp;Finish Game</source>
         <translation>&amp;Finalitzar Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="292"/>
+        <location filename="../../ui/game/widget.py" line="339"/>
         <source>Player &amp;Order</source>
         <translation>&amp;Ordre Jugadors</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="286"/>
+        <location filename="../../ui/game/widget.py" line="333"/>
         <source>Restart &amp;Match</source>
         <translation>Nova &amp;Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/game/widget.py" line="434"/>
+        <location filename="../../ui/game/widget.py" line="484"/>
         <source>Restart Match</source>
         <translation>Nova Partida</translation>
     </message>
@@ -408,20 +423,29 @@
 <context>
     <name>GamelogApplication</name>
     <message>
-        <location filename="../../ui/app.py" line="50"/>
+        <location filename="../../ui/app.py" line="54"/>
         <source>Gamelog error</source>
         <translation>Error de Gamelog</translation>
     </message>
 </context>
 <context>
+    <name>LanguageButton</name>
+    <message>
+        <location filename="../../ui/language.py" line="112"/>
+        <location filename="../../ui/language.py" line="117"/>
+        <source>Language</source>
+        <translation>Idioma</translation>
+    </message>
+</context>
+<context>
     <name>LanguageChooser</name>
     <message>
-        <location filename="../../ui/language.py" line="200"/>
+        <location filename="../../ui/language.py" line="198"/>
         <source>Select the desired language:</source>
         <translation>Sel·lecciona l&apos;idioma:</translation>
     </message>
     <message>
-        <location filename="../../ui/language.py" line="197"/>
+        <location filename="../../ui/language.py" line="195"/>
         <source>Language</source>
         <translation>Idioma</translation>
     </message>
@@ -429,62 +453,279 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="95"/>
-        <location filename="../../ui/mainwindow.py" line="96"/>
+        <location filename="../../ui/mainwindow.py" line="109"/>
+        <location filename="../../ui/mainwindow.py" line="110"/>
         <source>GameLog</source>
         <translation>GameLog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="97"/>
+        <location filename="../../ui/mainwindow.py" line="111"/>
         <source>&amp;File</source>
         <translation>&amp;Arxiu</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="99"/>
+        <location filename="../../ui/mainwindow.py" line="113"/>
         <source>&amp;Quit</source>
         <translation>&amp;Sortir</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="100"/>
+        <location filename="../../ui/mainwindow.py" line="114"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="101"/>
+        <location filename="../../ui/mainwindow.py" line="115"/>
         <source>Quit GameLog</source>
         <translation>Sortir de GameLog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="123"/>
-        <location filename="../../ui/mainwindow.py" line="139"/>
-        <location filename="../../ui/mainwindow.py" line="164"/>
+        <location filename="../../ui/mainwindow.py" line="138"/>
+        <location filename="../../ui/mainwindow.py" line="154"/>
+        <location filename="../../ui/mainwindow.py" line="179"/>
         <source>Exit</source>
         <translation>Sortir</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="103"/>
+        <location filename="../../ui/mainwindow.py" line="201"/>
+        <source>Gamelog - Match history</source>
+        <translation>Gamelog - Historial de partides</translation>
+    </message>
+    <message>
+        <location filename="../../ui/mainwindow.py" line="223"/>
+        <source>Match history</source>
+        <translation>Historial de partides</translation>
+    </message>
+    <message>
+        <location filename="../../ui/mainwindow.py" line="223"/>
+        <source>The match could not be opened</source>
+        <translation>No s&apos;ha pogut obrir la partida</translation>
+    </message>
+    <message>
+        <location filename="../../ui/mainwindow.py" line="234"/>
+        <source>This match was cancelled</source>
+        <translation>Aquesta partida es va cancel·lar</translation>
+    </message>
+    <message>
+        <location filename="../../ui/mainwindow.py" line="236"/>
+        <source>This match was interrupted</source>
+        <translation>Aquesta partida es va interrompre</translation>
+    </message>
+    <message>
+        <location filename="../../ui/mainwindow.py" line="117"/>
         <source>&amp;Help</source>
         <translation>&amp;Ajuda</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="104"/>
+        <location filename="../../ui/mainwindow.py" line="118"/>
         <source>&amp;About Gamelog...</source>
         <translation>&amp;Quant a Gamelog...</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="126"/>
+        <location filename="../../ui/mainwindow.py" line="141"/>
         <source>You have an opened {} match. Do you want to save it before exiting?</source>
         <translation>Vols desar la partida de {} actual abans de sortir?</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="141"/>
+        <location filename="../../ui/mainwindow.py" line="156"/>
         <source>You have {} opened matches. Do you want to save them before exiting?</source>
         <translation>Hi ha {} partides obertes. Vols desar-les abans de sortir?</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="165"/>
+        <location filename="../../ui/mainwindow.py" line="180"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Estàs segur que vols sortir de GameLog?</translation>
+    </message>
+</context>
+<context>
+    <name>MatchExplorerWidget</name>
+    <message>
+        <location filename="../../ui/explorer.py" line="346"/>
+        <source>Back</source>
+        <translation>Tornar</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="347"/>
+        <source>Back to the new game screen</source>
+        <translation>Tornar a la pantalla de nova partida</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="348"/>
+        <source>Match history</source>
+        <translation>Historial de partides</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="349"/>
+        <source>Filters</source>
+        <translation>Filtres</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="351"/>
+        <location filename="../../ui/explorer.py" line="394"/>
+        <source>Game</source>
+        <translation>Joc</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="351"/>
+        <location filename="../../ui/explorer.py" line="352"/>
+        <source>Clear selection</source>
+        <translation>Treure selecció</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="352"/>
+        <location filename="../../ui/explorer.py" line="397"/>
+        <source>Players</source>
+        <translation>Jugadors</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="355"/>
+        <source>who all took part</source>
+        <translation>que van participar tots</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="355"/>
+        <source>any of whom took part</source>
+        <translation>dels quals va participar algun</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="357"/>
+        <source>Won by</source>
+        <translation>Guanyada per</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="361"/>
+        <source>Finished</source>
+        <translation>Acabada</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="362"/>
+        <source>Saved</source>
+        <translation>Desada</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="363"/>
+        <source>Cancelled</source>
+        <translation>Cancel·lada</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="364"/>
+        <source>Interrupted</source>
+        <translation>Interrompuda</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="369"/>
+        <source>At least</source>
+        <translation>Almenys</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="370"/>
+        <source> min</source>
+        <translation> min</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="371"/>
+        <source>any length</source>
+        <translation>qualsevol durada</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="376"/>
+        <source>All history</source>
+        <translation>Sempre</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="377"/>
+        <source>Today</source>
+        <translation>Avui</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="378"/>
+        <source>Last 7 days</source>
+        <translation>Darrers 7 dies</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="379"/>
+        <source>Last 30 days</source>
+        <translation>Darrers 30 dies</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="380"/>
+        <source>This year</source>
+        <translation>Aquest any</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="381"/>
+        <source>Custom range</source>
+        <translation>Rang personalitzat</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="385"/>
+        <source>From</source>
+        <translation>Des de</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="386"/>
+        <source>To</source>
+        <translation>Fins a</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="388"/>
+        <source>any</source>
+        <translation>qualsevol</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="389"/>
+        <location filename="../../ui/explorer.py" line="390"/>
+        <source>Reset filters</source>
+        <translation>Restablir filtres</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="393"/>
+        <source>Started</source>
+        <translation>Inici</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="395"/>
+        <source>Status</source>
+        <translation>Estat</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="396"/>
+        <source>Winner</source>
+        <translation>Guanyador</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="398"/>
+        <source>Time</source>
+        <translation>Temps</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="399"/>
+        <source>Rounds</source>
+        <translation>Rondes</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="404"/>
+        <source>Double-click a match to open it</source>
+        <translation>Fes doble clic en una partida per obrir-la</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="423"/>
+        <source>anyone</source>
+        <translation>qualsevol</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="540"/>
+        <source>{} matches</source>
+        <translation>{} partides</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="595"/>
+        <source>Resume</source>
+        <translation>Reprendre</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="597"/>
+        <source>Open</source>
+        <translation>Obrir</translation>
     </message>
 </context>
 <context>
@@ -511,45 +752,68 @@
     </message>
 </context>
 <context>
+    <name>MultiChoiceButton</name>
+    <message>
+        <location filename="../../ui/explorer.py" line="154"/>
+        <source>All</source>
+        <translation>Tots</translation>
+    </message>
+    <message>
+        <location filename="../../ui/explorer.py" line="158"/>
+        <source>{} selected</source>
+        <translation>{} seleccionats</translation>
+    </message>
+</context>
+<context>
     <name>NewGameWidget</name>
     <message>
-        <location filename="../../ui/newgame.py" line="85"/>
+        <location filename="../../ui/newgame.py" line="88"/>
         <source>Available Players</source>
         <translation>Jugadors Disponibles</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="86"/>
+        <location filename="../../ui/newgame.py" line="89"/>
         <source>New Player</source>
         <translation>Nou Jugador</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="319"/>
+        <location filename="../../ui/newgame.py" line="339"/>
         <source>At least 2 players are needed to play</source>
         <translation>Calen almenys 2 jugadors per jugar</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="317"/>
+        <location filename="../../ui/newgame.py" line="337"/>
         <source>New Match</source>
         <translation>Nova Partida</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="81"/>
+        <location filename="../../ui/newgame.py" line="80"/>
+        <source>Settings</source>
+        <translation>Configuració</translation>
+    </message>
+    <message>
+        <location filename="../../ui/newgame.py" line="82"/>
         <source>Rules</source>
         <translation>Normes</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="197"/>
+        <location filename="../../ui/newgame.py" line="84"/>
+        <source>Match history</source>
+        <translation>Historial de partides</translation>
+    </message>
+    <message>
+        <location filename="../../ui/newgame.py" line="212"/>
         <source>Selected Players (max {})</source>
         <translation>Jugadors Sel·leccionats (max {})</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="325"/>
+        <location filename="../../ui/newgame.py" line="345"/>
         <source>The maximum number of players is</source>
         <translation>El màxim nombre de jugadors és</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="343"/>
-        <location filename="../../ui/newgame.py" line="359"/>
+        <location filename="../../ui/newgame.py" line="363"/>
+        <location filename="../../ui/newgame.py" line="379"/>
         <source>Widget not implemented</source>
         <translation>Widget no implementat</translation>
     </message>
@@ -593,22 +857,22 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="33"/>
+        <location filename="../../ui/mainwindow.py" line="37"/>
         <source>&amp;Yes</source>
         <translation>&amp;Sí</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="34"/>
+        <location filename="../../ui/mainwindow.py" line="38"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="35"/>
+        <location filename="../../ui/mainwindow.py" line="39"/>
         <source>OK</source>
         <translation>Accepta</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="36"/>
+        <location filename="../../ui/mainwindow.py" line="40"/>
         <source>Cancel</source>
         <translation>Cancel·la</translation>
     </message>
@@ -629,22 +893,22 @@
 <context>
     <name>ResumeBox</name>
     <message>
-        <location filename="../../ui/newgame.py" line="434"/>
+        <location filename="../../ui/newgame.py" line="454"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="450"/>
+        <location filename="../../ui/newgame.py" line="470"/>
         <source>Start a new game...</source>
         <translation>Partida nova...</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="519"/>
+        <location filename="../../ui/newgame.py" line="539"/>
         <source>Cancel Saved Game</source>
         <translation>Cancel·la Partida Desada</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="520"/>
+        <location filename="../../ui/newgame.py" line="540"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>Estàs segur que vols cancel·lar la partida desada?</translation>
     </message>

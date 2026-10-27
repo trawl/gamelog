@@ -134,7 +134,9 @@ class CatanWidget(GameWidget):
         so undoing is the everyday way to fix a slip."""
         if not self.engine.getRounds():
             return
-        self.engine.deleteRound(len(self.engine.getRounds()))
+        self.engine.rollback()
+        if self.finished and not self.engine.getWinner():
+            self.unsetWinner()
         self.updatePanel()
 
     def setRoundTitle(self) -> None:

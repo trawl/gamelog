@@ -30,11 +30,11 @@ class SkullKingMatch(PochaMatch):
         },
         "standard_scoring": {
             "skullking": {"bonus": 40, "reps": 1},
-            "pirate": {"bonus": 20, "reps": 6},
+            "pirate": {"bonus": 30, "reps": 6},
             "mermaid": {"bonus": 20, "reps": 2},
             "loot": {"bonus": 20, "reps": 2},
             "fourteen": {"bonus": 10, "reps": 3},
-            "blackfourteen": {"bonus": 1, "reps": 1},
+            "blackfourteen": {"bonus": 20, "reps": 1},
             "roatan": {"bonus": 10, "reps": 2},
         },
     }
@@ -71,9 +71,7 @@ class SkullKingMatch(PochaMatch):
         return [
             sm
             for sm in self.scoringModes
-            if len(self.players) <= 6
-            or len(self.players) > 7
-            and sm != "classic_scoring"
+            if sm != "classic_scoring" or len(self.players) <= 6
         ]
 
     @classmethod
