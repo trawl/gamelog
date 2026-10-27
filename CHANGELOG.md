@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/trawl/gamelog/compare/v2.2.0...v2.3.0) (2026-10-27)
+
+
+### Features
+
+* History browser plus some small fixes ([#26](https://github.com/trawl/gamelog/issues/26)) ([ba4063f](https://github.com/trawl/gamelog/commit/ba4063f529b01bc69fde62d9cc38851675227cd3))
+
 ## [2.2.0](https://github.com/trawl/gamelog/compare/v2.1.1...v2.2.0) (2026-10-13)
 
 
