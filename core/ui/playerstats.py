@@ -18,7 +18,6 @@ from PySide6.QtWidgets import (
     QLabel,
     QPushButton,
     QSizePolicy,
-    QSplitter,
     QTableView,
     QVBoxLayout,
     QWidget,
@@ -31,6 +30,7 @@ from core.engine.history import (
     players_with_matches,
 )
 from core.engine.playerstats import (
+    RIVAL_MIN_MATCHES,
     Form,
     GameBreakdown,
     HeadToHead,
@@ -69,8 +69,10 @@ SUMMARY_KEYS = (
     "favourite",
     "first",
     "last",
+    "nemesis",
+    "victim",
 )
-SUMMARY_COLUMNS = 4
+SUMMARY_COLUMNS = 5
 # How much larger a tile's value is than its caption.
 VALUE_SCALE = 1.4
 
@@ -173,6 +175,100 @@ class StatTile(QFrame):
             widget.setToolTip(text)
 
 
+class TableStack(QWidget):
+    """Stacks tables, each as tall as its content, one under the other.
+
+    When they do not all fit, the height is shared in proportion to their row
+    counts, each keeping room for a few rows (or all of them if fewer) so that
+    none collapses. Whatever is left over stays empty below the tables.
+    """
+
+    MIN_ROWS = 3
+    SPACING = 6
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.tables: list[QTableView] = []
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
+    def addTable(self, table: QTableView) -> None:
+        table.setParent(self)
+        table.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
+        table.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.tables.append(table)
+
+    @staticmethod
+    def rowCount(table: QTableView) -> int:
+        model = table.model()
+        return model.rowCount() if model else 0
+
+    def heightFor(self, table: QTableView, rows: int) -> int:
+        """Height of ``table`` showing its first ``rows`` rows and its header."""
+        total = sum(table.rowHeight(i) for i in range(min(rows, self.rowCount(table))))
+        return (
+            table.horizontalHeader().sizeHint().height()
+            + total
+            + 2 * (table.frameWidth())
+        )
+
+    def contentHeight(self, table: QTableView) -> int:
+        return self.heightFor(table, self.rowCount(table))
+
+    def minimumHeightOf(self, table: QTableView) -> int:
+        return self.heightFor(table, self.MIN_ROWS)
+
+    def _shown(self) -> list[QTableView]:
+        return [t for t in self.tables if not t.isHidden()]
+
+    def heights(self, available: int) -> list[int]:
+        """Height of each shown table when ``available`` is all there is."""
+        shown = self._shown()
+        wanted = [self.contentHeight(t) for t in shown]
+        if sum(wanted) <= available:
+            return wanted
+        heights = [
+            min(self.minimumHeightOf(t), w) for t, w in zip(shown, wanted, strict=True)
+        ]
+        rows = [max(self.rowCount(t), 1) for t in shown]
+        spare = available - sum(heights)
+        # Hand the spare height out by row count, never past a table's content.
+        while spare > 0:
+            open_ = [i for i in range(len(shown)) if heights[i] < wanted[i]]
+            if not open_:
+                break
+            weight = sum(rows[i] for i in open_)
+            given = 0
+            for i in open_:
+                give = min(wanted[i] - heights[i], max(1, spare * rows[i] // weight))
+                give = min(give, spare - given)
+                heights[i] += give
+                given += give
+            if given == 0:
+                break
+            spare -= given
+        return heights
+
+    def relayout(self) -> None:
+        shown = self._shown()
+        y = 0
+        gaps = self.SPACING * max(len(shown) - 1, 0)
+        for table, height in zip(
+            shown, self.heights(self.height() - gaps), strict=True
+        ):
+            table.setGeometry(0, y, self.width(), height)
+            y += height + self.SPACING
+        self.updateGeometry()
+
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        super().resizeEvent(event)
+        self.relayout()
+
+    def minimumSizeHint(self) -> QSize:
+        shown = self._shown()
+        height = sum(self.minimumHeightOf(t) for t in shown)
+        return QSize(0, height + self.SPACING * max(len(shown) - 1, 0))
+
+
 class PlayerStatsWidget(Tab):
     """Screen with the figures of one player over all their finished matches.
 
@@ -245,30 +341,22 @@ class PlayerStatsWidget(Tab):
         self.streakLabel = QLabel(self)
         formBox.addWidget(self.streakLabel)
 
-        # Per-game and head-to-head tables
-        splitter = QSplitter(Qt.Orientation.Vertical, self)
-        body.addWidget(splitter, 1)
+        # Per-game and head-to-head tables, each as tall as its rows. A splitter
+        # would only let the user undo that, so the stack sizes them itself.
+        self.tableStack = TableStack(self)
+        body.addWidget(self.tableStack, 1)
         self.gamesModel = QStandardItemModel(0, 9, self)
         self.gamesTable = self._table(self.gamesModel)
         self.gamesTable.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.Stretch
         )
-        splitter.addWidget(self.gamesTable)
-
-        rivals = QWidget(self)
-        rivalsLayout = QVBoxLayout(rivals)
-        rivalsLayout.setContentsMargins(0, 0, 0, 0)
-        self.nemesisLabel = QLabel(self)
-        rivalsLayout.addWidget(self.nemesisLabel)
-        self.victimLabel = QLabel(self)
-        rivalsLayout.addWidget(self.victimLabel)
+        self.tableStack.addTable(self.gamesTable)
         self.rivalsModel = QStandardItemModel(0, 6, self)
         self.rivalsTable = self._table(self.rivalsModel)
         self.rivalsTable.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.Stretch
         )
-        rivalsLayout.addWidget(self.rivalsTable, 1)
-        splitter.addWidget(rivals)
+        self.tableStack.addTable(self.rivalsTable)
 
         # Wire the combos last, so filling them does not trigger queries.
         self.playerCombo.currentIndexChanged.connect(self.onPlayerChanged)
@@ -314,6 +402,8 @@ class PlayerStatsWidget(Tab):
             "favourite": self.tr("Favourite game"),
             "first": self.tr("First played"),
             "last": self.tr("Last played"),
+            "nemesis": self.tr("Nemesis"),
+            "victim": self.tr("Favourite victim"),
         }
         for key, text in names.items():
             self.summaryTiles[key].setCaption(text)
@@ -544,22 +634,30 @@ class PlayerStatsWidget(Tab):
                 for r in rows
             ],
         )
-        enemy = nemesis(rows)
-        self.nemesisLabel.setVisible(enemy is not None)
-        if enemy:
-            self.nemesisLabel.setText(
-                self.tr("Nemesis: {} (lost {} of {})").format(
-                    enemy.opponent, enemy.them_only, enemy.together
+        self.showRival("nemesis", nemesis(rows), lost=True)
+        self.showRival("victim", favourite_victim(rows), lost=False)
+        self.tableStack.relayout()
+
+    def showRival(self, key: str, rival: HeadToHead | None, lost: bool) -> None:
+        """Fill the nemesis or favourite-victim tile; the record against the
+        opponent is its tooltip."""
+        tile = self.summaryTiles[key]
+        if rival is None:
+            tile.setValue(NONE_TEXT)
+            tile.setTip(
+                self.tr("Needs at least {} matches against the same opponent").format(
+                    RIVAL_MIN_MATCHES
                 )
             )
-        victim = favourite_victim(rows)
-        self.victimLabel.setVisible(victim is not None)
-        if victim:
-            self.victimLabel.setText(
-                self.tr("Favourite victim: {} (won {} of {})").format(
-                    victim.opponent, victim.me_only, victim.together
-                )
-            )
+            return
+        tile.setValue(rival.opponent)
+        template = (
+            self.tr("Lost {} of {} matches against this opponent")
+            if lost
+            else self.tr("Won {} of {} matches against this opponent")
+        )
+        count = rival.them_only if lost else rival.me_only
+        tile.setTip(f"{rival.opponent}\n{template.format(count, rival.together)}")
 
     @staticmethod
     def _fill(

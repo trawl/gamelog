@@ -125,7 +125,7 @@ def test_player_stats_keeps_header_alignment_when_retranslated(stats_screen):
 def test_player_stats_summary_tiles_are_all_left_aligned(stats_screen):
     labels, values = stats_screen.summaryLabels, stats_screen.summaryValues
 
-    assert len(values) == 8
+    assert len(values) == 10
     for key in values:
         for label in (values[key], labels[key]):
             assert label.alignment() & LEFT

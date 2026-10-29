@@ -433,8 +433,10 @@ def test_summary_tiles_show_value_and_full_caption(stats_screen):
     positions = _tile_grid(stats_screen)
     assert positions["played"] == (0, 0)
     assert positions["performance"] == (0, 3)
-    assert positions["favourite"] == (1, 1)
-    assert positions["last"] == (1, 3)
+    assert positions["time"] == (0, 4)
+    assert positions["favourite"] == (1, 0)
+    assert positions["last"] == (1, 2)
+    assert positions["victim"] == (1, 4)
     assert all(t.isVisible() for t in tiles.values())
 
 
@@ -446,17 +448,16 @@ def test_summary_reflows_without_the_favourite_game(stats_screen):
     positions = _tile_grid(stats_screen)
     assert "favourite" not in positions
     assert not stats_screen.summaryTiles["favourite"].isVisible()
-    # Seven tiles in reading order, with no hole: 4 on the first row, 3 below.
-    assert sorted(positions.values()) == [(0, 0), (0, 1), (0, 2), (0, 3)] + [
-        (1, 0),
-        (1, 1),
-        (1, 2),
+    # Nine tiles in reading order, with no hole: 5 on the first row, 4 below.
+    assert sorted(positions.values()) == [(0, c) for c in range(5)] + [
+        (1, c) for c in range(4)
     ]
-    assert positions["time"] == (1, 0)
-    assert positions["first"] == (1, 1)
+    assert positions["time"] == (0, 4)
+    assert positions["first"] == (1, 0)
+    assert positions["victim"] == (1, 3)
 
     stats_screen.gameCombo.setCurrentIndex(0)
-    assert _tile_grid(stats_screen)["favourite"] == (1, 1)
+    assert _tile_grid(stats_screen)["favourite"] == (1, 0)
     assert stats_screen.summaryTiles["favourite"].isVisible()
 
 
@@ -486,3 +487,109 @@ def test_a_long_favourite_game_is_elided_and_has_a_tooltip(stats_screen):
     assert tile.value.toolTip() == name
     # It does not push the tiles out of line.
     assert tile.width() == stats_screen.summaryTiles["played"].width()
+
+
+def test_nemesis_and_favourite_victim_tiles(stats_screen):
+    _seed_screen_data()
+    stats_screen.show()
+
+    nemesis, victim = (stats_screen.summaryTiles[k] for k in ("nemesis", "victim"))
+    assert nemesis.caption.fullText() == "Nemesis"
+    assert victim.caption.fullText() == "Favourite victim"
+    # Ann met Bob three times: she won two and lost one.
+    assert nemesis.value.fullText() == "Bob"
+    assert "Lost 1 of 3" in nemesis.toolTip()
+    assert victim.value.fullText() == "Bob"
+    assert "Won 2 of 3" in victim.toolTip()
+    assert "Won 2 of 3" in victim.value.toolTip()
+
+
+def test_rival_tiles_explain_when_nobody_qualifies(stats_screen):
+    from core.engine.playerstats import RIVAL_MIN_MATCHES
+
+    _match("Ratuki", {"Ann": (9, True), "Bob": (1, False)})
+    stats_screen.show()
+
+    for key in ("nemesis", "victim"):
+        tile = stats_screen.summaryTiles[key]
+        assert tile.value.fullText() == "—"
+        assert str(RIVAL_MIN_MATCHES) in tile.toolTip()
+        assert "at least" in tile.toolTip()
+
+
+def test_rival_tiles_stay_when_a_single_game_is_selected(
+    stats_screen,
+):
+    _seed_screen_data()
+    stats_screen.show()
+    stats_screen.gameCombo.setCurrentIndex(stats_screen.gameCombo.findData("Ratuki"))
+
+    assert stats_screen.summaryTiles["nemesis"].isVisible()
+    assert stats_screen.summaryTiles["victim"].isVisible()
+
+
+# --- Table heights -----------------------------------------------------------
+
+
+def _many_opponents(count, games=("Ratuki",)):
+    for game in games:
+        for i in range(count):
+            _match(game, {"Ann": (9, True), f"Rival{i:02}": (1, False)})
+
+
+def test_tables_are_no_taller_than_their_content(stats_screen):
+    _seed_screen_data()
+    stats_screen.resize(1000, 900)
+    stats_screen.show()
+    QApplication.processEvents()
+
+    stack = stats_screen.tableStack
+    for table in (stats_screen.gamesTable, stats_screen.rivalsTable):
+        assert table.height() == stack.contentHeight(table)
+    # Whatever is left stays below the tables.
+    bottom = stats_screen.rivalsTable.geometry().bottom()
+    assert bottom < stack.height() - 20
+
+
+def test_a_long_table_leaves_the_other_its_minimum(stats_screen):
+    _many_opponents(40)
+    stats_screen.resize(1000, 700)
+    stats_screen.show()
+    QApplication.processEvents()
+
+    stack = stats_screen.tableStack
+    games, rivals = stats_screen.gamesTable, stats_screen.rivalsTable
+    assert stats_screen.gamesModel.rowCount() == 1
+    assert games.height() == stack.contentHeight(games)  # one row: all of it
+    assert rivals.height() >= stack.minimumHeightOf(rivals)
+    assert games.height() + rivals.height() + stack.SPACING <= stack.height()
+
+
+def test_space_is_shared_by_row_count_when_neither_fits(stats_screen):
+    stack = stats_screen.tableStack
+    _many_opponents(30, games=("Ratuki", "Toma6", "Phase10", "Pocha", "Azul"))
+    stats_screen.resize(1000, 600)
+    stats_screen.show()
+    QApplication.processEvents()
+
+    games, rivals = stats_screen.gamesTable, stats_screen.rivalsTable
+    assert games.height() >= stack.minimumHeightOf(games)
+    assert rivals.height() >= stack.minimumHeightOf(rivals)
+    assert games.height() + rivals.height() + stack.SPACING <= stack.height() + 1
+    # The head-to-head table has far more rows, so it gets the larger share.
+    assert rivals.height() > games.height()
+
+
+def test_table_heights_follow_the_content(stats_screen):
+    _seed_screen_data()
+    stats_screen.resize(1000, 900)
+    stats_screen.show()
+    QApplication.processEvents()
+    stack = stats_screen.tableStack
+
+    stats_screen.gameCombo.setCurrentIndex(stats_screen.gameCombo.findData("Toma6"))
+    QApplication.processEvents()
+    assert not stats_screen.gamesTable.isVisible()
+    rivals = stats_screen.rivalsTable
+    assert rivals.geometry().top() == 0  # closes up where the other was
+    assert rivals.height() == stack.contentHeight(rivals)
