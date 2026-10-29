@@ -257,9 +257,12 @@ def head_to_head(nick: str, games: tuple[str, ...] = ()) -> list[HeadToHead]:
 
 
 def nemesis(rows: list[HeadToHead]) -> HeadToHead | None:
-    """The opponent who beats the player most often, if any qualifies."""
+    """The opponent who beats the player most often, if any qualifies.
+
+    Only opponents met often enough and with a losing record count, so an
+    opponent is never both nemesis and favourite victim."""
     candidates = [
-        r for r in rows if r.together >= RIVAL_MIN_MATCHES and r.them_only > 0
+        r for r in rows if r.together >= RIVAL_MIN_MATCHES and r.them_only > r.me_only
     ]
     return min(
         candidates,
@@ -269,8 +272,11 @@ def nemesis(rows: list[HeadToHead]) -> HeadToHead | None:
 
 
 def favourite_victim(rows: list[HeadToHead]) -> HeadToHead | None:
-    """The opponent the player beats most often, if any qualifies."""
-    candidates = [r for r in rows if r.together >= RIVAL_MIN_MATCHES and r.me_only > 0]
+    """The opponent the player beats most often, if any qualifies: met often
+    enough, with a winning record."""
+    candidates = [
+        r for r in rows if r.together >= RIVAL_MIN_MATCHES and r.me_only > r.them_only
+    ]
     return min(
         candidates,
         key=lambda r: (-r.me_only, -(r.me_only - r.them_only), r.opponent),

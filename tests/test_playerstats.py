@@ -278,6 +278,44 @@ def test_favourite_victim_mirrors_the_nemesis():
     assert victim.opponent == "A"
 
 
+def test_a_lone_opponent_with_a_winning_record_is_only_the_victim():
+    rows = [_record(opponent="Rosa", together=28, me_only=19, them_only=9)]
+
+    assert nemesis(rows) is None
+    victim = favourite_victim(rows)
+    assert victim is not None
+    assert victim.opponent == "Rosa"
+
+
+def test_a_lone_opponent_with_a_losing_record_is_only_the_nemesis():
+    rows = [_record(opponent="Rosa", together=28, me_only=9, them_only=19)]
+
+    assert favourite_victim(rows) is None
+    enemy = nemesis(rows)
+    assert enemy is not None
+    assert enemy.opponent == "Rosa"
+
+
+def test_an_even_record_is_neither():
+    rows = [_record(opponent="Rosa", together=10, me_only=5, them_only=5)]
+
+    assert nemesis(rows) is None
+    assert favourite_victim(rows) is None
+
+
+def test_nemesis_skips_opponents_the_player_beats_more_often():
+    rows = [
+        _record(opponent="A", together=9, me_only=6, them_only=3),
+        _record(opponent="B", together=6, me_only=1, them_only=2),
+    ]
+    enemy = nemesis(rows)
+    assert enemy is not None
+    assert enemy.opponent == "B"
+    victim = favourite_victim(rows)
+    assert victim is not None
+    assert victim.opponent == "A"
+
+
 # --- Game filter -------------------------------------------------------------
 
 
@@ -491,14 +529,16 @@ def test_a_long_favourite_game_is_elided_and_has_a_tooltip(stats_screen):
 
 def test_nemesis_and_favourite_victim_tiles(stats_screen):
     _seed_screen_data()
+    for _ in range(3):
+        _match("Ratuki", {"Ann": (1, False), "Cy": (9, True)})
     stats_screen.show()
 
     nemesis, victim = (stats_screen.summaryTiles[k] for k in ("nemesis", "victim"))
     assert nemesis.caption.fullText() == "Nemesis"
     assert victim.caption.fullText() == "Favourite victim"
-    # Ann met Bob three times: she won two and lost one.
-    assert nemesis.value.fullText() == "Bob"
-    assert "Lost 1 of 3" in nemesis.toolTip()
+    # Ann beat Bob twice in three and lost three of four to Cy.
+    assert nemesis.value.fullText() == "Cy"
+    assert "Lost 3 of 4" in nemesis.toolTip()
     assert victim.value.fullText() == "Bob"
     assert "Won 2 of 3" in victim.toolTip()
     assert "Won 2 of 3" in victim.value.toolTip()
@@ -510,11 +550,15 @@ def test_rival_tiles_explain_when_nobody_qualifies(stats_screen):
     _match("Ratuki", {"Ann": (9, True), "Bob": (1, False)})
     stats_screen.show()
 
-    for key in ("nemesis", "victim"):
+    for key, record in (
+        ("nemesis", "losses than wins"),
+        ("victim", "wins than losses"),
+    ):
         tile = stats_screen.summaryTiles[key]
         assert tile.value.fullText() == "—"
         assert str(RIVAL_MIN_MATCHES) in tile.toolTip()
         assert "at least" in tile.toolTip()
+        assert record in tile.toolTip()
 
 
 def test_rival_tiles_stay_when_a_single_game_is_selected(

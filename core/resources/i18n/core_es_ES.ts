@@ -1063,17 +1063,22 @@
         <translation>Peor racha de derrotas: {}</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="648"/>
-        <source>Needs at least {} matches against the same opponent</source>
-        <translation>Requiere al menos {} partidas contra el mismo rival</translation>
+        <location filename="../../ui/playerstats.py" line="649"/>
+        <source>Needs at least {} matches against the same opponent, with more losses than wins</source>
+        <translation>Requiere al menos {} partidas contra el mismo rival, con más derrotas que victorias</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="655"/>
+        <location filename="../../ui/playerstats.py" line="653"/>
+        <source>Needs at least {} matches against the same opponent, with more wins than losses</source>
+        <translation>Requiere al menos {} partidas contra el mismo rival, con más victorias que derrotas</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="660"/>
         <source>Lost {} of {} matches against this opponent</source>
         <translation>Perdidas {} de {} partidas contra este rival</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="657"/>
+        <location filename="../../ui/playerstats.py" line="662"/>
         <source>Won {} of {} matches against this opponent</source>
         <translation>Ganadas {} de {} partidas contra este rival</translation>
     </message>

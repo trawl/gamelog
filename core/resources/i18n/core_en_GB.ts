@@ -1063,17 +1063,22 @@
         <translation>Longest losing streak: {}</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="648"/>
-        <source>Needs at least {} matches against the same opponent</source>
-        <translation>Needs at least {} matches against the same opponent</translation>
+        <location filename="../../ui/playerstats.py" line="649"/>
+        <source>Needs at least {} matches against the same opponent, with more losses than wins</source>
+        <translation>Needs at least {} matches against the same opponent, with more losses than wins</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="655"/>
+        <location filename="../../ui/playerstats.py" line="653"/>
+        <source>Needs at least {} matches against the same opponent, with more wins than losses</source>
+        <translation>Needs at least {} matches against the same opponent, with more wins than losses</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="660"/>
         <source>Lost {} of {} matches against this opponent</source>
         <translation>Lost {} of {} matches against this opponent</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="657"/>
+        <location filename="../../ui/playerstats.py" line="662"/>
         <source>Won {} of {} matches against this opponent</source>
         <translation>Won {} of {} matches against this opponent</translation>
     </message>

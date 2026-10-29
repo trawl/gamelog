@@ -644,11 +644,16 @@ class PlayerStatsWidget(Tab):
         tile = self.summaryTiles[key]
         if rival is None:
             tile.setValue(NONE_TEXT)
-            tile.setTip(
-                self.tr("Needs at least {} matches against the same opponent").format(
-                    RIVAL_MIN_MATCHES
+            need = (
+                self.tr(
+                    "Needs at least {} matches against the same opponent, with more losses than wins"
+                )
+                if lost
+                else self.tr(
+                    "Needs at least {} matches against the same opponent, with more wins than losses"
                 )
             )
+            tile.setTip(need.format(RIVAL_MIN_MATCHES))
             return
         tile.setValue(rival.opponent)
         template = (

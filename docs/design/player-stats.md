@@ -153,9 +153,11 @@ Notes:
 - `game_breakdown` is sorted by `played` desc, then game name. `head_to_head`
   is sorted by `together` desc, then opponent nick.
 - `nemesis` is the opponent with the highest `them_only`, considering only rows
-  with `together >= RIVAL_MIN_MATCHES` and `them_only > 0`. Break ties by higher
-  `them_only - me_only`, then by nick. `favourite_victim` mirrors it using
-  `me_only`. Return `None` when nobody qualifies.
+  with `together >= RIVAL_MIN_MATCHES` and a losing record (`them_only >
+  me_only`). Break ties by higher `them_only - me_only`, then by nick.
+  `favourite_victim` mirrors it using `me_only` and a winning record
+  (`me_only > them_only`). An even record qualifies for neither, so one
+  opponent never holds both titles. Return `None` when nobody qualifies.
 - An unknown nick, or a player with no counted matches, must return empty or
   zero results (`played == 0`, `None` rates, empty lists), not raise.
 - Prefer a few clear SQL queries plus small Python loops over one clever query.
@@ -193,9 +195,9 @@ Layout, top to bottom:
    Wins, Win %, Performance, Min, Avg, Max, Time. Sortable with numeric sort
    keys (`SortItem`).
 5. **Head to head** table: Opponent, Together, Won (`me_only`), Lost
-   (`them_only`), Shared (`both`), Neither. Sortable. Above it, one line:
-   "Nemesis: X (lost N of M)" / "Favourite victim: Y (won N of M)", omitted when
-   `None`.
+   (`them_only`), Shared (`both`), Neither. Sortable. The nemesis and
+   favourite victim are shown as summary tiles (value `—` when `None`), with the
+   record as the tooltip.
 
 Put sections 4 and 5 in a vertical `QSplitter` or a scroll area so the window
 stays usable at the app's default size. Show a short "No finished matches yet"
