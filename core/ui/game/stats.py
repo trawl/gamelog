@@ -26,7 +26,13 @@ from PySide6.QtWidgets import (
 from core.engine.settings import appsettings
 from core.registry import registry
 from core.ui.performance import format_performance, performance_tooltip
-from core.ui.tablestyle import align_item, column_alignment, tabular_figures
+from core.ui.tablestyle import (
+    CELL_PADDING,
+    CELL_STYLE,
+    align_item,
+    column_alignment,
+    tabular_figures,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -412,7 +418,9 @@ class StatsTable(QTableWidget):
             self._headerFontSize = size
             self.setStyleSheet(
                 "QHeaderView::section:horizontal {"
-                f" font-size: {size}px; padding: {self.HEADER_PADDING}px; }}"
+                f" font-size: {size}px;"
+                f" padding: {self.HEADER_PADDING}px {CELL_PADDING}px; }}"
+                f" {CELL_STYLE}"
             )
 
     def _fittingHeaderSize(self, available: int, chrome: int) -> int:
@@ -452,7 +460,9 @@ class StatsTable(QTableWidget):
             return
         header = self.horizontalHeader()
         # Section padding on both sides plus its border.
-        chrome = 2 * self.HEADER_PADDING + 2
+        chrome = 2 * CELL_PADDING + 2
+        # The same on top and bottom.
+        vchrome = 2 * self.HEADER_PADDING + 2
         vheader = self.verticalHeader()
         available = self.width() - 2 * self.frameWidth()
         if vheader.isVisible():
@@ -506,7 +516,7 @@ class StatsTable(QTableWidget):
             ).height()
             for j, width in enumerate(widths)
         )
-        header.setFixedHeight(title_height + chrome)
+        header.setFixedHeight(title_height + vchrome)
         self.setFixedHeight(self.sizeHint().height())
 
     def resizeEvent(self, event: QResizeEvent) -> None:

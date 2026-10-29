@@ -20,6 +20,19 @@ ALIGN_TEXT = Qt.AlignmentFlag.AlignLeft | _VCENTER
 ALIGN_FIGURE = Qt.AlignmentFlag.AlignRight | _VCENTER
 
 
+# Room left empty on each side of a cell and of a title, so that values do not
+# touch the gridlines. It is a style sheet padding, which the item delegates
+# count in their size hints, so columns are sized with it.
+CELL_PADDING = 6
+CELL_STYLE = f"QTableView::item {{ padding: 0px {CELL_PADDING}px; }}"
+
+
+# The same for the tables that keep the native look of their headers.
+TABLE_STYLE = (
+    f"{CELL_STYLE} QHeaderView::section:horizontal {{ padding: 4px {CELL_PADDING}px; }}"
+)
+
+
 class _Aligned(Protocol):
     """A table or model item (``QTableWidgetItem``, ``QStandardItem``)."""
 

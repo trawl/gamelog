@@ -45,7 +45,14 @@ from core.engine.settings import appsettings
 from core.ui.explorer import SORT_ROLE, SortItem, _format_duration, status_colour
 from core.ui.performance import NONE_TEXT, format_performance, performance_tooltip
 from core.ui.tab import Tab
-from core.ui.tablestyle import ALIGN_FIGURE, ALIGN_TEXT, align_item, tabular_figures
+from core.ui.tablestyle import (
+    ALIGN_FIGURE,
+    ALIGN_TEXT,
+    CELL_PADDING,
+    TABLE_STYLE,
+    align_item,
+    tabular_figures,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -139,6 +146,8 @@ class PlayerStatsWidget(Tab):
             alignment = ALIGN_TEXT if key in SUMMARY_TEXT_KEYS else ALIGN_FIGURE
             label.setAlignment(alignment)
             value.setAlignment(alignment)
+            for widget in (label, value):
+                widget.setContentsMargins(CELL_PADDING, 0, CELL_PADDING, 0)
             grid.addWidget(label, row * 2, column)
             grid.addWidget(value, row * 2 + 1, column)
             self.summaryLabels[key] = label
@@ -195,6 +204,7 @@ class PlayerStatsWidget(Tab):
         table.setAlternatingRowColors(True)
         table.setSortingEnabled(True)
         table.setFont(tabular_figures(table.font()))
+        table.setStyleSheet(TABLE_STYLE)
         table.verticalHeader().hide()
         table.setWordWrap(False)
         header = table.horizontalHeader()

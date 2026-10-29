@@ -150,3 +150,79 @@ def test_match_history_aligns_by_column(qapp, gamedb):
         assert _is(model.horizontalHeaderItem(column), side)
         assert _is(model.item(0, column), side)
     _tabular(explorer.table)
+
+
+# --- Cell padding ------------------------------------------------------------
+
+
+def _filled_stats_table(css):
+    from PySide6.QtWidgets import QTableWidgetItem
+
+    from core.ui.game.stats import StatsTable
+
+    table = StatsTable()
+    table.setColumnCount(2)
+    table.setRowCount(1)
+    table.setHorizontalHeaderLabels(["Name", "Total"])
+    table.setItem(0, 0, QTableWidgetItem("Rosa"))
+    table.setItem(0, 1, QTableWidgetItem("735"))
+    if css is not None:
+        table.setStyleSheet(css)
+    return table
+
+
+def test_cell_padding_is_part_of_the_column_size_hint(qapp):
+    from core.ui.tablestyle import CELL_PADDING
+
+    bare = _filled_stats_table("")
+    padded = _filled_stats_table(None)  # as the table styles itself
+
+    for column in range(2):
+        grown = padded.sizeHintForColumn(column) - bare.sizeHintForColumn(column)
+        assert grown >= 2 * CELL_PADDING
+
+
+def test_values_are_not_cut_at_a_tight_width(qapp):
+    table = _filled_stats_table(None)
+    need = [table.sizeHintForColumn(c) for c in range(2)]
+    table.verticalHeader().hide()
+    table.show()
+    table.resize(sum(need) + 4, 100)
+    table.fitColumns()
+
+    header = table.horizontalHeader()
+    assert [header.sectionSize(c) for c in range(2)] >= need
+    assert header.length() <= table.viewport().width()
+
+
+def _padding_grows_hint(table, column):
+    from core.ui.tablestyle import CELL_PADDING
+
+    padded = table.sizeHintForColumn(column)
+    table.setStyleSheet("")
+    assert padded - table.sizeHintForColumn(column) >= 2 * CELL_PADDING
+
+
+def test_match_history_is_padded(qapp, gamedb):
+    from core.ui.explorer import MatchExplorerWidget
+
+    _seed()
+    explorer = MatchExplorerWidget()
+    explorer.show()
+
+    _padding_grows_hint(explorer.table, 5)
+
+
+def test_player_stats_are_padded(qapp, gamedb):
+    from core.ui.playerstats import PlayerStatsWidget
+    from core.ui.tablestyle import CELL_PADDING
+
+    _seed()
+    widget = PlayerStatsWidget()
+    widget.show()
+
+    _padding_grows_hint(widget.rivalsTable, 1)
+    _padding_grows_hint(widget.gamesTable, 1)
+    for key in ("played", "favourite"):
+        margins = widget.summaryValues[key].contentsMargins()
+        assert (margins.left(), margins.right()) == (CELL_PADDING, CELL_PADDING)

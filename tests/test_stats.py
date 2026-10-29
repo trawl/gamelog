@@ -222,7 +222,10 @@ def test_linked_stats_tables_share_the_title_size(qapp):
 
 
 def test_stats_table_squeezes_titles_before_values(qapp):
-    table, _ = _stats_table(260)
+    # Just wide enough for the values (padding included), far too narrow for
+    # the titles.
+    values = sum(_stats_table(900)[0].sizeHintForColumn(j) for j in range(6))
+    table, _ = _stats_table(values + 10)
     for j, width in enumerate(_column_widths(table)):
         assert width >= table.sizeHintForColumn(j)
 

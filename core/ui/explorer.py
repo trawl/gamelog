@@ -44,7 +44,7 @@ from core.engine.history import (
 )
 from core.engine.settings import appsettings
 from core.ui.tab import Tab
-from core.ui.tablestyle import align_item, tabular_figures
+from core.ui.tablestyle import TABLE_STYLE, align_item, tabular_figures
 
 logger = logging.getLogger(__name__)
 
@@ -302,6 +302,7 @@ class MatchExplorerWidget(Tab):
         self.table.setAlternatingRowColors(True)
         self.table.setSortingEnabled(True)
         self.table.setFont(tabular_figures(self.table.font()))
+        self.table.setStyleSheet(TABLE_STYLE)
         self.table.verticalHeader().hide()
         self.table.setWordWrap(False)
         header_view = self.table.horizontalHeader()
