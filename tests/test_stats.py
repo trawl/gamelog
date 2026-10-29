@@ -18,6 +18,25 @@ def test_particular_stats_run_cleanly(gamedb, game):
     engine.getPlayerGameStats(game)
 
 
+@pytest.mark.parametrize("game", PARTICULAR_GAMES)
+def test_particular_stats_update_applies_the_player_filter(gamedb, game):
+    from tests.test_playerstats import _match
+
+    _match(game, {"O'Brien": (9, True), "Alice": (1, False)})
+    _match(game, {"O'Brien": (9, True), "Alice": (1, False), "Bob": (2, False)})
+    engine = registry.create_particular_stats_engine(game)
+
+    # update(players) alone must filter: game engines overriding update() have
+    # to pass the players on rather than drop them.
+    engine.update(["O'Brien", "Alice"])
+    rows = engine.getPlayerGameStats(game) or []
+    assert {r["nick"]: r["played"] for r in rows} == {"O'Brien": 1, "Alice": 1}
+
+    engine.update(PLAYERS)
+    rows = engine.getPlayerGameStats(game) or []
+    assert {r["nick"]: r["played"] for r in rows} == dict.fromkeys(PLAYERS, 1)
+
+
 def test_particular_stats_param_count():
     from core.engine.stats import ParticularStatsEngine
 

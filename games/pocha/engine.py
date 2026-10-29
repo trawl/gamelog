@@ -127,7 +127,7 @@ class PochaStatsEngine(StatsEngine):
 
     def update(self, players: list[str] | None = None) -> None:
         """Refresh base statistics, then fold in Pocha hit/extreme-round figures."""
-        super().update()
+        super().update(players)
         # print(f"Updating {self.game} stats...")
         self.hitsRecord = db.queryDict(
             self._hitsQuery, self._bound_params(self._hitsQuery)

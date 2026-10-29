@@ -161,7 +161,7 @@ class Phase10StatsEngine(StatsEngine):
 
     def update(self, players: list[str] | None = None) -> None:
         """Refresh general stats, then fold in per-player phase metrics."""
-        super().update()
+        super().update(players)
         self.wphases = db.queryDict(
             self._worst_phases, self._bound_params(self._worst_phases)
         )
