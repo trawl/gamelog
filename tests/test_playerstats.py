@@ -4,6 +4,7 @@ import datetime
 import itertools
 
 import pytest
+from PySide6.QtWidgets import QApplication
 
 from core.engine.db import db
 from core.engine.playerstats import (
@@ -407,3 +408,81 @@ def test_main_window_swaps_between_new_game_and_player_stats(qapp, gamedb):
     assert window.newGameTab.isVisible()
     assert not window.playerStatsTab.isVisible()
     window.hide()
+
+
+# --- The summary tiles -------------------------------------------------------
+
+
+def _tile_grid(screen):
+    grid = screen.summaryGrid
+    return {
+        key: grid.getItemPosition(grid.indexOf(tile))[:2]
+        for key, tile in screen.summaryTiles.items()
+        if grid.indexOf(tile) >= 0
+    }
+
+
+def test_summary_tiles_show_value_and_full_caption(stats_screen):
+    _seed_screen_data()
+    stats_screen.show()
+
+    tiles = stats_screen.summaryTiles
+    assert tiles["played"].value.fullText() == "3"
+    assert tiles["played"].caption.fullText() == "Played"
+    assert tiles["favourite"].value.fullText() == "Ratuki"
+    positions = _tile_grid(stats_screen)
+    assert positions["played"] == (0, 0)
+    assert positions["performance"] == (0, 3)
+    assert positions["favourite"] == (1, 1)
+    assert positions["last"] == (1, 3)
+    assert all(t.isVisible() for t in tiles.values())
+
+
+def test_summary_reflows_without_the_favourite_game(stats_screen):
+    _seed_screen_data()
+    stats_screen.show()
+
+    stats_screen.gameCombo.setCurrentIndex(stats_screen.gameCombo.findData("Toma6"))
+    positions = _tile_grid(stats_screen)
+    assert "favourite" not in positions
+    assert not stats_screen.summaryTiles["favourite"].isVisible()
+    # Seven tiles in reading order, with no hole: 4 on the first row, 3 below.
+    assert sorted(positions.values()) == [(0, 0), (0, 1), (0, 2), (0, 3)] + [
+        (1, 0),
+        (1, 1),
+        (1, 2),
+    ]
+    assert positions["time"] == (1, 0)
+    assert positions["first"] == (1, 1)
+
+    stats_screen.gameCombo.setCurrentIndex(0)
+    assert _tile_grid(stats_screen)["favourite"] == (1, 1)
+    assert stats_screen.summaryTiles["favourite"].isVisible()
+
+
+def test_summary_tiles_share_the_width_and_keep_the_performance_tooltip(stats_screen):
+    _seed_screen_data()
+    stats_screen.resize(900, 600)
+    stats_screen.show()
+
+    tiles = list(stats_screen.summaryTiles.values())
+    assert len({tile.width() for tile in tiles}) <= 2  # rounding only
+    perf = stats_screen.summaryTiles["performance"]
+    assert "chance" in perf.toolTip()
+    assert "chance" in perf.value.toolTip()
+    assert "chance" in perf.caption.toolTip()
+
+
+def test_a_long_favourite_game_is_elided_and_has_a_tooltip(stats_screen):
+    name = "Azul Summer Pavilion"
+    _match(name, {"Ann": (9, True), "Bob": (1, False)})
+    stats_screen.show()
+    QApplication.processEvents()  # lay the tiles out
+
+    tile = stats_screen.summaryTiles["favourite"]
+    assert tile.value.fullText() == name
+    assert tile.value.text().endswith("…")
+    assert len(tile.value.text()) < len(name)
+    assert tile.value.toolTip() == name
+    # It does not push the tiles out of line.
+    assert tile.width() == stats_screen.summaryTiles["played"].width()

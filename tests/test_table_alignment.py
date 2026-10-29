@@ -122,14 +122,14 @@ def test_player_stats_keeps_header_alignment_when_retranslated(stats_screen):
     assert _is(stats_screen.gamesModel.horizontalHeaderItem(3), RIGHT)
 
 
-def test_player_stats_summary_values(stats_screen):
+def test_player_stats_summary_tiles_are_all_left_aligned(stats_screen):
     labels, values = stats_screen.summaryLabels, stats_screen.summaryValues
 
-    for key in ("played", "performance", "time", "first"):
-        assert values[key].alignment() & RIGHT
-        assert labels[key].alignment() & RIGHT
-    assert values["favourite"].alignment() & LEFT
-    assert labels["favourite"].alignment() & LEFT
+    assert len(values) == 8
+    for key in values:
+        for label in (values[key], labels[key]):
+            assert label.alignment() & LEFT
+            assert not label.alignment() & RIGHT
     _tabular(values["played"])
 
 
@@ -215,7 +215,6 @@ def test_match_history_is_padded(qapp, gamedb):
 
 def test_player_stats_are_padded(qapp, gamedb):
     from core.ui.playerstats import PlayerStatsWidget
-    from core.ui.tablestyle import CELL_PADDING
 
     _seed()
     widget = PlayerStatsWidget()
@@ -223,6 +222,3 @@ def test_player_stats_are_padded(qapp, gamedb):
 
     _padding_grows_hint(widget.rivalsTable, 1)
     _padding_grows_hint(widget.gamesTable, 1)
-    for key in ("played", "favourite"):
-        margins = widget.summaryValues[key].contentsMargins()
-        assert (margins.left(), margins.right()) == (CELL_PADDING, CELL_PADDING)

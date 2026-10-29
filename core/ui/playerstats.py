@@ -5,17 +5,19 @@ from __future__ import annotations
 import datetime
 import logging
 
-from PySide6.QtCore import QSortFilterProxyModel, Qt, Signal
-from PySide6.QtGui import QShowEvent, QStandardItemModel
+from PySide6.QtCore import QEvent, QSize, QSortFilterProxyModel, Qt, Signal
+from PySide6.QtGui import QResizeEvent, QShowEvent, QStandardItemModel
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
+    QFrame,
     QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
     QLabel,
     QPushButton,
+    QSizePolicy,
     QSplitter,
     QTableView,
     QVBoxLayout,
@@ -46,9 +48,7 @@ from core.ui.explorer import SORT_ROLE, SortItem, _format_duration, status_colou
 from core.ui.performance import NONE_TEXT, format_performance, performance_tooltip
 from core.ui.tab import Tab
 from core.ui.tablestyle import (
-    ALIGN_FIGURE,
     ALIGN_TEXT,
-    CELL_PADDING,
     TABLE_STYLE,
     align_item,
     tabular_figures,
@@ -59,8 +59,20 @@ logger = logging.getLogger(__name__)
 # Columns holding text (left-aligned); the others are figures.
 GAMES_TEXT_COLUMNS = frozenset({0})
 RIVALS_TEXT_COLUMNS = frozenset({0})
-# Summary values that are text; the others are figures.
-SUMMARY_TEXT_KEYS = frozenset({"favourite"})
+# The summary tiles in reading order, laid out this many to a row.
+SUMMARY_KEYS = (
+    "played",
+    "wins",
+    "winRate",
+    "performance",
+    "time",
+    "favourite",
+    "first",
+    "last",
+)
+SUMMARY_COLUMNS = 4
+# How much larger a tile's value is than its caption.
+VALUE_SCALE = 1.4
 
 
 def _percent(rate: float | None) -> str:
@@ -69,6 +81,96 @@ def _percent(rate: float | None) -> str:
 
 def _day(moment: datetime.datetime | None) -> str:
     return moment.astimezone().strftime("%Y-%m-%d") if moment else NONE_TEXT
+
+
+class ElidedLabel(QLabel):
+    """Label that cuts a text too long for it short with an ellipsis, rather
+    than widening its layout."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._full = ""
+        self.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+
+    def setFullText(self, text: str) -> None:
+        self._full = text
+        self._elide()
+
+    def fullText(self) -> str:
+        return self._full
+
+    def _elide(self) -> None:
+        # The ellipsis only shows once the label has a width to elide to.
+        width = self.width()
+        text = self._full
+        if width > 1:
+            text = self.fontMetrics().elidedText(
+                self._full, Qt.TextElideMode.ElideRight, width
+            )
+        super().setText(text)
+
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        super().resizeEvent(event)
+        self._elide()
+
+    def changeEvent(self, event: QEvent) -> None:
+        super().changeEvent(event)
+        if event.type() == QEvent.Type.FontChange:
+            self._elide()  # the style sheet sets the size once polished
+
+    def minimumSizeHint(self) -> QSize:
+        return QSize(0, super().minimumSizeHint().height())
+
+
+class StatTile(QFrame):
+    """One summary figure: its value large, its caption small beneath it,
+    both left-aligned. Styled by the theme through ``#statTile``."""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.setObjectName("statTile")
+        self._tip: str | None = None
+        self._valueSize = 0
+        self.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(12, 8, 12, 8)
+        layout.setSpacing(0)
+        self.value = ElidedLabel(self)
+        self.value.setObjectName("statValue")
+        self.value.setFont(tabular_figures(self.value.font()))
+        self.value.setAlignment(ALIGN_TEXT)
+        layout.addWidget(self.value)
+        self.caption = ElidedLabel(self)
+        self.caption.setObjectName("statCaption")
+        self.caption.setAlignment(ALIGN_TEXT)
+        layout.addWidget(self.caption)
+
+    def showEvent(self, event: QShowEvent) -> None:
+        """Size the value relative to the caption, once the theme has set the
+        text size: a style sheet cannot express "larger than the others"."""
+        size = round(self.caption.fontInfo().pixelSize() * VALUE_SCALE)
+        if size != self._valueSize:
+            self._valueSize = size
+            self.value.setStyleSheet(f"font-size: {size}px;")
+        super().showEvent(event)
+
+    def setCaption(self, text: str) -> None:
+        self.caption.setFullText(text)
+
+    def setValue(self, text: str) -> None:
+        self.value.setFullText(text)
+        if self._tip is None:
+            # A value that may be cut short is shown in full on hover.
+            self._showTip(text)
+
+    def setTip(self, text: str) -> None:
+        """Explain the tile; hovering over any part of it shows ``text``."""
+        self._tip = text
+        self._showTip(text)
+
+    def _showTip(self, text: str) -> None:
+        for widget in (self, self.value, self.caption):
+            widget.setToolTip(text)
 
 
 class PlayerStatsWidget(Tab):
@@ -124,35 +226,15 @@ class PlayerStatsWidget(Tab):
         self.summaryBox = QGroupBox(self)
         body.addWidget(self.summaryBox)
         grid = QGridLayout(self.summaryBox)
-        self.summaryLabels: dict[str, QLabel] = {}
-        self.summaryValues: dict[str, QLabel] = {}
-        for i, key in enumerate(
-            (
-                "played",
-                "wins",
-                "winRate",
-                "performance",
-                "time",
-                "favourite",
-                "first",
-                "last",
-            )
-        ):
-            row, column = divmod(i, 4)
-            label = QLabel(self)
-            value = QLabel(self)
-            value.setStyleSheet("font-weight: bold;")
-            value.setFont(tabular_figures(value.font()))
-            alignment = ALIGN_TEXT if key in SUMMARY_TEXT_KEYS else ALIGN_FIGURE
-            label.setAlignment(alignment)
-            value.setAlignment(alignment)
-            for widget in (label, value):
-                widget.setContentsMargins(CELL_PADDING, 0, CELL_PADDING, 0)
-            grid.addWidget(label, row * 2, column)
-            grid.addWidget(value, row * 2 + 1, column)
-            self.summaryLabels[key] = label
-            self.summaryValues[key] = value
+        grid.setSpacing(10)
+        for column in range(SUMMARY_COLUMNS):
+            grid.setColumnStretch(column, 1)
+        self.summaryGrid = grid
+        self.summaryTiles = {key: StatTile(self) for key in SUMMARY_KEYS}
+        self.summaryLabels = {k: t.caption for k, t in self.summaryTiles.items()}
+        self.summaryValues = {k: t.value for k, t in self.summaryTiles.items()}
         self.favouriteValue = self.summaryValues["favourite"]
+        self._layoutSummary(single=False)
 
         # Form
         self.formBox = QGroupBox(self)
@@ -234,10 +316,9 @@ class PlayerStatsWidget(Tab):
             "last": self.tr("Last played"),
         }
         for key, text in names.items():
-            self.summaryLabels[key].setText(text)
+            self.summaryTiles[key].setCaption(text)
         tip = performance_tooltip()
-        self.summaryLabels["performance"].setToolTip(tip)
-        self.summaryValues["performance"].setToolTip(tip)
+        self.summaryTiles["performance"].setTip(tip)
         self.formBox.setTitle(self.tr("Form"))
 
         self.gamesModel.setHorizontalHeaderLabels(
@@ -371,16 +452,26 @@ class PlayerStatsWidget(Tab):
             "last": _day(summary.last_played),
         }
         for key, text in values.items():
-            self.summaryValues[key].setText(text)
-        self.summaryLabels["wins"].setToolTip(
-            self.tr("Shared wins are shown in brackets")
-        )
-        self.summaryLabels["favourite"].setVisible(not single)
-        self.favouriteValue.setVisible(not single)
+            self.summaryTiles[key].setValue(text)
+        self.summaryTiles["wins"].setTip(self.tr("Shared wins are shown in brackets"))
+        self._layoutSummary(single)
+
+    def _layoutSummary(self, single: bool) -> None:
+        """Lay the tiles out in rows, leaving out the favourite game when a
+        single game is shown, so the others close up around it."""
+        shown = [k for k in SUMMARY_KEYS if not (single and k == "favourite")]
+        for tile in self.summaryTiles.values():
+            self.summaryGrid.removeWidget(tile)
+            tile.setVisible(False)
+        for i, key in enumerate(shown):
+            row, column = divmod(i, SUMMARY_COLUMNS)
+            self.summaryGrid.addWidget(self.summaryTiles[key], row, column)
+            self.summaryTiles[key].setVisible(True)
 
     def showForm(self, form: Form) -> None:
         while (item := self.formLayout.takeAt(0)) is not None:
             if widget := item.widget():
+                widget.setParent(None)  # gone at once, not when the event loop runs
                 widget.deleteLater()
         win = status_colour(STATUS_FINISHED, self).name()
         loss = status_colour(STATUS_INTERRUPTED, self).name()
