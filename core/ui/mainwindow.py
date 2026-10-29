@@ -21,6 +21,7 @@ from core.registry import registry
 from core.ui.dialogs import AboutDialog
 from core.ui.explorer import MatchExplorerWidget
 from core.ui.newgame import NewGameWidget
+from core.ui.playerstats import PlayerStatsWidget
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +92,12 @@ class MainWindow(QMainWindow):
         self.explorerTab.openRequested.connect(self.openStoredMatch)
         self.verticalLayout.addWidget(self.explorerTab)
         self.explorerTab.hide()
+
+        # Player statistics, shown the same way
+        self.playerStatsTab = PlayerStatsWidget(self)
+        self.playerStatsTab.backRequested.connect(self.hidePlayerStats)
+        self.verticalLayout.addWidget(self.playerStatsTab)
+        self.playerStatsTab.hide()
         #        self.tabWidget.addTab(self.newGameTab, "")
         #        self.tabWidget.setCurrentIndex(0)
         self.statusBar().hide()
@@ -119,6 +126,7 @@ class MainWindow(QMainWindow):
 
         self.newGameTab.retranslateUI()
         self.explorerTab.retranslateUI()
+        self.playerStatsTab.retranslateUI()
         for game in self.openedGames:
             game.retranslateUI()
 
@@ -203,6 +211,18 @@ class MainWindow(QMainWindow):
     def hideExplorer(self) -> None:
         """Return from the match explorer to the new-game screen."""
         self.explorerTab.hide()
+        self.newGameTab.show()
+        self.setWindowTitle("Gamelog")
+
+    def showPlayerStats(self) -> None:
+        """Swap the new-game screen for the player statistics."""
+        self.newGameTab.hide()
+        self.playerStatsTab.show()
+        self.setWindowTitle(self.tr("Gamelog - Player statistics"))
+
+    def hidePlayerStats(self) -> None:
+        """Return from the player statistics to the new-game screen."""
+        self.playerStatsTab.hide()
         self.newGameTab.show()
         self.setWindowTitle("Gamelog")
 

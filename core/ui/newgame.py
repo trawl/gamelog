@@ -82,6 +82,8 @@ class NewGameWidget(Tab):
         self.rulesButton.setToolTip(self.tr("Rules"))
         self.historyButton.setText("🗂")
         self.historyButton.setToolTip(self.tr("Match history"))
+        self.statsButton.setText("📊")
+        self.statsButton.setToolTip(self.tr("Player statistics"))
         for dialog in self.rulesDialogs.values():
             dialog.retranslateUI()
         if appsettings["text_in_buttons"]:
@@ -141,6 +143,13 @@ class NewGameWidget(Tab):
         self.historyButton.clicked.connect(self.showHistory)
         self.settingsLayout.addWidget(self.historyButton)
 
+        self.statsButton = QPushButton(self)
+        self.statsButton.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+        )
+        self.statsButton.clicked.connect(self.showPlayerStats)
+        self.settingsLayout.addWidget(self.statsButton)
+
         self.languageChooser = LanguageButton(self)
         self.languageChooser.setSizePolicy(
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
@@ -156,6 +165,7 @@ class NewGameWidget(Tab):
         for button in (
             self.rulesButton,
             self.historyButton,
+            self.statsButton,
             self.languageChooser,
             self.settingsButton,
         ):
@@ -244,6 +254,11 @@ class NewGameWidget(Tab):
         """Open the match explorer in place of this screen."""
         if self._parent:
             self._parent.showExplorer()
+
+    def showPlayerStats(self) -> None:
+        """Open the player statistics in place of this screen."""
+        if self._parent:
+            self._parent.showPlayerStats()
 
     def updateStats(self) -> None:
         """Push the currently selected players into the quick-stats box."""

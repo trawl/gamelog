@@ -92,49 +92,56 @@ tweaked, but keep it Qt-free and typed):
 class PlayerSummary:
     nick: str
     played: int
-    wins: int                    # including shared wins
+    wins: int  # including shared wins
     shared_wins: int
-    win_rate: float | None       # wins / played, None if played == 0
-    performance: float | None    # see "Performance index"
-    time_played: int             # Σ Match.elapsed, seconds
-    first_played: datetime.datetime | None   # min started
-    last_played: datetime.datetime | None    # max finished
-    favourite_game: str | None   # most played; ties -> most recently played
+    win_rate: float | None  # wins / played, None if played == 0
+    performance: float | None  # see "Performance index"
+    time_played: int  # Σ Match.elapsed, seconds
+    first_played: datetime.datetime | None  # min started
+    last_played: datetime.datetime | None  # max finished
+    favourite_game: str | None  # most played; ties -> most recently played
+
 
 @dataclass(frozen=True)
-class GameBreakdown:            # one row per game the player has played
+class GameBreakdown:  # one row per game the player has played
     game: str
     played: int
     wins: int
     win_rate: float | None
     performance: float | None
     min_score: int
-    avg_score: int               # rounded
+    avg_score: int  # rounded
     max_score: int
     time_played: int
 
+
 @dataclass(frozen=True)
 class Form:
-    recent: tuple[bool, ...]     # last N results, oldest -> newest, True = win
-    current_streak: int          # >0 winning streak length, <0 losing, 0 if none
+    recent: tuple[bool, ...]  # last N results, oldest -> newest, True = win
+    current_streak: int  # >0 winning streak length, <0 losing, 0 if none
     longest_win_streak: int
     longest_loss_streak: int
 
+
 @dataclass(frozen=True)
-class HeadToHead:               # one row per opponent sharing >= 1 counted match
+class HeadToHead:  # one row per opponent sharing >= 1 counted match
     opponent: str
-    together: int                # counted matches both played
-    me_only: int                 # player won, opponent did not
-    them_only: int               # opponent won, player did not
-    both: int                    # shared victory between the two
-    neither: int                 # someone else won (or no winner)
+    together: int  # counted matches both played
+    me_only: int  # player won, opponent did not
+    them_only: int  # opponent won, player did not
+    both: int  # shared victory between the two
+    neither: int  # someone else won (or no winner)
+
 
 FORM_LENGTH = 10
-RIVAL_MIN_MATCHES = 3            # threshold for nemesis / favourite victim
+RIVAL_MIN_MATCHES = 3  # threshold for nemesis / favourite victim
+
 
 def player_summary(nick: str, games: tuple[str, ...] = ()) -> PlayerSummary: ...
 def game_breakdown(nick: str, games: tuple[str, ...] = ()) -> list[GameBreakdown]: ...
-def player_form(nick: str, games: tuple[str, ...] = (), length: int = FORM_LENGTH) -> Form: ...
+def player_form(
+    nick: str, games: tuple[str, ...] = (), length: int = FORM_LENGTH
+) -> Form: ...
 def head_to_head(nick: str, games: tuple[str, ...] = ()) -> list[HeadToHead]: ...
 def nemesis(rows: list[HeadToHead]) -> HeadToHead | None: ...
 def favourite_victim(rows: list[HeadToHead]) -> HeadToHead | None: ...

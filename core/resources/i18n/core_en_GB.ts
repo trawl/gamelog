@@ -452,85 +452,90 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="109"/>
-        <location filename="../../ui/mainwindow.py" line="110"/>
+        <location filename="../../ui/mainwindow.py" line="116"/>
+        <location filename="../../ui/mainwindow.py" line="117"/>
         <source>GameLog</source>
         <translation>GameLog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="111"/>
+        <location filename="../../ui/mainwindow.py" line="118"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="113"/>
+        <location filename="../../ui/mainwindow.py" line="120"/>
         <source>&amp;Quit</source>
         <translation>&amp;Quit</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="114"/>
+        <location filename="../../ui/mainwindow.py" line="121"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="115"/>
+        <location filename="../../ui/mainwindow.py" line="122"/>
         <source>Quit GameLog</source>
         <translation>Quit GameLog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="138"/>
-        <location filename="../../ui/mainwindow.py" line="154"/>
-        <location filename="../../ui/mainwindow.py" line="179"/>
+        <location filename="../../ui/mainwindow.py" line="146"/>
+        <location filename="../../ui/mainwindow.py" line="162"/>
+        <location filename="../../ui/mainwindow.py" line="187"/>
         <source>Exit</source>
         <translation>Exit</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="201"/>
+        <location filename="../../ui/mainwindow.py" line="209"/>
         <source>Gamelog - Match history</source>
         <translation>Gamelog - Match history</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="223"/>
+        <location filename="../../ui/mainwindow.py" line="221"/>
+        <source>Gamelog - Player statistics</source>
+        <translation>Gamelog - Player statistics</translation>
+    </message>
+    <message>
+        <location filename="../../ui/mainwindow.py" line="243"/>
         <source>Match history</source>
         <translation>Match history</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="223"/>
+        <location filename="../../ui/mainwindow.py" line="243"/>
         <source>The match could not be opened</source>
         <translation>The match could not be opened</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="234"/>
+        <location filename="../../ui/mainwindow.py" line="254"/>
         <source>This match was cancelled</source>
         <translation>This match was cancelled</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="236"/>
+        <location filename="../../ui/mainwindow.py" line="256"/>
         <source>This match was interrupted</source>
         <translation>This match was interrupted</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="117"/>
+        <location filename="../../ui/mainwindow.py" line="124"/>
         <source>&amp;Help</source>
         <translation>&amp;Help</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="118"/>
+        <location filename="../../ui/mainwindow.py" line="125"/>
         <source>&amp;About Gamelog...</source>
         <translation>&amp;About Gamelog...</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="141"/>
+        <location filename="../../ui/mainwindow.py" line="149"/>
         <source>You have an opened {} match. Do you want to save it before exiting?</source>
         <translation>Do you want to save the current {} match before exiting?</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="156"/>
+        <location filename="../../ui/mainwindow.py" line="164"/>
         <source>You have {} opened matches. Do you want to save them before exiting?</source>
         <translation>You have {} open matches. Do you want to save them before exiting?</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="180"/>
+        <location filename="../../ui/mainwindow.py" line="188"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Are you sure you want to exit Gamelog?</translation>
     </message>
@@ -766,22 +771,22 @@
 <context>
     <name>NewGameWidget</name>
     <message>
-        <location filename="../../ui/newgame.py" line="88"/>
+        <location filename="../../ui/newgame.py" line="90"/>
         <source>Available Players</source>
         <translation>Available Players</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="89"/>
+        <location filename="../../ui/newgame.py" line="91"/>
         <source>New Player</source>
         <translation>New Player</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="339"/>
+        <location filename="../../ui/newgame.py" line="354"/>
         <source>At least 2 players are needed to play</source>
         <translation>At least 2 players are needed to play</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="337"/>
+        <location filename="../../ui/newgame.py" line="352"/>
         <source>New Match</source>
         <translation>New Match</translation>
     </message>
@@ -801,18 +806,23 @@
         <translation>Match history</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="212"/>
+        <location filename="../../ui/newgame.py" line="86"/>
+        <source>Player statistics</source>
+        <translation>Player statistics</translation>
+    </message>
+    <message>
+        <location filename="../../ui/newgame.py" line="222"/>
         <source>Selected Players (max {})</source>
         <translation>Selected Players (max {})</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="345"/>
+        <location filename="../../ui/newgame.py" line="360"/>
         <source>The maximum number of players is</source>
         <translation>The maximum number of players is</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="363"/>
-        <location filename="../../ui/newgame.py" line="379"/>
+        <location filename="../../ui/newgame.py" line="378"/>
+        <location filename="../../ui/newgame.py" line="394"/>
         <source>Widget not implemented</source>
         <translation>Widget not implemented</translation>
     </message>
@@ -854,24 +864,216 @@
     </message>
 </context>
 <context>
+    <name>PlayerStatsWidget</name>
+    <message>
+        <location filename="../../ui/playerstats.py" line="201"/>
+        <source>Back</source>
+        <translation>Back</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="202"/>
+        <source>Back to the new game screen</source>
+        <translation>Back to the new game screen</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="203"/>
+        <source>Player statistics</source>
+        <translation>Player statistics</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="204"/>
+        <source>No finished matches yet</source>
+        <translation>No finished matches yet</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="205"/>
+        <source>Player</source>
+        <translation>Player</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="206"/>
+        <location filename="../../ui/playerstats.py" line="231"/>
+        <source>Game</source>
+        <translation>Game</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="208"/>
+        <source>Summary</source>
+        <translation>Summary</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="210"/>
+        <location filename="../../ui/playerstats.py" line="232"/>
+        <source>Played</source>
+        <translation>Played</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="211"/>
+        <location filename="../../ui/playerstats.py" line="233"/>
+        <source>Wins</source>
+        <translation>Wins</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="212"/>
+        <source>Win rate</source>
+        <translation>Win rate</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="213"/>
+        <location filename="../../ui/playerstats.py" line="235"/>
+        <source>Performance</source>
+        <translation>Performance</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="214"/>
+        <source>Time played</source>
+        <translation>Time played</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="215"/>
+        <source>Favourite game</source>
+        <translation>Favourite game</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="216"/>
+        <source>First played</source>
+        <translation>First played</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="217"/>
+        <source>Last played</source>
+        <translation>Last played</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="222"/>
+        <source>Wins compared with what chance predicts for the number of players: 1.00× means winning exactly as often as chance, 2.00× twice as often.</source>
+        <translation>Wins compared with what chance predicts for the number of players: 1.00× means winning exactly as often as chance, 2.00× twice as often.</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="227"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="234"/>
+        <source>Win %</source>
+        <translation>Win %</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="236"/>
+        <source>Min</source>
+        <translation>Min</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="237"/>
+        <source>Avg</source>
+        <translation>Avg</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="238"/>
+        <source>Max</source>
+        <translation>Max</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="239"/>
+        <source>Time</source>
+        <translation>Time</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="244"/>
+        <source>Opponent</source>
+        <translation>Opponent</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="245"/>
+        <source>Together</source>
+        <translation>Together</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="246"/>
+        <source>Won</source>
+        <translation>Won</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="247"/>
+        <source>Lost</source>
+        <translation>Lost</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="248"/>
+        <source>Shared</source>
+        <translation>Shared</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="249"/>
+        <source>Neither</source>
+        <translation>Neither</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="296"/>
+        <source>All games</source>
+        <translation>All games</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="354"/>
+        <source>Shared wins are shown in brackets</source>
+        <translation>Shared wins are shown in brackets</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="366"/>
+        <source>W</source>
+        <translation>W</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="366"/>
+        <source>L</source>
+        <translation>L</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="385"/>
+        <source>Current streak: {}</source>
+        <translation>Current streak: {}</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="386"/>
+        <source>Longest winning streak: {}</source>
+        <translation>Longest winning streak: {}</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="389"/>
+        <source>Longest losing streak: {}</source>
+        <translation>Longest losing streak: {}</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="436"/>
+        <source>Nemesis: {} (lost {} of {})</source>
+        <translation>Nemesis: {} (lost {} of {})</translation>
+    </message>
+    <message>
+        <location filename="../../ui/playerstats.py" line="444"/>
+        <source>Favourite victim: {} (won {} of {})</source>
+        <translation>Favourite victim: {} (won {} of {})</translation>
+    </message>
+</context>
+<context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="37"/>
+        <location filename="../../ui/mainwindow.py" line="38"/>
         <source>&amp;Yes</source>
         <translation>&amp;Yes</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="38"/>
+        <location filename="../../ui/mainwindow.py" line="39"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="39"/>
+        <location filename="../../ui/mainwindow.py" line="40"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="40"/>
+        <location filename="../../ui/mainwindow.py" line="41"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
@@ -892,22 +1094,22 @@
 <context>
     <name>ResumeBox</name>
     <message>
-        <location filename="../../ui/newgame.py" line="454"/>
+        <location filename="../../ui/newgame.py" line="469"/>
         <source>Delete</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="470"/>
+        <location filename="../../ui/newgame.py" line="485"/>
         <source>Start a new game...</source>
         <translation>New game...</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="539"/>
+        <location filename="../../ui/newgame.py" line="554"/>
         <source>Cancel Saved Game</source>
         <translation>Cancel Saved Game</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="540"/>
+        <location filename="../../ui/newgame.py" line="555"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>Are you sure you want to cancel saved game?</translation>
     </message>
