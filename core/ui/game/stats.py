@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (
 from core.engine.settings import appsettings
 from core.registry import registry
 from core.ui.performance import format_performance, performance_tooltip
+from core.ui.tablestyle import align_item, column_alignment, tabular_figures
 
 logger = logging.getLogger(__name__)
 
@@ -96,6 +97,10 @@ class AbstractQuickStatsBox(QGroupBox):
     QCoreApplication.translate("AbstractQuickStatsBox", "Lowest")
     QCoreApplication.translate("AbstractQuickStatsBox", "Average")
     QCoreApplication.translate("AbstractQuickStatsBox", "Total")
+
+    # Player columns that hold text; every other column is a figure, which
+    # includes the columns the games add.
+    PLAYER_TEXT_KEYS = ("nick",)
 
     def __init__(self, game: str, parent: QWidget | None) -> None:
         super().__init__(parent)
@@ -231,12 +236,22 @@ class AbstractQuickStatsBox(QGroupBox):
             self.matchStatsTitleLabel.show()
         headers = [self.tr(h) for h in self.matchStatsHeaders]
         self.updateTable(
-            self.matchStatsTable, matchstats, self.matchStatsKeys, "nplayers", headers
+            self.matchStatsTable,
+            matchstats,
+            self.matchStatsKeys,
+            "nplayers",
+            headers,
+            (),
         )
 
         headers = [self.tr(h) for h in self.playerStatsHeaders]
         self.updateTable(
-            self.playerStatsTable, playerstats, self.playerStatsKeys, "nick", headers
+            self.playerStatsTable,
+            playerstats,
+            self.playerStatsKeys,
+            "nick",
+            headers,
+            self.PLAYER_TEXT_KEYS,
         )
         # The match table was fitted before the player titles it shares a
         # size with were known.
@@ -249,8 +264,13 @@ class AbstractQuickStatsBox(QGroupBox):
         keyorder: Sequence[str],
         rowheaderkey: str,
         cheaders: Sequence[str],
+        textkeys: Sequence[str] = (),
     ) -> None:
-        """Fill ``table`` from ``contents`` in ``keyorder`` column order."""
+        """Fill ``table`` from ``contents`` in ``keyorder`` column order.
+
+        Columns whose key is in ``textkeys`` are text, left-aligned; the others
+        are figures, right-aligned, placeholders included.
+        """
         table.clear()
         if contents and len(contents[0]) > 1:
             table.show()
@@ -265,6 +285,9 @@ class AbstractQuickStatsBox(QGroupBox):
             table.setRowCount(len(displayed))
             table.setColumnCount(len(cheaders))
             table.setHorizontalHeaderLabels(cheaders)
+            text_columns = {j for j, key in enumerate(keyorder) if key in textkeys}
+            for j in range(len(cheaders)):
+                table.alignHeader(j, column_alignment(j, text_columns))
             for i, row in enumerate(displayed):
                 for j, key in enumerate(keyorder):
                     try:
@@ -278,10 +301,7 @@ class AbstractQuickStatsBox(QGroupBox):
                         item.setData(QtCore.Qt.ItemDataRole.DisplayRole, value)
                     else:
                         item.setData(QtCore.Qt.ItemDataRole.DisplayRole, str(value))
-                    item.setTextAlignment(
-                        QtCore.Qt.AlignmentFlag.AlignVCenter
-                        | QtCore.Qt.AlignmentFlag.AlignHCenter
-                    )
+                    align_item(item, j, text_columns)
                     item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
                     table.setItem(i, j, item)
 
@@ -348,6 +368,7 @@ class StatsTable(QTableWidget):
         )
         header.setMinimumSectionSize(1)
         self._headerFontSize = 0
+        self.setFont(tabular_figures(self.font()))
         self._linked: list[StatsTable] = [self]
         self._setHeaderFontSize(self.MIN_HEADER_FONT_SIZE)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -363,6 +384,21 @@ class StatsTable(QTableWidget):
     def _headerText(self, column: int) -> str:
         item = self.horizontalHeaderItem(column)
         return item.text() if item else ""
+
+    _WRAP = int(QtCore.Qt.TextFlag.TextWordWrap)
+
+    def alignHeader(self, column: int, alignment: QtCore.Qt.AlignmentFlag) -> None:
+        """Align the title of ``column``. It keeps wrapping: the header draws
+        the alignment of its item in place of its default one."""
+        if item := self.horizontalHeaderItem(column):
+            item.setTextAlignment(alignment | self._WRAP)  # pyright: ignore[reportArgumentType, reportOperatorIssue]
+
+    def _headerFlags(self, column: int) -> int:
+        """Alignment of a title, plus word wrap, as drawn for ``column``."""
+        item = self.horizontalHeaderItem(column)
+        align = int(item.textAlignment()) if item else 0
+        centre = int(QtCore.Qt.AlignmentFlag.AlignCenter)
+        return (align or centre) | self._WRAP
 
     def _headerMetrics(self, size: int) -> QFontMetrics:
         # Titles are measured bold: the theme draws them semi-bold at most.
@@ -462,10 +498,11 @@ class StatsTable(QTableWidget):
         for j, width in enumerate(widths):
             header.resizeSection(j, width)
 
-        flags = QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.TextFlag.TextWordWrap
         title_height = max(
             metrics.boundingRect(
-                QRect(0, 0, max(1, width - chrome), 1000), flags, self._headerText(j)
+                QRect(0, 0, max(1, width - chrome), 1000),
+                self._headerFlags(j),
+                self._headerText(j),
             ).height()
             for j, width in enumerate(widths)
         )

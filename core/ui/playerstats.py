@@ -45,8 +45,15 @@ from core.engine.settings import appsettings
 from core.ui.explorer import SORT_ROLE, SortItem, _format_duration, status_colour
 from core.ui.performance import NONE_TEXT, format_performance, performance_tooltip
 from core.ui.tab import Tab
+from core.ui.tablestyle import ALIGN_FIGURE, ALIGN_TEXT, align_item, tabular_figures
 
 logger = logging.getLogger(__name__)
+
+# Columns holding text (left-aligned); the others are figures.
+GAMES_TEXT_COLUMNS = frozenset({0})
+RIVALS_TEXT_COLUMNS = frozenset({0})
+# Summary values that are text; the others are figures.
+SUMMARY_TEXT_KEYS = frozenset({"favourite"})
 
 
 def _percent(rate: float | None) -> str:
@@ -128,6 +135,10 @@ class PlayerStatsWidget(Tab):
             label = QLabel(self)
             value = QLabel(self)
             value.setStyleSheet("font-weight: bold;")
+            value.setFont(tabular_figures(value.font()))
+            alignment = ALIGN_TEXT if key in SUMMARY_TEXT_KEYS else ALIGN_FIGURE
+            label.setAlignment(alignment)
+            value.setAlignment(alignment)
             grid.addWidget(label, row * 2, column)
             grid.addWidget(value, row * 2 + 1, column)
             self.summaryLabels[key] = label
@@ -183,6 +194,7 @@ class PlayerStatsWidget(Tab):
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setAlternatingRowColors(True)
         table.setSortingEnabled(True)
+        table.setFont(tabular_figures(table.font()))
         table.verticalHeader().hide()
         table.setWordWrap(False)
         header = table.horizontalHeader()
@@ -241,10 +253,18 @@ class PlayerStatsWidget(Tab):
                 self.tr("Neither"),
             ]
         )
+        self._alignHeaders(self.gamesModel, GAMES_TEXT_COLUMNS)
+        self._alignHeaders(self.rivalsModel, RIVALS_TEXT_COLUMNS)
         if self.playerCombo.count():
             self.refresh()
         else:
             self.updateEmpty()
+
+    @staticmethod
+    def _alignHeaders(model: QStandardItemModel, text_columns: frozenset[int]) -> None:
+        for column in range(model.columnCount()):
+            if header := model.horizontalHeaderItem(column):
+                align_item(header, column, text_columns)
 
     # --- Choices -----------------------------------------------------------
 
@@ -389,6 +409,7 @@ class PlayerStatsWidget(Tab):
         self._fill(
             self.gamesTable,
             self.gamesModel,
+            GAMES_TEXT_COLUMNS,
             [
                 [
                     SortItem(r.game),
@@ -409,6 +430,7 @@ class PlayerStatsWidget(Tab):
         self._fill(
             self.rivalsTable,
             self.rivalsModel,
+            RIVALS_TEXT_COLUMNS,
             [
                 [
                     SortItem(r.opponent),
@@ -440,11 +462,16 @@ class PlayerStatsWidget(Tab):
 
     @staticmethod
     def _fill(
-        table: QTableView, model: QStandardItemModel, rows: list[list[SortItem]]
+        table: QTableView,
+        model: QStandardItemModel,
+        text_columns: frozenset[int],
+        rows: list[list[SortItem]],
     ) -> None:
         """Replace the rows of ``model``, keeping the table's sort order."""
         table.setSortingEnabled(False)
         model.removeRows(0, model.rowCount())
         for row in rows:
+            for column, item in enumerate(row):
+                align_item(item, column, text_columns)
             model.appendRow(row)
         table.setSortingEnabled(True)

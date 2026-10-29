@@ -18,76 +18,76 @@
 <context>
     <name>AbstractQuickStatsBox</name>
     <message>
-        <location filename="../../ui/game/stats.py" line="85"/>
+        <location filename="../../ui/game/stats.py" line="86"/>
         <source>Longest</source>
         <translation>Més llarga</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="86"/>
+        <location filename="../../ui/game/stats.py" line="87"/>
         <source>Shortest</source>
         <translation>Més curta</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="87"/>
-        <location filename="../../ui/game/stats.py" line="90"/>
-        <location filename="../../ui/game/stats.py" line="97"/>
+        <location filename="../../ui/game/stats.py" line="88"/>
+        <location filename="../../ui/game/stats.py" line="91"/>
+        <location filename="../../ui/game/stats.py" line="98"/>
         <source>Average</source>
         <translation>Mitja</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="88"/>
-        <location filename="../../ui/game/stats.py" line="95"/>
+        <location filename="../../ui/game/stats.py" line="89"/>
+        <location filename="../../ui/game/stats.py" line="96"/>
         <source>Highest</source>
         <translation>Més Alta</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="89"/>
-        <location filename="../../ui/game/stats.py" line="96"/>
+        <location filename="../../ui/game/stats.py" line="90"/>
+        <location filename="../../ui/game/stats.py" line="97"/>
         <source>Lowest</source>
         <translation>Més Baixa</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="91"/>
+        <location filename="../../ui/game/stats.py" line="92"/>
         <source>Played</source>
         <translation>Jugades</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="92"/>
+        <location filename="../../ui/game/stats.py" line="93"/>
         <source>Victories</source>
         <translation>Victories</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="93"/>
+        <location filename="../../ui/game/stats.py" line="94"/>
         <source>Ratio (%)</source>
         <translation>Ratio (%)</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="94"/>
+        <location filename="../../ui/game/stats.py" line="95"/>
         <source>Performance</source>
         <translation>Rendiment</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="98"/>
+        <location filename="../../ui/game/stats.py" line="99"/>
         <source>Total</source>
         <translation>Total</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="201"/>
+        <location filename="../../ui/game/stats.py" line="206"/>
         <source>Last winner</source>
         <translation>Últim guanyador</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="202"/>
+        <location filename="../../ui/game/stats.py" line="207"/>
         <source>Matches</source>
         <translation>Partides</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="203"/>
+        <location filename="../../ui/game/stats.py" line="208"/>
         <source>Players</source>
         <translation>Jugadors</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="215"/>
+        <location filename="../../ui/game/stats.py" line="220"/>
         <source>No statistics found</source>
         <translation>No s&apos;han trobat estadístiques</translation>
     </message>
@@ -549,191 +549,191 @@
 <context>
     <name>MatchExplorerWidget</name>
     <message>
-        <location filename="../../ui/explorer.py" line="346"/>
+        <location filename="../../ui/explorer.py" line="352"/>
         <source>Back</source>
         <translation>Tornar</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="347"/>
+        <location filename="../../ui/explorer.py" line="353"/>
         <source>Back to the new game screen</source>
         <translation>Tornar a la pantalla de nova partida</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="348"/>
+        <location filename="../../ui/explorer.py" line="354"/>
         <source>Match history</source>
         <translation>Historial de partides</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="349"/>
+        <location filename="../../ui/explorer.py" line="355"/>
         <source>Filters</source>
         <translation>Filtres</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="351"/>
-        <location filename="../../ui/explorer.py" line="394"/>
+        <location filename="../../ui/explorer.py" line="357"/>
+        <location filename="../../ui/explorer.py" line="400"/>
         <source>Game</source>
         <translation>Joc</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="351"/>
-        <location filename="../../ui/explorer.py" line="352"/>
+        <location filename="../../ui/explorer.py" line="357"/>
+        <location filename="../../ui/explorer.py" line="358"/>
         <source>Clear selection</source>
         <translation>Treure selecció</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="352"/>
-        <location filename="../../ui/explorer.py" line="397"/>
+        <location filename="../../ui/explorer.py" line="358"/>
+        <location filename="../../ui/explorer.py" line="403"/>
         <source>Players</source>
         <translation>Jugadors</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="355"/>
+        <location filename="../../ui/explorer.py" line="361"/>
         <source>who all took part</source>
         <translation>que van participar tots</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="355"/>
+        <location filename="../../ui/explorer.py" line="361"/>
         <source>any of whom took part</source>
         <translation>dels quals va participar algun</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="357"/>
+        <location filename="../../ui/explorer.py" line="363"/>
         <source>Won by</source>
         <translation>Guanyada per</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="361"/>
+        <location filename="../../ui/explorer.py" line="367"/>
         <source>Finished</source>
         <translation>Acabada</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="362"/>
+        <location filename="../../ui/explorer.py" line="368"/>
         <source>Saved</source>
         <translation>Desada</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="363"/>
+        <location filename="../../ui/explorer.py" line="369"/>
         <source>Cancelled</source>
         <translation>Cancel·lada</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="364"/>
+        <location filename="../../ui/explorer.py" line="370"/>
         <source>Interrupted</source>
         <translation>Interrompuda</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="369"/>
+        <location filename="../../ui/explorer.py" line="375"/>
         <source>At least</source>
         <translation>Almenys</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="370"/>
+        <location filename="../../ui/explorer.py" line="376"/>
         <source> min</source>
         <translation> min</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="371"/>
+        <location filename="../../ui/explorer.py" line="377"/>
         <source>any length</source>
         <translation>qualsevol durada</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="376"/>
+        <location filename="../../ui/explorer.py" line="382"/>
         <source>All history</source>
         <translation>Sempre</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="377"/>
+        <location filename="../../ui/explorer.py" line="383"/>
         <source>Today</source>
         <translation>Avui</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="378"/>
+        <location filename="../../ui/explorer.py" line="384"/>
         <source>Last 7 days</source>
         <translation>Darrers 7 dies</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="379"/>
+        <location filename="../../ui/explorer.py" line="385"/>
         <source>Last 30 days</source>
         <translation>Darrers 30 dies</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="380"/>
+        <location filename="../../ui/explorer.py" line="386"/>
         <source>This year</source>
         <translation>Aquest any</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="381"/>
+        <location filename="../../ui/explorer.py" line="387"/>
         <source>Custom range</source>
         <translation>Rang personalitzat</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="385"/>
+        <location filename="../../ui/explorer.py" line="391"/>
         <source>From</source>
         <translation>Des de</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="386"/>
+        <location filename="../../ui/explorer.py" line="392"/>
         <source>To</source>
         <translation>Fins a</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="388"/>
+        <location filename="../../ui/explorer.py" line="394"/>
         <source>any</source>
         <translation>qualsevol</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="389"/>
-        <location filename="../../ui/explorer.py" line="390"/>
+        <location filename="../../ui/explorer.py" line="395"/>
+        <location filename="../../ui/explorer.py" line="396"/>
         <source>Reset filters</source>
         <translation>Restablir filtres</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="393"/>
+        <location filename="../../ui/explorer.py" line="399"/>
         <source>Started</source>
         <translation>Inici</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="395"/>
+        <location filename="../../ui/explorer.py" line="401"/>
         <source>Status</source>
         <translation>Estat</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="396"/>
+        <location filename="../../ui/explorer.py" line="402"/>
         <source>Winner</source>
         <translation>Guanyador</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="398"/>
+        <location filename="../../ui/explorer.py" line="404"/>
         <source>Time</source>
         <translation>Temps</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="399"/>
+        <location filename="../../ui/explorer.py" line="405"/>
         <source>Rounds</source>
         <translation>Rondes</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="404"/>
+        <location filename="../../ui/explorer.py" line="413"/>
         <source>Double-click a match to open it</source>
         <translation>Fes doble clic en una partida per obrir-la</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="423"/>
+        <location filename="../../ui/explorer.py" line="432"/>
         <source>anyone</source>
         <translation>qualsevol</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="540"/>
+        <location filename="../../ui/explorer.py" line="549"/>
         <source>{} matches</source>
         <translation>{} partides</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="595"/>
+        <location filename="../../ui/explorer.py" line="606"/>
         <source>Resume</source>
         <translation>Reprendre</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="597"/>
+        <location filename="../../ui/explorer.py" line="608"/>
         <source>Open</source>
         <translation>Obrir</translation>
     </message>
@@ -764,12 +764,12 @@
 <context>
     <name>MultiChoiceButton</name>
     <message>
-        <location filename="../../ui/explorer.py" line="154"/>
+        <location filename="../../ui/explorer.py" line="159"/>
         <source>All</source>
         <translation>Tots</translation>
     </message>
     <message>
-        <location filename="../../ui/explorer.py" line="158"/>
+        <location filename="../../ui/explorer.py" line="163"/>
         <source>{} selected</source>
         <translation>{} seleccionats</translation>
     </message>
@@ -880,186 +880,186 @@
 <context>
     <name>PlayerStatsWidget</name>
     <message>
-        <location filename="../../ui/playerstats.py" line="196"/>
+        <location filename="../../ui/playerstats.py" line="208"/>
         <source>Back</source>
         <translation>Enrere</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="197"/>
+        <location filename="../../ui/playerstats.py" line="209"/>
         <source>Back to the new game screen</source>
         <translation>Tornar a la pantalla de nova partida</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="198"/>
+        <location filename="../../ui/playerstats.py" line="210"/>
         <source>Player statistics</source>
         <translation>Estadístiques de jugadors</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="199"/>
+        <location filename="../../ui/playerstats.py" line="211"/>
         <source>No finished matches yet</source>
         <translation>Encara no hi ha partides acabades</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="200"/>
+        <location filename="../../ui/playerstats.py" line="212"/>
         <source>Player</source>
         <translation>Jugador</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="201"/>
-        <location filename="../../ui/playerstats.py" line="223"/>
+        <location filename="../../ui/playerstats.py" line="213"/>
+        <location filename="../../ui/playerstats.py" line="235"/>
         <source>Game</source>
         <translation>Joc</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="203"/>
+        <location filename="../../ui/playerstats.py" line="215"/>
         <source>Summary</source>
         <translation>Resum</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="205"/>
-        <location filename="../../ui/playerstats.py" line="224"/>
+        <location filename="../../ui/playerstats.py" line="217"/>
+        <location filename="../../ui/playerstats.py" line="236"/>
         <source>Played</source>
         <translation>Jugades</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="206"/>
-        <location filename="../../ui/playerstats.py" line="225"/>
+        <location filename="../../ui/playerstats.py" line="218"/>
+        <location filename="../../ui/playerstats.py" line="237"/>
         <source>Wins</source>
         <translation>Victòries</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="207"/>
+        <location filename="../../ui/playerstats.py" line="219"/>
         <source>Win rate</source>
         <translation>% de victòries</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="208"/>
-        <location filename="../../ui/playerstats.py" line="227"/>
+        <location filename="../../ui/playerstats.py" line="220"/>
+        <location filename="../../ui/playerstats.py" line="239"/>
         <source>Performance</source>
         <translation>Rendiment</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="209"/>
+        <location filename="../../ui/playerstats.py" line="221"/>
         <source>Time played</source>
         <translation>Temps jugat</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="210"/>
+        <location filename="../../ui/playerstats.py" line="222"/>
         <source>Favourite game</source>
         <translation>Joc preferit</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="211"/>
+        <location filename="../../ui/playerstats.py" line="223"/>
         <source>First played</source>
         <translation>Primera partida</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="212"/>
+        <location filename="../../ui/playerstats.py" line="224"/>
         <source>Last played</source>
         <translation>Darrera partida</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="219"/>
+        <location filename="../../ui/playerstats.py" line="231"/>
         <source>Form</source>
         <translation>Forma</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="226"/>
+        <location filename="../../ui/playerstats.py" line="238"/>
         <source>Win %</source>
         <translation>% vict.</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="228"/>
+        <location filename="../../ui/playerstats.py" line="240"/>
         <source>Min</source>
         <translation>Mín</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="229"/>
+        <location filename="../../ui/playerstats.py" line="241"/>
         <source>Avg</source>
         <translation>Mitjana</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="230"/>
+        <location filename="../../ui/playerstats.py" line="242"/>
         <source>Max</source>
         <translation>Màx</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="231"/>
+        <location filename="../../ui/playerstats.py" line="243"/>
         <source>Time</source>
         <translation>Temps</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="236"/>
+        <location filename="../../ui/playerstats.py" line="248"/>
         <source>Opponent</source>
         <translation>Rival</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="237"/>
+        <location filename="../../ui/playerstats.py" line="249"/>
         <source>Together</source>
         <translation>Junts</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="238"/>
+        <location filename="../../ui/playerstats.py" line="250"/>
         <source>Won</source>
         <translation>Guanyades</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="239"/>
+        <location filename="../../ui/playerstats.py" line="251"/>
         <source>Lost</source>
         <translation>Perdudes</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="240"/>
+        <location filename="../../ui/playerstats.py" line="252"/>
         <source>Shared</source>
         <translation>Compartides</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="241"/>
+        <location filename="../../ui/playerstats.py" line="253"/>
         <source>Neither</source>
         <translation>Cap dels dos</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="288"/>
+        <location filename="../../ui/playerstats.py" line="308"/>
         <source>All games</source>
         <translation>Tots els jocs</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="346"/>
+        <location filename="../../ui/playerstats.py" line="366"/>
         <source>Shared wins are shown in brackets</source>
         <translation>Les victòries compartides es mostren entre parèntesis</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="358"/>
+        <location filename="../../ui/playerstats.py" line="378"/>
         <source>W</source>
         <translation>G</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="358"/>
+        <location filename="../../ui/playerstats.py" line="378"/>
         <source>L</source>
         <translation>P</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="377"/>
+        <location filename="../../ui/playerstats.py" line="397"/>
         <source>Current streak: {}</source>
         <translation>Ratxa actual: {}</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="378"/>
+        <location filename="../../ui/playerstats.py" line="398"/>
         <source>Longest winning streak: {}</source>
         <translation>Millor ratxa de victòries: {}</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="381"/>
+        <location filename="../../ui/playerstats.py" line="401"/>
         <source>Longest losing streak: {}</source>
         <translation>Pitjor ratxa de derrotes: {}</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="428"/>
+        <location filename="../../ui/playerstats.py" line="450"/>
         <source>Nemesis: {} (lost {} of {})</source>
         <translation>Malson: {} (perdudes {} de {})</translation>
     </message>
     <message>
-        <location filename="../../ui/playerstats.py" line="436"/>
+        <location filename="../../ui/playerstats.py" line="458"/>
         <source>Favourite victim: {} (won {} of {})</source>
         <translation>Víctima preferida: {} (guanyades {} de {})</translation>
     </message>
@@ -1090,12 +1090,12 @@
 <context>
     <name>QuickStatsTW</name>
     <message>
-        <location filename="../../ui/game/stats.py" line="63"/>
+        <location filename="../../ui/game/stats.py" line="64"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../../ui/game/stats.py" line="64"/>
+        <location filename="../../ui/game/stats.py" line="65"/>
         <source>Particular</source>
         <translation>Particular</translation>
     </message>
