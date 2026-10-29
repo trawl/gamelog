@@ -7,7 +7,8 @@ import logging
 from collections.abc import Sequence
 
 from PySide6 import QtCore
-from PySide6.QtCore import QCoreApplication, QSize
+from PySide6.QtCore import QCoreApplication, QRect, QSize
+from PySide6.QtGui import QFont, QFontInfo, QFontMetrics, QResizeEvent
 from PySide6.QtWidgets import (
     QFrame,
     QGroupBox,
@@ -184,6 +185,7 @@ class AbstractQuickStatsBox(QGroupBox):
         self.playerStatsTitleLabel = QLabel(self)
         self.widgetLayout.addWidget(self.playerStatsTitleLabel)
         self.playerStatsTable = StatsTable(self)
+        StatsTable.linkHeaderSizes(self.matchStatsTable, self.playerStatsTable)
         self.widgetLayout.addWidget(self.playerStatsTable)
 
         self.titlecss = """QLabel { font-weight: bold; font-size: 18px; margin-top: 10px; margin-bottom: 5px;}"""
@@ -236,6 +238,9 @@ class AbstractQuickStatsBox(QGroupBox):
         self.updateTable(
             self.playerStatsTable, playerstats, self.playerStatsKeys, "nick", headers
         )
+        # The match table was fitted before the player titles it shares a
+        # size with were known.
+        self.matchStatsTable.fitColumns()
 
     def updateTable(
         self,
@@ -284,8 +289,8 @@ class AbstractQuickStatsBox(QGroupBox):
                 if key == "performance" and (header := table.horizontalHeaderItem(j)):
                     header.setToolTip(performance_tooltip())
 
-            table.setFixedHeight(table.sizeHint().height() + 10)
             table.setMinimumWidth(table.sizeHint().width())
+            table.fitColumns()
         else:
             table.hide()
 
@@ -321,20 +326,163 @@ class ParticularQuickStats(AbstractQuickStatsBox):
 
 
 class StatsTable(QTableWidget):
-    """Read-only table with stretched columns and a fitted size hint."""
+    """Read-only table whose columns share the width without scrolling sideways.
+
+    Titles are drawn as large as the table text when there is room for all of
+    them on one line, and smaller when there is not. Every column gets at least
+    the room its widest title word and its values need, and the spare width is
+    shared evenly. Titles wrap onto further lines and the header grows to fit
+    them, so nothing is cut short until the table is too narrow for even that.
+    """
+
+    MIN_COLUMN_WIDTH = 40
+    MIN_HEADER_FONT_SIZE = 15
+    HEADER_PADDING = 4
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        header = self.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
+        header.setDefaultAlignment(
+            QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.TextFlag.TextWordWrap
+        )
+        header.setMinimumSectionSize(1)
+        self._headerFontSize = 0
+        self._linked: list[StatsTable] = [self]
+        self._setHeaderFontSize(self.MIN_HEADER_FONT_SIZE)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
 
+    def setHorizontalHeaderLabels(self, labels: Sequence[str]) -> None:
+        """Set the column titles, each also shown in full as a tooltip."""
+        super().setHorizontalHeaderLabels(labels)
+        for j, label in enumerate(labels):
+            if item := self.horizontalHeaderItem(j):
+                item.setToolTip(label)
+
+    def _headerText(self, column: int) -> str:
+        item = self.horizontalHeaderItem(column)
+        return item.text() if item else ""
+
+    def _headerMetrics(self, size: int) -> QFontMetrics:
+        # Titles are measured bold: the theme draws them semi-bold at most.
+        font = QFont(self.horizontalHeader().font())
+        font.setPixelSize(size)
+        font.setBold(True)
+        return QFontMetrics(font)
+
+    def _setHeaderFontSize(self, size: int) -> None:
+        if size != self._headerFontSize:
+            self._headerFontSize = size
+            self.setStyleSheet(
+                "QHeaderView::section:horizontal {"
+                f" font-size: {size}px; padding: {self.HEADER_PADDING}px; }}"
+            )
+
+    def _fittingHeaderSize(self, available: int, chrome: int) -> int:
+        """The largest title size, up to that of the table text, that keeps
+        every title on one line; the smallest one otherwise."""
+        text_size = QFontInfo(self.font()).pixelSize()
+        for size in range(text_size, self.MIN_HEADER_FONT_SIZE, -1):
+            widths = self._titleWidths(self._headerMetrics(size), chrome)[1]
+            if sum(widths) <= available:
+                return size
+        return min(text_size, self.MIN_HEADER_FONT_SIZE)
+
+    @staticmethod
+    def linkHeaderSizes(*tables: StatsTable) -> None:
+        """Make ``tables`` (laid out at the same width) share one title size."""
+        for table in tables:
+            table._linked = list(tables)
+
+    def _titleWidths(
+        self, metrics: QFontMetrics, chrome: int
+    ) -> tuple[list[int], list[int]]:
+        """Room each column needs with its title wrapped at every word, and
+        with its title kept on a single line."""
+        needs, single_line = [], []
+        for j in range(self.columnCount()):
+            text = self._headerText(j)
+            word = max((metrics.horizontalAdvance(w) for w in text.split()), default=0)
+            need = max(self.MIN_COLUMN_WIDTH, word + chrome, self.sizeHintForColumn(j))
+            needs.append(need)
+            single_line.append(max(need, metrics.horizontalAdvance(text) + chrome))
+        return needs, single_line
+
+    def fitColumns(self) -> None:
+        """Share the width out between the columns and fit the header height."""
+        count = self.columnCount()
+        if not count:
+            return
+        header = self.horizontalHeader()
+        # Section padding on both sides plus its border.
+        chrome = 2 * self.HEADER_PADDING + 2
+        vheader = self.verticalHeader()
+        available = self.width() - 2 * self.frameWidth()
+        if vheader.isVisible():
+            available -= vheader.width()
+
+        size = min(t._fittingHeaderSize(available, chrome) for t in self._linked)
+        self._setHeaderFontSize(size)
+        metrics = self._headerMetrics(size)
+        needs, single_line = self._titleWidths(metrics, chrome)
+        total = sum(needs)
+        if total <= available:
+            # Unwrap the cheapest titles first, then share out what is left.
+            widths = list(needs)
+            spare = available - total
+            for j in sorted(range(count), key=lambda j: single_line[j] - needs[j]):
+                if single_line[j] - needs[j] > spare:
+                    break
+                spare -= single_line[j] - needs[j]
+                widths[j] = single_line[j]
+            share, extra = divmod(spare, count)
+            widths = [w + share + (j < extra) for j, w in enumerate(widths)]
+        else:
+            # Too narrow for every title. The values keep their room while it
+            # lasts and the titles (in full in their tooltips) give way; the
+            # width is still filled exactly so no column is pushed out of view.
+            available = max(available, 0)
+            values = [
+                min(need, self.sizeHintForColumn(j)) for j, need in enumerate(needs)
+            ]
+            if sum(values) <= available:
+                slack = [
+                    need - value for need, value in zip(needs, values, strict=True)
+                ]
+                room = available - sum(values)
+                widths = [
+                    v + s * room // sum(slack)
+                    for v, s in zip(values, slack, strict=True)
+                ]
+            else:
+                widths = [v * available // sum(values) for v in values]
+            for j in range(available - sum(widths)):
+                widths[j % count] += 1
+        for j, width in enumerate(widths):
+            header.resizeSection(j, width)
+
+        flags = QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.TextFlag.TextWordWrap
+        title_height = max(
+            metrics.boundingRect(
+                QRect(0, 0, max(1, width - chrome), 1000), flags, self._headerText(j)
+            ).height()
+            for j, width in enumerate(widths)
+        )
+        header.setFixedHeight(title_height + chrome)
+        self.setFixedHeight(self.sizeHint().height())
+
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        super().resizeEvent(event)
+        self.fitColumns()
+
     def sizeHint(self) -> QSize:
-        """Size the table to its column count and row heights."""
-        s = QtCore.QSize()
-        s.setWidth(super().sizeHint().width())
-        s.setWidth(75 * (self.columnCount() + 1) + 2 * self.columnCount())
-        s.setHeight(self.rowHeight(0) * (self.rowCount() + 1) + 10)
-        return s
+        """Size the table to its column count, header and row heights."""
+        rows = sum(self.rowHeight(i) for i in range(self.rowCount()))
+        return QSize(
+            self.MIN_COLUMN_WIDTH * self.columnCount() + 2 * self.frameWidth(),
+            self.horizontalHeader().height() + rows + 2 * self.frameWidth(),
+        )
 
 
 __all__ = [
