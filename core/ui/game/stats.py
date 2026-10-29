@@ -24,6 +24,7 @@ from PySide6.QtWidgets import (
 
 from core.engine.settings import appsettings
 from core.registry import registry
+from core.ui.performance import format_performance, performance_tooltip
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +90,7 @@ class AbstractQuickStatsBox(QGroupBox):
     QCoreApplication.translate("AbstractQuickStatsBox", "Played")
     QCoreApplication.translate("AbstractQuickStatsBox", "Victories")
     QCoreApplication.translate("AbstractQuickStatsBox", "Ratio (%)")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Performance")
     QCoreApplication.translate("AbstractQuickStatsBox", "Highest")
     QCoreApplication.translate("AbstractQuickStatsBox", "Lowest")
     QCoreApplication.translate("AbstractQuickStatsBox", "Average")
@@ -123,6 +125,7 @@ class AbstractQuickStatsBox(QGroupBox):
             "played",
             "victories",
             "victoryp",
+            "performance",
             "maxscore",
             "minscore",
             "avgscore",
@@ -133,6 +136,7 @@ class AbstractQuickStatsBox(QGroupBox):
             "Played",
             "Victories",
             "Ratio (%)",
+            "Performance",
             "Highest",
             "Lowest",
             "Average",
@@ -263,7 +267,9 @@ class AbstractQuickStatsBox(QGroupBox):
                     except KeyError:
                         value = "-"
                     item = QTableWidgetItem()
-                    if isinstance(value, (int, float)):
+                    if key == "performance":
+                        item = _PerformanceItem(value)
+                    elif isinstance(value, (int, float)):
                         item.setData(QtCore.Qt.ItemDataRole.DisplayRole, value)
                     else:
                         item.setData(QtCore.Qt.ItemDataRole.DisplayRole, str(value))
@@ -274,10 +280,28 @@ class AbstractQuickStatsBox(QGroupBox):
                     item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
                     table.setItem(i, j, item)
 
+            for j, key in enumerate(keyorder):
+                if key == "performance" and (header := table.horizontalHeaderItem(j)):
+                    header.setToolTip(performance_tooltip())
+
             table.setFixedHeight(table.sizeHint().height() + 10)
             table.setMinimumWidth(table.sizeHint().width())
         else:
             table.hide()
+
+
+class _PerformanceItem(QTableWidgetItem):
+    """Performance cell shown as ``1.35×`` that still sorts by its number."""
+
+    def __init__(self, value: object) -> None:
+        number = value if isinstance(value, (int, float)) else None
+        super().__init__(format_performance(number))
+        self._value = -1.0 if number is None else float(number)
+
+    def __lt__(self, other: QTableWidgetItem) -> bool:
+        if isinstance(other, _PerformanceItem):
+            return self._value < other._value
+        return super().__lt__(other)
 
 
 class GeneralQuickStats(AbstractQuickStatsBox):

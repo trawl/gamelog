@@ -43,19 +43,14 @@ from core.engine.playerstats import (
 )
 from core.engine.settings import appsettings
 from core.ui.explorer import SORT_ROLE, SortItem, _format_duration, status_colour
+from core.ui.performance import NONE_TEXT, format_performance, performance_tooltip
 from core.ui.tab import Tab
 
 logger = logging.getLogger(__name__)
 
-NONE_TEXT = "—"
-
 
 def _percent(rate: float | None) -> str:
     return NONE_TEXT if rate is None else f"{rate:.0%}"
-
-
-def _index(value: float | None) -> str:
-    return NONE_TEXT if value is None else f"{value:.2f}×"
 
 
 def _day(moment: datetime.datetime | None) -> str:
@@ -218,10 +213,7 @@ class PlayerStatsWidget(Tab):
         }
         for key, text in names.items():
             self.summaryLabels[key].setText(text)
-        tip = self.tr(
-            "Wins compared with what chance predicts for the number of players: "
-            "1.00× means winning exactly as often as chance, 2.00× twice as often."
-        )
+        tip = performance_tooltip()
         self.summaryLabels["performance"].setToolTip(tip)
         self.summaryValues["performance"].setToolTip(tip)
         self.formBox.setTitle(self.tr("Form"))
@@ -342,7 +334,7 @@ class PlayerStatsWidget(Tab):
             "played": str(summary.played),
             "wins": wins,
             "winRate": _percent(summary.win_rate),
-            "performance": _index(summary.performance),
+            "performance": format_performance(summary.performance),
             "time": _format_duration(summary.time_played),
             "favourite": summary.favourite_game or NONE_TEXT,
             "first": _day(summary.first_played),
@@ -403,7 +395,7 @@ class PlayerStatsWidget(Tab):
                     SortItem(str(r.played), r.played),
                     SortItem(str(r.wins), r.wins),
                     SortItem(_percent(r.win_rate), r.win_rate or 0),
-                    SortItem(_index(r.performance), r.performance or 0),
+                    SortItem(format_performance(r.performance), r.performance or 0),
                     SortItem(str(r.min_score), r.min_score),
                     SortItem(str(r.avg_score), r.avg_score),
                     SortItem(str(r.max_score), r.max_score),

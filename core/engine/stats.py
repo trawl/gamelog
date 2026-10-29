@@ -14,6 +14,16 @@ from core.engine.db import GameLogDB, db
 logger = logging.getLogger(__name__)
 
 
+# Chance-adjusted performance (see ``core.engine.playerstats``) per group of
+# MatchPlayer rows joined with their match's player and winner counts. Matches
+# without a winner count on neither side; NULL when no match has a winner.
+# The counts come from a subquery with no WHERE, so the player-filter splice of
+# ``ParticularStatsEngine`` does not touch it.
+PERFORMANCE_SQL = """
+        COALESCE(SUM(CASE WHEN winner=1 THEN 1.0/nwinners END), 0)
+        / SUM(CASE WHEN nwinners>0 THEN 1.0/nplayers END)"""
+
+
 class StatsEngine:
     """App-wide game, match and player statistics, queried on demand."""
 
@@ -56,7 +66,7 @@ class StatsEngine:
     GROUP BY game, nplayers ORDER BY game, nplayers;
     """
 
-    _generalplayerstatsquery = """
+    _generalplayerstatsquery = f"""
     SELECT Game_name as game, nick,
         MAX(CAST(totalScore AS integer)) AS maxscore,
         MIN(CAST(totalScore AS integer)) AS minscore,
@@ -64,8 +74,11 @@ class StatsEngine:
         SUM(CAST(totalScore AS integer)) AS sumscore,
         SUM(winner) AS victories,
         COUNT(*) AS played,
-        ROUND(CAST(SUM(winner) AS REAL)*100/COUNT(nick),2) as victoryp
+        ROUND(CAST(SUM(winner) AS REAL)*100/COUNT(nick),2) as victoryp,
+        {PERFORMANCE_SQL} AS performance
     FROM Match JOIN MatchPlayer USING (idMatch)
+        JOIN (SELECT idMatch, COUNT(*) AS nplayers, SUM(winner) AS nwinners
+            FROM MatchPlayer GROUP BY idMatch) AS Counts USING (idMatch)
     WHERE state=1
     GROUP BY game, nick
     ORDER BY game, victoryp DESC, played DESC;
