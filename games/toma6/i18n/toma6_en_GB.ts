@@ -14,4 +14,22 @@
         <translation>Score any player must reach to trigger the end of the game</translation>
     </message>
 </context>
+<context>
+    <name>Toma6Stats</name>
+    <message>
+        <location filename="../playerstats.py" line="16"/>
+        <source>Rounds per match</source>
+        <translation>Rounds per match</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="18"/>
+        <source>Average over finished matches</source>
+        <translation>Average over finished matches</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="26"/>
+        <source>Best winning streak</source>
+        <translation>Best winning streak</translation>
+    </message>
+</context>
 </TS>

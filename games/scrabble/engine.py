@@ -81,7 +81,7 @@ class ScrabbleStatsEngine(StatsEngine):
 
     def update(self, players: list[str] | None = None) -> None:
         """Merge the extreme-round and max-bonus figures into player stats."""
-        super().update()
+        super().update(players)
         if not self.generalplayerstats:
             return
 

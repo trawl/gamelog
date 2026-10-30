@@ -265,3 +265,20 @@ ClickableLabel[locked="true"] {
 ClickableLabel[locked="true"]:hover {
     background-color: #444444;
 }
+
+/* Player statistics summary tiles */
+QFrame#statTile {
+    background: #3a3d41;
+    border: 1px solid #4a4e53;
+    border-radius: 8px;
+}
+
+QLabel#statValue {
+    background: transparent;
+    font-weight: bold;
+}
+
+QLabel#statCaption {
+    background: transparent;
+    color: #a3a8ae;
+}

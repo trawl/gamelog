@@ -15,5 +15,7 @@ registry.register(
         settings_factory="games.scrabble.settings:game_settings",
         rules_doc="scrabble",
         rules_url="https://service.mattel.com/instruction_sheets/53639-ENG.pdf",
+        short_name="Scr",
+        player_stats_factory="games.scrabble.playerstats:player_stats",
     )
 )

@@ -82,7 +82,7 @@ class QwirkleStatsEngine(StatsEngine):
 
     def update(self, players: list[str] | None = None) -> None:
         """Refresh base statistics, then fold in the Qwirkle-specific figures."""
-        super().update()
+        super().update(players)
         if not self.generalplayerstats:
             return
 

@@ -15,5 +15,8 @@ registry.register(
         "games.skullking.settings:game_settings",
         rules_doc="skullking",
         rules_url="https://cdnm.heyzine.com/files/uploaded/46b5bd7166a9f579404e175e4990c9d415b4aac7.pdf",
+        short_name="SK",
+        round_winners=True,
+        player_stats_factory="games.skullking.playerstats:player_stats",
     )
 )

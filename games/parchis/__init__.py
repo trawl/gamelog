@@ -14,5 +14,7 @@ registry.register(
         "games.parchis.engine:ParchisParticularStatsEngine",
         settings_factory="games.parchis.settings:game_settings",
         rules_doc="parchis",
+        short_name="Par",
+        player_stats_factory="games.parchis.playerstats:player_stats",
     )
 )

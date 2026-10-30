@@ -14,5 +14,7 @@ registry.register(
         "games.carcassonne.engine:CarcassonneParticularStatsEngine",
         rules_doc="carcassonne",
         rules_url="https://cdn.svc.asmodee.net/production-zman/uploads/2024/09/carcassonne_v3_rulesheet_en-1.pdf",
+        short_name="Car",
+        player_stats_factory="games.carcassonne.playerstats:player_stats",
     )
 )

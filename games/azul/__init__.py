@@ -14,6 +14,9 @@ registry.register(
         "games.azul.engine:AzulParticularStatsEngine",
         rules_doc="azul",
         rules_url="https://cdn.svc.asmodee.net/production-nextmove/uploads/sites/4/2024/06/EN-Azul-Rules-Next-Move-web.pdf",
+        short_name="Az",
+        round_winners=True,
+        player_stats_factory="games.azul.playerstats:player_stats",
     )
 )
 registry.register(
@@ -30,5 +33,8 @@ registry.register(
         "games.azul.engine:AzulSummerPavilionParticularStatsEngine",
         rules_doc="azul_summer_pavilion",
         rules_url="https://cdn.svc.asmodee.net/production-nextmove/uploads/sites/4/2024/06/EN-Azul-SP-Rules-2019-12-16_compressed.pdf",
+        short_name="AzS",
+        round_winners=True,
+        player_stats_factory="games.azul.playerstats:player_stats",
     )
 )

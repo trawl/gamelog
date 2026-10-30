@@ -65,6 +65,13 @@ Adding a game is dropping in a directory; no other files need editing.
            # "games.mygame.widget:MyGameQSTW",              quick-stats widget
            # "games.mygame.engine:MyGameStatsEngine",       stats engine
            # "games.mygame.engine:MyGameParticularStatsEngine",
+           # short_name="MyG",  up to 4 letters where the name does not fit
+           #                    (e.g. the player statistics form)
+           # round_winners=True, when each round has a real winner (a hand won),
+           #                     not when rounds are turns or score entries
+           # player_stats_factory="games.mygame.playerstats:player_stats",
+           # match_details_factory="games.mygame.playerstats:match_details",
+           #                    see "Player statistics" below
        )
    )
    ```
@@ -135,6 +142,46 @@ Adding a game is dropping in a directory; no other files need editing.
 Existing games make good templates — e.g. `games/ratuki/` for a simple
 score-to-a-target game, `games/skullking/` for one with bidding and custom
 statistics.
+
+## Player statistics
+The player statistics screen (`core/ui/playerstats.py`, queries in
+`core/engine/playerstats.py`) shows one player across every game, or one game.
+Only finished matches count.
+
+**Performance index.** Raw win rates do not compare across player counts, so
+the screen rates wins against chance: each match expects `1 / players` wins,
+and a win shared by `n` players earns `1 / n`. The index is earned ÷ expected:
+`1.00×` wins exactly as often as chance, `2.00×` twice as often. Matches
+without a winner are left out of both sides. The game quick statistics show
+the same index next to the victory ratio.
+
+**Round performance.** The same index over rounds, for the games registered
+with `round_winners=True`. Each round expects `1 / players in it`; players
+already out of a match (e.g. eliminated in Remigio) have no `Round` row, so the
+count follows them.
+
+**Nemesis and favourite victim.** An opponent met in at least
+`RIVAL_MIN_MATCHES` matches (3) with a losing record against them (more of
+their wins than yours) can be the nemesis, ranked by how often they won. The
+favourite victim is the mirror, with a winning record. An even record is
+neither, so no opponent holds both.
+
+**What a game can add**, through optional `GameDefinition` fields:
+
+- `short_name`: up to 4 letters naming the game where the full name does not
+  fit (the recent form markers). Defaults to the name's first three letters.
+- `round_winners`: adds the round performance card (see above).
+- `player_stats_factory`: `"module:function"` of
+  `function(game, nick) -> list[PlayerStat]`, the game's own cards when that
+  game is selected (`PlayerStat` is in `core/engine/playerstats.py`). Return
+  translated, formatted text, with a `tip` only for what the card does not
+  already say. Highest, lowest and average score are added for every game, so
+  do not repeat them. Prefer reusing the game's stats engine queries; see
+  `games/parchis/playerstats.py`.
+- `match_details_factory`: `"module:function"` of
+  `function(match_ids) -> {match id: {nick: text}}`, extra text shown after
+  each player's score in the recent form tooltips; see
+  `games/phase10/details.py`.
 
 ## Running the tests
 The test suite lives in `tests/` and runs headlessly (no display, no real

@@ -44,6 +44,7 @@ from core.engine.history import (
 )
 from core.engine.settings import appsettings
 from core.ui.tab import Tab
+from core.ui.tablestyle import TABLE_STYLE, align_item, tabular_figures
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +64,10 @@ PRESET_ANY, PRESET_TODAY, PRESET_WEEK, PRESET_MONTH, PRESET_YEAR, PRESET_CUSTOM 
 FILTER_STATUSES = (STATUS_FINISHED, STATUS_SAVED, STATUS_CANCELLED)
 DEFAULT_STATUSES = (STATUS_FINISHED, STATUS_SAVED)
 CONTROL_HEIGHT = 36
+
+# Columns holding text (left-aligned): game, status, winner and players. The
+# others (date, time, rounds) are figures.
+TEXT_COLUMNS = frozenset({1, 2, 3, 4})
 
 # Status colours as (for light themes, for dark themes).
 STATUS_COLOURS = {
@@ -296,6 +301,8 @@ class MatchExplorerWidget(Tab):
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table.setAlternatingRowColors(True)
         self.table.setSortingEnabled(True)
+        self.table.setFont(tabular_figures(self.table.font()))
+        self.table.setStyleSheet(TABLE_STYLE)
         self.table.verticalHeader().hide()
         self.table.setWordWrap(False)
         header_view = self.table.horizontalHeader()
@@ -399,6 +406,9 @@ class MatchExplorerWidget(Tab):
             self.tr("Rounds"),
         )
         self.model.setHorizontalHeaderLabels(list(labels))
+        for column in range(len(labels)):
+            if header := self.model.horizontalHeaderItem(column):
+                align_item(header, column, TEXT_COLUMNS)
         self._statusNames = names
         self.updateOpenButton()
         self.hintLabel.setText(self.tr("Double-click a match to open it"))
@@ -563,6 +573,8 @@ class MatchExplorerWidget(Tab):
             SortItem(_format_duration(match.elapsed), match.elapsed),
             SortItem(str(match.rounds), match.rounds),
         ]
+        for column, item in enumerate(items):
+            align_item(item, column, TEXT_COLUMNS)
         items[2].setForeground(QBrush(status_colour(status, self)))
         items[4].setToolTip(players)
         for item in items:

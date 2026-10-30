@@ -86,6 +86,39 @@
     </message>
 </context>
 <context>
+    <name>CarcassonneStats</name>
+    <message>
+        <location filename="../playerstats.py" line="15"/>
+        <source>Best city</source>
+        <translation>Millor ciutat</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="16"/>
+        <source>Best road</source>
+        <translation>Millor camí</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="17"/>
+        <source>Best cloister</source>
+        <translation>Millor monestir</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="18"/>
+        <source>Best field</source>
+        <translation>Millor camp</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="19"/>
+        <source>Best fair</source>
+        <translation>Millor fira</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="21"/>
+        <source>Best in one match, {}</source>
+        <translation>Millor total en una partida, {}</translation>
+    </message>
+</context>
+<context>
     <name>CarcassonneWidget</name>
     <message>
         <location filename="../widget.py" line="119"/>

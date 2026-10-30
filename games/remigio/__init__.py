@@ -12,5 +12,8 @@ registry.register(
         settings_factory="games.remigio.settings:game_settings",
         rules_doc="remigio",
         rules_url="https://www.nhfournier.es/en/como-jugar/remigio/",
+        short_name="Rem",
+        round_winners=True,
+        player_stats_factory="games.remigio.playerstats:player_stats",
     )
 )

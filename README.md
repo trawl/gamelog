@@ -25,6 +25,10 @@ and pause/resume for matches that span several sittings.
   filter by game, players, winner, date, length or outcome (finished, saved,
   cancelled), and open any of them: saved ones resume, finished ones show their
   final scoreboard.
+- **Player statistics** — pick a player from the 📊 button on the new-game screen
+  to see their summary, recent form, a per-game breakdown and head-to-head
+  records, with a chance-adjusted performance index that compares fairly across
+  different player counts.
 - **Dealer tracking** — automatic dealer rotation (round-robin or winner-deals).
 - **Multi-language** — English, Spanish and Catalan.
 - **Light & dark themes**, following the system appearance by default.

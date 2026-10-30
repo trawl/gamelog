@@ -15,6 +15,29 @@
     </message>
 </context>
 <context>
+    <name>ScrabbleStats</name>
+    <message>
+        <location filename="../playerstats.py" line="18"/>
+        <source>Best play</source>
+        <translation>Millor jugada</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="25"/>
+        <source>Max bonus</source>
+        <translation>Bonus màxim</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="27"/>
+        <source>Bonuses in one match</source>
+        <translation>Bonus en una partida</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="34"/>
+        <source>Average play</source>
+        <translation>Jugada mitjana</translation>
+    </message>
+</context>
+<context>
     <name>ScrabbleWidget</name>
     <message>
         <location filename="../widget.py" line="72"/>

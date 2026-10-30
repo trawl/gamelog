@@ -91,6 +91,19 @@
     </message>
 </context>
 <context>
+    <name>AzulStats</name>
+    <message>
+        <location filename="../playerstats.py" line="16"/>
+        <source>Max bonus</source>
+        <translation>Max bonus</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="18"/>
+        <source>End-of-game bonus points in one match</source>
+        <translation>End-of-game bonus points in one match</translation>
+    </message>
+</context>
+<context>
     <name>AzulWidget</name>
     <message>
         <location filename="../widget.py" line="141"/>

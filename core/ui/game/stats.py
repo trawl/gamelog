@@ -7,7 +7,8 @@ import logging
 from collections.abc import Sequence
 
 from PySide6 import QtCore
-from PySide6.QtCore import QCoreApplication, QSize
+from PySide6.QtCore import QCoreApplication, QRect, QSize
+from PySide6.QtGui import QFont, QFontInfo, QFontMetrics, QResizeEvent
 from PySide6.QtWidgets import (
     QFrame,
     QGroupBox,
@@ -24,8 +25,20 @@ from PySide6.QtWidgets import (
 
 from core.engine.settings import appsettings
 from core.registry import registry
+from core.ui.performance import format_performance, performance_tooltip
+from core.ui.tablestyle import (
+    CELL_PADDING,
+    CELL_STYLE,
+    align_item,
+    column_alignment,
+    tabular_figures,
+)
 
 logger = logging.getLogger(__name__)
+
+
+# Bold titles over the sections of a statistics view.
+SECTION_TITLE_STYLE = "QLabel { font-weight: bold; font-size: 18px; margin-top: 10px; margin-bottom: 5px;}"
 
 
 class QuickStatsTW(QTabWidget):
@@ -89,10 +102,15 @@ class AbstractQuickStatsBox(QGroupBox):
     QCoreApplication.translate("AbstractQuickStatsBox", "Played")
     QCoreApplication.translate("AbstractQuickStatsBox", "Victories")
     QCoreApplication.translate("AbstractQuickStatsBox", "Ratio (%)")
+    QCoreApplication.translate("AbstractQuickStatsBox", "Performance")
     QCoreApplication.translate("AbstractQuickStatsBox", "Highest")
     QCoreApplication.translate("AbstractQuickStatsBox", "Lowest")
     QCoreApplication.translate("AbstractQuickStatsBox", "Average")
     QCoreApplication.translate("AbstractQuickStatsBox", "Total")
+
+    # Player columns that hold text; every other column is a figure, which
+    # includes the columns the games add.
+    PLAYER_TEXT_KEYS = ("nick",)
 
     def __init__(self, game: str, parent: QWidget | None) -> None:
         super().__init__(parent)
@@ -123,6 +141,7 @@ class AbstractQuickStatsBox(QGroupBox):
             "played",
             "victories",
             "victoryp",
+            "performance",
             "maxscore",
             "minscore",
             "avgscore",
@@ -133,6 +152,7 @@ class AbstractQuickStatsBox(QGroupBox):
             "Played",
             "Victories",
             "Ratio (%)",
+            "Performance",
             "Highest",
             "Lowest",
             "Average",
@@ -180,9 +200,10 @@ class AbstractQuickStatsBox(QGroupBox):
         self.playerStatsTitleLabel = QLabel(self)
         self.widgetLayout.addWidget(self.playerStatsTitleLabel)
         self.playerStatsTable = StatsTable(self)
+        StatsTable.linkHeaderSizes(self.matchStatsTable, self.playerStatsTable)
         self.widgetLayout.addWidget(self.playerStatsTable)
 
-        self.titlecss = """QLabel { font-weight: bold; font-size: 18px; margin-top: 10px; margin-bottom: 5px;}"""
+        self.titlecss = SECTION_TITLE_STYLE
         self.matchStatsTitleLabel.setStyleSheet(self.titlecss)
         self.playerStatsTitleLabel.setStyleSheet(self.titlecss)
         self.gameStatsLabel.setStyleSheet(self.titlecss)
@@ -225,13 +246,26 @@ class AbstractQuickStatsBox(QGroupBox):
             self.matchStatsTitleLabel.show()
         headers = [self.tr(h) for h in self.matchStatsHeaders]
         self.updateTable(
-            self.matchStatsTable, matchstats, self.matchStatsKeys, "nplayers", headers
+            self.matchStatsTable,
+            matchstats,
+            self.matchStatsKeys,
+            "nplayers",
+            headers,
+            (),
         )
 
         headers = [self.tr(h) for h in self.playerStatsHeaders]
         self.updateTable(
-            self.playerStatsTable, playerstats, self.playerStatsKeys, "nick", headers
+            self.playerStatsTable,
+            playerstats,
+            self.playerStatsKeys,
+            "nick",
+            headers,
+            self.PLAYER_TEXT_KEYS,
         )
+        # The match table was fitted before the player titles it shares a
+        # size with were known.
+        self.matchStatsTable.fitColumns()
 
     def updateTable(
         self,
@@ -240,8 +274,13 @@ class AbstractQuickStatsBox(QGroupBox):
         keyorder: Sequence[str],
         rowheaderkey: str,
         cheaders: Sequence[str],
+        textkeys: Sequence[str] = (),
     ) -> None:
-        """Fill ``table`` from ``contents`` in ``keyorder`` column order."""
+        """Fill ``table`` from ``contents`` in ``keyorder`` column order.
+
+        Columns whose key is in ``textkeys`` are text, left-aligned; the others
+        are figures, right-aligned, placeholders included.
+        """
         table.clear()
         if contents and len(contents[0]) > 1:
             table.show()
@@ -256,6 +295,9 @@ class AbstractQuickStatsBox(QGroupBox):
             table.setRowCount(len(displayed))
             table.setColumnCount(len(cheaders))
             table.setHorizontalHeaderLabels(cheaders)
+            text_columns = {j for j, key in enumerate(keyorder) if key in textkeys}
+            for j in range(len(cheaders)):
+                table.alignHeader(j, column_alignment(j, text_columns))
             for i, row in enumerate(displayed):
                 for j, key in enumerate(keyorder):
                     try:
@@ -263,21 +305,38 @@ class AbstractQuickStatsBox(QGroupBox):
                     except KeyError:
                         value = "-"
                     item = QTableWidgetItem()
-                    if isinstance(value, (int, float)):
+                    if key == "performance":
+                        item = _PerformanceItem(value)
+                    elif isinstance(value, (int, float)):
                         item.setData(QtCore.Qt.ItemDataRole.DisplayRole, value)
                     else:
                         item.setData(QtCore.Qt.ItemDataRole.DisplayRole, str(value))
-                    item.setTextAlignment(
-                        QtCore.Qt.AlignmentFlag.AlignVCenter
-                        | QtCore.Qt.AlignmentFlag.AlignHCenter
-                    )
+                    align_item(item, j, text_columns)
                     item.setFlags(item.flags() ^ QtCore.Qt.ItemFlag.ItemIsEditable)
                     table.setItem(i, j, item)
 
-            table.setFixedHeight(table.sizeHint().height() + 10)
+            for j, key in enumerate(keyorder):
+                if key == "performance" and (header := table.horizontalHeaderItem(j)):
+                    header.setToolTip(performance_tooltip())
+
             table.setMinimumWidth(table.sizeHint().width())
+            table.fitColumns()
         else:
             table.hide()
+
+
+class _PerformanceItem(QTableWidgetItem):
+    """Performance cell shown as ``1.35×`` that still sorts by its number."""
+
+    def __init__(self, value: object) -> None:
+        number = value if isinstance(value, (int, float)) else None
+        super().__init__(format_performance(number))
+        self._value = -1.0 if number is None else float(number)
+
+    def __lt__(self, other: QTableWidgetItem) -> bool:
+        if isinstance(other, _PerformanceItem):
+            return self._value < other._value
+        return super().__lt__(other)
 
 
 class GeneralQuickStats(AbstractQuickStatsBox):
@@ -297,20 +356,184 @@ class ParticularQuickStats(AbstractQuickStatsBox):
 
 
 class StatsTable(QTableWidget):
-    """Read-only table with stretched columns and a fitted size hint."""
+    """Read-only table whose columns share the width without scrolling sideways.
+
+    Titles are drawn as large as the table text when there is room for all of
+    them on one line, and smaller when there is not. Every column gets at least
+    the room its widest title word and its values need, and the spare width is
+    shared evenly. Titles wrap onto further lines and the header grows to fit
+    them, so nothing is cut short until the table is too narrow for even that.
+    """
+
+    MIN_COLUMN_WIDTH = 40
+    MIN_HEADER_FONT_SIZE = 15
+    HEADER_PADDING = 4
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        header = self.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
+        header.setDefaultAlignment(
+            QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.TextFlag.TextWordWrap
+        )
+        header.setMinimumSectionSize(1)
+        self._headerFontSize = 0
+        self.setFont(tabular_figures(self.font()))
+        self._linked: list[StatsTable] = [self]
+        self._setHeaderFontSize(self.MIN_HEADER_FONT_SIZE)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
 
+    def setHorizontalHeaderLabels(self, labels: Sequence[str]) -> None:
+        """Set the column titles, each also shown in full as a tooltip."""
+        super().setHorizontalHeaderLabels(labels)
+        for j, label in enumerate(labels):
+            if item := self.horizontalHeaderItem(j):
+                item.setToolTip(label)
+
+    def _headerText(self, column: int) -> str:
+        item = self.horizontalHeaderItem(column)
+        return item.text() if item else ""
+
+    _WRAP = int(QtCore.Qt.TextFlag.TextWordWrap)
+
+    def alignHeader(self, column: int, alignment: QtCore.Qt.AlignmentFlag) -> None:
+        """Align the title of ``column``. It keeps wrapping: the header draws
+        the alignment of its item in place of its default one."""
+        if item := self.horizontalHeaderItem(column):
+            item.setTextAlignment(alignment | self._WRAP)  # pyright: ignore[reportArgumentType, reportOperatorIssue]
+
+    def _headerFlags(self, column: int) -> int:
+        """Alignment of a title, plus word wrap, as drawn for ``column``."""
+        item = self.horizontalHeaderItem(column)
+        align = int(item.textAlignment()) if item else 0
+        centre = int(QtCore.Qt.AlignmentFlag.AlignCenter)
+        return (align or centre) | self._WRAP
+
+    def _headerMetrics(self, size: int) -> QFontMetrics:
+        # Titles are measured bold: the theme draws them semi-bold at most.
+        font = QFont(self.horizontalHeader().font())
+        font.setPixelSize(size)
+        font.setBold(True)
+        return QFontMetrics(font)
+
+    def _setHeaderFontSize(self, size: int) -> None:
+        if size != self._headerFontSize:
+            self._headerFontSize = size
+            self.setStyleSheet(
+                "QHeaderView::section:horizontal {"
+                f" font-size: {size}px;"
+                f" padding: {self.HEADER_PADDING}px {CELL_PADDING}px; }}"
+                f" {CELL_STYLE}"
+            )
+
+    def _fittingHeaderSize(self, available: int, chrome: int) -> int:
+        """The largest title size, up to that of the table text, that keeps
+        every title on one line; the smallest one otherwise."""
+        text_size = QFontInfo(self.font()).pixelSize()
+        for size in range(text_size, self.MIN_HEADER_FONT_SIZE, -1):
+            widths = self._titleWidths(self._headerMetrics(size), chrome)[1]
+            if sum(widths) <= available:
+                return size
+        return min(text_size, self.MIN_HEADER_FONT_SIZE)
+
+    @staticmethod
+    def linkHeaderSizes(*tables: StatsTable) -> None:
+        """Make ``tables`` (laid out at the same width) share one title size."""
+        for table in tables:
+            table._linked = list(tables)
+
+    def _titleWidths(
+        self, metrics: QFontMetrics, chrome: int
+    ) -> tuple[list[int], list[int]]:
+        """Room each column needs with its title wrapped at every word, and
+        with its title kept on a single line."""
+        needs, single_line = [], []
+        for j in range(self.columnCount()):
+            text = self._headerText(j)
+            word = max((metrics.horizontalAdvance(w) for w in text.split()), default=0)
+            need = max(self.MIN_COLUMN_WIDTH, word + chrome, self.sizeHintForColumn(j))
+            needs.append(need)
+            single_line.append(max(need, metrics.horizontalAdvance(text) + chrome))
+        return needs, single_line
+
+    def fitColumns(self) -> None:
+        """Share the width out between the columns and fit the header height."""
+        count = self.columnCount()
+        if not count:
+            return
+        header = self.horizontalHeader()
+        # Section padding on both sides plus its border.
+        chrome = 2 * CELL_PADDING + 2
+        # The same on top and bottom.
+        vchrome = 2 * self.HEADER_PADDING + 2
+        vheader = self.verticalHeader()
+        available = self.width() - 2 * self.frameWidth()
+        if vheader.isVisible():
+            available -= vheader.width()
+
+        size = min(t._fittingHeaderSize(available, chrome) for t in self._linked)
+        self._setHeaderFontSize(size)
+        metrics = self._headerMetrics(size)
+        needs, single_line = self._titleWidths(metrics, chrome)
+        total = sum(needs)
+        if total <= available:
+            # Unwrap the cheapest titles first, then share out what is left.
+            widths = list(needs)
+            spare = available - total
+            for j in sorted(range(count), key=lambda j: single_line[j] - needs[j]):
+                if single_line[j] - needs[j] > spare:
+                    break
+                spare -= single_line[j] - needs[j]
+                widths[j] = single_line[j]
+            share, extra = divmod(spare, count)
+            widths = [w + share + (j < extra) for j, w in enumerate(widths)]
+        else:
+            # Too narrow for every title. The values keep their room while it
+            # lasts and the titles (in full in their tooltips) give way; the
+            # width is still filled exactly so no column is pushed out of view.
+            available = max(available, 0)
+            values = [
+                min(need, self.sizeHintForColumn(j)) for j, need in enumerate(needs)
+            ]
+            if sum(values) <= available:
+                slack = [
+                    need - value for need, value in zip(needs, values, strict=True)
+                ]
+                room = available - sum(values)
+                widths = [
+                    v + s * room // sum(slack)
+                    for v, s in zip(values, slack, strict=True)
+                ]
+            else:
+                widths = [v * available // sum(values) for v in values]
+            for j in range(available - sum(widths)):
+                widths[j % count] += 1
+        for j, width in enumerate(widths):
+            header.resizeSection(j, width)
+
+        title_height = max(
+            metrics.boundingRect(
+                QRect(0, 0, max(1, width - chrome), 1000),
+                self._headerFlags(j),
+                self._headerText(j),
+            ).height()
+            for j, width in enumerate(widths)
+        )
+        header.setFixedHeight(title_height + vchrome)
+        self.setFixedHeight(self.sizeHint().height())
+
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        super().resizeEvent(event)
+        self.fitColumns()
+
     def sizeHint(self) -> QSize:
-        """Size the table to its column count and row heights."""
-        s = QtCore.QSize()
-        s.setWidth(super().sizeHint().width())
-        s.setWidth(75 * (self.columnCount() + 1) + 2 * self.columnCount())
-        s.setHeight(self.rowHeight(0) * (self.rowCount() + 1) + 10)
-        return s
+        """Size the table to its column count, header and row heights."""
+        rows = sum(self.rowHeight(i) for i in range(self.rowCount()))
+        return QSize(
+            self.MIN_COLUMN_WIDTH * self.columnCount() + 2 * self.frameWidth(),
+            self.horizontalHeader().height() + rows + 2 * self.frameWidth(),
+        )
 
 
 __all__ = [

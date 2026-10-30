@@ -12,5 +12,8 @@ registry.register(
         settings_factory="games.toma6.settings:game_settings",
         rules_doc="toma6",
         rules_url="https://blog.amigo-spiele.de/content/ap/rule/04910-GB-AmigoRule.pdf",
+        short_name="T6",
+        round_winners=True,
+        player_stats_factory="games.toma6.playerstats:player_stats",
     )
 )
