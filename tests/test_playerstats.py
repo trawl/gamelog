@@ -19,6 +19,7 @@ from core.engine.playerstats import (
     player_summary,
 )
 from core.model.match import GenericMatch
+from core.registry import registry
 
 _BASE = datetime.datetime(2024, 1, 1, 20, 0, 0, tzinfo=datetime.UTC)
 _clock = itertools.count()
@@ -188,7 +189,7 @@ def test_form_is_ordered_by_finish_time_not_insertion(gamedb):
     _match("Ratuki", {"Ann": (0, False), "Bob": (1, True)}, finished=200)
 
     form = player_form("Ann")
-    assert form.recent == (False, False, True)
+    assert tuple(r.won for r in form.recent) == (False, False, True)
     assert form.current_streak == 1
 
 
@@ -211,7 +212,7 @@ def test_recent_results_are_capped(gamedb):
     _sequence("Ann", [True] + [False] * 12)
 
     form = player_form("Ann", length=10)
-    assert form.recent == (False,) * 10
+    assert tuple(r.won for r in form.recent) == (False,) * 10
     assert form.longest_win_streak == 1
     assert len(player_form("Ann", length=3).recent) == 3
 
@@ -328,7 +329,7 @@ def test_game_filter_restricts_every_section(gamedb):
     assert player_summary("Ann", only).played == 2
     assert player_summary("Ann", only).wins == 0
     assert [g.game for g in game_breakdown("Ann", only)] == ["Toma6"]
-    assert player_form("Ann", only).recent == (False, False)
+    assert tuple(r.won for r in player_form("Ann", only).recent) == (False, False)
     rows = {r.opponent: r for r in head_to_head("Ann", only)}
     assert rows["Bob"].together == 2
     assert rows["Cy"].together == 2
@@ -478,6 +479,55 @@ def test_summary_tiles_show_value_and_full_caption(stats_screen):
     assert all(t.isVisible() for t in tiles.values())
 
 
+@pytest.mark.parametrize(
+    ("seconds", "text"),
+    [
+        (0, "0 h"),
+        (1, "< 1 h"),
+        (1799, "< 1 h"),
+        (1800, "1 h"),
+        (5399, "1 h"),
+        (5400, "2 h"),
+        (14 * 3600 + 50 * 60, "15 h"),
+    ],
+)
+def test_time_played_is_rounded_to_hours(qapp, seconds, text):
+    from core.ui.playerstats import _hours
+
+    assert _hours(seconds) == text
+
+
+def test_time_tile_shows_hours_and_the_exact_time_on_hover(stats_screen):
+    _seed_screen_data()
+    stats_screen.show()
+
+    tile = stats_screen.summaryTiles["time"]
+    # Three ten-minute matches.
+    assert tile.value.fullText() == "1 h"
+    assert tile.toolTip() == "00:30"
+
+
+def test_tiles_without_extra_information_have_no_tooltip(stats_screen):
+    _seed_screen_data()
+    stats_screen.show()
+
+    for key in ("played", "winRate", "first", "last", "favourite"):
+        tile = stats_screen.summaryTiles[key]
+        for widget in (tile, tile.value, tile.caption):
+            assert widget.toolTip() == "", key
+
+
+def test_wins_tile_explains_brackets_only_with_shared_wins(stats_screen):
+    _seed_screen_data()
+    stats_screen.show()
+    wins = stats_screen.summaryTiles["wins"]
+    assert wins.toolTip() == ""
+
+    _match("Ratuki", {"Ann": (5, True), "Bob": (5, True)})
+    stats_screen.refresh()
+    assert "brackets" in wins.toolTip()
+
+
 def test_summary_reflows_without_the_favourite_game(stats_screen):
     _seed_screen_data()
     stats_screen.show()
@@ -612,7 +662,7 @@ def test_a_long_table_leaves_the_other_its_minimum(stats_screen):
 def test_space_is_shared_by_row_count_when_neither_fits(stats_screen):
     stack = stats_screen.tableStack
     _many_opponents(30, games=("Ratuki", "Toma6", "Phase10", "Pocha", "Azul"))
-    stats_screen.resize(1000, 600)
+    stats_screen.resize(1000, 700)
     stats_screen.show()
     QApplication.processEvents()
 
@@ -637,3 +687,250 @@ def test_table_heights_follow_the_content(stats_screen):
     rivals = stats_screen.rivalsTable
     assert rivals.geometry().top() == 0  # closes up where the other was
     assert rivals.height() == stack.contentHeight(rivals)
+
+
+def test_full_name_falls_back_to_the_nick(gamedb):
+    from core.engine.playerstats import player_full_name
+
+    _duel("Ratuki", "Ann")
+    db.execute("UPDATE Player SET fullName=? WHERE nick=?", ("Ann Smith", "Ann"))
+    db.execute("UPDATE Player SET fullName=NULL WHERE nick=?", ("Bob",))
+    assert player_full_name("Ann") == "Ann Smith"
+    assert player_full_name("Bob") == "Bob"
+    assert player_full_name("Nobody") == "Nobody"
+
+
+def test_summary_is_titled_with_the_full_name(stats_screen):
+    _seed_screen_data()
+    db.execute("UPDATE Player SET fullName=? WHERE nick=?", ("Ann Smith", "Ann"))
+    stats_screen.show()
+
+    stats_screen.playerCombo.setCurrentIndex(stats_screen.playerCombo.findData("Ann"))
+    stats_screen.refresh()
+    assert stats_screen.summarySection.title() == "Ann Smith"
+    assert "bold" in stats_screen.summarySection.header.styleSheet()
+
+
+def test_form_results_describe_their_match(gamedb):
+    _match("Ratuki", {"Ann": (9, True), "Bob": (1, False)}, finished=100)
+    _match("Toma6", {"Cy": (3, True), "Ann": (8, False)}, finished=200)
+
+    latest = player_form("Ann").recent[-1]
+    assert (latest.won, latest.game) == (False, "Toma6")
+    assert latest.finished is not None
+    assert [(p.nick, p.score, p.winner) for p in latest.players] == [
+        ("Cy", 3, True),
+        ("Ann", 8, False),
+    ]
+
+
+def test_every_game_has_a_short_code():
+    codes = [d.code for d in registry.definitions()]
+    assert all(1 <= len(code) <= 4 for code in codes)
+    assert len(set(codes)) == len(codes)
+
+
+def test_short_code_falls_back_to_the_first_letters():
+    from dataclasses import replace
+
+    definition = replace(registry.definitions()[0], name="Dixit", short_name=None)
+    assert definition.code == "Dix"
+
+
+def _form_markers(screen):
+    layout = screen.formLayout
+    widgets = (layout.itemAt(i).widget() for i in range(layout.count()))
+    return [w for w in widgets if w is not None]
+
+
+def test_form_shows_the_newest_result_first_with_its_game(stats_screen):
+    _seed_screen_data()
+    stats_screen.show()
+
+    markers = _form_markers(stats_screen)
+    # Ann won Ratuki, lost Ratuki, then won Toma6.
+    assert [(m.full, m.short) for m in markers] == [
+        ("Toma6", "T6"),
+        ("Ratuki", "Rat"),
+        ("Ratuki", "Rat"),
+    ]
+    tip = markers[0].toolTip()
+    assert "<b>Toma6</b>" in tip
+    assert "<b>Ann</b>: 9" in tip  # the winner, in bold
+    assert "Bob: 1" in tip and "Cy: 3" in tip
+
+
+def test_form_says_won_or_lost_for_a_single_game(stats_screen):
+    _seed_screen_data()
+    stats_screen.show()
+    stats_screen.gameCombo.setCurrentIndex(stats_screen.gameCombo.findData("Ratuki"))
+
+    markers = _form_markers(stats_screen)
+    assert [(m.full, m.short) for m in markers] == [("Lost", "L"), ("Won", "W")]
+    assert "Ratuki" not in markers[0].toolTip()
+    assert "<b>Bob</b>: 9" in markers[0].toolTip()
+
+
+# --- Form markers: tooltip details and opening -------------------------------
+
+
+def _markers(screen):
+    from core.ui.playerstats import FormMarker
+
+    layout = screen.formLayout
+    items = (layout.itemAt(i) for i in range(layout.count()))
+    return [w for item in items if isinstance(w := item.widget(), FormMarker)]
+
+
+def _phase10_match(completed):
+    """A finished Phase 10 match where each nick completed so many phases."""
+    idMatch = _match("Phase10", {n: (45, n == "Ann") for n in completed})
+    for nick, phases in completed.items():
+        for phase in range(1, phases + 1):
+            db.execute(
+                "INSERT INTO RoundStatistics (idMatch, nick, idRound, key, value) "
+                "VALUES (?,?,?,?,?)",
+                (idMatch, nick, phase, "PhaseCompleted", str(phase)),
+            )
+        db.execute(  # a round without a completed phase
+            "INSERT INTO RoundStatistics (idMatch, nick, idRound, key, value) "
+            "VALUES (?,?,?,?,?)",
+            (idMatch, nick, 99, "PhaseCompleted", "0"),
+        )
+    return idMatch
+
+
+def test_form_tooltip_shows_the_date_without_the_time(stats_screen):
+    import re
+
+    _match("Ratuki", {"Ann": (9, True), "Bob": (1, False)}, finished=0)
+    stats_screen.show()
+
+    (marker,) = _markers(stats_screen)
+    tip = marker.toolTip()
+    assert re.search(r"\d{4}-\d{2}-\d{2}", tip)
+    assert not re.search(r"\d{2}:\d{2}", tip)
+    assert tip.endswith("Click to open the match")
+
+
+def test_phase10_tooltips_list_the_completed_phases_only_there(stats_screen):
+    _phase10_match({"Ann": 8, "Bob": 3})
+    _match("Ratuki", {"Ann": (9, True), "Bob": (1, False)})
+    stats_screen.show()
+
+    phase10, ratuki = sorted(_markers(stats_screen), key=lambda m: m.toolTip())[::-1]
+    by_game = {m.short: m.toolTip() for m in (phase10, ratuki)}
+    p10 = by_game["P10"]
+    assert "Ann</b>: 45 · phases: 8" in p10
+    assert "Bob: 45 · phases: 3" in p10
+    assert "phases" not in by_game["Rat"]
+
+
+def test_clicking_a_marker_asks_to_open_its_match(stats_screen):
+    from PySide6.QtCore import Qt
+    from PySide6.QtTest import QTest
+
+    old = _match("Ratuki", {"Ann": (9, True), "Bob": (1, False)}, finished=10)
+    new = _match("Toma6", {"Ann": (1, False), "Bob": (9, True)}, finished=20)
+    stats_screen.show()
+    opened = []
+    stats_screen.openRequested.connect(lambda i, g: opened.append((i, g)))
+
+    newest, oldest = _markers(stats_screen)  # newest first
+    QTest.mouseClick(newest, Qt.MouseButton.LeftButton)
+    QTest.mouseClick(oldest, Qt.MouseButton.LeftButton)
+
+    assert opened == [(new, "Toma6"), (old, "Ratuki")]
+    assert newest.cursor().shape() == Qt.CursorShape.PointingHandCursor
+
+
+def test_closing_a_match_opened_from_the_stats_returns_to_them(qapp, gamedb):
+    from core.ui.mainwindow import MainWindow
+    from tests.test_history import _finished_ratuki
+
+    engine = _finished_ratuki(("Ann", "Bob", "Cy"))
+    window = MainWindow()
+    window.showPlayerStats()
+    stats = window.playerStatsTab
+    stats.playerCombo.setCurrentIndex(stats.playerCombo.findData("Bob"))
+    stats.gameCombo.setCurrentIndex(stats.gameCombo.findData("Ratuki"))
+
+    (marker,) = _markers(stats)
+    marker.clicked.emit()
+
+    (board,) = window.openedGames
+    assert board.engine.match.idMatch == engine.match.idMatch
+    assert not stats.isVisible()
+    assert not window.newGameTab.isVisible()
+
+    window.removeTab(board)
+
+    assert stats.isVisible()
+    assert not window.newGameTab.isVisible()
+    assert not window.explorerTab.isVisible()
+    assert window.windowTitle() == "Gamelog - Player statistics"
+    assert stats.playerCombo.currentData() == "Bob"
+    assert stats.gameCombo.currentData() == "Ratuki"
+    window.hide()
+
+
+def test_form_markers_share_the_row_and_name_the_game_when_it_fits(qapp, stats_screen):
+    _seed_screen_data()
+    stats_screen.resize(1200, 700)
+    stats_screen.show()
+    qapp.processEvents()  # markers added to a shown layout appear on the next pass
+
+    markers = _form_markers(stats_screen)
+    widths = [m.width() for m in markers]
+    # Equal shares (give or take rounding), as if all ten slots were used.
+    assert max(widths) - min(widths) <= 1
+    assert min(widths) > 30
+    assert [m.text() for m in markers] == ["Toma6", "Ratuki", "Ratuki"]
+
+    marker = markers[0]
+    marker.resize(30, marker.height())
+    assert marker.text() == "T6"
+
+
+def test_streaks_are_cards(stats_screen):
+    _seed_screen_data()
+    stats_screen.show()
+
+    tiles = stats_screen.streakTiles
+    # Ann won Ratuki, lost Ratuki, then won Toma6.
+    assert tiles["current"].value.fullText() == "1W"
+    assert tiles["current"].caption.fullText() == "Current streak"
+    assert tiles["longestWin"].value.fullText() == "1"
+    assert tiles["longestLoss"].value.fullText() == "1"
+
+
+def test_groups_fold_to_leave_the_tables_more_room(qapp, stats_screen):
+    _many_opponents(30, games=("Ratuki", "Toma6"))
+    stats_screen.resize(1000, 700)
+    stats_screen.show()
+    qapp.processEvents()
+    rivals = stats_screen.rivalsTable
+    before = rivals.height()
+
+    for section in (stats_screen.summarySection, stats_screen.formSection):
+        assert section.isOpen()
+        section.header.click()
+        assert not section.isOpen()
+        assert not section.body.isVisible()
+        assert section.header.isVisible()  # the title stays, to unfold it again
+    for _ in range(2):  # the layout, then the table stack, settle
+        qapp.processEvents()
+    assert rivals.height() > before
+
+    stats_screen.summarySection.header.click()
+    assert stats_screen.summarySection.body.isVisible()
+
+
+def test_folded_groups_stay_folded_when_the_player_changes(stats_screen):
+    _seed_screen_data()
+    stats_screen.show()
+    stats_screen.formSection.setOpen(False)
+
+    stats_screen.playerCombo.setCurrentText("Bob")
+    assert not stats_screen.formSection.isOpen()
+    assert stats_screen.formSection.title() == "Recent form"

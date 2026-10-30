@@ -26,6 +26,8 @@ from core.ui.playerstats import PlayerStatsWidget
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from PySide6.QtCore import QEvent
 
     from core.ui.game import GameWidget
@@ -96,6 +98,11 @@ class MainWindow(QMainWindow):
         # Player statistics, shown the same way
         self.playerStatsTab = PlayerStatsWidget(self)
         self.playerStatsTab.backRequested.connect(self.hidePlayerStats)
+        self.playerStatsTab.openRequested.connect(
+            lambda idMatch, game: self.openStoredMatch(
+                idMatch, game, self.playerStatsTab
+            )
+        )
         self.verticalLayout.addWidget(self.playerStatsTab)
         self.playerStatsTab.hide()
         #        self.tabWidget.addTab(self.newGameTab, "")
@@ -226,8 +233,13 @@ class MainWindow(QMainWindow):
         self.newGameTab.show()
         self.setWindowTitle("Gamelog")
 
-    def openStoredMatch(self, idMatch: int, game: str) -> None:
+    def openStoredMatch(
+        self, idMatch: int, game: str, origin: QWidget | None = None
+    ) -> None:
         """Open a match from the archive in its own state.
+
+        Closing it returns to ``origin``, the screen it was opened from (the
+        match history by default).
 
         A saved match is resumed; a finished one shows its final board; a
         cancelled or interrupted one opens locked, for review only.
@@ -255,7 +267,7 @@ class MainWindow(QMainWindow):
             else:
                 status = self.tr("This match was interrupted")
             matchTab.setReviewOnly(status)
-        self.newTab(matchTab, game, origin=self.explorerTab)
+        self.newTab(matchTab, game, origin=origin or self.explorerTab)
 
     def newTab(
         self, matchTab: GameWidget, title: str, origin: QWidget | None = None
@@ -263,7 +275,8 @@ class MainWindow(QMainWindow):
         """Show a running match widget and track it as an open game."""
         logger.info("Opening game tab: %s", title)
         self.newGameTab.hide()
-        self.explorerTab.hide()
+        for screen in self._screens():
+            screen.hide()
         if origin is not None:
             self._origins[matchTab] = origin
         self.verticalLayout.addWidget(matchTab)
@@ -275,13 +288,21 @@ class MainWindow(QMainWindow):
     #        idx = self.tabWidget.addTab(matchTab, title)
     #        self.tabWidget.setCurrentIndex(idx)
 
+    def _screens(self) -> dict[QWidget, Callable[[], None]]:
+        """The full screens a match can be opened from, each with what shows it."""
+        return {
+            self.explorerTab: self.showExplorer,
+            self.playerStatsTab: self.showPlayerStats,
+        }
+
     def removeTab(self, tab: GameWidget) -> None:
         """Close a match widget and restore the new-game tab."""
         tab.close()
         self.openedGames.remove(tab)
         origin = self._origins.pop(tab, self.newGameTab)
-        if origin is self.explorerTab:
-            self.showExplorer()
+        show = self._screens().get(origin)
+        if show is not None:
+            show()
         else:
             self.setWindowTitle("Gamelog")
             self.newGameTab.show()

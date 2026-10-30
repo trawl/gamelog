@@ -14,5 +14,7 @@ registry.register(
         "games.qwirkle.engine:QwirkleParticularStatsEngine",
         settings_factory="games.qwirkle.settings:game_settings",
         rules_doc="qwirkle",
+        short_name="Qw",
+        player_stats_factory="games.qwirkle.playerstats:player_stats",
     )
 )

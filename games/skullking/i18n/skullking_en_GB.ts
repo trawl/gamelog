@@ -88,6 +88,29 @@
     </message>
 </context>
 <context>
+    <name>SkullKingStats</name>
+    <message>
+        <location filename="../playerstats.py" line="12"/>
+        <source>Share of rounds with the bid met, per match</source>
+        <translation>Share of rounds with the bid met, per match</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="17"/>
+        <source>Max hit %</source>
+        <translation>Max hit %</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="20"/>
+        <source>Avg hit %</source>
+        <translation>Avg hit %</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="23"/>
+        <source>Best round</source>
+        <translation>Best round</translation>
+    </message>
+</context>
+<context>
     <name>SkullKingWidget</name>
     <message>
         <location filename="../widget.py" line="53"/>

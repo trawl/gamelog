@@ -37,6 +37,10 @@ from core.ui.tablestyle import (
 logger = logging.getLogger(__name__)
 
 
+# Bold titles over the sections of a statistics view.
+SECTION_TITLE_STYLE = "QLabel { font-weight: bold; font-size: 18px; margin-top: 10px; margin-bottom: 5px;}"
+
+
 class QuickStatsTW(QTabWidget):
     """Tab widget pairing general and per-player quick-statistics views."""
 
@@ -199,7 +203,7 @@ class AbstractQuickStatsBox(QGroupBox):
         StatsTable.linkHeaderSizes(self.matchStatsTable, self.playerStatsTable)
         self.widgetLayout.addWidget(self.playerStatsTable)
 
-        self.titlecss = """QLabel { font-weight: bold; font-size: 18px; margin-top: 10px; margin-bottom: 5px;}"""
+        self.titlecss = SECTION_TITLE_STYLE
         self.matchStatsTitleLabel.setStyleSheet(self.titlecss)
         self.playerStatsTitleLabel.setStyleSheet(self.titlecss)
         self.gameStatsLabel.setStyleSheet(self.titlecss)

@@ -32,6 +32,38 @@ class GameDefinition:
     # and an optional link to the publisher's official rule book.
     rules_doc: str | None = None
     rules_url: str | None = None
+    # A few characters naming the game where there is no room for the full name.
+    short_name: str | None = None
+    # Whether each round has a real winner (a hand won, a phase gone out on),
+    # rather than rounds being turns or score entries. The player statistics
+    # then rate the rounds a player wins against chance.
+    round_winners: bool = False
+    # Optional ``function(match ids) -> {match id: {nick: text}}`` giving extra,
+    # already translated, per-player text for finished matches of this game
+    # (shown beside the score in the player statistics).
+    match_details_factory: GameType | None = None
+    # Optional ``function(game, nick) -> list[PlayerStat]`` giving the cards
+    # this game adds to the player statistics of one player.
+    player_stats_factory: GameType | None = None
+
+    @property
+    def code(self) -> str:
+        """The short name, or the first letters of the name without one."""
+        return self.short_name or self.name[:3]
+
+    def match_details(self, match_ids: Sequence[int]) -> dict[int, dict[str, str]]:
+        """Extra per-player text for the matches ``match_ids``; none for the
+        games that do not provide any."""
+        if not self.match_details_factory or not match_ids:
+            return {}
+        return self.resolve(self.match_details_factory)(list(match_ids))
+
+    def player_stats(self, nick: str) -> list[Any]:
+        """The game's own player statistic cards for ``nick``; none for the
+        games that do not provide any."""
+        if not self.player_stats_factory:
+            return []
+        return self.resolve(self.player_stats_factory)(self.name, nick)
 
     def database_row(self) -> tuple[str, int, str, str]:
         """Return the columns stored in the Game table for this game."""

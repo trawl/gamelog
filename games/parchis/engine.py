@@ -97,6 +97,29 @@ class ParchisStatsQueries:
     GROUP BY nplayers
     """
 
+    # The opponent who killed the (bound) player most, and the one they killed
+    # most; the count is how many times.
+    killedMostByQuery = """
+    SELECT RoundEvents.nick AS opponent, COUNT(*) AS kills
+    FROM RoundEvents JOIN Match ON Match.idMatch = RoundEvents.idMatch
+    WHERE Match.state=1 and Game_name='Parchis'
+        and eventType='kill' and RoundEvents.target=?
+    GROUP BY RoundEvents.nick
+    ORDER BY kills DESC, opponent
+    LIMIT 1
+    """
+
+    killedMostQuery = """
+    SELECT RoundEvents.target AS opponent, COUNT(*) AS kills
+    FROM RoundEvents JOIN Match ON Match.idMatch = RoundEvents.idMatch
+    WHERE Match.state=1 and Game_name='Parchis'
+        and eventType='kill' and RoundEvents.nick=?
+        and RoundEvents.target IS NOT NULL
+    GROUP BY RoundEvents.target
+    ORDER BY kills DESC, opponent
+    LIMIT 1
+    """
+
     playerMaxComboQuery = """
     SELECT nick as player, MAX(totalcombo) as max_combo
     FROM (

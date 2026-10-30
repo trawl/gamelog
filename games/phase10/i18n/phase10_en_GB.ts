@@ -2,6 +2,39 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_GB">
 <context>
+    <name>Phase10Details</name>
+    <message>
+        <location filename="../details.py" line="25"/>
+        <source>phases: {}</source>
+        <translation>phases: {}</translation>
+    </message>
+    <message>
+        <location filename="../details.py" line="47"/>
+        <source>Fewest phases</source>
+        <translation>Fewest phases</translation>
+    </message>
+    <message>
+        <location filename="../details.py" line="49"/>
+        <source>Phases completed in a match</source>
+        <translation>Phases completed in a match</translation>
+    </message>
+    <message>
+        <location filename="../details.py" line="57"/>
+        <source>Damned phase</source>
+        <translation>Damned phase</translation>
+    </message>
+    <message>
+        <location filename="../details.py" line="59"/>
+        <source>The phase aimed at most often</source>
+        <translation>The phase aimed at most often</translation>
+    </message>
+    <message>
+        <location filename="../details.py" line="68"/>
+        <source>Phases per match</source>
+        <translation>Phases per match</translation>
+    </message>
+</context>
+<context>
     <name>Phase10QSBox</name>
     <message>
         <location filename="../widget.py" line="972"/>

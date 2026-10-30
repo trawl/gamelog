@@ -87,6 +87,11 @@ class CarcassonneStatsQueries:
    LIMIT 1
    """
 
+    # The same record restricted to one player (bound as the only parameter).
+    matchKindPlayerQuery = matchKindRecordQuery.replace(
+        "and Round.score>0", "and Round.score>0\n        and RoundStatistics.nick=?"
+    )
+
 
 class CarcassonneStatsEngine(StatsEngine):
     """Adds Carcassonne single-kind and match-kind record statistics."""

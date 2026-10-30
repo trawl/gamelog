@@ -23,6 +23,19 @@
     </message>
 </context>
 <context>
+    <name>RemigioStats</name>
+    <message>
+        <location filename="../playerstats.py" line="26"/>
+        <source>Closed with ×{}</source>
+        <translation>Closed with ×{}</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="27"/>
+        <source>{} of {} rounds won</source>
+        <translation>{} of {} rounds won</translation>
+    </message>
+</context>
+<context>
     <name>RemigioWidget</name>
     <message>
         <location filename="../widget.py" line="110"/>

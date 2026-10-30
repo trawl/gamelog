@@ -14,4 +14,22 @@
         <translation>Puntuació que cal assolir per acabar la partida</translation>
     </message>
 </context>
+<context>
+    <name>Toma6Stats</name>
+    <message>
+        <location filename="../playerstats.py" line="16"/>
+        <source>Rounds per match</source>
+        <translation>Rondes per partida</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="18"/>
+        <source>Average over finished matches</source>
+        <translation>Mitjana de les partides acabades</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="26"/>
+        <source>Best winning streak</source>
+        <translation>Millor ratxa de victòries</translation>
+    </message>
+</context>
 </TS>

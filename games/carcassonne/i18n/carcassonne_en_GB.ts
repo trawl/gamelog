@@ -86,6 +86,39 @@
     </message>
 </context>
 <context>
+    <name>CarcassonneStats</name>
+    <message>
+        <location filename="../playerstats.py" line="15"/>
+        <source>Best city</source>
+        <translation>Best city</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="16"/>
+        <source>Best road</source>
+        <translation>Best road</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="17"/>
+        <source>Best cloister</source>
+        <translation>Best cloister</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="18"/>
+        <source>Best field</source>
+        <translation>Best field</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="19"/>
+        <source>Best fair</source>
+        <translation>Best fair</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="21"/>
+        <source>Best in one match, {}</source>
+        <translation>Best in one match, {}</translation>
+    </message>
+</context>
+<context>
     <name>CarcassonneWidget</name>
     <message>
         <location filename="../widget.py" line="119"/>

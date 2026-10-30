@@ -14,4 +14,32 @@
         <translation>Max Qs</translation>
     </message>
 </context>
+<context>
+    <name>QwirkleStats</name>
+    <message>
+        <location filename="../playerstats.py" line="18"/>
+        <source>Best play</source>
+        <translation>Mejor jugada</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="25"/>
+        <source>Max Qwirkles</source>
+        <translation>Máx. Qwirkles</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="27"/>
+        <source>Qwirkles in one match</source>
+        <translation>Qwirkles en una partida</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="34"/>
+        <source>Average play</source>
+        <translation>Jugada media</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="42"/>
+        <source>Total Qwirkles</source>
+        <translation>Qwirkles en total</translation>
+    </message>
+</context>
 </TS>

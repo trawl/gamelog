@@ -22,4 +22,22 @@
         <translation>Puntuación para  ganar la partida</translation>
     </message>
 </context>
+<context>
+    <name>RatukiStats</name>
+    <message>
+        <location filename="../playerstats.py" line="16"/>
+        <source>Rounds per match</source>
+        <translation>Rondas por partida</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="18"/>
+        <source>Average over finished matches</source>
+        <translation>Media de las partidas terminadas</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="26"/>
+        <source>Best winning streak</source>
+        <translation>Mejor racha de victorias</translation>
+    </message>
+</context>
 </TS>

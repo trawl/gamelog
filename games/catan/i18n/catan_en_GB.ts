@@ -37,4 +37,22 @@
         <translation>Totals</translation>
     </message>
 </context>
+<context>
+    <name>CatanStats</name>
+    <message>
+        <location filename="../playerstats.py" line="28"/>
+        <source>Matches ended holding it</source>
+        <translation>Matches ended holding it</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="31"/>
+        <source>Longest road</source>
+        <translation>Longest road</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="36"/>
+        <source>Largest army</source>
+        <translation>Largest army</translation>
+    </message>
+</context>
 </TS>

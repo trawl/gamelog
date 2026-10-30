@@ -10,11 +10,13 @@ from __future__ import annotations
 
 import datetime
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from core.engine.db import db
+from core.engine.history import PlayerResult
 from core.engine.timeutil import parse_db_time
 from core.model.match import GenericMatch
+from core.registry import registry
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +40,16 @@ class PlayerSummary:
 
 
 @dataclass(frozen=True)
+class PlayerStat:
+    """One card of a player's statistics in a game: already translated and
+    formatted text. ``tip`` is only for what the card does not already say."""
+
+    caption: str
+    value: str
+    tip: str | None = None
+
+
+@dataclass(frozen=True)
 class GameBreakdown:
     """One row per game the player has played."""
 
@@ -53,8 +65,22 @@ class GameBreakdown:
 
 
 @dataclass(frozen=True)
+class FormResult:
+    """One of the latest matches: its outcome and what it was."""
+
+    won: bool
+    game: str
+    finished: datetime.datetime | None
+    players: tuple[PlayerResult, ...]  # everyone who took part, in seat order
+    idMatch: int = 0
+    # Extra text per nick the game wants shown with the match (see
+    # ``GameDefinition.match_details``), such as Phase 10's completed phases.
+    extras: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
 class Form:
-    recent: tuple[bool, ...]  # last results, oldest -> newest, True = win
+    recent: tuple[FormResult, ...]  # last results, oldest -> newest
     current_streak: int  # >0 winning streak, <0 losing streak, 0 if none
     longest_win_streak: int
     longest_loss_streak: int
@@ -203,7 +229,8 @@ def player_form(
     nick: str, games: tuple[str, ...] = (), length: int = FORM_LENGTH
 ) -> Form:
     """The latest results of ``nick`` and their winning and losing streaks."""
-    results = [m.won for m in _played(nick, games)]
+    played = _played(nick, games)
+    results = [m.won for m in played]
 
     longest = {True: 0, False: 0}
     run = 0
@@ -216,12 +243,58 @@ def player_form(
     current = 0
     if results:
         current = run if results[-1] else -run
+    latest = played[-length:] if length > 0 else []
+    players = _players_of([m.idMatch for m in latest])
+    extras = _extras_of(latest)
     return Form(
-        recent=tuple(results[-length:]) if length > 0 else (),
+        recent=tuple(
+            FormResult(
+                m.won,
+                m.game,
+                m.finished,
+                players.get(m.idMatch, ()),
+                m.idMatch,
+                extras.get(m.idMatch, {}),
+            )
+            for m in latest
+        ),
         current_streak=current,
         longest_win_streak=longest[True],
         longest_loss_streak=longest[False],
     )
+
+
+def _extras_of(matches: list[_Played]) -> dict[int, dict[str, str]]:
+    """What each game adds about the matches ``matches``, asked only for the
+    games that have something to add and only for these matches."""
+    by_game: dict[str, list[int]] = {}
+    for m in matches:
+        by_game.setdefault(m.game, []).append(m.idMatch)
+    extras: dict[int, dict[str, str]] = {}
+    for game, ids in by_game.items():
+        definition = registry.get(game)
+        if definition is not None:
+            extras.update(definition.match_details(ids))
+    return extras
+
+
+def _players_of(ids: list[int]) -> dict[int, tuple[PlayerResult, ...]]:
+    """Everyone who played each of the matches ``ids``, in seat order."""
+    if not ids:
+        return {}
+    cur = db.execute(
+        "SELECT idMatch, nick, totalScore, winner FROM MatchPlayer "
+        f"WHERE idMatch IN ({','.join('?' * len(ids))}) ORDER BY idMatch, rowid",
+        tuple(ids),
+    )
+    players: dict[int, list[PlayerResult]] = {}
+    for row in cur:
+        players.setdefault(row["idMatch"], []).append(
+            PlayerResult(
+                str(row["nick"]), int(row["totalScore"] or 0), row["winner"] == 1
+            )
+        )
+    return {idMatch: tuple(rows) for idMatch, rows in players.items()}
 
 
 def head_to_head(nick: str, games: tuple[str, ...] = ()) -> list[HeadToHead]:
@@ -293,3 +366,71 @@ def games_played_by(nick: str) -> list[str]:
         (nick, GenericMatch.FINISHED),
     )
     return [str(row["Game_name"]) for row in cur]
+
+
+def player_full_name(nick: str) -> str:
+    """The full name stored for ``nick``, or the nick itself without one."""
+    cur = db.execute("SELECT fullName FROM Player WHERE nick=?", (nick,))
+    row = cur.fetchone()
+    return str(row["fullName"]) if row and row["fullName"] else nick
+
+
+def engine_row(game: str, nick: str) -> dict:
+    """The statistics row of ``nick`` in ``game`` from the game's own stats
+    engine, with every column the game adds; empty when there is none."""
+    engine = registry.create_stats_engine(game)
+    engine.update()
+    rows = engine.getPlayerGameStats(game) or []
+    return next((r for r in rows if r["nick"] == nick), {})
+
+
+def game_player_stats(nick: str, game: str) -> list[PlayerStat]:
+    """The cards the game adds for ``nick``, none for games without any."""
+    definition = registry.get(game)
+    return definition.player_stats(nick) if definition else []
+
+
+@dataclass(frozen=True)
+class RoundPerformance:
+    """Rounds won against what chance predicts, as the performance index does
+    for matches: 1.0 is par, 2.0 twice as often."""
+
+    index: float | None  # None when no round had a winner
+    won: int
+    played: int
+
+
+def round_performance(nick: str, game: str) -> RoundPerformance:
+    """How often ``nick`` wins a round of ``game``, weighing each round by the
+    players in it: those already out of a match have no row for it."""
+    cur = db.execute(
+        "SELECT r.winner, "
+        "(SELECT COUNT(*) FROM Round a "
+        "WHERE a.idMatch=r.idMatch AND a.idRound=r.idRound) AS n_players, "
+        "(SELECT COUNT(*) FROM Round a "
+        "WHERE a.idMatch=r.idMatch AND a.idRound=r.idRound AND a.winner=1) "
+        "AS n_winners "
+        "FROM Round r JOIN Match m ON m.idMatch=r.idMatch "
+        "WHERE m.state=? AND m.Game_name=? AND r.nick=?",
+        (GenericMatch.FINISHED, game, nick),
+    )
+    rows = list(cur)
+    decided = [r for r in rows if r["n_winners"] > 0]
+    expected = sum(1 / r["n_players"] for r in decided)
+    earned = sum(1 / r["n_winners"] for r in decided if r["winner"] == 1)
+    won = sum(1 for r in rows if r["winner"] == 1)
+    return RoundPerformance(earned / expected if expected else None, won, len(rows))
+
+
+def rounds_per_match(nick: str, game: str) -> float | None:
+    """Average number of rounds of the finished ``game`` matches of ``nick``."""
+    cur = db.execute(
+        "SELECT AVG(n) AS rounds FROM ("
+        "SELECT COUNT(DISTINCT r.idRound) AS n FROM Round r "
+        "JOIN Match m ON m.idMatch=r.idMatch "
+        "WHERE m.state=? AND m.Game_name=? AND r.idMatch IN ("
+        "SELECT idMatch FROM MatchPlayer WHERE nick=?) GROUP BY r.idMatch)",
+        (GenericMatch.FINISHED, game, nick),
+    )
+    row = cur.fetchone()
+    return None if row is None or row["rounds"] is None else float(row["rounds"])

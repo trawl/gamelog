@@ -51,6 +51,34 @@
     </message>
 </context>
 <context>
+    <name>PochaStats</name>
+    <message>
+        <location filename="../playerstats.py" line="12"/>
+        <source>Rounds with an exact bid in one match</source>
+        <translation>Rounds with an exact bid in one match</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="17"/>
+        <source>Max hits</source>
+        <translation>Max hits</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="18"/>
+        <source>Min hits</source>
+        <translation>Min hits</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="21"/>
+        <source>Best round</source>
+        <translation>Best round</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="26"/>
+        <source>Worst round</source>
+        <translation>Worst round</translation>
+    </message>
+</context>
+<context>
     <name>PochaWidget</name>
     <message>
         <location filename="../widget.py" line="43"/>

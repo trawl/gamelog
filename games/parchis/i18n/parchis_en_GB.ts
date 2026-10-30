@@ -82,6 +82,44 @@
     </message>
 </context>
 <context>
+    <name>ParchisStats</name>
+    <message>
+        <location filename="../playerstats.py" line="18"/>
+        <source>Max kills</source>
+        <translation>Max kills</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="20"/>
+        <source>Kills in one match</source>
+        <translation>Kills in one match</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="26"/>
+        <source>Best combo</source>
+        <translation>Best combo</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="28"/>
+        <source>Combo points in one match</source>
+        <translation>Combo points in one match</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="31"/>
+        <source>{} kills</source>
+        <translation>{} kills</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="34"/>
+        <source>Killed most by</source>
+        <translation>Killed most by</translation>
+    </message>
+    <message>
+        <location filename="../playerstats.py" line="38"/>
+        <source>Killed most</source>
+        <translation>Killed most</translation>
+    </message>
+</context>
+<context>
     <name>ParchisWidget</name>
     <message>
         <location filename="../widget.py" line="134"/>

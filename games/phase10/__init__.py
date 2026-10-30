@@ -16,6 +16,10 @@ registry.register(
         "games.phase10.engine:Phase10ParticularStatsEngine",
         settings_factory=_settings,
         rules_doc="phase10",
+        short_name="P10",
+        round_winners=True,
+        player_stats_factory="games.phase10.details:player_stats",
+        match_details_factory="games.phase10.details:phases_completed",
     )
 )
 registry.register(
@@ -31,5 +35,9 @@ registry.register(
         "games.phase10.engine:Phase10StatsEngine",
         "games.phase10.engine:Phase10ParticularStatsEngine",
         rules_doc="phase10master",
+        short_name="P10M",
+        round_winners=True,
+        player_stats_factory="games.phase10.details:player_stats",
+        match_details_factory="games.phase10.details:phases_completed",
     )
 )

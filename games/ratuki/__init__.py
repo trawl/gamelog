@@ -11,5 +11,8 @@ registry.register(
         "games.ratuki.widget:RatukiWidget",
         settings_factory="games.ratuki.settings:game_settings",
         rules_doc="ratuki",
+        short_name="Rat",
+        round_winners=True,
+        player_stats_factory="games.ratuki.playerstats:player_stats",
     )
 )
