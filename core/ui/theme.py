@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 from enum import StrEnum
 from typing import cast
 
@@ -13,6 +14,27 @@ from PySide6.QtWidgets import QApplication
 from core.engine.settings import appsettings
 
 logger = logging.getLogger(__name__)
+
+# Windows draws QGroupBox frames with the native style, which runs a plain
+# line through the title. Drawing the frame ourselves gives it a title gap on
+# every platform; this is appended on Windows only so macOS and Linux are
+# untouched. palette() keeps the colours in step with the active theme.
+# margin-top reserves room for the title (up to the 28px game-player titles)
+# so the frame does not run through it.
+WINDOWS_GROUPBOX_CSS = """
+QGroupBox {
+    border: 1px solid palette(mid);
+    border-radius: 6px;
+    margin-top: 36px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    padding: 0 4px;
+    background-color: palette(window);
+}
+"""
 
 
 class Theme(StrEnum):
@@ -89,10 +111,10 @@ class ThemeManager(QObject):
         """Load and install the QSS stylesheet for the current system theme."""
         file = QFile(f":/styles/{self.system_theme}.qss")
         if file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
-            stylesheet = QTextStream(file)
-            cast(QApplication, QApplication.instance()).setStyleSheet(
-                stylesheet.readAll()
-            )
+            stylesheet = QTextStream(file).readAll()
+            if sys.platform == "win32":
+                stylesheet += WINDOWS_GROUPBOX_CSS
+            cast(QApplication, QApplication.instance()).setStyleSheet(stylesheet)
         else:
             logger.warning("Could not load :/styles/%s.qss", self.system_theme)
 
