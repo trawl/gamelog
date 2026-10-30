@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.4.0](https://github.com/trawl/gamelog/compare/v2.3.0...v2.4.0) (2026-10-30)
+
+
+### Features
+
+* nemesis and favourite victim tiles, content-sized tables ([2fcd5d8](https://github.com/trawl/gamelog/commit/2fcd5d8dbd69753c4eb4990f82c500d58eee6086))
+* per-game player statistics and a richer player stats screen ([0e2da63](https://github.com/trawl/gamelog/commit/0e2da637d839296fe20db02bb30b2251551da387))
+* performance index in game statistics ([7ab8bd8](https://github.com/trawl/gamelog/commit/7ab8bd8c9f6ac341b2a83f1f8ecda8c3fe2e40d6))
+* player statistics engine ([14228d4](https://github.com/trawl/gamelog/commit/14228d4d99eb09ae9a928733fca21a7fbe0786e0))
+* player statistics screen ([2ecb1f5](https://github.com/trawl/gamelog/commit/2ecb1f563aba5a707337e69128285e15056ad3ca))
+* player statistics screen and developer notes ([b4c519d](https://github.com/trawl/gamelog/commit/b4c519dbb2a9c888f464bd9c1629c7eefc778f44))
+
+
+### Bug Fixes
+
+* fit quick statistics headers without squashing or scrolling ([25707ba](https://github.com/trawl/gamelog/commit/25707bababad5a2e275f6ed10690ff2d33a23b1d))
+* honour the player list in particular statistics updates ([8ba0b04](https://github.com/trawl/gamelog/commit/8ba0b04ebc403868f9382abe05ab27e42f67d7ef))
+* nemesis and favourite victim need a losing or winning record ([beabc07](https://github.com/trawl/gamelog/commit/beabc072df808261261e59036ee4ec897ef8a293))
+
+
+### Documentation
+
+* add AGENTS.md agent guide ([042d505](https://github.com/trawl/gamelog/commit/042d50523971595f5529fc611389c77c64b82a1d))
+* mention player statistics in the README ([ba8c635](https://github.com/trawl/gamelog/commit/ba8c635d23b849ba14aa2df3c458d528c4293155))
+* player statistics design ([55de9b9](https://github.com/trawl/gamelog/commit/55de9b9bd7eb7c72e6a1a91a9f21b688ee2d820b))
+* replace the player statistics design doc with developer notes ([4f1745e](https://github.com/trawl/gamelog/commit/4f1745e94a6b0700d359596bb398f0382971e041))
+
 ## [2.3.0](https://github.com/trawl/gamelog/compare/v2.2.0...v2.3.0) (2026-10-27)
 
 

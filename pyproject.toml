@@ -1,6 +1,6 @@
 [project]
 name = "gamelog"
-version = "2.3.0"
+version = "2.4.0"
 description = "A utility to keep track of board games scores"
 readme = "README.md"
 license = { file = "LICENSE" }
