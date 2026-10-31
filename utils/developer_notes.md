@@ -293,9 +293,13 @@ automatically when the game's board is opened and re-applied on theme changes.
 ## Android (tablet, experimental)
 `main.py` is the entry point `pyside6-android-deploy` expects; Android-only
 code paths test `core.platform_info.is_android()` (Android reports
-`sys.platform == "linux"`). Build with
-`utils/build_android.sh <pyside6 wheel> <shiboken6 wheel>`. It regenerates
-the git-ignored `pysidedeploy.spec` with `--init`, pins the app icon
-(`core/resources/icons/cards.png`, as the default is a `.icns`) and builds
-from that spec with `-c`, forcing landscape through buildozer's
-`APP_ORIENTATION` env override. Install with `adb install -r Gamelog-*.apk`.
+`sys.platform == "linux"`). Build with `utils/build_android.sh` (needs the
+`android` dependency group: `uv sync --group android`). It downloads the
+PySide6/shiboken6 Android wheels from download.qt.io on first use, verifies
+their sha256 and caches them in `~/.cache/gamelog/android-wheels`; the version
+is `PYSIDE_ANDROID_VERSION` (see the script header for the other overrides).
+It then regenerates the git-ignored `pysidedeploy.spec` with `--init`, pins the
+app icon (`core/resources/icons/cards.png`, as the default is a `.icns`) and
+builds from that spec with `-c`, forcing landscape and the app version through
+buildozer's env overrides. The APK is written to `dist/`; install it with
+`adb install -r dist/Gamelog-*.apk`.

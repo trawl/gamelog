@@ -22,3 +22,4 @@ resources.qrc
 *.apk
 *.aab
 pysidedeploy.spec
+dist/
