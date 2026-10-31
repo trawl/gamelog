@@ -17,3 +17,8 @@ htmlcov
 build
 *.egg-info
 resources.qrc
+
+# Android build output
+*.apk
+*.aab
+pysidedeploy.spec

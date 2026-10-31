@@ -34,6 +34,14 @@ dev = [
     "ruff>=0.6",
     "basedpyright>=1"
 ]
+# Needed by pyside6-android-deploy (see utils/build_android.sh); mirrors
+# PySide6/scripts/requirements-android.txt. Install with `uv sync --group android`.
+android = [
+    "jinja2",
+    "pkginfo",
+    "tqdm",
+    "pip",
+]
 
 [tool.setuptools.packages.find]
 include = ["core*", "games*"]
