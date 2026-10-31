@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (
 
 from core.registry import GameDefinition
 from core.rules import load_rules
+from core.ui.dialogs import add_dismiss_button
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +56,7 @@ class RulesDialog(QDialog):
         # Links in the sheets open in the system browser.
         self.browser.setOpenExternalLinks(True)
         layout.addWidget(self.browser)
+        add_dismiss_button(self, layout)
         self.retranslateUI()
 
     def retranslateUI(self) -> None:

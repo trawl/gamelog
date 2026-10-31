@@ -25,6 +25,7 @@ from PySide6.QtWidgets import (
 
 from core.engine.settings import appsettings
 from core.registry import registry
+from core.ui.glyphs import platform_glyph
 from core.ui.performance import format_performance, performance_tooltip
 from core.ui.tablestyle import (
     CELL_PADDING,
@@ -74,8 +75,8 @@ class QuickStatsTW(QTabWidget):
             self.setTabText(self.indexOf(self.gs), self.tr("General"))
             self.setTabText(self.indexOf(self.ps), self.tr("Particular"))
         else:
-            self.setTabText(self.indexOf(self.gs), "∑")
-            self.setTabText(self.indexOf(self.ps), "#")
+            self.setTabText(self.indexOf(self.gs), platform_glyph("∑"))
+            self.setTabText(self.indexOf(self.ps), platform_glyph("#"))
         self.gs.retranslateUI()
         self.ps.retranslateUI()
 

@@ -31,6 +31,7 @@ from core.ui.game.matchedit import MatchTimesEditDialog
 from core.ui.game.player import GamePlayerWidget
 from core.ui.game.rounds import GameRoundsDetail
 from core.ui.game.utils import SleepBlocker
+from core.ui.glyphs import platform_glyph
 from core.ui.language import LanguageButton
 from core.ui.rules import RulesDialog
 from core.ui.settings import SettingsDialog
@@ -339,13 +340,13 @@ class GameWidget(Tab):
             self.playerOrderButton.setText(self.tr("Player &Order"))
             self.finishButton.setText(self.tr("&Finish Game"))
         else:
-            self.pauseMatchButton.setText("⏸")
-            self.cancelMatchButton.setText("⎋")
-            self.restartMatchButton.setText("↻")
-            self.commitRoundButton.setText("⏺")
-            self.undoButton.setText("⎌")
-            self.playerOrderButton.setText("♟↕")
-            self.finishButton.setText("⏹")
+            self.pauseMatchButton.setText(platform_glyph("⏸"))
+            self.cancelMatchButton.setText(platform_glyph("⎋"))
+            self.restartMatchButton.setText(platform_glyph("↻"))
+            self.commitRoundButton.setText(platform_glyph("⏺"))
+            self.undoButton.setText(platform_glyph("⎌"))
+            self.playerOrderButton.setText(platform_glyph("♟↕"))
+            self.finishButton.setText(platform_glyph("⏹"))
         self.settingsButton.setText("⚙️")
         self.settingsButton.setToolTip(self.tr("Settings"))
         self.rulesButton.setText("📖")
@@ -513,7 +514,7 @@ class GameWidget(Tab):
             self.engine.unpause()
             self.toggleScreenLock()
             if not appsettings["text_in_buttons"]:
-                self.pauseMatchButton.setText("⏸")
+                self.pauseMatchButton.setText(platform_glyph("⏸"))
         else:
             self.clock.pauseTimer()
             self.commitRoundButton.setDisabled(True)
@@ -521,7 +522,7 @@ class GameWidget(Tab):
             self.engine.pause()
             self.toggleScreenLock(True)
             if not appsettings["text_in_buttons"]:
-                self.pauseMatchButton.setText("▶")
+                self.pauseMatchButton.setText(platform_glyph("▶"))
         self.updateGameStatusLabel()
 
     def guardCommitButton(self) -> None:

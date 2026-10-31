@@ -5,7 +5,9 @@ from __future__ import annotations
 from PySide6 import QtCore
 from PySide6.QtWidgets import (
     QDialog,
+    QDialogButtonBox,
     QGridLayout,
+    QHBoxLayout,
     QLabel,
     QLineEdit,
     QPushButton,
@@ -14,6 +16,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.engine.db import db
+from core.ui.dialogs import add_dismiss_button
 
 
 class NewPlayerDialog(QDialog):
@@ -51,7 +54,13 @@ class NewPlayerDialog(QDialog):
         self.createbutton.setText(self.tr("Create"))
         self.createbutton.setDisabled(True)
         self.createbutton.clicked.connect(self.createAction)
-        self.vlayout.addWidget(self.createbutton)
+        # Create and Cancel (Android only) share a row.
+        self.buttonlayout = QHBoxLayout()
+        self.buttonlayout.addWidget(self.createbutton)
+        self.vlayout.addLayout(self.buttonlayout)
+        add_dismiss_button(
+            self, self.buttonlayout, QDialogButtonBox.StandardButton.Cancel
+        )
         self.show()
 
     def checkExisting(self, _discard: str) -> None:

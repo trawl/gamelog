@@ -27,8 +27,10 @@ from PySide6.QtWidgets import (
 from core.engine.db import db
 from core.engine.resume import ResumeEngine
 from core.engine.settings import appsettings
+from core.platform_info import is_android
 from core.registry import registry
 from core.ui.app import GamelogApplication
+from core.ui.glyphs import platform_glyph
 from core.ui.language import LanguageButton
 from core.ui.player import NewPlayerDialog, PlayerList, PlayerListModel
 from core.ui.rules import RulesDialog
@@ -75,7 +77,7 @@ class NewGameWidget(Tab):
         """Re-apply translated button and group titles."""
         self.updateGameInfo()
         # self.playersGroupBox.setTitle(self.tr("Players"))
-        self.startGameButton.setText("▶")
+        self.startGameButton.setText(platform_glyph("▶"))
         self.settingsButton.setText("⚙️")
         self.settingsButton.setToolTip(self.tr("Settings"))
         self.rulesButton.setText("📖")
@@ -162,13 +164,23 @@ class NewGameWidget(Tab):
         )
         self.settingsButton.clicked.connect(self.onSettings)
         self.settingsLayout.addWidget(self.settingsButton)
-        for button in (
+        buttons = [
             self.rulesButton,
             self.historyButton,
             self.statsButton,
             self.languageChooser,
             self.settingsButton,
-        ):
+        ]
+        if is_android():
+            # No window close button or File menu to reach Quit from.
+            self.quitButton = QPushButton("\N{DOOR}", self)
+            self.quitButton.setSizePolicy(
+                QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+            )
+            self.quitButton.clicked.connect(lambda: self.window().close())
+            self.settingsLayout.addWidget(self.quitButton)
+            buttons.append(self.quitButton)
+        for button in buttons:
             button.setFixedSize(36, 36)
         self.startGameButton = QPushButton(self)
         self.startGameButton.setSizePolicy(
@@ -464,11 +476,11 @@ class ResumeBox(QGroupBox):
         # self.setTitle(self.tr("Saved Games"))
         # self.resumebutton.setText(self.tr("Resume"))
         # self.cancelbutton.setText(self.tr("Delete"))
-        # self.resumebutton.setText(self.tr("▶"))
+        # self.resumebutton.setText(self.tr(platform_glyph("▶")))
         if appsettings["text_in_buttons"]:
             self.cancelbutton.setText(self.tr("Delete"))
         else:
-            self.cancelbutton.setText("⌫")
+            self.cancelbutton.setText(platform_glyph("⌫"))
 
     def changeGame(self, game: str) -> None:
         """Reload the saved-game list for ``game``, hiding it when empty."""

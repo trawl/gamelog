@@ -5,8 +5,16 @@ from __future__ import annotations
 from typing import Any, cast
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtWidgets import QDialog, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
+    QHBoxLayout,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
+from core.ui.dialogs import add_dismiss_button
 from core.ui.player.colour import _ColourPickerDialog
 from core.ui.player.list import _COLOUR_INDEX_ROLE, PlayerList, PlayerListModel
 
@@ -40,7 +48,13 @@ class PlayerOrderDialog(QDialog):
             self._setupColourDelegate()
         self.okbutton = QPushButton("OK", self)
         self.okbutton.clicked.connect(self.changeOrder)
-        self.widgetlayout.addWidget(self.okbutton)
+        # OK and Cancel (Android only) share a row.
+        self.buttonlayout = QHBoxLayout()
+        self.buttonlayout.addWidget(self.okbutton)
+        self.widgetlayout.addLayout(self.buttonlayout)
+        add_dismiss_button(
+            self, self.buttonlayout, QDialogButtonBox.StandardButton.Cancel
+        )
 
     def _setupColourDelegate(self) -> None:
         """Install a colour-swatch delegate on the player list and seed item data."""

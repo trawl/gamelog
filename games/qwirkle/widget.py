@@ -15,6 +15,7 @@ from core.ui.game import (
     ScoreSpinBox,
 )
 from core.ui.game.stats import GeneralQuickStats, ParticularQuickStats
+from core.ui.glyphs import platform_glyph
 from games.qwirkle.engine import QwirkleEngine
 from games.scrabble.widget import (
     ScrabbleEntriesDetail,
@@ -47,7 +48,7 @@ class QwirkleWidget(ScrabbleWidget):
         # Build the same layout as ScrabbleWidget.addExtraConfig but with our key.
         self.turnTimeLayout = QHBoxLayout()
         self.matchGroupLayout.addLayout(self.turnTimeLayout)
-        self.turnTimeLabel = QLabel("⏱", self.matchGroup)
+        self.turnTimeLabel = QLabel(platform_glyph("⏱"), self.matchGroup)
         self.turnTimeLabel.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
         )

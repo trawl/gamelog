@@ -7,7 +7,9 @@ import sys
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
+    QBoxLayout,
     QDialog,
+    QDialogButtonBox,
     QHBoxLayout,
     QLabel,
     QMessageBox,
@@ -17,6 +19,24 @@ from PySide6.QtWidgets import (
 
 from core._version import __version__
 from core.platform_info import is_android
+
+
+def add_dismiss_button(
+    dialog: QDialog,
+    layout: QBoxLayout,
+    button: QDialogButtonBox.StandardButton = QDialogButtonBox.StandardButton.Close,
+) -> QDialogButtonBox | None:
+    """Append a Close/Cancel button that rejects ``dialog``, on Android only.
+
+    Android has no window close button, so a popup without its own way out
+    would trap the user. Desktop windows already have one, so nothing is added.
+    """
+    if not is_android():
+        return None
+    box = QDialogButtonBox(button, dialog)
+    box.rejected.connect(dialog.reject)
+    layout.addWidget(box)
+    return box
 
 
 def _git_short_hash() -> str | None:
@@ -67,6 +87,7 @@ class AboutDialog(QDialog):
         self.content.setWordWrap(True)
         self.content.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.contentlayout.addWidget(self.content)
+        add_dismiss_button(self, self.contentlayout)
 
 
 class ErrorMessage(QMessageBox):

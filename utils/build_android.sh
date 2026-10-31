@@ -28,7 +28,15 @@ pyside6-android-deploy --init --name "Gamelog" \
     --wheel-pyside="$1" --wheel-shiboken="$2" -c "$SPEC"
 
 # Settings the generated spec gets wrong or lacks (add further ones here).
-sed -i.bak "s#^icon = .*#icon = $ICON#" "$SPEC"
+# The tool only bundles the Android platform plugin; the language flags are
+# SVGs, which need the SVG image-format and icon-engine plugins as well.
+# Plugins are listed twice: copied into the APK ([android] plugins, named
+# <dir>_<name>) and loaded at startup ([buildozer] local_libs, plugins_<...>).
+sed -i.bak \
+    -e "s#^icon = .*#icon = $ICON#" \
+    -e "/^\[android\]/,/^\[/ s#^plugins = .*#plugins = platforms_qtforandroid,imageformats_qsvg,iconengines_qsvgicon#" \
+    -e "s#^local_libs = .*#local_libs = plugins_platforms_qtforandroid,plugins_imageformats_qsvg,plugins_iconengines_qsvgicon#" \
+    "$SPEC"
 rm -f "$SPEC.bak"
 
 APP_VERSION="$(sed -n 's/^__version__ = "\(.*\)".*/\1/p' core/_version.py)"

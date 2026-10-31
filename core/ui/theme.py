@@ -8,10 +8,11 @@ from enum import StrEnum
 from typing import cast
 
 from PySide6.QtCore import QFile, QObject, Qt, QTextStream, Signal
-from PySide6.QtGui import QGuiApplication
+from PySide6.QtGui import QColor, QGuiApplication, QPalette
 from PySide6.QtWidgets import QApplication
 
 from core.engine.settings import appsettings
+from core.platform_info import is_android
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,42 @@ QGroupBox::title {
     background-color: palette(window);
 }
 """
+
+
+def android_palette(theme: Theme) -> QPalette:
+    """Explicit light/dark palette for Android.
+
+    Qt's Android platform theme hands widgets a palette taken from the Android
+    system theme, which neither follows ``setColorScheme`` nor the app's own
+    theme choice, leaving some widgets light and others dark. Desktop
+    platforms resolve the colour scheme themselves and are left alone.
+    """
+    dark = theme == Theme.DARK
+    role = QPalette.ColorRole
+    group = QPalette.ColorGroup
+    colours = {
+        role.Window: "#353535" if dark else "#efefef",
+        role.WindowText: "#ffffff" if dark else "#000000",
+        role.Base: "#252525" if dark else "#ffffff",
+        role.AlternateBase: "#353535" if dark else "#f7f7f7",
+        role.ToolTipBase: "#252525" if dark else "#ffffdc",
+        role.ToolTipText: "#ffffff" if dark else "#000000",
+        role.Text: "#ffffff" if dark else "#000000",
+        role.Button: "#353535" if dark else "#efefef",
+        role.ButtonText: "#ffffff" if dark else "#000000",
+        role.BrightText: "#ff5555" if dark else "#ff0000",
+        role.Link: "#6fa8dc" if dark else "#0645ad",
+        role.Highlight: "#2a82da" if dark else "#308cc6",
+        role.HighlightedText: "#ffffff",
+        role.PlaceholderText: "#a0a0a0" if dark else "#707070",
+    }
+    palette = QPalette()
+    for colour_role, value in colours.items():
+        palette.setColor(colour_role, QColor(value))
+    disabled = QColor("#808080")
+    for colour_role in (role.WindowText, role.Text, role.ButtonText):
+        palette.setColor(group.Disabled, colour_role, disabled)
+    return palette
 
 
 class Theme(StrEnum):
@@ -108,15 +145,22 @@ class ThemeManager(QObject):
         self.themeChanged.emit(theme)
 
     def _apply_stylesheet(self, theme: Theme) -> None:
-        """Load and install the QSS stylesheet for the current system theme."""
-        file = QFile(f":/styles/{self.system_theme}.qss")
+        """Install the QSS stylesheet (and, on Android, palette) for ``theme``."""
+        # Resolve the theme being applied rather than asking Qt for the
+        # scheme: where the OS ignores setColorScheme (Android) that would
+        # still report the system's, not the one the user picked.
+        effective = self.system_theme if theme == Theme.SYSTEM else theme
+        app = cast(QApplication, QApplication.instance())
+        if is_android():
+            app.setPalette(android_palette(effective))
+        file = QFile(f":/styles/{effective}.qss")
         if file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
             stylesheet = QTextStream(file).readAll()
             if sys.platform == "win32":
                 stylesheet += WINDOWS_GROUPBOX_CSS
-            cast(QApplication, QApplication.instance()).setStyleSheet(stylesheet)
+            app.setStyleSheet(stylesheet)
         else:
-            logger.warning("Could not load :/styles/%s.qss", self.system_theme)
+            logger.warning("Could not load :/styles/%s.qss", effective)
 
     def _system_theme_changed(
         self,
