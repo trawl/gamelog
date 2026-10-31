@@ -25,6 +25,8 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+from core.platform_info import is_android
+
 logger = logging.getLogger(__name__)
 
 DESKTOP_ID = "gamelog"
@@ -36,12 +38,12 @@ _DEFAULT_DATA_DIRS = "/usr/local/share:/usr/share"
 
 
 def install_desktop_entry() -> Path | None:
-    """Ensure the per-user desktop entry exists. No-op off Linux.
+    """Ensure the per-user desktop entry exists. No-op off desktop Linux (including Android).
 
     Never raises: any failure is logged and start-up carries on without an
     icon rather than without an application.
     """
-    if not sys.platform.startswith("linux"):
+    if not sys.platform.startswith("linux") or is_android():
         return None
     try:
         return write_desktop_entry()

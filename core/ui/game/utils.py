@@ -8,6 +8,8 @@ import shutil
 import subprocess
 import sys
 
+from core.platform_info import is_android
+
 
 class SleepBlocker:
     """Cross-platform helper that keeps the screen and system awake."""
@@ -31,7 +33,7 @@ class SleepBlocker:
             self._start_macos()
         elif self.platform.startswith("win"):
             self._start_windows()
-        elif self.platform.startswith("linux"):
+        elif self.platform.startswith("linux") and not is_android():
             self._start_linux()
 
         self.active = True
@@ -45,7 +47,7 @@ class SleepBlocker:
             self._stop_macos()
         elif self.platform.startswith("win"):
             self._stop_windows()
-        elif self.platform.startswith("linux"):
+        elif self.platform.startswith("linux") and not is_android():
             self._stop_linux()
 
         self.active = False

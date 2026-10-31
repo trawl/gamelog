@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
 from core.engine.db import db
 from core.engine.resume import open_match
 from core.model.match import GenericMatch
+from core.platform_info import is_android
 from core.registry import registry
 from core.ui.dialogs import AboutDialog
 from core.ui.explorer import MatchExplorerWidget
@@ -57,7 +58,8 @@ class MainWindow(QMainWindow):
         """Build the menus, central widget and new-game tab, then show."""
         # Window settings
 
-        self.setGeometry(100, 50, 1024, 600)
+        if not is_android():
+            self.setGeometry(100, 50, 1024, 600)
 
         self.icon = QtGui.QIcon(":/icons/cards.png")
         self.setWindowIcon(self.icon)
@@ -116,7 +118,11 @@ class MainWindow(QMainWindow):
         # self.setStyleSheet("font-size: 20px;")
         self.setStyleSheet("font-size: 18px;")
 
-        self.show()
+        if is_android():
+            # Tablet only: the system sizes the window, so just fill it.
+            self.showMaximized()
+        else:
+            self.show()
 
     def retranslateUi(self) -> None:
         """Re-apply translated text to every widget after a language change."""

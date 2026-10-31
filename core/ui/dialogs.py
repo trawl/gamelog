@@ -16,9 +16,12 @@ from PySide6.QtWidgets import (
 )
 
 from core._version import __version__
+from core.platform_info import is_android
 
 
 def _git_short_hash() -> str | None:
+    if is_android():
+        return None
     try:
         return subprocess.check_output(
             ["git", "rev-parse", "--short", "HEAD"],
