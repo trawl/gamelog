@@ -17,6 +17,8 @@ _EMOJI = "\N{VARIATION SELECTOR-16}"
 _ANDROID_GLYPHS = {
     "▶": f"▶{_EMOJI}",
     "▷": "📂",
+    "⬆": f"⬆{_EMOJI}",
+    "⬇": f"⬇{_EMOJI}",
     "⏸": f"⏸{_EMOJI}",
     "⏺": "✅",
     "⏹": "🏁",

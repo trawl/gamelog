@@ -336,8 +336,34 @@ class NewGameWidget(Tab):
         """Open the settings dialog and watch for setting changes."""
         sd = SettingsDialog(parent=self)
         sd.settingChanged.connect(self.watchSettingChange)
+        sd.databaseReplaced.connect(self.reloadDatabase)
         # sd.settingChanged.connect(self.retranslateUI)
         sd.exec()
+
+    def reloadDatabase(self) -> None:
+        """Rebuild everything cached from the database after an import."""
+        appsettings.reload()
+        for name in ("language", "theme", "log_level"):
+            self.watchSettingChange(name, appsettings[name])
+
+        for players in (self.playersInGameList, self.playersAvailableList):
+            cast("PlayerListModel", players.model()).clear()
+        for p in db.getPlayers():
+            if p["favourite"]:
+                self.playersInGameList.addItem(p["nick"])
+            else:
+                self.playersAvailableList.addItem(p["nick"])
+
+        self.games = db.getAvailableGames()
+        self.gameComboBox.blockSignals(True)
+        self.gameComboBox.clear()
+        self.gameComboBox.addItems(sorted(self.games))
+        lastgame = db.getLastGame()
+        if lastgame:
+            self.gameComboBox.setCurrentIndex(self.gameComboBox.findText(lastgame))
+        self.gameComboBox.blockSignals(False)
+        self.updateGameInfo()
+        self.retranslateUI()
 
     def watchSettingChange(self, name: str, value: Any) -> None:
         """React to a changed setting (language, theme, log level or other)."""

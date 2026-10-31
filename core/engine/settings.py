@@ -164,6 +164,14 @@ class AppSettings:
         self.loadFromEnv()
         self.loadFromDB()
 
+    def reload(self) -> None:
+        """Re-read every setting after the database content was replaced."""
+        self.settings["db"].clear()
+        self.dbseed()
+        self.refresh()
+        for name, schema in list(self.game_settings.items()):
+            self.register_game_settings(name, schema)
+
     def loadFromEnv(self) -> None:
         # A GAMELOG_<SETTING> environment variable overrides the matching
         # setting, e.g. GAMELOG_LOG_LEVEL -> "log_level". Only known settings

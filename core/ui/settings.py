@@ -27,6 +27,7 @@ from PySide6.QtWidgets import (
 
 from core.engine.db import db
 from core.engine.settings import appsettings
+from core.ui.dbtransfer import DatabaseTransferBar
 from core.ui.glyphs import platform_glyph
 
 logger = logging.getLogger(__name__)
@@ -49,6 +50,8 @@ class SettingsDialog(QDialog):
     """
 
     settingChanged = QtCore.Signal(str, object)
+    # The database content was replaced by an import; cached state is stale.
+    databaseReplaced = QtCore.Signal()
 
     def __init__(
         self,
@@ -122,11 +125,6 @@ class SettingsDialog(QDialog):
         """Build the settings dialog: category list on the left, form on the right."""
         layout = QVBoxLayout(self)
 
-        database_path_label = QLabel(str(db.getDBPath()), self)
-        database_path_label.setObjectName("settingSource")
-        database_path_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(database_path_label)
-
         # Main area: list + stacked pages
         body = QHBoxLayout()
         body.setSpacing(0)
@@ -167,7 +165,14 @@ class SettingsDialog(QDialog):
         self.close_button = QPushButton(self)
         self.close_button.clicked.connect(self.accept)
 
+        # Bottom row: database path and its export/import buttons, then Close.
         button_layout = QHBoxLayout()
+        database_path_label = QLabel(str(db.getDBPath()), self)
+        database_path_label.setObjectName("settingSource")
+        button_layout.addWidget(database_path_label)
+        self.transfer_bar = DatabaseTransferBar(self)
+        self.transfer_bar.databaseReplaced.connect(self._databaseReplaced)
+        button_layout.addWidget(self.transfer_bar)
         button_layout.addStretch()
         button_layout.addWidget(self.close_button)
         layout.addLayout(button_layout)
@@ -607,6 +612,11 @@ class SettingsDialog(QDialog):
     # Persistence
     # ------------------------------------------------------------------
 
+    def _databaseReplaced(self) -> None:
+        """Settings shown here are stale after an import, so tell the app and close."""
+        self.databaseReplaced.emit()
+        self.accept()
+
     def save_setting(
         self,
         name: str,
@@ -618,6 +628,8 @@ class SettingsDialog(QDialog):
         """
         logger.debug("Setting changed: %s = %r", name, value)
         appsettings.set(name, value, persistent=True)
+        if name == "text_in_buttons":
+            self.transfer_bar.retranslateUI()
         self.settingChanged.emit(name, value)
 
     def changeEvent(self, event: QEvent) -> None:

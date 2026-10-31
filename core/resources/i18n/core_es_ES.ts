@@ -174,39 +174,97 @@
         <translation>Nivel de diagnóstico (GAMELOG_LOG_LEVEL tiene preferencia)</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="237"/>
+        <location filename="../../ui/settings.py" line="242"/>
         <source>Reset to default</source>
         <translation>Restablecer valor por defecto</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="258"/>
+        <location filename="../../ui/settings.py" line="263"/>
         <source>Application Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="260"/>
+        <location filename="../../ui/settings.py" line="265"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="261"/>
+        <location filename="../../ui/settings.py" line="266"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="512"/>
+        <location filename="../../ui/settings.py" line="517"/>
         <source>Environment</source>
         <translation>Temporal</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="516"/>
+        <location filename="../../ui/settings.py" line="521"/>
         <source>Database</source>
         <translation>Permanente</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="520"/>
+        <location filename="../../ui/settings.py" line="525"/>
         <source>Default</source>
         <translation>Por defecto</translation>
+    </message>
+</context>
+<context>
+    <name>DatabaseTransferBar</name>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="88"/>
+        <source>Export database...</source>
+        <translation>Exportar base de datos...</translation>
+    </message>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="89"/>
+        <source>Import database...</source>
+        <translation>Importar base de datos...</translation>
+    </message>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="103"/>
+        <source>Gamelog database (*.db *.sqlite);;All files (*)</source>
+        <translation>Base de datos de Gamelog (*.db *.sqlite);;Todos los archivos (*)</translation>
+    </message>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="107"/>
+        <source>Export database</source>
+        <translation>Exportar base de datos</translation>
+    </message>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="121"/>
+        <source>Could not export the database: {}</source>
+        <translation>No se pudo exportar la base de datos: {}</translation>
+    </message>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="124"/>
+        <source>Database exported.</source>
+        <translation>Base de datos exportada.</translation>
+    </message>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="128"/>
+        <source>Import database</source>
+        <translation>Importar base de datos</translation>
+    </message>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="133"/>
+        <source>Close all open matches before importing a database.</source>
+        <translation>Cierra todas las partidas abiertas antes de importar una base de datos.</translation>
+    </message>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="149"/>
+        <source>Could not import the database: {}</source>
+        <translation>No se pudo importar la base de datos: {}</translation>
+    </message>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="153"/>
+        <source>Database imported.</source>
+        <translation>Base de datos importada.</translation>
+    </message>
+    <message>
+        <location filename="../../ui/dbtransfer.py" line="160"/>
+        <source>This replaces all current data (players, matches and settings) with the imported file. A backup of the current data is kept in {}. Continue?</source>
+        <translation>Esto reemplaza todos los datos actuales (jugadores, partidas y ajustes) por los del archivo importado. Se guarda una copia de seguridad de los datos actuales en {}. ¿Continuar?</translation>
     </message>
 </context>
 <context>
@@ -786,12 +844,12 @@
         <translation>Nuevo Jugador</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="366"/>
+        <location filename="../../ui/newgame.py" line="392"/>
         <source>At least 2 players are needed to play</source>
         <translation>Se necesitan al menos 2 jugadores para jugar</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="364"/>
+        <location filename="../../ui/newgame.py" line="390"/>
         <source>New Match</source>
         <translation>Nueva Partida</translation>
     </message>
@@ -821,13 +879,13 @@
         <translation>Jugadores Seleccionados (max {})</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="372"/>
+        <location filename="../../ui/newgame.py" line="398"/>
         <source>The maximum number of players is</source>
         <translation>El máximo número de jugadores es</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="390"/>
-        <location filename="../../ui/newgame.py" line="406"/>
+        <location filename="../../ui/newgame.py" line="416"/>
+        <location filename="../../ui/newgame.py" line="432"/>
         <source>Widget not implemented</source>
         <translation>Widget no implementado</translation>
     </message>
@@ -1171,22 +1229,22 @@
 <context>
     <name>ResumeBox</name>
     <message>
-        <location filename="../../ui/newgame.py" line="481"/>
+        <location filename="../../ui/newgame.py" line="507"/>
         <source>Delete</source>
         <translation>Eliminar</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="497"/>
+        <location filename="../../ui/newgame.py" line="523"/>
         <source>Start a new game...</source>
         <translation>Nueva partida...</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="566"/>
+        <location filename="../../ui/newgame.py" line="592"/>
         <source>Cancel Saved Game</source>
         <translation>Cancelar Partida Guardada</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="567"/>
+        <location filename="../../ui/newgame.py" line="593"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>¿Estás seguro que quieres cancelar la partida guardada?</translation>
     </message>
