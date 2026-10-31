@@ -175,37 +175,37 @@
         <translation>Nivell de diagnòstic (GAMELOG_LOG_LEVEL té preferència)</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="242"/>
+        <location filename="../../ui/settings.py" line="243"/>
         <source>Reset to default</source>
         <translation>Restaura valor per defecte</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="263"/>
+        <location filename="../../ui/settings.py" line="264"/>
         <source>Application Settings</source>
         <translation>Configuració</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="265"/>
+        <location filename="../../ui/settings.py" line="266"/>
         <source>Close</source>
         <translation>Tancar</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="266"/>
+        <location filename="../../ui/settings.py" line="267"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="517"/>
+        <location filename="../../ui/settings.py" line="518"/>
         <source>Environment</source>
         <translation>Temporal</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="521"/>
+        <location filename="../../ui/settings.py" line="522"/>
         <source>Database</source>
         <translation>Permanent</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="525"/>
+        <location filename="../../ui/settings.py" line="526"/>
         <source>Default</source>
         <translation>Per defecte</translation>
     </message>
@@ -223,47 +223,47 @@
         <translation>Importa la base de dades...</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="103"/>
+        <location filename="../../ui/dbtransfer.py" line="107"/>
         <source>Gamelog database (*.db *.sqlite);;All files (*)</source>
         <translation>Base de dades de Gamelog (*.db *.sqlite);;Tots els fitxers (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="107"/>
+        <location filename="../../ui/dbtransfer.py" line="111"/>
         <source>Export database</source>
         <translation>Exporta la base de dades</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="121"/>
+        <location filename="../../ui/dbtransfer.py" line="125"/>
         <source>Could not export the database: {}</source>
         <translation>No s&apos;ha pogut exportar la base de dades: {}</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="124"/>
+        <location filename="../../ui/dbtransfer.py" line="128"/>
         <source>Database exported.</source>
         <translation>Base de dades exportada.</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="128"/>
+        <location filename="../../ui/dbtransfer.py" line="132"/>
         <source>Import database</source>
         <translation>Importa la base de dades</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="133"/>
+        <location filename="../../ui/dbtransfer.py" line="137"/>
         <source>Close all open matches before importing a database.</source>
         <translation>Tanca totes les partides obertes abans d&apos;importar una base de dades.</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="149"/>
+        <location filename="../../ui/dbtransfer.py" line="153"/>
         <source>Could not import the database: {}</source>
         <translation>No s&apos;ha pogut importar la base de dades: {}</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="153"/>
+        <location filename="../../ui/dbtransfer.py" line="157"/>
         <source>Database imported.</source>
         <translation>Base de dades importada.</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="160"/>
+        <location filename="../../ui/dbtransfer.py" line="164"/>
         <source>This replaces all current data (players, matches and settings) with the imported file. A backup of the current data is kept in {}. Continue?</source>
         <translation>Això substitueix totes les dades actuals (jugadors, partides i paràmetres) per les del fitxer importat. Es desa una còpia de seguretat de les dades actuals a {}. Voleu continuar?</translation>
     </message>

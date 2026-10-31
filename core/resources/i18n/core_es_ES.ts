@@ -174,37 +174,37 @@
         <translation>Nivel de diagnóstico (GAMELOG_LOG_LEVEL tiene preferencia)</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="242"/>
+        <location filename="../../ui/settings.py" line="243"/>
         <source>Reset to default</source>
         <translation>Restablecer valor por defecto</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="263"/>
+        <location filename="../../ui/settings.py" line="264"/>
         <source>Application Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="265"/>
+        <location filename="../../ui/settings.py" line="266"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="266"/>
+        <location filename="../../ui/settings.py" line="267"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="517"/>
+        <location filename="../../ui/settings.py" line="518"/>
         <source>Environment</source>
         <translation>Temporal</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="521"/>
+        <location filename="../../ui/settings.py" line="522"/>
         <source>Database</source>
         <translation>Permanente</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="525"/>
+        <location filename="../../ui/settings.py" line="526"/>
         <source>Default</source>
         <translation>Por defecto</translation>
     </message>
@@ -222,47 +222,47 @@
         <translation>Importar base de datos...</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="103"/>
+        <location filename="../../ui/dbtransfer.py" line="107"/>
         <source>Gamelog database (*.db *.sqlite);;All files (*)</source>
         <translation>Base de datos de Gamelog (*.db *.sqlite);;Todos los archivos (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="107"/>
+        <location filename="../../ui/dbtransfer.py" line="111"/>
         <source>Export database</source>
         <translation>Exportar base de datos</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="121"/>
+        <location filename="../../ui/dbtransfer.py" line="125"/>
         <source>Could not export the database: {}</source>
         <translation>No se pudo exportar la base de datos: {}</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="124"/>
+        <location filename="../../ui/dbtransfer.py" line="128"/>
         <source>Database exported.</source>
         <translation>Base de datos exportada.</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="128"/>
+        <location filename="../../ui/dbtransfer.py" line="132"/>
         <source>Import database</source>
         <translation>Importar base de datos</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="133"/>
+        <location filename="../../ui/dbtransfer.py" line="137"/>
         <source>Close all open matches before importing a database.</source>
         <translation>Cierra todas las partidas abiertas antes de importar una base de datos.</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="149"/>
+        <location filename="../../ui/dbtransfer.py" line="153"/>
         <source>Could not import the database: {}</source>
         <translation>No se pudo importar la base de datos: {}</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="153"/>
+        <location filename="../../ui/dbtransfer.py" line="157"/>
         <source>Database imported.</source>
         <translation>Base de datos importada.</translation>
     </message>
     <message>
-        <location filename="../../ui/dbtransfer.py" line="160"/>
+        <location filename="../../ui/dbtransfer.py" line="164"/>
         <source>This replaces all current data (players, matches and settings) with the imported file. A backup of the current data is kept in {}. Continue?</source>
         <translation>Esto reemplaza todos los datos actuales (jugadores, partidas y ajustes) por los del archivo importado. Se guarda una copia de seguridad de los datos actuales en {}. ¿Continuar?</translation>
     </message>

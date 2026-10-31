@@ -4,10 +4,17 @@ import sys
 
 import pytest
 from PySide6.QtGui import QPalette
-from PySide6.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
+from PySide6.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
+    QGraphicsOpacityEffect,
+    QPushButton,
+    QVBoxLayout,
+)
 
+from core.ui import glyphs
 from core.ui.dialogs import add_dismiss_button
-from core.ui.glyphs import _ANDROID_GLYPHS, platform_glyph
+from core.ui.glyphs import _EMOJI_GLYPHS, platform_glyph, set_button_text
 from core.ui.theme import Theme, android_palette
 
 
@@ -21,11 +28,18 @@ def desktop(monkeypatch):
     monkeypatch.delattr(sys, "getandroidapilevel", raising=False)
 
 
-def test_glyphs_unchanged_on_desktop(desktop):
-    assert all(platform_glyph(g) == g for g in _ANDROID_GLYPHS)
+def test_glyphs_unchanged_on_desktop_without_emoji_everywhere(desktop, monkeypatch):
+    monkeypatch.setattr(glyphs, "EMOJI_EVERYWHERE", False)
+    assert all(platform_glyph(g) == g for g in _EMOJI_GLYPHS)
 
 
-def test_glyphs_replaced_on_android(android):
+def test_glyphs_replaced_on_desktop_with_emoji_everywhere(desktop, monkeypatch):
+    monkeypatch.setattr(glyphs, "EMOJI_EVERYWHERE", True)
+    assert platform_glyph("⎋") == "🚪"
+
+
+def test_glyphs_replaced_on_android(android, monkeypatch):
+    monkeypatch.setattr(glyphs, "EMOJI_EVERYWHERE", False)
     assert platform_glyph("⎋") == "🚪"
     assert platform_glyph("⎌").startswith("↩")
     # Anything not in the table passes through.
@@ -33,7 +47,7 @@ def test_glyphs_replaced_on_android(android):
 
 
 def test_android_glyphs_differ_from_originals():
-    assert all(original != new for original, new in _ANDROID_GLYPHS.items())
+    assert all(original != new for original, new in _EMOJI_GLYPHS.items())
 
 
 def test_dismiss_button_only_on_android(qapp, desktop):
@@ -61,3 +75,33 @@ def test_android_palette_follows_theme(qapp):
     assert dark.color(window).lightness() < 128 < light.color(window).lightness()
     text = QPalette.ColorRole.WindowText
     assert dark.color(text).lightness() > 128 > light.color(text).lightness()
+
+
+def test_disabled_emoji_button_is_faded(qapp):
+    button = QPushButton()
+    set_button_text(button, "🚪")
+    assert button.graphicsEffect() is None
+
+    button.setEnabled(False)
+    effect = button.graphicsEffect()
+    assert isinstance(effect, QGraphicsOpacityEffect)
+    assert effect.opacity() < 1
+
+    button.setEnabled(True)
+    assert button.graphicsEffect() is None
+
+
+def test_text_label_is_never_faded(qapp):
+    button = QPushButton()
+    button.setEnabled(False)
+    set_button_text(button, "Leave Match")
+    assert button.graphicsEffect() is None
+
+
+def test_fade_follows_the_label_changing_while_disabled(qapp):
+    button = QPushButton()
+    button.setEnabled(False)
+    set_button_text(button, "🚪")
+    assert button.graphicsEffect() is not None
+    set_button_text(button, "Leave Match")
+    assert button.graphicsEffect() is None

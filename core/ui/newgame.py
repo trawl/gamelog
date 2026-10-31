@@ -30,7 +30,7 @@ from core.engine.settings import appsettings
 from core.platform_info import is_android
 from core.registry import registry
 from core.ui.app import GamelogApplication
-from core.ui.glyphs import platform_glyph
+from core.ui.glyphs import platform_glyph, set_button_text
 from core.ui.language import LanguageButton
 from core.ui.player import NewPlayerDialog, PlayerList, PlayerListModel
 from core.ui.rules import RulesDialog
@@ -77,14 +77,14 @@ class NewGameWidget(Tab):
         """Re-apply translated button and group titles."""
         self.updateGameInfo()
         # self.playersGroupBox.setTitle(self.tr("Players"))
-        self.startGameButton.setText(platform_glyph("▶"))
-        self.settingsButton.setText("⚙️")
+        set_button_text(self.startGameButton, platform_glyph("▶"))
+        set_button_text(self.settingsButton, "⚙️")
         self.settingsButton.setToolTip(self.tr("Settings"))
-        self.rulesButton.setText("📖")
+        set_button_text(self.rulesButton, "📖")
         self.rulesButton.setToolTip(self.tr("Rules"))
-        self.historyButton.setText("🗂")
+        set_button_text(self.historyButton, "🗂")
         self.historyButton.setToolTip(self.tr("Match history"))
-        self.statsButton.setText("📊")
+        set_button_text(self.statsButton, "📊")
         self.statsButton.setToolTip(self.tr("Player statistics"))
         for dialog in self.rulesDialogs.values():
             dialog.retranslateUI()
@@ -501,12 +501,12 @@ class ResumeBox(QGroupBox):
         """Re-apply the translated delete-button label."""
         # self.setTitle(self.tr("Saved Games"))
         # self.resumebutton.setText(self.tr("Resume"))
-        # self.cancelbutton.setText(self.tr("Delete"))
+        # set_button_text(self.cancelbutton, self.tr("Delete"))
         # self.resumebutton.setText(self.tr(platform_glyph("▶")))
         if appsettings["text_in_buttons"]:
-            self.cancelbutton.setText(self.tr("Delete"))
+            set_button_text(self.cancelbutton, self.tr("Delete"))
         else:
-            self.cancelbutton.setText(platform_glyph("⌫"))
+            set_button_text(self.cancelbutton, platform_glyph("⌫"))
 
     def changeGame(self, game: str) -> None:
         """Reload the saved-game list for ``game``, hiding it when empty."""

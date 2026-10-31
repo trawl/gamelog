@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (
 from core.engine.db import DatabaseError
 from core.engine.dbtransfer import backup_dir, export_database, import_database
 from core.engine.settings import appsettings
-from core.ui.glyphs import platform_glyph
+from core.ui.glyphs import platform_glyph, set_button_text
 
 logger = logging.getLogger(__name__)
 
@@ -88,8 +88,12 @@ class DatabaseTransferBar(QWidget):
         export_text = self.tr("Export database...")
         import_text = self.tr("Import database...")
         words = appsettings["text_in_buttons"]
-        self.exportButton.setText(export_text if words else platform_glyph("⬆"))
-        self.importButton.setText(import_text if words else platform_glyph("⬇"))
+        set_button_text(
+            self.exportButton, export_text if words else platform_glyph("⬆")
+        )
+        set_button_text(
+            self.importButton, import_text if words else platform_glyph("⬇")
+        )
         # Arrows say little on their own; the words are the tooltip.
         self.exportButton.setToolTip("" if words else export_text)
         self.importButton.setToolTip("" if words else import_text)

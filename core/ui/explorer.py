@@ -43,7 +43,7 @@ from core.engine.history import (
     players_with_matches,
 )
 from core.engine.settings import appsettings
-from core.ui.glyphs import platform_glyph
+from core.ui.glyphs import platform_glyph, set_button_text
 from core.ui.tab import Tab
 from core.ui.tablestyle import TABLE_STYLE, align_item, tabular_figures
 
@@ -394,8 +394,8 @@ class MatchExplorerWidget(Tab):
         self.toLabel.setText(self.tr("To"))
         for edit in (self.fromEdit, self.toEdit):
             edit.setSpecialValueText(self.tr("any"))
-        self.resetButton.setText(
-            self.tr("Reset filters") if words else platform_glyph("✕")
+        set_button_text(
+            self.resetButton, self.tr("Reset filters") if words else platform_glyph("✕")
         )
         self.resetButton.setToolTip(self.tr("Reset filters"))
 
@@ -610,7 +610,7 @@ class MatchExplorerWidget(Tab):
             text, glyph = self.tr("Resume"), platform_glyph("▶")
         else:
             text, glyph = self.tr("Open"), platform_glyph("▷")
-        self.openButton.setText(text if words else glyph)
+        set_button_text(self.openButton, text if words else glyph)
         self.openButton.setStyleSheet("QPushButton { font-size: 24px; }")
         self.openButton.setToolTip(text)
         self.openButton.setEnabled(match is not None)

@@ -28,7 +28,7 @@ from PySide6.QtWidgets import (
 from core.engine.db import db
 from core.engine.settings import appsettings
 from core.ui.dbtransfer import DatabaseTransferBar
-from core.ui.glyphs import platform_glyph
+from core.ui.glyphs import platform_glyph, set_button_text
 
 logger = logging.getLogger(__name__)
 
@@ -235,7 +235,8 @@ class SettingsDialog(QDialog):
             source_label = QLabel()
             source_label.setObjectName("settingSource")
             self.source_labels[name] = source_label
-            reset_btn = QPushButton(platform_glyph("↺"))
+            reset_btn = QPushButton()
+            set_button_text(reset_btn, platform_glyph("↺"))
             reset_btn.setFixedSize(24, 24)
             reset_btn.setProperty("resetButton", True)
             reset_btn.setToolTip(
