@@ -7,6 +7,7 @@ from typing import Any, cast
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QApplication,
     QListView,
     QStyledItemDelegate,
     QStyleOptionViewItem,
@@ -18,6 +19,9 @@ from core.engine.db import db
 standardIcon = ":/icons/player.png"
 favouriteIcon = ":/icons/fav.png"
 dealerIcon = ":/icons/cards.png"
+
+# How long a finger must rest on a row before it counts as a long press.
+LONG_PRESS_MS = 500
 
 _COLOUR_INDEX_ROLE = QtCore.Qt.ItemDataRole.UserRole + 1
 _SWATCH_SIZE = 22
@@ -111,6 +115,9 @@ class PlayerList(QListView):
         QListView::item:selected:hover {
             background: rgba(102,102,102,100);
         }
+        QListView[holding="true"]::item:selected {
+            background: rgba(102,102,102,160);
+        }
         """)
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
@@ -130,6 +137,17 @@ class PlayerList(QListView):
 
         self.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.openMenu)
+
+        # Touch gestures (see mousePressEvent): a finger can neither right-click
+        # nor, on Android, start a drag, so a long press stands in for both.
+        self._hold_timer = QtCore.QTimer(self)
+        self._hold_timer.setSingleShot(True)
+        self._hold_timer.setInterval(LONG_PRESS_MS)
+        self._hold_timer.timeout.connect(self._onHold)
+        self._hold_player: str | None = None
+        self._hold_pos = QtCore.QPoint()
+        self._holding = False
+        self._hold_moved = False
 
     def addItem(self, text: str) -> bool:
         """Add ``text`` as a player unless full or already present."""
@@ -184,6 +202,124 @@ class PlayerList(QListView):
                     self.clearSelection()
                 self.changed.emit()
         return QListView.mouseDoubleClickEvent(self, event)
+
+    # -- long press: right-click and drag for fingers -----------------------
+
+    @staticmethod
+    def _isTouch(event: QtGui.QMouseEvent) -> bool:
+        """True for the mouse events Qt synthesises from a finger."""
+        return event.source() != QtCore.Qt.MouseEventSource.MouseEventNotSynthesized
+
+    def _playerRow(self, player: str | None) -> int:
+        item = self._model.itemFromPlayer(player)
+        return item.row() if item is not None else -1
+
+    def _setHolding(self, holding: bool) -> None:
+        self._holding = holding
+        self.setProperty("holding", holding)
+        self.style().unpolish(self)
+        self.style().polish(self)
+
+    def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
+        """A finger resting on a row starts the long-press timer."""
+        self._endHold()
+        pos = event.position().toPoint()
+        if (
+            event.button() == QtCore.Qt.MouseButton.LeftButton
+            and self._isTouch(event)
+            and self.indexAt(pos).isValid()
+        ):
+            self._hold_pos = pos
+            self._hold_player = str(self.indexAt(pos).data())
+            self._hold_timer.start()
+        super().mousePressEvent(event)
+
+    def _onHold(self) -> None:
+        """Long press: highlight the row; what follows decides the action."""
+        row = self._playerRow(self._hold_player)
+        if row < 0:
+            return
+        self._hold_moved = False
+        self._setHolding(True)
+        self.setCurrentIndex(self._model.index(row, 0))
+
+    def mouseMoveEvent(self, event: QtGui.QMouseEvent) -> None:
+        """Before the long press, moving cancels it; after, it drags the row."""
+        pos = event.position().toPoint()
+        moved = (
+            pos - self._hold_pos
+        ).manhattanLength() > QApplication.startDragDistance()
+        if self._holding:
+            self._hold_moved = self._hold_moved or moved
+            self._reorderTo(pos)
+            return
+        if self._hold_timer.isActive() and moved:
+            self._hold_timer.stop()
+        super().mouseMoveEvent(event)
+
+    def _reorderTo(self, pos: QtCore.QPoint) -> None:
+        """Move the held player to the row under the finger, within this list."""
+        if not self.viewport().rect().contains(pos):
+            return  # on its way to the other list
+        current = self._playerRow(self._hold_player)
+        target = self.indexAt(pos).row()
+        if target < 0:
+            # Not over a row: past either end sends it to that end, and the
+            # gap between two rows changes nothing.
+            count = self._model.rowCount()
+            if count == 0:
+                return
+            first = self.visualRect(self._model.index(0, 0))
+            last = self.visualRect(self._model.index(count - 1, 0))
+            if pos.y() > last.bottom():
+                target = count - 1
+            elif pos.y() < first.top():
+                target = 0
+            else:
+                return
+        if current < 0 or target == current:
+            return
+        items = self._model.takeRow(current)
+        self._model.insertRow(target, items)
+        self.setCurrentIndex(self._model.index(target, 0))
+        self.changed.emit()
+
+    def _over(self, other: PlayerList | None, global_pos: QtCore.QPoint) -> bool:
+        if other is None:
+            return False
+        viewport = other.viewport()
+        return viewport.rect().contains(viewport.mapFromGlobal(global_pos))
+
+    def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
+        """End a long press: drop on the twin list, or act like a right-click."""
+        self._hold_timer.stop()
+        if self._holding:
+            player = self._hold_player
+            pos = event.position().toPoint()
+            if self._over(self.twin_list, event.globalPosition().toPoint()):
+                self._moveToTwin(player)
+            elif not self._hold_moved:
+                self.openMenu(pos)
+            self._endHold()
+        super().mouseReleaseEvent(event)
+
+    def _moveToTwin(self, player: str | None) -> None:
+        """Move ``player`` to the other list, if it will take them."""
+        row = self._playerRow(player)
+        if self.twin_list is None or player is None or row < 0:
+            return
+        if self.twin_list.addItem(player):
+            self._model.removeRows(row, 1)
+            self.twin_list.clearSelection()
+            self.clearSelection()
+        self.changed.emit()
+
+    def _endHold(self) -> None:
+        self._hold_timer.stop()
+        self._hold_player = None
+        self._hold_moved = False
+        if self._holding:
+            self._setHolding(False)
 
     def openMenu(self, position: QtCore.QPoint) -> None:
         """Context menu action: set the dealer or toggle a favourite."""

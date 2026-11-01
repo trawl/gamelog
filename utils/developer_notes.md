@@ -315,3 +315,10 @@ under a dark app. The script keeps a local copy of p4a in
 `~/.cache/gamelog/python-for-android`, adds the missing call on a local commit,
 and has git serve buildozer's clone from it (`insteadOf` via environment) with `APP_P4A_COMMIT`. Drop that step once
 upstream fixes the bootstrap.
+
+Touch input: a finger can neither right-click nor, on Android, start a Qt
+drag, so `PlayerList` (`core/ui/player/list.py`) treats a long press (500 ms)
+on a row as both: release in place = the right-click action (toggle favourite,
+or set the dealer in a match); drag = reorder live, and release over the twin
+list = move the player across. Double-tap still moves a player between lists.
+Only touch-synthesised mouse events (`QMouseEvent.source()`) take this path.
