@@ -303,3 +303,15 @@ app icon (`core/resources/icons/cards.png`, as the default is a `.icns`) and
 builds from that spec with `-c`, forcing landscape and the app version through
 buildozer's env overrides. The APK is written to `dist/`; install it with
 `adb install -r dist/Gamelog-*.apk`.
+
+The script also patches python-for-android: its Qt bootstrap's
+`PythonActivity.onActivityResult` never calls `super.onActivityResult`, so Qt
+never receives the result of an activity it started (the system file picker
+behind `QFileDialog` froze the app), and its `onKeyDown` treats every key as
+Back (upstream #3376), swallowing keyboard input. A third patch (from
+`utils/android/system_bars.java.snippet`) colours the system bars and the window
+behind them to the system's light/dark mode, so the navigation bar is not white
+under a dark app. The script keeps a local copy of p4a in
+`~/.cache/gamelog/python-for-android`, adds the missing call on a local commit,
+and has git serve buildozer's clone from it (`insteadOf` via environment) with `APP_P4A_COMMIT`. Drop that step once
+upstream fixes the bootstrap.

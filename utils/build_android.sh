@@ -15,6 +15,18 @@
 # (read from core/_version.py, which release-please bumps) replaces the
 # template's default 0.1.
 #
+# python-for-android patches to the Qt bootstrap's PythonActivity:
+#  - onActivityResult never calls super.onActivityResult, so Qt never hears
+#    back from any Android activity it starts, such as the system file picker
+#    behind QFileDialog (the app freezes with the dialog still "open");
+#  - onKeyDown treated every key as Back, swallowing keyboard input (upstream
+#    fixed it in kivy/python-for-android#3376, after the tool's pinned commit);
+#  - the system bars and the window behind them are coloured to the system's
+#    light/dark mode (utils/android/system_bars.java.snippet).
+# Buildozer clones p4a at the tool's
+# pinned commit, so we keep a local copy with the missing super call committed
+# on top and make buildozer clone and reset to that instead.
+#
 # Usage: utils/build_android.sh
 # Environment overrides:
 #   PYSIDE_ANDROID_VERSION  wheel version      (default: 6.12.0)
@@ -57,6 +69,66 @@ fetch_wheel() {
     echo "$CACHE/$file"
 }
 
+# prepare_patched_p4a: keep a local copy of python-for-android whose `master`
+# is the pinned commit plus the patch above, and make git serve buildozer's
+# clone of the upstream URL from it (git's url.<base>.insteadOf, set through
+# the environment so no git config is touched). The tool wipes .buildozer at
+# the start of every run, so a pre-seeded checkout there would not survive.
+# APP_P4A_COMMIT then makes buildozer reset to the patched commit.
+prepare_patched_p4a() {
+    local tool python source branch commit
+    tool="$(command -v pyside6-android-deploy)"
+    python="$(head -n 1 "$tool" | sed 's/^#!//')"
+    # The tool pins the p4a commit it was tested with; read it from its source.
+    source="$("$python" -c 'import os, PySide6; print(os.path.join(os.path.dirname(PySide6.__file__), "scripts/deploy_lib/android/buildozer.py"))')"
+    branch="$(sed -n 's/^P4A_BRANCH = "\(.*\)"/\1/p' "$source")"
+    commit="$(sed -n 's/^P4A_COMMIT = "\(.*\)"/\1/p' "$source")"
+    if [ -z "$branch" ] || [ -z "$commit" ]; then
+        echo "could not read the pinned python-for-android commit from $source" >&2
+        exit 1
+    fi
+
+    local p4a_cache="${XDG_CACHE_HOME:-$HOME/.cache}/gamelog/python-for-android"
+    local url="https://github.com/kivy/python-for-android.git"
+    if [ ! -d "$p4a_cache" ]; then
+        echo "Cloning python-for-android" >&2
+        git clone -q -b "$branch" --single-branch "$url" "$p4a_cache"
+    fi
+    git -C "$p4a_cache" cat-file -e "$commit^{commit}" 2>/dev/null \
+        || git -C "$p4a_cache" fetch -q origin "$branch"
+
+    # Start from the pinned upstream commit every time, then add the patch.
+    git -C "$p4a_cache" checkout -q -B "$branch" "$commit"
+    local java="$p4a_cache/pythonforandroid/bootstraps/qt/build/src/main/java/org/kivy/android/PythonActivity.java"
+    sed -i.bak '/protected void onActivityResult(int requestCode, int resultCode, Intent intent) {/a\
+        super.onActivityResult(requestCode, resultCode, intent);
+' "$java"
+    rm -f "$java.bak"
+    # Upstream kivy/python-for-android#3376: only the Back key may trigger the
+    # "Click again to close the app" toast; every other key was swallowed by it.
+    sed -i.bak '/public boolean onKeyDown(int keyCode, KeyEvent event) {/a\
+        if (keyCode != KeyEvent.KEYCODE_BACK) {\
+            return super.onKeyDown(keyCode, event);\
+        }
+' "$java"
+    rm -f "$java.bak"
+    # Dark/light system bars matching the app's palette (see the snippet).
+    sed -i.bak -e '/Log.v(TAG, "Did super onCreate");/r utils/android/system_bars.java.snippet' "$java"
+    rm -f "$java.bak"
+    grep -q "super.onActivityResult" "$java" \
+        && grep -q "keyCode != KeyEvent.KEYCODE_BACK" "$java" \
+        && grep -q "setNavigationBarColor" "$java" \
+        || { echo "could not patch $java" >&2; exit 1; }
+    git -C "$p4a_cache" -c user.name=gamelog -c user.email=gamelog@localhost \
+        commit -q -am "qt bootstrap: forward onActivityResult, only Back closes, dark bars"
+
+    APP_P4A_COMMIT="$(git -C "$p4a_cache" rev-parse HEAD)"
+    export APP_P4A_COMMIT
+    export GIT_CONFIG_COUNT=1
+    export GIT_CONFIG_KEY_0="url.file://$p4a_cache.insteadOf"
+    export GIT_CONFIG_VALUE_0="$url"
+}
+
 PYSIDE_WHEEL="$(fetch_wheel pyside6)"
 SHIBOKEN_WHEEL="$(fetch_wheel shiboken6)"
 
@@ -82,6 +154,7 @@ rm -f "$SPEC.bak"
 APP_VERSION="$(sed -n 's/^__version__ = "\(.*\)".*/\1/p' core/_version.py)"
 [ -n "$APP_VERSION" ] || { echo "could not read core/_version.py" >&2; exit 1; }
 export APP_ORIENTATION=landscape APP_VERSION
+prepare_patched_p4a
 pyside6-android-deploy --name "Gamelog" \
     --wheel-pyside="$PYSIDE_WHEEL" --wheel-shiboken="$SHIBOKEN_WHEEL" -c "$SPEC"
 
