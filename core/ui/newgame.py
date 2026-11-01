@@ -36,6 +36,7 @@ from core.ui.player import NewPlayerDialog, PlayerList, PlayerListModel
 from core.ui.rules import RulesDialog
 from core.ui.settings import SettingsDialog
 from core.ui.tab import Tab
+from core.ui.windowmode import apply_window_mode
 
 logger = logging.getLogger(__name__)
 
@@ -343,7 +344,7 @@ class NewGameWidget(Tab):
     def reloadDatabase(self) -> None:
         """Rebuild everything cached from the database after an import."""
         appsettings.reload()
-        for name in ("language", "theme", "log_level"):
+        for name in ("language", "theme", "log_level", "fullscreen"):
             self.watchSettingChange(name, appsettings[name])
 
         for players in (self.playersInGameList, self.playersAvailableList):
@@ -377,6 +378,10 @@ class NewGameWidget(Tab):
             from core.logging_config import set_log_level
 
             set_log_level(value)
+        elif name == "fullscreen":
+            window = getattr(QApplication.instance(), "mainWindow", None)
+            if window is not None:
+                apply_window_mode(window)
         else:
             self.retranslateUI()
 

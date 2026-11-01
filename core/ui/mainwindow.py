@@ -23,6 +23,7 @@ from core.ui.dialogs import AboutDialog
 from core.ui.explorer import MatchExplorerWidget
 from core.ui.newgame import NewGameWidget
 from core.ui.playerstats import PlayerStatsWidget
+from core.ui.windowmode import apply_window_mode
 
 logger = logging.getLogger(__name__)
 
@@ -119,8 +120,8 @@ class MainWindow(QMainWindow):
         self.setStyleSheet("font-size: 18px;")
 
         if is_android():
-            # Tablet only: the system sizes the window, so just fill it.
-            self.showMaximized()
+            # Tablet only: the system sizes the window.
+            apply_window_mode(self)
         else:
             self.show()
 

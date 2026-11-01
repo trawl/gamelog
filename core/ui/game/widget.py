@@ -37,6 +37,7 @@ from core.ui.rules import RulesDialog
 from core.ui.settings import SettingsDialog
 from core.ui.tab import Tab
 from core.ui.timers import GameClock
+from core.ui.windowmode import apply_window_mode
 
 logger = logging.getLogger(__name__)
 
@@ -402,6 +403,10 @@ class GameWidget(Tab):
             from core.logging_config import set_log_level
 
             set_log_level(value)
+        elif name == "fullscreen":
+            window = getattr(QApplication.instance(), "mainWindow", None)
+            if window is not None:
+                apply_window_mode(window)
         else:
             self.retranslateUI()
 

@@ -11,6 +11,7 @@ from typing import Any
 from PySide6.QtCore import QCoreApplication
 
 from core.engine.db import db
+from core.platform_info import is_android
 
 QCoreApplication.translate("AppSettings", "symbols")
 QCoreApplication.translate("AppSettings", "text")
@@ -20,6 +21,8 @@ QCoreApplication.translate("AppSettings", "dark")
 QCoreApplication.translate("AppSettings", "en_GB")
 QCoreApplication.translate("AppSettings", "es_ES")
 QCoreApplication.translate("AppSettings", "ca_ES")
+QCoreApplication.translate("AppSettings", "maximised")
+QCoreApplication.translate("AppSettings", "full screen")
 
 default_settings = {
     "text_in_buttons": {
@@ -73,6 +76,21 @@ default_settings = {
         ),
     },
 }
+
+
+if is_android():
+    # Android only: desktop windows are sized by the user, not by this setting.
+    default_settings["fullscreen"] = {
+        "value": False,
+        "type": "bool",
+        "displayname": QCoreApplication.translate("AppSettings", "Window mode"),
+        "description": QCoreApplication.translate(
+            "AppSettings",
+            "Full screen hides the Android system bars; the on-screen keyboard "
+            "brings them back",
+        ),
+        "choices": ["maximised", "full screen"],
+    }
 
 
 class AppSettings:

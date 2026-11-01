@@ -143,3 +143,208 @@ def test_user_file_round_trip(qapp, tmp_path):
 def test_read_user_file_reports_missing_file(qapp, tmp_path):
     with pytest.raises(OSError):
         read_user_file(str(tmp_path / "absent"), tmp_path / "dest")
+
+
+@pytest.fixture
+def picker(monkeypatch):
+    """Make the non-blocking file dialog 'select' a chosen path at once, and
+    record the message boxes instead of showing them."""
+    from PySide6.QtCore import QUrl
+    from PySide6.QtWidgets import QFileDialog, QMessageBox
+
+    chosen: dict[str, str] = {}
+    shown: list[tuple[str, str]] = []
+    # Like the real dialog: urlSelected always fires, fileSelected only for
+    # local files, so a test passing on fileSelected would miss Android.
+    monkeypatch.setattr(
+        QFileDialog,
+        "open",
+        lambda self: self.urlSelected.emit(
+            QUrl.fromLocalFile(chosen["path"])
+            if "://" not in chosen["path"]
+            else QUrl(chosen["path"])
+        ),
+    )
+    for kind in ("information", "warning"):
+        monkeypatch.setattr(
+            QMessageBox,
+            kind,
+            lambda _parent, _title, text, kind=kind: shown.append((kind, text)),
+        )
+    monkeypatch.setattr(
+        QMessageBox, "question", lambda *_a, **_k: QMessageBox.StandardButton.Yes
+    )
+    return chosen, shown
+
+
+def test_export_button_writes_the_chosen_file(qapp, gamedb, tmp_path, picker):
+    from core.ui.dbtransfer import DatabaseTransferBar
+
+    chosen, shown = picker
+    chosen["path"] = str(tmp_path / "picked.db")
+    db.addPlayer("ann", "Ann")
+    DatabaseTransferBar().exportDatabase()
+
+    validate_database(chosen["path"])
+    assert [kind for kind, _ in shown] == ["information"]
+
+
+def test_import_button_replaces_the_data(qapp, gamedb, other_db, picker):
+    from core.ui.dbtransfer import DatabaseTransferBar
+
+    chosen, shown = picker
+    chosen["path"] = str(other_db)
+    db.connectDB(str(other_db.parent / "live.db"))
+    bar = DatabaseTransferBar()
+    replaced = []
+    bar.databaseReplaced.connect(lambda: replaced.append(True))
+    bar.importDatabase()
+
+    assert _nicks() == ["O'Brien"]
+    assert replaced == [True]
+    assert [kind for kind, _ in shown] == ["information"]
+
+
+def test_import_button_reports_a_bad_file(qapp, gamedb, tmp_path, picker):
+    from core.ui.dbtransfer import DatabaseTransferBar
+
+    chosen, shown = picker
+    junk = tmp_path / "junk.db"
+    junk.write_text("nope")
+    chosen["path"] = str(junk)
+    db.addPlayer("mine", "Mine")
+    DatabaseTransferBar().importDatabase()
+
+    assert _nicks() == ["mine"]
+    assert [kind for kind, _ in shown] == ["warning"]
+
+
+def test_import_accepts_a_content_url(qapp, gamedb, picker, monkeypatch):
+    """Android's picker returns content:// URLs, which are not local files."""
+    from core.ui import dbtransfer
+    from core.ui.dbtransfer import DatabaseTransferBar
+
+    chosen, shown = picker
+    chosen["path"] = "content://com.android.providers/document/1234"
+    opened = []
+
+    def fake_read(location, dest):
+        opened.append(location)
+        raise OSError("unreadable in this test")
+
+    monkeypatch.setattr(dbtransfer, "read_user_file", fake_read)
+    DatabaseTransferBar().importDatabase()
+
+    assert opened == ["content://com.android.providers/document/1234"]
+    assert [kind for kind, _ in shown] == ["warning"]
+
+
+def test_content_url_keeps_its_percent_encoding(qapp):
+    """Android names clashing documents like "gamelog.db (2)"; the space must
+    stay %20 or the provider cannot find the document."""
+    from PySide6.QtCore import QUrl
+
+    from core.ui.dbtransfer import _location
+
+    url = QUrl(
+        "content://com.android.externalstorage.documents/document/"
+        "primary%3ADownload%2Fgamelog.db%20(2)"
+    )
+    assert _location(url) == (
+        "content://com.android.externalstorage.documents/document/"
+        "primary%3ADownload%2Fgamelog.db%20(2)"
+    )
+
+
+def test_local_path_with_spaces_is_decoded(qapp, tmp_path):
+    from PySide6.QtCore import QUrl
+
+    from core.ui.dbtransfer import _location
+
+    path = tmp_path / "my data (1).db"
+    assert _location(QUrl.fromLocalFile(str(path))) == str(path)
+
+
+def test_a_repeated_selection_is_handled_once(
+    qapp, gamedb, other_db, picker, monkeypatch
+):
+    """Android's picker reports one selection twice; only one popup may show."""
+    from PySide6.QtCore import QUrl
+    from PySide6.QtWidgets import QFileDialog
+
+    from core.ui.dbtransfer import DatabaseTransferBar
+
+    chosen, shown = picker
+    chosen["path"] = str(other_db)
+    db.connectDB(str(other_db.parent / "live.db"))
+
+    def emit_twice(self):
+        url = QUrl.fromLocalFile(chosen["path"])
+        self.urlSelected.emit(url)
+        self.urlSelected.emit(url)
+
+    monkeypatch.setattr(QFileDialog, "open", emit_twice)
+    questions = []
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr(
+        QMessageBox,
+        "question",
+        lambda *_a, **_k: questions.append(1) or QMessageBox.StandardButton.Yes,
+    )
+    DatabaseTransferBar().importDatabase()
+
+    assert len(questions) == 1
+    assert [kind for kind, _ in shown] == ["information"]
+
+
+def test_write_falls_back_when_truncate_is_refused(qapp, tmp_path, monkeypatch):
+    """Some Android providers refuse the truncating mode for a document."""
+    from PySide6.QtCore import QFile, QIODevice
+
+    real_open = QFile.open
+    attempts = []
+
+    def open_without_truncate(self, mode):
+        attempts.append(mode)
+        if mode & QIODevice.OpenModeFlag.Truncate:
+            return False
+        return real_open(self, mode)
+
+    monkeypatch.setattr(QFile, "open", open_without_truncate)
+    source = tmp_path / "source.bin"
+    source.write_bytes(b"new")
+    target = tmp_path / "target.bin"
+    target.write_bytes(b"much older and longer content")
+    write_user_file(str(target), source)
+
+    assert len(attempts) == 2
+    assert target.read_bytes() == b"new"
+
+
+def test_write_reports_every_failed_mode(qapp, tmp_path):
+    source = tmp_path / "source.bin"
+    source.write_bytes(b"x")
+    with pytest.raises(OSError) as error:
+        write_user_file(str(tmp_path / "missing-dir" / "target.bin"), source)
+    assert str(error.value).count("OpenError") == 3
+
+
+def test_suggested_export_name_is_dated():
+    import datetime
+
+    from core.ui.dbtransfer import suggested_export_name
+
+    name = suggested_export_name(datetime.datetime(2026, 11, 1, 22, 13))
+    assert name == "gamelog-20261101-2213.db"
+
+
+def test_export_to_an_unwritable_content_url_explains_what_to_do(qapp, gamedb, picker):
+    from core.ui.dbtransfer import DatabaseTransferBar
+
+    chosen, shown = picker
+    chosen["path"] = "content://com.android.externalstorage.documents/document/x%20(4)"
+    DatabaseTransferBar().exportDatabase()
+
+    assert [kind for kind, _ in shown] == ["warning"]
+    assert "select it in the file picker" in shown[0][1]

@@ -105,3 +105,41 @@ def test_fade_follows_the_label_changing_while_disabled(qapp):
     assert button.graphicsEffect() is not None
     set_button_text(button, "Leave Match")
     assert button.graphicsEffect() is None
+
+
+class _FakeWindow:
+    def __init__(self):
+        self.calls = []
+
+    def showFullScreen(self):
+        self.calls.append("fullscreen")
+
+    def showMaximized(self):
+        self.calls.append("maximised")
+
+
+@pytest.mark.parametrize(
+    ("android_device", "fullscreen", "expected"),
+    [
+        (True, False, ["maximised"]),
+        (True, True, ["fullscreen"]),
+        (False, True, []),
+        (False, False, []),
+    ],
+)
+def test_window_mode_follows_the_setting_on_android_only(
+    monkeypatch, android_device, fullscreen, expected
+):
+    from core.ui import windowmode
+
+    monkeypatch.setattr(windowmode, "is_android", lambda: android_device)
+    monkeypatch.setattr(windowmode, "appsettings", {"fullscreen": fullscreen})
+    window = _FakeWindow()
+    windowmode.apply_window_mode(window)  # type: ignore[arg-type]
+    assert window.calls == expected
+
+
+def test_fullscreen_setting_is_not_offered_on_desktop():
+    from core.engine.settings import default_settings
+
+    assert "fullscreen" not in default_settings

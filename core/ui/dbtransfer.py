@@ -2,16 +2,20 @@
 
 from __future__ import annotations
 
+import datetime
 import logging
 import tempfile
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from pathlib import Path
 
-from PySide6.QtCore import QEvent, QFile, QIODevice, Signal
+from PySide6.QtCore import QEvent, QFile, QIODevice, Qt, QUrl, Signal
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
     QHBoxLayout,
     QMessageBox,
+    QProgressDialog,
     QPushButton,
     QWidget,
 )
@@ -26,6 +30,28 @@ logger = logging.getLogger(__name__)
 DEFAULT_FILENAME = "gamelog.db"
 
 
+def suggested_export_name(now: datetime.datetime | None = None) -> str:
+    """A dated file name, so a default export never clashes with an old one
+    (Android's picker invents a name that then cannot be written to)."""
+    now = now or datetime.datetime.now()
+    return f"gamelog-{now:%Y%m%d-%H%M}.db"
+
+
+def _location(url: QUrl) -> str:
+    """A path or URL string ``QFile`` can open, for what the user picked."""
+    if url.isLocalFile():
+        return url.toLocalFile()
+    # Fully encoded: the default form turns %20 back into a space, and Android
+    # then cannot open documents whose names contain one ("gamelog.db (2)").
+    return url.toString(QUrl.ComponentFormattingOption.FullyEncoded)
+
+
+def _describe(file: QFile, location: str) -> str:
+    """Why ``file`` failed, with the error kind: Qt's text alone can be just
+    "Unknown error" for the Android content URLs."""
+    return f"{file.errorString()} ({file.error().name}) for {location}"
+
+
 def read_user_file(location: str, dest: Path) -> None:
     """Copy the file the user picked to ``dest``.
 
@@ -34,7 +60,7 @@ def read_user_file(location: str, dest: Path) -> None:
     """
     source = QFile(location)
     if not source.open(QIODevice.OpenModeFlag.ReadOnly):
-        raise OSError(source.errorString())
+        raise OSError(_describe(source, location))
     try:
         dest.write_bytes(bytes(source.readAll().data()))
     finally:
@@ -44,14 +70,49 @@ def read_user_file(location: str, dest: Path) -> None:
 def write_user_file(location: str, data: Path) -> None:
     """Write ``data``'s bytes to the location the user picked (see above)."""
     target = QFile(location)
-    mode = QIODevice.OpenModeFlag.WriteOnly | QIODevice.OpenModeFlag.Truncate
-    if not target.open(mode):
-        raise OSError(target.errorString())
+    logger.info("Writing %s (exists: %s)", location, target.exists())
+    # Some Android providers refuse one open mode for a document and accept
+    # another, so try the modes in turn, noting why each one failed.
+    flags = QIODevice.OpenModeFlag
+    failures = []
+    for mode in (
+        flags.WriteOnly | flags.Truncate,
+        flags.WriteOnly,
+        flags.ReadWrite,
+    ):
+        if target.open(mode):
+            break
+        failures.append(f"{mode}: {_describe(target, location)}")
+        logger.warning("Could not open for writing: %s", failures[-1])
+    else:
+        raise OSError("; ".join(failures))
     try:
+        if not mode & flags.Truncate and not target.resize(0):
+            logger.warning("Could not empty %s before writing", location)
         if target.write(data.read_bytes()) < 0:
-            raise OSError(target.errorString())
+            raise OSError(_describe(target, location))
     finally:
         target.close()
+
+
+@contextmanager
+def _busy(parent: QWidget, text: str) -> Iterator[None]:
+    """Show a "working" popup while a blocking step runs on the UI thread.
+
+    Reading or writing through Android's content URLs can take seconds with
+    nothing else on screen to show that something is happening.
+    """
+    dialog = QProgressDialog(text, "", 0, 0, parent)
+    dialog.setCancelButton(None)  # pyright: ignore[reportArgumentType]
+    dialog.setWindowModality(Qt.WindowModality.WindowModal)
+    dialog.setMinimumDuration(0)
+    dialog.show()
+    QApplication.processEvents()
+    try:
+        yield
+    finally:
+        dialog.close()
+        dialog.deleteLater()
 
 
 def _staging_dir() -> tempfile.TemporaryDirectory[str]:
@@ -106,24 +167,71 @@ class DatabaseTransferBar(QWidget):
     def _filter(self) -> str:
         return self.tr("Gamelog database (*.db *.sqlite);;All files (*)")
 
+    def _pickFile(
+        self, title: str, mode: QFileDialog.AcceptMode, chosen: Callable[[str], None]
+    ) -> None:
+        """Show a file dialog without blocking, calling ``chosen(location)``.
+
+        ``open()`` rather than the static ``getOpenFileName()``/``exec()``: those
+        spin a nested event loop inside the modal settings dialog, which on
+        Android hung the app once the system file picker returned.
+        """
+        dialog = QFileDialog(self, title)
+        dialog.setAcceptMode(mode)
+        dialog.setNameFilter(self._filter())
+        if mode == QFileDialog.AcceptMode.AcceptSave:
+            dialog.selectFile(suggested_export_name())
+        else:
+            dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+        dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+        # fileSelected is only emitted for local files; Android's picker hands
+        # back content:// URLs, which QFile can open from their string form.
+        picked: list[str] = []
+
+        def on_selected(url: QUrl) -> None:
+            # Android's picker reports the same selection more than once, and
+            # the second report arrives while the first one's confirmation
+            # popup is open, so handle only the first.
+            if picked:
+                logger.debug("Ignoring repeated selection of %s", url.toString())
+                return
+            picked.append(_location(url))
+            chosen(picked[0])
+
+        dialog.urlSelected.connect(on_selected)
+        logger.info("Showing file dialog: %s", title)
+        dialog.open()
+
     def exportDatabase(self) -> None:
         """Ask where to save, then write a copy of the database there."""
-        title = self.tr("Export database")
-        location, _ = QFileDialog.getSaveFileName(
-            self, title, DEFAULT_FILENAME, self._filter()
+        self._pickFile(
+            self.tr("Export database"),
+            QFileDialog.AcceptMode.AcceptSave,
+            self._exportTo,
         )
-        if not location:
-            return
+
+    def _exportTo(self, location: str) -> None:
+        title = self.tr("Export database")
+        logger.info("Exporting database to %s", location)
         try:
-            with _staging_dir() as tmp:
+            with _busy(self, self.tr("Exporting database...")), _staging_dir() as tmp:
                 staged = Path(tmp) / DEFAULT_FILENAME
                 export_database(staged)
                 write_user_file(location, staged)
         except (DatabaseError, OSError) as e:
             logger.warning("Database export failed", exc_info=True)
-            QMessageBox.warning(
-                self, title, self.tr("Could not export the database: {}").format(e)
-            )
+            if isinstance(e, OSError) and location.startswith("content:"):
+                # The picker returned a name of its own for an existing file
+                # (e.g. "gamelog.db (1)") that does not exist and cannot be
+                # created, which only picking the existing file avoids.
+                message = self.tr(
+                    "Could not save to that file. If a file with that name "
+                    "already exists, select it in the file picker and confirm "
+                    "replacing it."
+                )
+            else:
+                message = self.tr("Could not export the database: {}").format(e)
+            QMessageBox.warning(self, title, message)
             return
         QMessageBox.information(self, title, self.tr("Database exported."))
 
@@ -137,23 +245,31 @@ class DatabaseTransferBar(QWidget):
                 self.tr("Close all open matches before importing a database."),
             )
             return
-        location, _ = QFileDialog.getOpenFileName(self, title, "", self._filter())
-        if not location:
-            return
+        self._pickFile(title, QFileDialog.AcceptMode.AcceptOpen, self._importFrom)
+
+    def _importFrom(self, location: str) -> None:
+        title = self.tr("Import database")
+        logger.info("Importing database from %s", location)
         try:
             with _staging_dir() as tmp:
                 staged = Path(tmp) / DEFAULT_FILENAME
-                read_user_file(location, staged)
+                with _busy(self, self.tr("Importing database...")):
+                    read_user_file(location, staged)
+                logger.info("Read %d bytes", staged.stat().st_size)
                 if not self._confirmReplace(title):
                     return
-                import_database(staged)
+                # Stays up through the reload below: rebuilding the screens
+                # from the new data takes seconds of its own.
+                with _busy(self, self.tr("Importing database...")):
+                    import_database(staged)
+                    logger.info("Database imported; reloading the app")
+                    self.databaseReplaced.emit()
         except (DatabaseError, OSError) as e:
             logger.warning("Database import failed", exc_info=True)
             QMessageBox.warning(
                 self, title, self.tr("Could not import the database: {}").format(e)
             )
             return
-        self.databaseReplaced.emit()
         QMessageBox.information(self, title, self.tr("Database imported."))
 
     def _confirmReplace(self, title: str) -> bool:
