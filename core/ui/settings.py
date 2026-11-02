@@ -28,6 +28,7 @@ from PySide6.QtWidgets import (
 from core.engine.db import db
 from core.engine.settings import appsettings
 from core.ui.dbtransfer import DatabaseTransferBar
+from core.ui.dialogs import AboutDialog
 from core.ui.glyphs import platform_glyph, set_button_text
 
 logger = logging.getLogger(__name__)
@@ -165,8 +166,13 @@ class SettingsDialog(QDialog):
         self.close_button = QPushButton(self)
         self.close_button.clicked.connect(self.accept)
 
-        # Bottom row: database path and its export/import buttons, then Close.
+        # Bottom row: About on the left, Close on the right, and the database
+        # path with its export/import buttons centred between them.
         button_layout = QHBoxLayout()
+        self.about_button = QPushButton(self)
+        self.about_button.clicked.connect(self._showAbout)
+        button_layout.addWidget(self.about_button)
+        button_layout.addStretch()
         database_path_label = QLabel(str(db.getDBPath()), self)
         database_path_label.setObjectName("settingSource")
         button_layout.addWidget(database_path_label)
@@ -264,6 +270,7 @@ class SettingsDialog(QDialog):
             QCoreApplication.translate("AppSettings", "Application Settings")
         )
         self.close_button.setText(QCoreApplication.translate("AppSettings", "Close"))
+        self._updateAboutButton()
         self._general_item.setText(QCoreApplication.translate("AppSettings", "General"))
         for game_name, item in self._game_items.items():
             item.setText(QCoreApplication.translate("AppSettings", game_name))
@@ -613,6 +620,17 @@ class SettingsDialog(QDialog):
     # Persistence
     # ------------------------------------------------------------------
 
+    def _updateAboutButton(self) -> None:
+        """Label the About button with words or a symbol, like the other buttons."""
+        # The About dialog's own title, so it is translated already.
+        title = QCoreApplication.translate("AboutDialog", "About Gamelog")
+        words = appsettings["text_in_buttons"]
+        set_button_text(self.about_button, title if words else platform_glyph("ℹ"))
+        self.about_button.setToolTip("" if words else title)
+
+    def _showAbout(self) -> None:
+        AboutDialog(self).exec_()
+
     def _databaseReplaced(self) -> None:
         """Settings shown here are stale after an import, so tell the app and close."""
         self.databaseReplaced.emit()
@@ -631,6 +649,7 @@ class SettingsDialog(QDialog):
         appsettings.set(name, value, persistent=True)
         if name == "text_in_buttons":
             self.transfer_bar.retranslateUI()
+            self._updateAboutButton()
         self.settingChanged.emit(name, value)
 
     def changeEvent(self, event: QEvent) -> None:

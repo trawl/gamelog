@@ -5,6 +5,7 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../../ui/dialogs.py" line="60"/>
+        <location filename="../../ui/settings.py" line="626"/>
         <source>About Gamelog</source>
         <translation>About Gamelog</translation>
     </message>
@@ -204,37 +205,37 @@
         <translation>Full screen hides the Android system bars; the on-screen keyboard brings them back</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="243"/>
+        <location filename="../../ui/settings.py" line="249"/>
         <source>Reset to default</source>
         <translation>Reset to default</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="264"/>
+        <location filename="../../ui/settings.py" line="270"/>
         <source>Application Settings</source>
         <translation>Application Settings</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="266"/>
+        <location filename="../../ui/settings.py" line="272"/>
         <source>Close</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="267"/>
+        <location filename="../../ui/settings.py" line="274"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="518"/>
+        <location filename="../../ui/settings.py" line="525"/>
         <source>Environment</source>
         <translation>Temporal</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="522"/>
+        <location filename="../../ui/settings.py" line="529"/>
         <source>Database</source>
         <translation>Permanent</translation>
     </message>
     <message>
-        <location filename="../../ui/settings.py" line="526"/>
+        <location filename="../../ui/settings.py" line="533"/>
         <source>Default</source>
         <translation>Default</translation>
     </message>
@@ -563,90 +564,90 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="135"/>
-        <location filename="../../ui/mainwindow.py" line="136"/>
+        <location filename="../../ui/mainwindow.py" line="139"/>
+        <location filename="../../ui/mainwindow.py" line="140"/>
         <source>GameLog</source>
         <translation>GameLog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="137"/>
+        <location filename="../../ui/mainwindow.py" line="142"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="139"/>
+        <location filename="../../ui/mainwindow.py" line="144"/>
         <source>&amp;Quit</source>
         <translation>&amp;Quit</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="140"/>
+        <location filename="../../ui/mainwindow.py" line="145"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="141"/>
+        <location filename="../../ui/mainwindow.py" line="146"/>
         <source>Quit GameLog</source>
         <translation>Quit GameLog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="165"/>
-        <location filename="../../ui/mainwindow.py" line="181"/>
-        <location filename="../../ui/mainwindow.py" line="206"/>
+        <location filename="../../ui/mainwindow.py" line="171"/>
+        <location filename="../../ui/mainwindow.py" line="187"/>
+        <location filename="../../ui/mainwindow.py" line="212"/>
         <source>Exit</source>
         <translation>Exit</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="228"/>
+        <location filename="../../ui/mainwindow.py" line="234"/>
         <source>Gamelog - Match history</source>
         <translation>Gamelog - Match history</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="240"/>
+        <location filename="../../ui/mainwindow.py" line="246"/>
         <source>Gamelog - Player statistics</source>
         <translation>Gamelog - Player statistics</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="267"/>
+        <location filename="../../ui/mainwindow.py" line="273"/>
         <source>Match history</source>
         <translation>Match history</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="267"/>
+        <location filename="../../ui/mainwindow.py" line="273"/>
         <source>The match could not be opened</source>
         <translation>The match could not be opened</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="278"/>
+        <location filename="../../ui/mainwindow.py" line="284"/>
         <source>This match was cancelled</source>
         <translation>This match was cancelled</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="280"/>
+        <location filename="../../ui/mainwindow.py" line="286"/>
         <source>This match was interrupted</source>
         <translation>This match was interrupted</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="143"/>
+        <location filename="../../ui/mainwindow.py" line="149"/>
         <source>&amp;Help</source>
         <translation>&amp;Help</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="144"/>
+        <location filename="../../ui/mainwindow.py" line="150"/>
         <source>&amp;About Gamelog...</source>
         <translation>&amp;About Gamelog...</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="168"/>
+        <location filename="../../ui/mainwindow.py" line="174"/>
         <source>You have an opened {} match. Do you want to save it before exiting?</source>
         <translation>Do you want to save the current {} match before exiting?</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="183"/>
+        <location filename="../../ui/mainwindow.py" line="189"/>
         <source>You have {} opened matches. Do you want to save them before exiting?</source>
         <translation>You have {} open matches. Do you want to save them before exiting?</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="207"/>
+        <location filename="../../ui/mainwindow.py" line="213"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Are you sure you want to exit Gamelog?</translation>
     </message>
@@ -1241,22 +1242,22 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="43"/>
+        <location filename="../../ui/mainwindow.py" line="44"/>
         <source>&amp;Yes</source>
         <translation>&amp;Yes</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="44"/>
+        <location filename="../../ui/mainwindow.py" line="45"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="45"/>
+        <location filename="../../ui/mainwindow.py" line="46"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="46"/>
+        <location filename="../../ui/mainwindow.py" line="47"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>

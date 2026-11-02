@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 from typing import TYPE_CHECKING
 
 from PySide6 import QtCore, QtGui
@@ -66,18 +67,21 @@ class MainWindow(QMainWindow):
         self.icon = QtGui.QIcon(":/icons/cards.png")
         self.setWindowIcon(self.icon)
 
-        # Menu settings
-        self.menubar = self.menuBar()
-        self.fileMenu = self.menubar.addMenu("")
-
+        # Quit (Ctrl+Q) always exists as an action. Only macOS gets a menu bar,
+        # where the system menu bar is a convention and costs no window space;
+        # elsewhere the new-game screen has an About button instead.
         self.exitAction = QAction(self)
         self.exitAction.triggered.connect(self.close)
-        self.fileMenu.addAction(self.exitAction)
-
-        self.helpMenu = self.menubar.addMenu("")
+        self.addAction(self.exitAction)
         self.aboutAction = QAction(self)
         self.aboutAction.triggered.connect(self.about)
-        self.helpMenu.addAction(self.aboutAction)
+        self.fileMenu = self.helpMenu = None
+        if sys.platform == "darwin":
+            menubar = self.menuBar()
+            self.fileMenu = menubar.addMenu("")
+            self.fileMenu.addAction(self.exitAction)
+            self.helpMenu = menubar.addMenu("")
+            self.helpMenu.addAction(self.aboutAction)
 
         QShortcut(QKeySequence("F11"), self).activated.connect(
             lambda: toggle_fullscreen(self)
@@ -134,13 +138,15 @@ class MainWindow(QMainWindow):
         """Re-apply translated text to every widget after a language change."""
         self.setWindowTitle(self.tr("GameLog"))
         self.statusBar().showMessage(self.tr("GameLog"))
-        self.fileMenu.setTitle(self.tr("&File"))
+        if self.fileMenu is not None:
+            self.fileMenu.setTitle(self.tr("&File"))
         # self.languageAction.setText(self.tr("&Language..."))
         self.exitAction.setText(self.tr("&Quit"))
         self.exitAction.setShortcut(self.tr("Ctrl+Q"))
         self.exitAction.setStatusTip(self.tr("Quit GameLog"))
 
-        self.helpMenu.setTitle(self.tr("&Help"))
+        if self.helpMenu is not None:
+            self.helpMenu.setTitle(self.tr("&Help"))
         self.aboutAction.setText(self.tr("&About Gamelog..."))
 
         self.newGameTab.retranslateUI()

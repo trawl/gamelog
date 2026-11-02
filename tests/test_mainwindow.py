@@ -165,3 +165,37 @@ def test_f11_toggles_full_screen_and_remembers_it(mainwindow, settings):
     f11.activated.emit()
     assert not mainwindow.isFullScreen()
     assert appsettings["fullscreen"] is False
+
+
+# --- No menu bar off macOS ----------------------------------------------------
+
+
+def test_no_menu_bar_outside_macos(qapp, gamedb, monkeypatch):
+    import sys
+
+    from PySide6.QtWidgets import QMenuBar
+
+    monkeypatch.setattr(sys, "platform", "linux")
+    window = MainWindow()
+    assert window.findChild(QMenuBar) is None
+
+
+def test_menu_bar_remains_on_macos(qapp, gamedb, monkeypatch):
+    import sys
+
+    from PySide6.QtWidgets import QMenuBar
+
+    monkeypatch.setattr(sys, "platform", "darwin")
+    window = MainWindow()
+    assert window.findChild(QMenuBar) is not None
+
+
+def test_quit_shortcut_works_without_a_menu_bar(qapp, gamedb, monkeypatch):
+    import sys
+
+    from PySide6.QtGui import QKeySequence
+
+    monkeypatch.setattr(sys, "platform", "linux")
+    window = MainWindow()
+    assert window.exitAction in window.actions()
+    assert window.exitAction.shortcut() == QKeySequence("Ctrl+Q")

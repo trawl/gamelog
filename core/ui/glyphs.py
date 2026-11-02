@@ -24,6 +24,7 @@ _EMOJI = "\N{VARIATION SELECTOR-16}"
 _EMOJI_GLYPHS = {
     "▶": f"▶{_EMOJI}",
     "▷": "📂",
+    "ℹ": f"ℹ{_EMOJI}",
     "⬆": f"⬆{_EMOJI}",
     "⬇": f"⬇{_EMOJI}",
     "⏸": f"⏸{_EMOJI}",
