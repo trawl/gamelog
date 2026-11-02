@@ -137,60 +137,70 @@
     <message>
         <location filename="../../engine/settings.py" line="24"/>
         <source>maximised</source>
-        <translation>maximitzada</translation>
+        <translation>Maximitzada</translation>
     </message>
     <message>
         <location filename="../../engine/settings.py" line="25"/>
         <source>full screen</source>
-        <translation>pantalla completa</translation>
+        <translation>Pantalla completa</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="31"/>
+        <location filename="../../engine/settings.py" line="26"/>
+        <source>windowed</source>
+        <translation>En finestra</translation>
+    </message>
+    <message>
+        <location filename="../../engine/settings.py" line="32"/>
         <source>Show text in buttons</source>
         <translation>Utilitza text als botons</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="34"/>
+        <location filename="../../engine/settings.py" line="35"/>
         <source>Use text or symbols in buttons</source>
         <translation>Utilitza text o símbols als botons</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="42"/>
+        <location filename="../../engine/settings.py" line="43"/>
         <source>Language</source>
         <translation>Idioma</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="43"/>
+        <location filename="../../engine/settings.py" line="44"/>
         <source>Application language</source>
         <translation>Idioma de l&apos;aplicació</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="56"/>
+        <location filename="../../engine/settings.py" line="57"/>
         <source>Theme</source>
         <translation>Tema</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="60"/>
+        <location filename="../../engine/settings.py" line="61"/>
         <source>Application appearance</source>
         <translation>Aparença</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="69"/>
+        <location filename="../../engine/settings.py" line="70"/>
         <source>Log level</source>
         <translation>Nivel de logging</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="73"/>
+        <location filename="../../engine/settings.py" line="74"/>
         <source>Verbosity of diagnostic logging (GAMELOG_LOG_LEVEL overrides)</source>
         <translation>Nivell de diagnòstic (GAMELOG_LOG_LEVEL té preferència)</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="86"/>
+        <location filename="../../engine/settings.py" line="92"/>
+        <source>Use the whole screen, hiding the taskbar and menu bar (F11 toggles it)</source>
+        <translation>Utilitza tota la pantalla, amagant la barra de tasques i la de menús (F11 ho activa i desactiva)</translation>
+    </message>
+    <message>
+        <location filename="../../engine/settings.py" line="100"/>
         <source>Window mode</source>
         <translation>Mode de finestra</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="87"/>
+        <location filename="../../engine/settings.py" line="85"/>
         <source>Full screen hides the Android system bars; the on-screen keyboard brings them back</source>
         <translation>La pantalla completa amaga les barres del sistema d&apos;Android; el teclat en pantalla les torna a mostrar</translation>
     </message>
@@ -554,90 +564,90 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="130"/>
-        <location filename="../../ui/mainwindow.py" line="131"/>
+        <location filename="../../ui/mainwindow.py" line="135"/>
+        <location filename="../../ui/mainwindow.py" line="136"/>
         <source>GameLog</source>
         <translation>GameLog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="132"/>
+        <location filename="../../ui/mainwindow.py" line="137"/>
         <source>&amp;File</source>
         <translation>&amp;Arxiu</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="134"/>
+        <location filename="../../ui/mainwindow.py" line="139"/>
         <source>&amp;Quit</source>
         <translation>&amp;Sortir</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="135"/>
+        <location filename="../../ui/mainwindow.py" line="140"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="136"/>
+        <location filename="../../ui/mainwindow.py" line="141"/>
         <source>Quit GameLog</source>
         <translation>Sortir de GameLog</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="160"/>
-        <location filename="../../ui/mainwindow.py" line="176"/>
-        <location filename="../../ui/mainwindow.py" line="201"/>
+        <location filename="../../ui/mainwindow.py" line="165"/>
+        <location filename="../../ui/mainwindow.py" line="181"/>
+        <location filename="../../ui/mainwindow.py" line="206"/>
         <source>Exit</source>
         <translation>Sortir</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="223"/>
+        <location filename="../../ui/mainwindow.py" line="228"/>
         <source>Gamelog - Match history</source>
         <translation>Gamelog - Historial de partides</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="235"/>
+        <location filename="../../ui/mainwindow.py" line="240"/>
         <source>Gamelog - Player statistics</source>
         <translation>Gamelog - Estadístiques de jugadors</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="262"/>
+        <location filename="../../ui/mainwindow.py" line="267"/>
         <source>Match history</source>
         <translation>Historial de partides</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="262"/>
+        <location filename="../../ui/mainwindow.py" line="267"/>
         <source>The match could not be opened</source>
         <translation>No s&apos;ha pogut obrir la partida</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="273"/>
+        <location filename="../../ui/mainwindow.py" line="278"/>
         <source>This match was cancelled</source>
         <translation>Aquesta partida es va cancel·lar</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="275"/>
+        <location filename="../../ui/mainwindow.py" line="280"/>
         <source>This match was interrupted</source>
         <translation>Aquesta partida es va interrompre</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="138"/>
+        <location filename="../../ui/mainwindow.py" line="143"/>
         <source>&amp;Help</source>
         <translation>&amp;Ajuda</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="139"/>
+        <location filename="../../ui/mainwindow.py" line="144"/>
         <source>&amp;About Gamelog...</source>
         <translation>&amp;Quant a Gamelog...</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="163"/>
+        <location filename="../../ui/mainwindow.py" line="168"/>
         <source>You have an opened {} match. Do you want to save it before exiting?</source>
         <translation>Vols desar la partida de {} actual abans de sortir?</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="178"/>
+        <location filename="../../ui/mainwindow.py" line="183"/>
         <source>You have {} opened matches. Do you want to save them before exiting?</source>
         <translation>Hi ha {} partides obertes. Vols desar-les abans de sortir?</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="202"/>
+        <location filename="../../ui/mainwindow.py" line="207"/>
         <source>Are you sure you want to exit GameLog?</source>
         <translation>Estàs segur que vols sortir de GameLog?</translation>
     </message>
@@ -1232,22 +1242,22 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="../../ui/mainwindow.py" line="42"/>
+        <location filename="../../ui/mainwindow.py" line="43"/>
         <source>&amp;Yes</source>
         <translation>&amp;Sí</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="43"/>
+        <location filename="../../ui/mainwindow.py" line="44"/>
         <source>&amp;No</source>
         <translation>&amp;No</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="44"/>
+        <location filename="../../ui/mainwindow.py" line="45"/>
         <source>OK</source>
         <translation>Accepta</translation>
     </message>
     <message>
-        <location filename="../../ui/mainwindow.py" line="45"/>
+        <location filename="../../ui/mainwindow.py" line="46"/>
         <source>Cancel</source>
         <translation>Cancel·la</translation>
     </message>

@@ -6,7 +6,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QAction, QCloseEvent
+from PySide6.QtGui import QAction, QCloseEvent, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QMainWindow,
     QMessageBox,
@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
 
 from core.engine.db import db
 from core.engine.resume import open_match
+from core.engine.settings import appsettings
 from core.model.match import GenericMatch
 from core.platform_info import is_android
 from core.registry import registry
@@ -23,7 +24,7 @@ from core.ui.dialogs import AboutDialog
 from core.ui.explorer import MatchExplorerWidget
 from core.ui.newgame import NewGameWidget
 from core.ui.playerstats import PlayerStatsWidget
-from core.ui.windowmode import apply_window_mode
+from core.ui.windowmode import apply_window_mode, toggle_fullscreen
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +79,10 @@ class MainWindow(QMainWindow):
         self.aboutAction.triggered.connect(self.about)
         self.helpMenu.addAction(self.aboutAction)
 
+        QShortcut(QKeySequence("F11"), self).activated.connect(
+            lambda: toggle_fullscreen(self)
+        )
+
         # Central stuff!!
         self.centralwidget = QWidget(None)
         self.setCentralWidget(self.centralwidget)
@@ -119,8 +124,8 @@ class MainWindow(QMainWindow):
         # self.setStyleSheet("font-size: 20px;")
         self.setStyleSheet("font-size: 18px;")
 
-        if is_android():
-            # Tablet only: the system sizes the window.
+        if is_android() or appsettings["fullscreen"]:
+            # On Android the system sizes the window.
             apply_window_mode(self)
         else:
             self.show()

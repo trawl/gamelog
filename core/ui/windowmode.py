@@ -1,4 +1,4 @@
-"""Window mode (maximised or full screen) of the main window, on Android."""
+"""Window mode of the main window: full screen, or the platform's other mode."""
 
 from __future__ import annotations
 
@@ -9,15 +9,23 @@ from core.platform_info import is_android
 
 
 def apply_window_mode(window: QWidget) -> None:
-    """Show ``window`` full screen or maximised, per the ``fullscreen`` setting.
+    """Show ``window`` full screen or not, per the ``fullscreen`` setting.
 
-    Android only: desktop windows keep whatever size the user gave them.
-    Full screen hides the system bars, but they come back whenever the
-    on-screen keyboard opens, which is why maximised is the default.
+    Not full screen means maximised on Android, where the system sizes the
+    window, and a normal window on desktop, which keeps the size the user gave
+    it. On Android full screen hides the system bars, but they come back
+    whenever the on-screen keyboard opens, which is why maximised is the
+    default there.
     """
-    if not is_android():
-        return
     if appsettings["fullscreen"]:
         window.showFullScreen()
-    else:
+    elif is_android():
         window.showMaximized()
+    else:
+        window.showNormal()
+
+
+def toggle_fullscreen(window: QWidget) -> None:
+    """Flip the ``fullscreen`` setting (keeping it for next time) and apply it."""
+    appsettings.set("fullscreen", not appsettings["fullscreen"])
+    apply_window_mode(window)

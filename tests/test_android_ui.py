@@ -117,17 +117,20 @@ class _FakeWindow:
     def showMaximized(self):
         self.calls.append("maximised")
 
+    def showNormal(self):
+        self.calls.append("normal")
+
 
 @pytest.mark.parametrize(
     ("android_device", "fullscreen", "expected"),
     [
         (True, False, ["maximised"]),
         (True, True, ["fullscreen"]),
-        (False, True, []),
-        (False, False, []),
+        (False, False, ["normal"]),
+        (False, True, ["fullscreen"]),
     ],
 )
-def test_window_mode_follows_the_setting_on_android_only(
+def test_window_mode_follows_the_setting(
     monkeypatch, android_device, fullscreen, expected
 ):
     from core.ui import windowmode
@@ -139,7 +142,27 @@ def test_window_mode_follows_the_setting_on_android_only(
     assert window.calls == expected
 
 
-def test_fullscreen_setting_is_not_offered_on_desktop():
+def test_toggle_fullscreen_flips_and_applies_the_setting(monkeypatch):
+    from core.ui import windowmode
+
+    stored = {"fullscreen": False}
+
+    class Stub(dict):
+        def set(self, key, value):
+            self[key] = value
+
+    monkeypatch.setattr(windowmode, "is_android", lambda: False)
+    monkeypatch.setattr(windowmode, "appsettings", Stub(stored))
+    window = _FakeWindow()
+    windowmode.toggle_fullscreen(window)  # type: ignore[arg-type]
+    windowmode.toggle_fullscreen(window)  # type: ignore[arg-type]
+    assert window.calls == ["fullscreen", "normal"]
+
+
+def test_window_mode_setting_is_offered_with_platform_wording():
     from core.engine.settings import default_settings
 
-    assert "fullscreen" not in default_settings
+    setting = default_settings["fullscreen"]
+    assert setting["value"] is False
+    # Desktop here: the non-full-screen choice is a normal window.
+    assert setting["choices"] == ["windowed", "full screen"]

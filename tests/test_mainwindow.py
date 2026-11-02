@@ -139,3 +139,29 @@ def test_the_main_window_survives_garbage_collection(qapp, gamedb, monkeypatch):
     assert window.isVisible()
     assert window.explorerTab.table.model() is not None
     window.hide()
+
+
+# --- F11 toggles full screen ---------------------------------------------------
+
+
+def test_f11_toggles_full_screen_and_remembers_it(mainwindow, settings):
+    from PySide6.QtGui import QKeySequence, QShortcut
+
+    from core.engine.settings import appsettings
+
+    # The offscreen platform has no active window to deliver key presses to, so
+    # fire the F11 shortcut itself.
+    [f11] = [
+        shortcut
+        for shortcut in mainwindow.findChildren(QShortcut)
+        if shortcut.key() == QKeySequence("F11")
+    ]
+    assert not appsettings["fullscreen"]
+    mainwindow.show()
+    f11.activated.emit()
+    assert mainwindow.isFullScreen()
+    assert appsettings["fullscreen"] is True
+
+    f11.activated.emit()
+    assert not mainwindow.isFullScreen()
+    assert appsettings["fullscreen"] is False
