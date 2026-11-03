@@ -6,13 +6,14 @@ import datetime
 import logging
 from typing import Any, cast
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import QCoreApplication, Signal
 from PySide6.QtGui import QShowEvent
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
     QComboBox,
     QFrame,
+    QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QListWidget,
@@ -27,7 +28,6 @@ from PySide6.QtWidgets import (
 from core.engine.db import db
 from core.engine.resume import ResumeEngine
 from core.engine.settings import appsettings
-from core.platform_info import is_android
 from core.registry import registry
 from core.ui.app import GamelogApplication
 from core.ui.glyphs import platform_glyph, set_button_text
@@ -87,6 +87,11 @@ class NewGameWidget(Tab):
         self.historyButton.setToolTip(self.tr("Match history"))
         set_button_text(self.statsButton, "📊")
         self.statsButton.setToolTip(self.tr("Player statistics"))
+        set_button_text(self.quitButton, "🚪")
+        # The main window's own wording for the action.
+        self.quitButton.setToolTip(
+            QCoreApplication.translate("MainWindow", "Quit GameLog")
+        )
         for dialog in self.rulesDialogs.values():
             dialog.retranslateUI()
         if appsettings["text_in_buttons"]:
@@ -127,9 +132,9 @@ class NewGameWidget(Tab):
         )
         self.gameNameLayout.addWidget(self.settingsGroup)
 
-        # Language, rules and settings sit side by side so they don't make the
-        # game selector and play button tall.
-        self.settingsLayout = QHBoxLayout(self.settingsGroup)
+        # The six round buttons form two rows of three so they don't make the
+        # game selector and play button wide.
+        self.settingsLayout = QGridLayout(self.settingsGroup)
 
         self.rulesDialogs: dict[str, RulesDialog] = {}
         self.rulesButton = QPushButton(self)
@@ -137,50 +142,49 @@ class NewGameWidget(Tab):
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
         )
         self.rulesButton.clicked.connect(self.showRules)
-        self.settingsLayout.addWidget(self.rulesButton)
+        self.settingsLayout.addWidget(self.rulesButton, 0, 0)
 
         self.historyButton = QPushButton(self)
         self.historyButton.setSizePolicy(
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
         )
         self.historyButton.clicked.connect(self.showHistory)
-        self.settingsLayout.addWidget(self.historyButton)
+        self.settingsLayout.addWidget(self.historyButton, 0, 1)
 
         self.statsButton = QPushButton(self)
         self.statsButton.setSizePolicy(
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
         )
         self.statsButton.clicked.connect(self.showPlayerStats)
-        self.settingsLayout.addWidget(self.statsButton)
+        self.settingsLayout.addWidget(self.statsButton, 0, 2)
 
         self.languageChooser = LanguageButton(self)
         self.languageChooser.setSizePolicy(
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
         )
-        self.settingsLayout.addWidget(self.languageChooser)
+        self.settingsLayout.addWidget(self.languageChooser, 1, 0)
 
         self.settingsButton = QPushButton(self)
         self.settingsButton.setSizePolicy(
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
         )
         self.settingsButton.clicked.connect(self.onSettings)
-        self.settingsLayout.addWidget(self.settingsButton)
+        self.settingsLayout.addWidget(self.settingsButton, 1, 1)
+        self.quitButton = QPushButton(self)
+        self.quitButton.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
+        )
+        # Closing the window asks for confirmation (MainWindow.closeEvent).
+        self.quitButton.clicked.connect(lambda: self.window().close())
+        self.settingsLayout.addWidget(self.quitButton, 1, 2)
         buttons = [
             self.rulesButton,
             self.historyButton,
             self.statsButton,
             self.languageChooser,
             self.settingsButton,
+            self.quitButton,
         ]
-        if is_android():
-            # No window close button or File menu to reach Quit from.
-            self.quitButton = QPushButton("\N{DOOR}", self)
-            self.quitButton.setSizePolicy(
-                QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum
-            )
-            self.quitButton.clicked.connect(lambda: self.window().close())
-            self.settingsLayout.addWidget(self.quitButton)
-            buttons.append(self.quitButton)
         for button in buttons:
             button.setFixedSize(36, 36)
         self.startGameButton = QPushButton(self)

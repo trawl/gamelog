@@ -586,6 +586,7 @@
     </message>
     <message>
         <location filename="../../ui/mainwindow.py" line="146"/>
+        <location filename="../../ui/newgame.py" line="93"/>
         <source>Quit GameLog</source>
         <translation>Quit GameLog</translation>
     </message>
@@ -883,22 +884,22 @@
 <context>
     <name>NewGameWidget</name>
     <message>
-        <location filename="../../ui/newgame.py" line="93"/>
+        <location filename="../../ui/newgame.py" line="98"/>
         <source>Available Players</source>
         <translation>Available Players</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="94"/>
+        <location filename="../../ui/newgame.py" line="99"/>
         <source>New Player</source>
         <translation>New Player</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="397"/>
+        <location filename="../../ui/newgame.py" line="401"/>
         <source>At least 2 players are needed to play</source>
         <translation>At least 2 players are needed to play</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="395"/>
+        <location filename="../../ui/newgame.py" line="399"/>
         <source>New Match</source>
         <translation>New Match</translation>
     </message>
@@ -923,18 +924,18 @@
         <translation>Player statistics</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="235"/>
+        <location filename="../../ui/newgame.py" line="239"/>
         <source>Selected Players (max {})</source>
         <translation>Selected Players (max {})</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="403"/>
+        <location filename="../../ui/newgame.py" line="407"/>
         <source>The maximum number of players is</source>
         <translation>The maximum number of players is</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="421"/>
-        <location filename="../../ui/newgame.py" line="437"/>
+        <location filename="../../ui/newgame.py" line="425"/>
+        <location filename="../../ui/newgame.py" line="441"/>
         <source>Widget not implemented</source>
         <translation>Widget not implemented</translation>
     </message>
@@ -1278,22 +1279,22 @@
 <context>
     <name>ResumeBox</name>
     <message>
-        <location filename="../../ui/newgame.py" line="512"/>
+        <location filename="../../ui/newgame.py" line="516"/>
         <source>Delete</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="528"/>
+        <location filename="../../ui/newgame.py" line="532"/>
         <source>Start a new game...</source>
         <translation>New game...</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="597"/>
+        <location filename="../../ui/newgame.py" line="601"/>
         <source>Cancel Saved Game</source>
         <translation>Cancel Saved Game</translation>
     </message>
     <message>
-        <location filename="../../ui/newgame.py" line="598"/>
+        <location filename="../../ui/newgame.py" line="602"/>
         <source>Are you sure you want to cancel saved game?</source>
         <translation>Are you sure you want to cancel saved game?</translation>
     </message>
