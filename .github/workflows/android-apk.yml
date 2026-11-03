@@ -94,10 +94,16 @@ jobs:
           mkdir -p ~/.android
           printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > ~/.android/debug.keystore
 
+      # Buildozer installs the Android SDK itself and asks, through sdkmanager,
+      # to accept its licence; nobody can answer on a runner, so the SDK build
+      # tools were skipped and the build stopped for lack of aidl. Answer "y"
+      # to every prompt from a finite file (a pipe from `yes` would end in
+      # SIGPIPE).
       - name: Build the APK
         run: |
           source .venv/bin/activate
-          utils/build_android.sh
+          yes | head -n 500 > "$RUNNER_TEMP/answers"
+          utils/build_android.sh < "$RUNNER_TEMP/answers"
 
       - uses: actions/upload-artifact@v4
         with:
