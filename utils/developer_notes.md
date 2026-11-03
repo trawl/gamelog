@@ -322,3 +322,30 @@ on a row as both: release in place = the right-click action (toggle favourite,
 or set the dealer in a match); drag = reorder live, and release over the twin
 list = move the player across. Double-tap still moves a player between lists.
 Only touch-synthesised mouse events (`QMouseEvent.source()`) take this path.
+
+### Building the APK on GitHub
+
+`.github/workflows/android-apk.yml` runs `utils/build_android.sh` on an Ubuntu
+runner. `release-please.yml` calls it when Release Please creates a release and
+attaches the debug APK to that release (events from the default token cannot
+start a separate workflow, hence the call). It can also be run by hand from the
+Actions tab for any branch or tag, optionally attaching the result to a
+release; the APK is always kept as a workflow artifact too. The SDK/NDK, wheels,
+p4a, buildozer and Gradle downloads are cached; a cold build takes a long time.
+
+APKs from different builds only install over each other if they share a
+signature, so the workflow installs one fixed debug keystore from the
+`ANDROID_DEBUG_KEYSTORE_BASE64` secret. Create it once (Android's default debug
+key settings, so no further configuration is needed):
+
+```
+keytool -genkeypair -keystore debug.keystore -storepass android -alias androiddebugkey \
+  -keypass android -keyalg RSA -keysize 2048 -validity 10000 \
+  -dname "CN=Android Debug,O=Android,C=US"
+base64 -i debug.keystore | gh secret set ANDROID_DEBUG_KEYSTORE_BASE64
+```
+
+Copy the same file to `~/.android/debug.keystore` to make local builds sign with
+it too. Without the secret the workflow still builds, with a warning and a fresh
+signature each time.
+

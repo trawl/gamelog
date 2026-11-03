@@ -24,3 +24,7 @@ resources.qrc
 pysidedeploy.spec
 dist/
 .buildozer/
+
+# Signing keys must never be committed
+*.keystore
+*.jks
