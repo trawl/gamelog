@@ -42,12 +42,13 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      # What python-for-android and buildozer need on a Linux host.
+      # What python-for-android and buildozer need on a Linux host (libltdl-dev
+      # provides the libtool macros libffi's autogen.sh uses).
       - name: Install build dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            git zip unzip autoconf automake libtool pkg-config cmake \
+            git zip unzip autoconf automake libtool libltdl-dev pkg-config cmake \
             zlib1g-dev libncurses-dev libffi-dev libssl-dev
 
       - name: Install uv
