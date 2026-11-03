@@ -1,0 +1,112 @@
+name: Android APK
+
+# Builds the debug APK with utils/build_android.sh. Called by the release
+# workflow when a release is created (the APK is then attached to it) and
+# runnable by hand for any branch or tag.
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Git ref (branch, tag or SHA) to build
+        type: string
+        required: true
+      release_tag:
+        description: Release to attach the APK to; empty to only keep an artifact
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git ref (branch, tag or SHA) to build
+        required: true
+        default: develop
+      release_tag:
+        description: Release tag to attach the APK to (leave empty for none)
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # What python-for-android and buildozer need on a Linux host.
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip autoconf automake libtool pkg-config cmake \
+            zlib1g-dev libncurses-dev libffi-dev libssl-dev
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.0.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: "pyproject.toml"
+
+      - name: Sync dependencies
+        run: uv sync --group android
+
+      # The Android SDK and NDK the tool downloads: by far the biggest part.
+      - name: Cache the Android SDK and NDK
+        uses: actions/cache@v4
+        with:
+          path: ~/.pyside6_android_deploy
+          key: android-sdk-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'utils/build_android.sh') }}
+          restore-keys: |
+            android-sdk-${{ runner.os }}-
+
+      # Qt wheels, the patched python-for-android clone, buildozer and Gradle.
+      - name: Cache wheels, python-for-android, buildozer and Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/gamelog
+            ~/.buildozer
+            ~/.gradle
+          key: android-build-${{ runner.os }}-${{ hashFiles('utils/build_android.sh') }}
+          restore-keys: |
+            android-build-${{ runner.os }}-
+
+      # One fixed debug key, so APKs from different releases (and builds) share
+      # a signature and install over each other without losing app data.
+      # Without the secret each run signs with a fresh key.
+      - name: Install the shared debug keystore
+        env:
+          ANDROID_DEBUG_KEYSTORE_BASE64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$ANDROID_DEBUG_KEYSTORE_BASE64" ]; then
+            echo "::warning::ANDROID_DEBUG_KEYSTORE_BASE64 is not set; the APK gets a new debug signature and will not install over a previous one."
+            exit 0
+          fi
+          mkdir -p ~/.android
+          printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > ~/.android/debug.keystore
+
+      - name: Build the APK
+        run: |
+          source .venv/bin/activate
+          utils/build_android.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gamelog-apk
+          path: dist/*.apk
+          if-no-files-found: error
+
+      - name: Attach the APK to the release
+        if: inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ inputs.release_tag }}" dist/*.apk --clobber
