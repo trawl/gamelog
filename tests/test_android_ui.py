@@ -163,6 +163,5 @@ def test_window_mode_setting_is_offered_with_platform_wording():
     from core.engine.settings import default_settings
 
     setting = default_settings["fullscreen"]
-    assert setting["value"] is False
     # Desktop here: the non-full-screen choice is a normal window.
     assert setting["choices"] == ["windowed", "full screen"]

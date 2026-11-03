@@ -79,7 +79,8 @@ default_settings = {
 }
 
 
-# Whether the main window fills the screen. What the other choice means differs:
+# Whether the main window fills the screen (the default). What the other choice
+# means differs:
 # maximised on Android (the system sizes the window), windowed on desktop.
 if is_android():
     _window_description = QCoreApplication.translate(
@@ -95,7 +96,7 @@ else:
     )
     _window_choices = ["windowed", "full screen"]
 default_settings["fullscreen"] = {
-    "value": False,
+    "value": True,
     "type": "bool",
     "displayname": QCoreApplication.translate("AppSettings", "Window mode"),
     "description": _window_description,

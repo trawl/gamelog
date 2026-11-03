@@ -191,17 +191,17 @@
         <translation>Nivell de diagnòstic (GAMELOG_LOG_LEVEL té preferència)</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="92"/>
+        <location filename="../../engine/settings.py" line="93"/>
         <source>Use the whole screen, hiding the taskbar and menu bar (F11 toggles it)</source>
         <translation>Utilitza tota la pantalla, amagant la barra de tasques i la de menús (F11 ho activa i desactiva)</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="100"/>
+        <location filename="../../engine/settings.py" line="101"/>
         <source>Window mode</source>
         <translation>Mode de finestra</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="85"/>
+        <location filename="../../engine/settings.py" line="86"/>
         <source>Full screen hides the Android system bars; the on-screen keyboard brings them back</source>
         <translation>La pantalla completa amaga les barres del sistema d&apos;Android; el teclat en pantalla les torna a mostrar</translation>
     </message>

@@ -14,8 +14,7 @@ def apply_window_mode(window: QWidget) -> None:
     Not full screen means maximised on Android, where the system sizes the
     window, and a normal window on desktop, which keeps the size the user gave
     it. On Android full screen hides the system bars, but they come back
-    whenever the on-screen keyboard opens, which is why maximised is the
-    default there.
+    whenever the on-screen keyboard opens, so maximised may suit better there.
     """
     if appsettings["fullscreen"]:
         window.showFullScreen()

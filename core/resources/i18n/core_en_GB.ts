@@ -190,17 +190,17 @@
         <translation>Verbosity of diagnostic logging (GAMELOG_LOG_LEVEL overrides)</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="92"/>
+        <location filename="../../engine/settings.py" line="93"/>
         <source>Use the whole screen, hiding the taskbar and menu bar (F11 toggles it)</source>
         <translation>Use the whole screen, hiding the taskbar and menu bar (F11 toggles it)</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="100"/>
+        <location filename="../../engine/settings.py" line="101"/>
         <source>Window mode</source>
         <translation>Window mode</translation>
     </message>
     <message>
-        <location filename="../../engine/settings.py" line="85"/>
+        <location filename="../../engine/settings.py" line="86"/>
         <source>Full screen hides the Android system bars; the on-screen keyboard brings them back</source>
         <translation>Full screen hides the Android system bars; the on-screen keyboard brings them back</translation>
     </message>
