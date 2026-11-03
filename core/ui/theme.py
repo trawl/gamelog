@@ -21,12 +21,19 @@ logger = logging.getLogger(__name__)
 # every platform; this is appended on Windows only so macOS and Linux are
 # untouched. palette() keeps the colours in step with the active theme.
 # margin-top reserves room for the title (up to the 28px game-player titles)
-# so the frame does not run through it.
+# so the frame does not run through it. A box without a title (the two big
+# ones on the new-game screen) reserves nothing, or the whole window would
+# start a centimetre lower on Windows than elsewhere; core/ui/groupbox.py sets
+# the ``untitled`` property that this relies on.
 WINDOWS_GROUPBOX_CSS = """
 QGroupBox {
     border: 1px solid palette(mid);
     border-radius: 6px;
     margin-top: 36px;
+}
+
+QGroupBox[untitled="true"] {
+    margin-top: 0px;
 }
 
 QGroupBox::title {
