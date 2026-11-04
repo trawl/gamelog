@@ -17,8 +17,11 @@ per game:
 core/                     the framework — rarely touched when adding a game
   registry.py             GameDefinition + registry + object creation
   model/match.py          base match / round / player models
-  engine/                 engine hierarchy, stats, resume, db, settings
-  ui/                     app shell, game sub-package (widgets, plots, stats), player sub-package
+  engine/                 engine hierarchy, stats, resume, db, settings,
+                          dbtransfer (database export/import)
+  ui/                     app shell, game sub-package (widgets, plots, stats), player sub-package;
+                          also glyphs, windowmode, groupbox, dbtransfer (see "UI notes")
+  platform_info.py        is_android()
   logging_config.py       log-level resolution
   resources/              shared icons / styles / i18n
 games/
@@ -29,6 +32,9 @@ games/
     engine.py             engine (+ optional stats engines)
     widget.py             Qt board widget (+ optional quick-stats widget)
     icons/ styles/ i18n/  optional, per-game assets
+main.py                   entry point pyside6-android-deploy expects (calls core.__main__.main)
+utils/                    build_resources.py, build_translations.py, build_android.sh, android/
+.github/workflows/        ci.yml, release-please.yml, android-apk.yml, ...
 ```
 
 Discovery is automatic: `load_builtin_games()` imports every sub-package under
@@ -193,8 +199,11 @@ uv run pytest
 
 The suite covers the game registry, the parameterised SQL / persistence layer
 (save & resume for every game), the statistics engines, log-level resolution,
-and a widget-construction smoke test for every game. It needs the `dev`
-dependency group (installed automatically by `uv run`/`uv sync`).
+and a widget-construction smoke test for every game. The Android-specific
+behaviour is tested on the desktop by faking the platform (`sys.getandroidapilevel`):
+the guards, emoji glyphs and button fading, the touch gestures on the player
+lists, database export/import, window mode and the Windows group box rule. It
+needs the `dev` dependency group (installed automatically by `uv run`/`uv sync`).
 
 To see which code is exercised:
 
@@ -290,51 +299,122 @@ theme, scoped to that game's widget:
 `<name>` is the game's package directory name. The stylesheet is applied
 automatically when the game's board is opened and re-applied on theme changes.
 
+## UI notes (all platforms)
+
+* **Window mode** (`core/ui/windowmode.py`): the `fullscreen` setting, shown as
+  "Window mode" in the settings dialog, is on by default. Off means a normal
+  window on desktop (the size the user gave it) and a maximised one on Android.
+  F11 toggles it and remembers the choice; the settings dialog applies it live.
+* **No menu bar** except on macOS, where the system menu bar is a convention.
+  Ctrl+Q is still a window action, the About dialog opens from the button at the
+  bottom-left of the settings dialog, and the new-game screen has a 🚪 quit
+  button. The six round buttons there sit in a 2x3 grid.
+* **Button glyphs** (`core/ui/glyphs.py`): icon-only buttons pass their text
+  through `platform_glyph()`, which swaps technical symbols for emoji (Android's
+  fonts lack them, so they showed as empty boxes). `EMOJI_EVERYWHERE` applies the
+  swap on every platform for a consistent look; set it to `False` to keep the
+  original characters on desktop. Colour emoji ignore the palette, so a disabled
+  button would keep its colour: set the text of any such button that can be
+  disabled with `set_button_text()`, which fades it.
+* **Windows group boxes**: Windows draws a plain line through a `QGroupBox`
+  title, so `WINDOWS_GROUPBOX_CSS` (added on Windows only) draws the frame and
+  reserves 36px above it for the title. Boxes without a title must not reserve
+  it, or the new-game screen starts a centimetre lower than on other platforms.
+  Qt evaluates a group box's rules when it is built, while its title is still
+  empty, so a `[title=""]` selector cannot tell them apart. Instead `Tab` flags
+  untitled boxes (`core/ui/groupbox.py`) on its first show, once the titles are
+  set, and the rule skips the ones with the `untitled` property.
+* **Database export/import** (settings dialog): `core/engine/dbtransfer.py`
+  works on file paths and has no Qt. Export copies the live database with SQLite's
+  backup API. Import validates the file (integrity check, expected tables), saves
+  a backup of the current data in `backups/` beside the database (the last two
+  are kept) and replaces the data in place; it is refused while a match is open.
+  `core/ui/dbtransfer.py` holds the buttons and file dialogs and
+  `NewGameWidget.reloadDatabase` refreshes the screens afterwards. Exports get a
+  dated default name (`gamelog-YYYYMMDD-HHMM.db`). See the Android notes for what
+  the system file picker needs.
+
 ## Android (tablet, experimental)
-`main.py` is the entry point `pyside6-android-deploy` expects; Android-only
-code paths test `core.platform_info.is_android()` (Android reports
-`sys.platform == "linux"`). Build with `utils/build_android.sh` (needs the
-`android` dependency group: `uv sync --group android`). It downloads the
-PySide6/shiboken6 Android wheels from download.qt.io on first use, verifies
-their sha256 and caches them in `~/.cache/gamelog/android-wheels`; the version
-is `PYSIDE_ANDROID_VERSION` (see the script header for the other overrides).
-It then regenerates the git-ignored `pysidedeploy.spec` with `--init`, pins the
-app icon (`core/resources/icons/cards.png`, as the default is a `.icns`) and
-builds from that spec with `-c`, forcing landscape and the app version through
-buildozer's env overrides. The APK is written to `dist/`; install it with
-`adb install -r dist/Gamelog-*.apk`.
 
-The script also patches python-for-android: its Qt bootstrap's
-`PythonActivity.onActivityResult` never calls `super.onActivityResult`, so Qt
-never receives the result of an activity it started (the system file picker
-behind `QFileDialog` froze the app), and its `onKeyDown` treats every key as
-Back (upstream #3376), swallowing keyboard input. A third patch (from
-`utils/android/system_bars.java.snippet`) colours the system bars and the window
-behind them to the system's light/dark mode, so the navigation bar is not white
-under a dark app. The script keeps a local copy of p4a in
-`~/.cache/gamelog/python-for-android`, adds the missing call on a local commit,
-and has git serve buildozer's clone from it (`insteadOf` via environment) with `APP_P4A_COMMIT`. Drop that step once
-upstream fixes the bootstrap.
+Target: landscape tablets, 64-bit ARM, Android 9 or later (API 28, the minimum
+the Qt for Python tooling sets; it compiles against API 35). Qt 6.12 wheels from
+download.qt.io, and the app runs on python-for-android's CPython. Phones are not
+a goal. Only a **debug** APK is built: there is no release signing or `.aab` flow
+yet. The supported way to get data in and out of the app is export/import in
+the settings dialog (debug builds also allow `adb`, see below).
 
-Touch input: a finger can neither right-click nor, on Android, start a Qt
-drag, so `PlayerList` (`core/ui/player/list.py`) treats a long press (500 ms)
-on a row as both: release in place = the right-click action (toggle favourite,
-or set the dealer in a match); drag = reorder live, and release over the twin
-list = move the player across. Double-tap still moves a player between lists.
-Only touch-synthesised mouse events (`QMouseEvent.source()`) take this path.
+### What differs in the code
+* **`is_android()`** (`core/platform_info.py`): Android reports
+  `sys.platform == "linux"`, so check this before any Linux branch. It is used by
+  `linux_desktop` (skipped), `SleepBlocker` (does nothing: there is no wake lock
+  yet), the About dialog's git hash lookup, the database location
+  (`db._app_data_dir()` asks Qt for the app's private storage) and the main window.
+* **Theme**: `main()` selects the Fusion style, and `ThemeManager` sets an
+  explicit light/dark palette (`android_palette()`), because Qt's Android platform
+  theme does not follow the colour scheme. The stylesheet follows the theme being
+  applied rather than what Qt reports.
+* **Pop-ups have no close button**: `add_dismiss_button()` (`core/ui/dialogs.py`)
+  adds a Close or Cancel button on Android only, beside OK/Create where there is
+  one. Any new dialog needs one.
+* **Touch**: a finger can neither right-click nor, on Android, start a Qt drag, so
+  `PlayerList` (`core/ui/player/list.py`) treats a long press (`LONG_PRESS_MS`) on
+  a row as both. Release in place is the right-click action (toggle favourite, or
+  set the dealer in a match); moving reorders live; releasing over the twin list
+  moves the player across. Double-tap still moves a player between lists. Only
+  touch-synthesised mouse events (`QMouseEvent.source()`) take this path, so a
+  real mouse is unaffected.
+* **System file picker**: it returns `content://` URLs that only Qt's `QFile` can
+  open, and `QFileDialog.fileSelected` is not emitted for them, so the dialogs
+  listen to `urlSelected` and keep the URL fully percent-encoded (a name like
+  `gamelog.db (2)` must stay `%20`). The picker may also report one selection
+  twice, so each dialog handles only the first. Files are staged in the database's
+  folder because Android has no usable temp directory, and several open modes are
+  tried because providers differ. If you save over an existing name without
+  tapping that file, the picker invents a name (`gamelog.db (1)`) for a file that
+  does not exist; the error then tells the user to select the existing file.
+  Reading and writing can take seconds, so a busy pop-up is shown meanwhile.
 
-### Building the APK on GitHub
+### Building the APK locally
+You need JDK 17 or later (the tool checks; on macOS `brew install openjdk@17`) and
+the `android` dependency group (`uv sync --group android`). Then:
 
-`.github/workflows/android-apk.yml` runs `utils/build_android.sh` on an Ubuntu
-runner. `release-please.yml` calls it when Release Please creates a release and
-attaches the debug APK to that release (events from the default token cannot
-start a separate workflow, hence the call). It can also be run by hand from the
-Actions tab for any branch or tag, optionally attaching the result to a
-release; the APK is always kept as a workflow artifact too. The SDK/NDK, wheels,
-p4a, buildozer and Gradle downloads are cached; a cold build takes a long time.
+```
+utils/build_android.sh
+```
 
-APKs from different builds only install over each other if they share a
-signature, so the workflow installs one fixed debug keystore from the
+It downloads the PySide6/shiboken6 Android wheels from download.qt.io on first use,
+verifies their sha256 and caches them in `~/.cache/gamelog/android-wheels` (the
+version is `PYSIDE_ANDROID_VERSION`; see the script header for the other
+overrides). The tool downloads the NDK into `~/.pyside6_android_deploy` and
+buildozer the SDK. The script regenerates the git-ignored `pysidedeploy.spec` with
+`--init` every time (it holds machine-specific paths), pins the app icon
+(`core/resources/icons/cards.png`; the default is a `.icns`), then builds from it.
+The tool exposes no orientation option, so landscape and the version (read from
+`core/_version.py`, which release-please bumps) go in through buildozer's
+`SECTION_KEY` environment overrides. The APK lands in `dist/`. The tool wipes
+`.buildozer/` and `deployment/` at the start of every run.
+
+### python-for-android patches
+The Qt bootstrap's `PythonActivity` needs three fixes, which `build_android.sh`
+applies to a local copy of python-for-android at the commit the tool pins:
+
+* `onActivityResult` never calls `super.onActivityResult`, so Qt never receives the
+  result of an activity it started. The system file picker behind `QFileDialog`
+  returned and the app froze with the dialog still "open".
+* `onKeyDown` treats every key as Back, which swallowed keyboard input (fixed
+  upstream in kivy/python-for-android#3376, after the pinned commit).
+* The system bars and the window behind them are coloured to the system's
+  light/dark mode (`utils/android/system_bars.java.snippet`), so the navigation
+  bar is not white under a dark app.
+
+Buildozer clones python-for-android itself, so the script keeps the patched copy in
+`~/.cache/gamelog/python-for-android` and has git serve that clone (`insteadOf`,
+set through the environment so no git config is touched), with `APP_P4A_COMMIT`
+pointing at the patched commit. Drop this once upstream fixes the bootstrap.
+
+### Signing and installing
+APKs only install over each other if they share a signature. Local builds use
+`~/.android/debug.keystore` and CI installs the same file from the
 `ANDROID_DEBUG_KEYSTORE_BASE64` secret. Create it once (Android's default debug
 key settings, so no further configuration is needed):
 
@@ -345,7 +425,42 @@ keytool -genkeypair -keystore debug.keystore -storepass android -alias androidde
 base64 -i debug.keystore | gh secret set ANDROID_DEBUG_KEYSTORE_BASE64
 ```
 
-Copy the same file to `~/.android/debug.keystore` to make local builds sign with
-it too. Without the secret the workflow still builds, with a warning and a fresh
-signature each time.
+Copy the same file to `~/.android/debug.keystore`, keep a backup outside the
+repository (`*.keystore` and `*.jks` are git-ignored) and do not lose it. Without
+the secret the workflow still builds, with a warning and a fresh signature.
+Install with `adb install -r dist/Gamelog-*.apk`. On `INSTALL_FAILED_UPDATE_INCOMPATIBLE`
+the installed app has another signature: export its data, `adb uninstall
+org.gamelog.gamelog`, install, then import.
 
+### Debugging on a device
+* **Python log**: raise "Log level" to `INFO` or `DEBUG` in the settings dialog,
+  then `adb logcat -s python:*`. Tracebacks from Qt slots end up there too.
+* **System side** (picker, activities, crashes): `adb logcat -v time` filtered for
+  `FATAL|AndroidRuntime|ActivityManager|onActivityResult`.
+* **The database** (debug builds are debuggable, so `run-as` works; a release build
+  would not allow it). Pull: `adb exec-out run-as org.gamelog.gamelog cat
+  files/gamelog.db > backup.db`. Push: stop the app, `adb push` the file to
+  `/data/local/tmp/`, then `adb shell run-as org.gamelog.gamelog cp
+  /data/local/tmp/gamelog.db files/gamelog.db`. Importing from the settings
+  dialog is safer, as it validates the file.
+
+### Building on GitHub
+`.github/workflows/android-apk.yml` runs `utils/build_android.sh` on an Ubuntu
+runner (JDK 17, the autotools packages python-for-android needs including
+`libltdl-dev`, and "y" fed to buildozer's SDK licence prompt, which nobody can
+answer on a runner). `release-please.yml` calls it when Release Please creates a
+release and attaches the debug APK to that release (events from the default token
+cannot start a separate workflow, hence the call). It can also be run by hand from
+the Actions tab for any branch or tag, optionally attaching the result to a
+release, and the APK is always kept as a workflow artifact (`gamelog-apk`). A
+manual run needs the workflow file on the default branch, and "Use workflow from"
+picks which branch's copy runs. The SDK/NDK, wheels, python-for-android, buildozer
+and Gradle downloads are cached; a cold build takes about 11 minutes. The caches
+are per branch, so one saved by a run on another branch is not seen by `main`.
+
+### Known gaps
+* The screen is not kept awake on Android (`SleepBlocker` has no Android branch).
+* Debug builds only; no `.aab`, release signing or Play Store.
+* Full screen hides the system bars, but they come back whenever the on-screen
+  keyboard opens, so "maximised" may suit the tablet better.
+* Layouts are for tablets, not phones.

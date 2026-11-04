@@ -5,7 +5,8 @@ backed by SQLite. Python 3.12+, managed with uv.
 
 ## Read before you dig
 - `utils/developer_notes.md` is the reference: project layout, adding a game,
-  player statistics (metrics and per-game hooks), tests, i18n, resources.
+  player statistics (metrics and per-game hooks), tests, i18n, resources, UI
+  notes (window mode, glyphs, database export/import) and the Android build.
   Read the section you need, not the whole file.
 - `core/` is game-agnostic; each game is a self-contained package under
   `games/<name>/`, registered by a `GameDefinition` in its `__init__.py`.
