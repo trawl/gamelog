@@ -289,3 +289,63 @@ theme, scoped to that game's widget:
 
 `<name>` is the game's package directory name. The stylesheet is applied
 automatically when the game's board is opened and re-applied on theme changes.
+
+## Android (tablet, experimental)
+`main.py` is the entry point `pyside6-android-deploy` expects; Android-only
+code paths test `core.platform_info.is_android()` (Android reports
+`sys.platform == "linux"`). Build with `utils/build_android.sh` (needs the
+`android` dependency group: `uv sync --group android`). It downloads the
+PySide6/shiboken6 Android wheels from download.qt.io on first use, verifies
+their sha256 and caches them in `~/.cache/gamelog/android-wheels`; the version
+is `PYSIDE_ANDROID_VERSION` (see the script header for the other overrides).
+It then regenerates the git-ignored `pysidedeploy.spec` with `--init`, pins the
+app icon (`core/resources/icons/cards.png`, as the default is a `.icns`) and
+builds from that spec with `-c`, forcing landscape and the app version through
+buildozer's env overrides. The APK is written to `dist/`; install it with
+`adb install -r dist/Gamelog-*.apk`.
+
+The script also patches python-for-android: its Qt bootstrap's
+`PythonActivity.onActivityResult` never calls `super.onActivityResult`, so Qt
+never receives the result of an activity it started (the system file picker
+behind `QFileDialog` froze the app), and its `onKeyDown` treats every key as
+Back (upstream #3376), swallowing keyboard input. A third patch (from
+`utils/android/system_bars.java.snippet`) colours the system bars and the window
+behind them to the system's light/dark mode, so the navigation bar is not white
+under a dark app. The script keeps a local copy of p4a in
+`~/.cache/gamelog/python-for-android`, adds the missing call on a local commit,
+and has git serve buildozer's clone from it (`insteadOf` via environment) with `APP_P4A_COMMIT`. Drop that step once
+upstream fixes the bootstrap.
+
+Touch input: a finger can neither right-click nor, on Android, start a Qt
+drag, so `PlayerList` (`core/ui/player/list.py`) treats a long press (500 ms)
+on a row as both: release in place = the right-click action (toggle favourite,
+or set the dealer in a match); drag = reorder live, and release over the twin
+list = move the player across. Double-tap still moves a player between lists.
+Only touch-synthesised mouse events (`QMouseEvent.source()`) take this path.
+
+### Building the APK on GitHub
+
+`.github/workflows/android-apk.yml` runs `utils/build_android.sh` on an Ubuntu
+runner. `release-please.yml` calls it when Release Please creates a release and
+attaches the debug APK to that release (events from the default token cannot
+start a separate workflow, hence the call). It can also be run by hand from the
+Actions tab for any branch or tag, optionally attaching the result to a
+release; the APK is always kept as a workflow artifact too. The SDK/NDK, wheels,
+p4a, buildozer and Gradle downloads are cached; a cold build takes a long time.
+
+APKs from different builds only install over each other if they share a
+signature, so the workflow installs one fixed debug keystore from the
+`ANDROID_DEBUG_KEYSTORE_BASE64` secret. Create it once (Android's default debug
+key settings, so no further configuration is needed):
+
+```
+keytool -genkeypair -keystore debug.keystore -storepass android -alias androiddebugkey \
+  -keypass android -keyalg RSA -keysize 2048 -validity 10000 \
+  -dname "CN=Android Debug,O=Android,C=US"
+base64 -i debug.keystore | gh secret set ANDROID_DEBUG_KEYSTORE_BASE64
+```
+
+Copy the same file to `~/.android/debug.keystore` to make local builds sign with
+it too. Without the secret the workflow still builds, with a warning and a fresh
+signature each time.
+

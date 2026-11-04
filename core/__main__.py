@@ -7,6 +7,7 @@ from PySide6.QtGui import QIcon
 import core.resources_rc  # noqa: F401
 from core.linux_desktop import install_desktop_entry
 from core.logging_config import configure_logging
+from core.platform_info import is_android
 from games import load_builtin_games
 
 load_builtin_games()
@@ -30,6 +31,10 @@ def main() -> None:
     install_desktop_entry()
 
     app = GamelogApplication(sys.argv)
+    if is_android():
+        # The native Android style ignores palettes and the colour scheme, so
+        # the light/dark theme would only partly apply.
+        app.setStyle("Fusion")
     app.setDesktopFileName("gamelog")
     app.setApplicationName("gamelog")
 

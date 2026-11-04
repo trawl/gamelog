@@ -31,11 +31,13 @@ from core.ui.game.matchedit import MatchTimesEditDialog
 from core.ui.game.player import GamePlayerWidget
 from core.ui.game.rounds import GameRoundsDetail
 from core.ui.game.utils import SleepBlocker
+from core.ui.glyphs import platform_glyph, set_button_text
 from core.ui.language import LanguageButton
 from core.ui.rules import RulesDialog
 from core.ui.settings import SettingsDialog
 from core.ui.tab import Tab
 from core.ui.timers import GameClock
+from core.ui.windowmode import apply_window_mode
 
 logger = logging.getLogger(__name__)
 
@@ -328,27 +330,27 @@ class GameWidget(Tab):
         """Refresh all button labels and titles for the current language."""
         self.setRoundTitle()
         if appsettings["text_in_buttons"]:
-            self.pauseMatchButton.setText(self.tr("&Pause/Play"))
-            self.cancelMatchButton.setText(self.tr("&Leave Match"))
-            self.restartMatchButton.setText(self.tr("Restart &Match"))
+            set_button_text(self.pauseMatchButton, self.tr("&Pause/Play"))
+            set_button_text(self.cancelMatchButton, self.tr("&Leave Match"))
+            set_button_text(self.restartMatchButton, self.tr("Restart &Match"))
             if isinstance(self.engine, EntryGameEngine):
-                self.commitRoundButton.setText(self.tr("Commit &Entry"))
+                set_button_text(self.commitRoundButton, self.tr("Commit &Entry"))
             else:
-                self.commitRoundButton.setText(self.tr("Commit &Round"))
-            self.undoButton.setText(self.tr("Rollback"))
-            self.playerOrderButton.setText(self.tr("Player &Order"))
-            self.finishButton.setText(self.tr("&Finish Game"))
+                set_button_text(self.commitRoundButton, self.tr("Commit &Round"))
+            set_button_text(self.undoButton, self.tr("Rollback"))
+            set_button_text(self.playerOrderButton, self.tr("Player &Order"))
+            set_button_text(self.finishButton, self.tr("&Finish Game"))
         else:
-            self.pauseMatchButton.setText("⏸")
-            self.cancelMatchButton.setText("⎋")
-            self.restartMatchButton.setText("↻")
-            self.commitRoundButton.setText("⏺")
-            self.undoButton.setText("⎌")
-            self.playerOrderButton.setText("♟↕")
-            self.finishButton.setText("⏹")
-        self.settingsButton.setText("⚙️")
+            set_button_text(self.pauseMatchButton, platform_glyph("⏸"))
+            set_button_text(self.cancelMatchButton, platform_glyph("⎋"))
+            set_button_text(self.restartMatchButton, platform_glyph("↻"))
+            set_button_text(self.commitRoundButton, platform_glyph("⏺"))
+            set_button_text(self.undoButton, platform_glyph("⎌"))
+            set_button_text(self.playerOrderButton, platform_glyph("♟↕"))
+            set_button_text(self.finishButton, platform_glyph("⏹"))
+        set_button_text(self.settingsButton, "⚙️")
         self.settingsButton.setToolTip(self.tr("Settings"))
-        self.rulesButton.setText("📖")
+        set_button_text(self.rulesButton, "📖")
         self.rulesButton.setToolTip(self.tr("Rules"))
         if self.rulesDialog is not None:
             self.rulesDialog.retranslateUI()
@@ -401,6 +403,10 @@ class GameWidget(Tab):
             from core.logging_config import set_log_level
 
             set_log_level(value)
+        elif name == "fullscreen":
+            window = getattr(QApplication.instance(), "mainWindow", None)
+            if window is not None:
+                apply_window_mode(window)
         else:
             self.retranslateUI()
 
@@ -513,7 +519,7 @@ class GameWidget(Tab):
             self.engine.unpause()
             self.toggleScreenLock()
             if not appsettings["text_in_buttons"]:
-                self.pauseMatchButton.setText("⏸")
+                set_button_text(self.pauseMatchButton, platform_glyph("⏸"))
         else:
             self.clock.pauseTimer()
             self.commitRoundButton.setDisabled(True)
@@ -521,7 +527,7 @@ class GameWidget(Tab):
             self.engine.pause()
             self.toggleScreenLock(True)
             if not appsettings["text_in_buttons"]:
-                self.pauseMatchButton.setText("▶")
+                set_button_text(self.pauseMatchButton, platform_glyph("▶"))
         self.updateGameStatusLabel()
 
     def guardCommitButton(self) -> None:

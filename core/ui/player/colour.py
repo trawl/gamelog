@@ -3,7 +3,15 @@
 from __future__ import annotations
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtWidgets import QDialog, QHBoxLayout, QPushButton, QWidget
+from PySide6.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
+    QHBoxLayout,
+    QPushButton,
+    QWidget,
+)
+
+from core.ui.dialogs import add_dismiss_button
 
 
 class _ColourPickerDialog(QDialog):
@@ -35,6 +43,7 @@ class _ColourPickerDialog(QDialog):
                 btn.setStyleSheet("border: 1px solid gray;")
             btn.clicked.connect(lambda checked=False, idx=i: self._select(idx))
             layout.addWidget(btn)
+        add_dismiss_button(self, layout, QDialogButtonBox.StandardButton.Cancel)
 
     def _select(self, idx: int) -> None:
         self._chosen = idx

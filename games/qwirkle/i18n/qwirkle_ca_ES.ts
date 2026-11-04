@@ -4,12 +4,12 @@
 <context>
     <name>QwirkleQSBox</name>
     <message>
-        <location filename="../widget.py" line="152"/>
+        <location filename="../widget.py" line="153"/>
         <source>Best Play</source>
         <translation>Millor Jug</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="153"/>
+        <location filename="../widget.py" line="154"/>
         <source>Max Qs</source>
         <translation>Max Qs</translation>
     </message>

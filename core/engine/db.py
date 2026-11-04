@@ -15,6 +15,8 @@ import sys
 from pathlib import Path
 from typing import ClassVar
 
+from core.platform_info import is_android
+
 logger = logging.getLogger(__name__)
 
 APP_NAME = "Gamelog"
@@ -43,11 +45,6 @@ def _project_root() -> Path:
     return here.parents[2]
 
 
-def _is_android() -> bool:
-    # CPython exposes sys.getandroidapilevel() only on Android builds.
-    return hasattr(sys, "getandroidapilevel")
-
-
 def _app_data_dir() -> Path:
     """OS-standard per-user writable data directory for the application.
 
@@ -59,7 +56,7 @@ def _app_data_dir() -> Path:
     and confined to this branch, which is never taken on desktop, so the
     desktop import path remains Qt-free.
     """
-    if _is_android():
+    if is_android():
         from PySide6.QtCore import QCoreApplication, QStandardPaths
 
         if not QCoreApplication.applicationName():
