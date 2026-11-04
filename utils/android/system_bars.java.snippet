@@ -1,0 +1,25 @@
+
+        // gamelog: colour the system bars, and the window showing behind them,
+        // to match the app's light/dark palette (android_palette() in
+        // core/ui/theme.py), which otherwise leaves a white navigation bar
+        // under a dark app. Follows the system dark mode.
+        try {
+            boolean night =
+                    (getResources().getConfiguration().uiMode
+                                    & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
+                            == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+            int barColor = night ? 0xFF353535 : 0xFFEFEFEF;
+            getWindow().setNavigationBarColor(barColor);
+            getWindow().setStatusBarColor(barColor);
+            getWindow().getDecorView().setBackgroundColor(barColor);
+            if (android.os.Build.VERSION.SDK_INT >= 30) {
+                int lightBars =
+                        android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                                | android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
+                getWindow()
+                        .getInsetsController()
+                        .setSystemBarsAppearance(night ? 0 : lightBars, lightBars);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Could not style the system bars", e);
+        }

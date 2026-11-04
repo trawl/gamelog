@@ -292,3 +292,12 @@ def test_install_never_raises(monkeypatch):
 
     monkeypatch.setattr(linux_desktop, "write_desktop_entry", boom)
     assert install_desktop_entry() is None
+
+
+def test_install_is_noop_on_android(monkeypatch, data_home):
+    # Android reports sys.platform == "linux" but has no XDG desktop.
+    monkeypatch.setattr(sys, "platform", "linux")
+    monkeypatch.setattr(sys, "getandroidapilevel", lambda: 34, raising=False)
+    monkeypatch.setenv("XDG_DATA_HOME", str(data_home))
+    assert install_desktop_entry() is None
+    assert not data_home.exists()

@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import logging
+import sys
 from typing import TYPE_CHECKING
 
 from PySide6 import QtCore, QtGui
-from PySide6.QtGui import QAction, QCloseEvent
+from PySide6.QtGui import QAction, QCloseEvent, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QMainWindow,
     QMessageBox,
@@ -16,12 +17,15 @@ from PySide6.QtWidgets import (
 
 from core.engine.db import db
 from core.engine.resume import open_match
+from core.engine.settings import appsettings
 from core.model.match import GenericMatch
+from core.platform_info import is_android
 from core.registry import registry
 from core.ui.dialogs import AboutDialog
 from core.ui.explorer import MatchExplorerWidget
 from core.ui.newgame import NewGameWidget
 from core.ui.playerstats import PlayerStatsWidget
+from core.ui.windowmode import apply_window_mode, toggle_fullscreen
 
 logger = logging.getLogger(__name__)
 
@@ -57,23 +61,31 @@ class MainWindow(QMainWindow):
         """Build the menus, central widget and new-game tab, then show."""
         # Window settings
 
-        self.setGeometry(100, 50, 1024, 600)
+        if not is_android():
+            self.setGeometry(100, 50, 1024, 600)
 
         self.icon = QtGui.QIcon(":/icons/cards.png")
         self.setWindowIcon(self.icon)
 
-        # Menu settings
-        self.menubar = self.menuBar()
-        self.fileMenu = self.menubar.addMenu("")
-
+        # Quit (Ctrl+Q) always exists as an action. Only macOS gets a menu bar,
+        # where the system menu bar is a convention and costs no window space;
+        # elsewhere the new-game screen has an About button instead.
         self.exitAction = QAction(self)
         self.exitAction.triggered.connect(self.close)
-        self.fileMenu.addAction(self.exitAction)
-
-        self.helpMenu = self.menubar.addMenu("")
+        self.addAction(self.exitAction)
         self.aboutAction = QAction(self)
         self.aboutAction.triggered.connect(self.about)
-        self.helpMenu.addAction(self.aboutAction)
+        self.fileMenu = self.helpMenu = None
+        if sys.platform == "darwin":
+            menubar = self.menuBar()
+            self.fileMenu = menubar.addMenu("")
+            self.fileMenu.addAction(self.exitAction)
+            self.helpMenu = menubar.addMenu("")
+            self.helpMenu.addAction(self.aboutAction)
+
+        QShortcut(QKeySequence("F11"), self).activated.connect(
+            lambda: toggle_fullscreen(self)
+        )
 
         # Central stuff!!
         self.centralwidget = QWidget(None)
@@ -116,19 +128,25 @@ class MainWindow(QMainWindow):
         # self.setStyleSheet("font-size: 20px;")
         self.setStyleSheet("font-size: 18px;")
 
-        self.show()
+        if is_android() or appsettings["fullscreen"]:
+            # On Android the system sizes the window.
+            apply_window_mode(self)
+        else:
+            self.show()
 
     def retranslateUi(self) -> None:
         """Re-apply translated text to every widget after a language change."""
         self.setWindowTitle(self.tr("GameLog"))
         self.statusBar().showMessage(self.tr("GameLog"))
-        self.fileMenu.setTitle(self.tr("&File"))
+        if self.fileMenu is not None:
+            self.fileMenu.setTitle(self.tr("&File"))
         # self.languageAction.setText(self.tr("&Language..."))
         self.exitAction.setText(self.tr("&Quit"))
         self.exitAction.setShortcut(self.tr("Ctrl+Q"))
         self.exitAction.setStatusTip(self.tr("Quit GameLog"))
 
-        self.helpMenu.setTitle(self.tr("&Help"))
+        if self.helpMenu is not None:
+            self.helpMenu.setTitle(self.tr("&Help"))
         self.aboutAction.setText(self.tr("&About Gamelog..."))
 
         self.newGameTab.retranslateUI()

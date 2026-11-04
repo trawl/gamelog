@@ -1,8 +1,9 @@
 # Gamelog
 
-A cross-platform desktop app for keeping score across your favourite board and
-card games — round-by-round scoreboards, live score plots, per-game statistics,
-and pause/resume for matches that span several sittings.
+A cross-platform app (macOS, Linux, Windows and, experimentally, Android
+tablets) for keeping score across your favourite board and card games —
+round-by-round scoreboards, live score plots, per-game statistics, and
+pause/resume for matches that span several sittings.
 
 [![CI](https://github.com/trawl/gamelog/actions/workflows/ci.yml/badge.svg)](https://github.com/trawl/gamelog/actions/workflows/ci.yml)
 
@@ -32,8 +33,14 @@ and pause/resume for matches that span several sittings.
 - **Dealer tracking** — automatic dealer rotation (round-robin or winner-deals).
 - **Multi-language** — English, Spanish and Catalan.
 - **Light & dark themes**, following the system appearance by default.
-- **Cross-platform** — macOS, Linux and Windows.
-- Keeps the screen awake while a match is in progress.
+- **Back up and move your data** — export the whole database to a file and import
+  it again from the settings dialog, on every platform (handy for moving your
+  history between a computer and a tablet).
+- **Full screen by default**, with F11 to toggle it on desktop.
+- **Cross-platform** — macOS, Linux and Windows, plus an experimental Android
+  build for tablets (see [Android](#android-tablets-experimental)).
+- Keeps the screen awake while a match is in progress (macOS, Windows and X11
+  Linux; not yet on Android).
 
 ## Supported games
 
@@ -92,10 +99,46 @@ the same way you last started it (via `uvx`, the installed `gamelog` command,
 or `gamelog.pyw` from a checkout) and is refreshed on every run. Delete those
 two files if you ever want to remove all traces of the app.
 
+### Android (tablets, experimental)
+
+Gamelog also runs on Android, built with Qt for Python's
+`pyside6-android-deploy`. It is meant for tablets, in landscape; phones are not
+a goal and the layouts will be cramped there. The package is a 64-bit ARM
+(`arm64-v8a`) **debug** build for Android 9 or later, so it is not on the Play
+Store and is installed by hand:
+
+1. Download `Gamelog-<version>-arm64-v8a-debug.apk` from the release page, or build it yourself: see the Android section of
+   [utils/developer_notes.md](utils/developer_notes.md#android-tablet-experimental).
+2. Copy it to the tablet and open it (allowing installs from that source), or
+   with the tablet connected over USB:
+
+   ```bash
+   adb install -r Gamelog-<version>-arm64-v8a-debug.apk
+   ```
+
+Some things work differently with a finger:
+
+- **Player lists**: double-tap a player to move them between "available" and
+  "selected". Long-press a player until the row highlights, then lift your finger
+  for what a right-click does on desktop (toggle favourite, or set the dealer),
+  or drag to reorder, or drag over the other list to move them across.
+- **Pop-ups** have their own Close/Cancel button, as there is no window close
+  button, and the new-game screen has a 🚪 quit button.
+- **Your data** is in the app's private storage, which a file browser cannot see:
+  use the export and import buttons (⬆ ⬇) at the bottom of the settings dialog to
+  back it up or to copy a database from another device.
+- **Updating**: a new APK installs over the old one only if both were signed with
+  the same key (all official builds are). If Android says the signatures do not
+  match, export your data first, uninstall the app, install the new one and import
+  the data again.
+
 ## Configuration
 
-- **Language, theme and log level** are set in the in-app settings dialog and
-  persisted between runs.
+- **Language, theme, log level and window mode** are set in the in-app settings
+  dialog and persisted between runs. The window mode is full screen by default,
+  or windowed (maximised on Android) if you prefer; on desktop F11 toggles it.
+  The same dialog has the **Export/Import database** buttons and, at its
+  bottom-left, the **About** button (there is no menu bar except on macOS).
 - **Per-game options** — turn timers, end-score thresholds, dealer policy
   (round-robin or winner-deals), and other game-specific preferences are also
   configurable in the settings dialog, under each game's own section.
@@ -103,7 +146,10 @@ two files if you ever want to remove all traces of the app.
   (e.g. `DEBUG`) raises verbosity, and `GAMELOG_DB` points the app at a specific
   database file.
 - **Where scores live**: a local SQLite database — the project's `db/` folder in
-  development, or your OS user-data directory when run as an installed app.
+  development, or your OS user-data directory when run as an installed app (the
+  app's private storage on Android). Importing a database replaces the current
+  data after saving a backup of it in a `backups/` folder next to the database
+  (the last two are kept).
 
 ## Development
 
@@ -117,6 +163,7 @@ uv run pytest                     # run the tests
 uv run pytest --cov               # ...with coverage
 uv run ruff check . && uv run ruff format --check .   # lint + format
 uv run pre-commit install         # enable the git pre-commit hooks
+utils/build_android.sh            # build the Android APK into dist/ (see the notes)
 ```
 
 ### Adding a new game
@@ -129,7 +176,9 @@ discovers and wires it up automatically. See the step-by-step guide in
 ## Built with
 
 - [Python](https://www.python.org/) 3.12+
-- [PySide6](https://doc.qt.io/qtforpython/) (Qt for Python)
+- [PySide6](https://doc.qt.io/qtforpython/) (Qt for Python), on Android deployed
+  with `pyside6-android-deploy` ([python-for-android](https://github.com/kivy/python-for-android)
+  and [buildozer](https://github.com/kivy/buildozer) underneath)
 - [uv](https://github.com/astral-sh/uv) for environment and dependency management
 
 ## License

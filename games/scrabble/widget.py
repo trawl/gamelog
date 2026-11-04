@@ -168,6 +168,17 @@ class ScrabbleWidget(GameWidget):
         super().setDealer()
         self.gameInput.reset()
 
+    def addPlayerWidgets(self) -> None:
+        """Create the score boxes, leaving no dealer marker on a finished match."""
+        super().addPlayerWidgets()
+        if self.engine.getWinner():
+            self.unsetDealer()
+
+    def setWinner(self) -> None:
+        """Lock the match and drop the dealer marker, as the game is over."""
+        self.unsetDealer()
+        super().setWinner()
+
 
 class ScrabbleInputWidget(GameInputWidget):
     """Single-player score entry with a score field and bonus buttons."""

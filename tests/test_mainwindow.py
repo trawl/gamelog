@@ -139,3 +139,91 @@ def test_the_main_window_survives_garbage_collection(qapp, gamedb, monkeypatch):
     assert window.isVisible()
     assert window.explorerTab.table.model() is not None
     window.hide()
+
+
+# --- F11 toggles full screen ---------------------------------------------------
+
+
+def test_f11_toggles_full_screen_and_remembers_it(mainwindow, settings):
+    from PySide6.QtGui import QKeySequence, QShortcut
+
+    from core.engine.settings import appsettings
+
+    # The offscreen platform has no active window to deliver key presses to, so
+    # fire the F11 shortcut itself.
+    [f11] = [
+        shortcut
+        for shortcut in mainwindow.findChildren(QShortcut)
+        if shortcut.key() == QKeySequence("F11")
+    ]
+    appsettings.set("fullscreen", False)  # full screen is the default
+    mainwindow.show()
+    f11.activated.emit()
+    assert mainwindow.isFullScreen()
+    assert appsettings["fullscreen"] is True
+
+    f11.activated.emit()
+    assert not mainwindow.isFullScreen()
+    assert appsettings["fullscreen"] is False
+
+
+# --- No menu bar off macOS ----------------------------------------------------
+
+
+def test_no_menu_bar_outside_macos(qapp, gamedb, monkeypatch):
+    import sys
+
+    from PySide6.QtWidgets import QMenuBar
+
+    monkeypatch.setattr(sys, "platform", "linux")
+    window = MainWindow()
+    assert window.findChild(QMenuBar) is None
+
+
+def test_menu_bar_remains_on_macos(qapp, gamedb, monkeypatch):
+    import sys
+
+    from PySide6.QtWidgets import QMenuBar
+
+    monkeypatch.setattr(sys, "platform", "darwin")
+    window = MainWindow()
+    assert window.findChild(QMenuBar) is not None
+
+
+def test_quit_shortcut_works_without_a_menu_bar(qapp, gamedb, monkeypatch):
+    import sys
+
+    from PySide6.QtGui import QKeySequence
+
+    monkeypatch.setattr(sys, "platform", "linux")
+    window = MainWindow()
+    assert window.exitAction in window.actions()
+    assert window.exitAction.shortcut() == QKeySequence("Ctrl+Q")
+
+
+# --- The round buttons on the new-game screen ------------------------------------
+
+
+def test_round_buttons_form_two_rows_of_three(mainwindow):
+    tab = mainwindow.newGameTab
+    grid = tab.settingsLayout
+    placed = {
+        grid.itemAtPosition(row, col).widget(): (row, col)
+        for row in range(2)
+        for col in range(3)
+    }
+    assert placed == {
+        tab.rulesButton: (0, 0),
+        tab.historyButton: (0, 1),
+        tab.statsButton: (0, 2),
+        tab.languageChooser: (1, 0),
+        tab.settingsButton: (1, 1),
+        tab.quitButton: (1, 2),
+    }
+
+
+def test_quit_button_closes_the_main_window(mainwindow, monkeypatch):
+    closed = []
+    monkeypatch.setattr(MainWindow, "close", lambda self: closed.append(True))
+    mainwindow.newGameTab.quitButton.click()
+    assert closed == [True]

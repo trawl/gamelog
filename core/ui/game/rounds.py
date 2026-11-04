@@ -28,6 +28,7 @@ from core.ui.game.colours import PlayerColours
 from core.ui.game.input import paintColourIcon
 from core.ui.game.plots import PlotView
 from core.ui.game.stats import QuickStatsTW
+from core.ui.glyphs import platform_glyph
 
 logger = logging.getLogger(__name__)
 
@@ -69,9 +70,9 @@ class GameRoundsDetail(QTabWidget):
             self.setTabText(self.indexOf(self.plot), self.tr("Plot"))
             self.setTabText(self.indexOf(self.gamestats), self.tr("Statistics"))
         else:
-            self.setTabText(self.indexOf(self.tableContainer), "☷")
-            self.setTabText(self.indexOf(self.plot), "∿")
-            self.setTabText(self.indexOf(self.gamestats), "σ")
+            self.setTabText(self.indexOf(self.tableContainer), platform_glyph("☷"))
+            self.setTabText(self.indexOf(self.plot), platform_glyph("∿"))
+            self.setTabText(self.indexOf(self.gamestats), platform_glyph("σ"))
         self.gamestats.retranslateUI()
         self.plot.retranslateUI()
         self.updateRound()

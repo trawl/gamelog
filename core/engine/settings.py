@@ -11,6 +11,7 @@ from typing import Any
 from PySide6.QtCore import QCoreApplication
 
 from core.engine.db import db
+from core.platform_info import is_android
 
 QCoreApplication.translate("AppSettings", "symbols")
 QCoreApplication.translate("AppSettings", "text")
@@ -20,6 +21,9 @@ QCoreApplication.translate("AppSettings", "dark")
 QCoreApplication.translate("AppSettings", "en_GB")
 QCoreApplication.translate("AppSettings", "es_ES")
 QCoreApplication.translate("AppSettings", "ca_ES")
+QCoreApplication.translate("AppSettings", "maximised")
+QCoreApplication.translate("AppSettings", "full screen")
+QCoreApplication.translate("AppSettings", "windowed")
 
 default_settings = {
     "text_in_buttons": {
@@ -72,6 +76,31 @@ default_settings = {
             "Verbosity of diagnostic logging (GAMELOG_LOG_LEVEL overrides)",
         ),
     },
+}
+
+
+# Whether the main window fills the screen (the default). What the other choice
+# means differs:
+# maximised on Android (the system sizes the window), windowed on desktop.
+if is_android():
+    _window_description = QCoreApplication.translate(
+        "AppSettings",
+        "Full screen hides the Android system bars; the on-screen keyboard "
+        "brings them back",
+    )
+    _window_choices = ["maximised", "full screen"]
+else:
+    _window_description = QCoreApplication.translate(
+        "AppSettings",
+        "Use the whole screen, hiding the taskbar and menu bar (F11 toggles it)",
+    )
+    _window_choices = ["windowed", "full screen"]
+default_settings["fullscreen"] = {
+    "value": True,
+    "type": "bool",
+    "displayname": QCoreApplication.translate("AppSettings", "Window mode"),
+    "description": _window_description,
+    "choices": _window_choices,
 }
 
 
@@ -163,6 +192,14 @@ class AppSettings:
         """Reload the env and DB layers over the defaults."""
         self.loadFromEnv()
         self.loadFromDB()
+
+    def reload(self) -> None:
+        """Re-read every setting after the database content was replaced."""
+        self.settings["db"].clear()
+        self.dbseed()
+        self.refresh()
+        for name, schema in list(self.game_settings.items()):
+            self.register_game_settings(name, schema)
 
     def loadFromEnv(self) -> None:
         # A GAMELOG_<SETTING> environment variable overrides the matching

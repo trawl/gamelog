@@ -38,3 +38,28 @@ def test_game_setting_persistent_roundtrip(settings):
     settings.getGameSettings()  # trigger lazy discovery
     settings.set("remigio_top_score", 200, persistent=True)
     assert settings["remigio_top_score"] == 200
+
+
+def test_about_button_in_the_settings_dialog_opens_about(qapp, settings, monkeypatch):
+    from core.ui import settings as settings_ui
+    from core.ui.dialogs import AboutDialog
+
+    opened = []
+    monkeypatch.setattr(AboutDialog, "exec_", lambda self: opened.append(self))
+    dialog = settings_ui.SettingsDialog()
+    dialog.about_button.click()
+    assert len(opened) == 1
+
+
+def test_about_button_follows_the_text_in_buttons_setting(qapp, settings):
+    from core.ui.settings import SettingsDialog
+
+    settings.set("text_in_buttons", False)
+    dialog = SettingsDialog()
+    assert dialog.about_button.toolTip() == "About Gamelog"
+    assert "About" not in dialog.about_button.text()
+
+    settings.set("text_in_buttons", True)
+    dialog.save_setting("text_in_buttons", True, "bool")
+    assert dialog.about_button.text() == "About Gamelog"
+    assert dialog.about_button.toolTip() == ""

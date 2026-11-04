@@ -4,12 +4,12 @@
 <context>
     <name>ScrabbleQSBox</name>
     <message>
-        <location filename="../widget.py" line="432"/>
+        <location filename="../widget.py" line="443"/>
         <source>Best Play</source>
         <translation>Millor Jug</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="434"/>
+        <location filename="../widget.py" line="445"/>
         <source>Max Bonus</source>
         <translation>Max Bonus</translation>
     </message>

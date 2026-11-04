@@ -17,3 +17,14 @@ htmlcov
 build
 *.egg-info
 resources.qrc
+
+# Android build output
+*.apk
+*.aab
+pysidedeploy.spec
+dist/
+.buildozer/
+
+# Signing keys must never be committed
+*.keystore
+*.jks

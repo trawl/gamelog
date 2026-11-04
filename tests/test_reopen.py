@@ -7,6 +7,7 @@ from PySide6.QtGui import QKeyEvent, QKeySequence
 from PySide6.QtWidgets import QApplication, QLineEdit, QMessageBox
 
 from core.engine.db import db
+from core.engine.resume import open_match
 from core.model.match import GenericMatch
 from core.registry import registry
 
@@ -296,3 +297,43 @@ def test_carcassonne_undo_is_enabled_before_the_next_entry_is_chosen(qapp, gamed
     assert not widget.commitRoundButton.isEnabled()
     assert not widget.gameInput.scoreSpinBox.isEnabled()
     widget.close()
+
+
+@pytest.mark.parametrize("game", ["Scrabble", "Qwirkle"])
+def test_finished_match_shows_no_dealer_marker(qapp, gamedb, answer_yes, game):
+    widget = registry.create_widget(game, ["Ann", "Bob"], None, None)
+    engine = widget.engine
+    # Enter Ann's turn the way the board does, then hand the deal to Bob, who
+    # does not win, so the winner's box cannot mask the marker.
+    widget.unsetDealer()
+    engine.addEntry("Ann", 20, {})
+    engine.setDealer("Bob")
+    widget.setDealer()
+    assert widget.playerGroupBox["Bob"].background is (
+        widget.playerGroupBox["Bob"].dealerPixmap
+    )
+
+    widget.finish()
+
+    assert widget.isFinished()
+    assert engine.getWinner() == "Ann"
+    for box in widget.playerGroupBox.values():
+        assert box.background is not box.dealerPixmap
+
+
+@pytest.mark.parametrize("game", ["Scrabble", "Qwirkle"])
+def test_finished_match_from_history_shows_no_dealer_marker(qapp, gamedb, game):
+    engine = _engine(game, ["Ann", "Bob"])
+    engine.setDealer("Ann")
+    engine.addEntry("Ann", 20, {})  # the deal passes to Bob, who does not win
+    engine.finishGame()
+    idMatch = engine.match.idMatch
+    assert engine.getWinner() == "Ann"
+    assert engine.getDealer() == "Bob"
+
+    reopened = open_match(game, idMatch)
+    widget = registry.create_widget(game, None, reopened, None)
+    widget.showFinishedMatch()
+
+    for box in widget.playerGroupBox.values():
+        assert box.background is not box.dealerPixmap
